@@ -1,0 +1,35 @@
+services:
+  database:
+    container_name: postgres
+    image: postgres:16.1-alpine3.19
+    ports:
+      - "5432"
+    env_file:
+      - .env
+    networks:
+      - ft_transcendence
+
+  frontend:
+    container_name: nextjs
+    build:
+      context: frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    networks:
+      - ft_transcendence
+
+  backend:
+    container_name: nestjs
+    build:
+      context: backend
+    ports:
+      - "3001:3001" # for development
+    env_file:
+      - .env
+    networks:
+      - ft_transcendence
+
+networks:
+  ft_transcendence:
