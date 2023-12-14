@@ -4,7 +4,7 @@ services:
     image: postgres:16.1-alpine3.19
     stop_grace_period: 2s
     ports:
-      - "5432"
+      - 5432:5432
     env_file:
       - .env
     networks:
@@ -15,7 +15,7 @@ services:
     build:
       context: frontend
     ports:
-      - "3000:3000"
+      - 3000:3000
     env_file:
       - .env
     networks:
@@ -29,7 +29,7 @@ services:
     build:
       context: backend
     ports:
-      - "3001:3001" # for development
+      - 3001:3001 # for development
     env_file:
       - .env
     networks:
