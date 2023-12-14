@@ -6,4 +6,4 @@ COPY package*.json ./
 
 EXPOSE 3001
 
-CMD npm install && npm run start:dev
+CMD npm install && npx prisma generate && npm run start:dev
