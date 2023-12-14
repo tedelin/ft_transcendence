@@ -34,6 +34,8 @@ services:
       - ft_transcendence
     volumes:
       - ./backend:/usr/ft_transcendence
+    depends_on:
+      - database
 
 networks:
   ft_transcendence:
