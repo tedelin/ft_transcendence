@@ -19,6 +19,8 @@ services:
       - .env
     networks:
       - ft_transcendence
+    volumes:
+      - ./frontend:/usr/ft_transcendence
 
   backend:
     container_name: nestjs
@@ -30,6 +32,8 @@ services:
       - .env
     networks:
       - ft_transcendence
+    volumes:
+      - ./backend:/usr/ft_transcendence
 
 networks:
   ft_transcendence:
