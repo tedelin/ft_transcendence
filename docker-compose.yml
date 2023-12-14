@@ -2,6 +2,7 @@ services:
   database:
     container_name: postgres
     image: postgres:16.1-alpine3.19
+    stop_grace_period: 2s
     ports:
       - "5432"
     env_file:
@@ -21,6 +22,7 @@ services:
       - ft_transcendence
     volumes:
       - ./frontend:/usr/ft_transcendence
+    stop_grace_period: 2s
 
   backend:
     container_name: nestjs
@@ -36,6 +38,7 @@ services:
       - ./backend:/usr/ft_transcendence
     depends_on:
       - database
+    stop_grace_period: 2s
 
 networks:
   ft_transcendence:
