@@ -30,6 +30,7 @@ services:
       context: backend
     ports:
       - 3001:3001 # for development
+      - 5555:5555
     env_file:
       - .env
     networks:
@@ -42,3 +43,4 @@ services:
 
 networks:
   ft_transcendence:
+    driver: bridge
