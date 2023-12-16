@@ -8,4 +8,4 @@ RUN npm install
 
 EXPOSE 3001
 
-CMD npx prisma generate && npx prisma migrate dev && npm run start:dev & npx prisma studio --port 5555
+CMD npx prisma generate && npx prisma migrate dev --name init && npm run start:dev & npx prisma studio --port 5555
