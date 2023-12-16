@@ -4,6 +4,8 @@ WORKDIR /usr/ft_transcendence
 
 COPY package*.json ./ 
 
+RUN npm install
+
 EXPOSE 3000
 
-CMD npm install && npm run dev
+CMD npm run dev

@@ -5,6 +5,8 @@ services:
     stop_grace_period: 2s
     ports:
       - 5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
     env_file:
       - .env
     networks:
@@ -22,6 +24,7 @@ services:
       - ft_transcendence
     volumes:
       - ./frontend:/usr/ft_transcendence
+      - /usr/ft_transcendence/node_modules
     stop_grace_period: 2s
 
   backend:
@@ -37,6 +40,7 @@ services:
       - ft_transcendence
     volumes:
       - ./backend:/usr/ft_transcendence
+      - /usr/ft_transcendence/node_modules
     depends_on:
       - database
     stop_grace_period: 2s
@@ -44,3 +48,7 @@ services:
 networks:
   ft_transcendence:
     driver: bridge
+
+volumes:
+  postgres:
+    name: postgres-database
