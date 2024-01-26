@@ -1,5 +1,5 @@
 generator client {
-  provider      = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -8,9 +8,82 @@ datasource db {
 }
 
 model User {
-  id        Int   @id @default(autoincrement())
-  username      String   @unique
+  id             Int              @id @default(autoincrement())
+  username       String           @unique
+  password       String
+  avatar         String           @default("default_avatar_url")
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  useTwoFA       Boolean          @default(false)
+  ChannelMessage ChannelMessage[]
+  channels       ChannelUser[]
+  matchHistory   MatchHistory[]
+  // sentMessages     PrivateMessage[] @relation("sentMessages")
+  // receivedMessages PrivateMessage[] @relation("receivedMessages")
+
+  @@map("users")
+}
+
+model Channel {
+  name       String           @id @unique
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @default(now()) @updatedAt
+  password   String?
+  visibility String           @default("public")
+  //   channelOwner   User             @relation(fields: [channelOwnerId], references: [id])
+  // channelOwnerId Int
+  messages   ChannelMessage[]
+  users      ChannelUser[]
+}
+
+model ChannelUser {
+	channel  Channel @relation(fields: [channelName], references: [name])
+	channelName String
+
+	user     User    @relation(fields: [userId], references: [id])
+	userId   Int
+
+	createdAt DateTime @default(now())
+	updatedAt DateTime @default(now()) @updatedAt
+
+	@@id([channelName, userId])
+}
+
+model ChannelMessage {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  content   String
+  channelId String
+  channel   Channel  @relation(fields: [channelId], references: [name])
+  senderId  Int
+  sender    User     @relation(fields: [senderId], references: [id])
+}
+
+model PrivateMessage {
+  id         Int      @id @default(autoincrement())
+  timestamp  DateTime @default(now())
+  content    String
+  //   sender     User     @relation("sentMessages", fields: [senderId], references: [id])
+  //   receiver   User     @relation("receivedMessages", fields: [receiverId], references: [id])
+  senderId   String
+  receiverId String
+}
+
+model MatchHistory {
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  use_2fa Boolean @default(false)
+  nbWin     Int
+  nbLoose   Int
+  nbGames   Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+
+  @@map("match_history")
+}
+
+enum UserStatus {
+  ONLINE
+  OFFLINE
+  IN_GAME
 }

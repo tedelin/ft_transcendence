@@ -13,7 +13,7 @@ services:
       - ft_transcendence
 
   frontend:
-    container_name: nextjs
+    container_name: vitejs
     build:
       context: frontend
     ports:

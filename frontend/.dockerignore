@@ -1,7 +1,0 @@
-node_modules
-.next
-.gitignore
-.eslintrc.json
-next.config.js
-next-env.d.ts
-tsconfig.json
