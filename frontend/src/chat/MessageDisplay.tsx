@@ -5,7 +5,7 @@ import { useUser } from "../components/AuthProvider";
 import socket from '../socket';
 import '../styles/chat.css';
 
-
+// function to display chat Messages
 export function MessageDisplay({}) {
 	const [receivedMessages, setReceivedMessages] = useState([]);
 	const messageContainer = useRef(null);
