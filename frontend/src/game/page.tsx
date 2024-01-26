@@ -174,7 +174,7 @@ export function Game() {
                 </>
             )}
             {!gameStarted && !showButton && !settingsToDo && (
-                <div>
+                <>
                     <div className='CrossIcon' onClick={() => socket.emit('crossMatchmaking')}>&#10006;</div>
                     <MatchmakingView 
                         playerOne={playerOne}
@@ -186,7 +186,7 @@ export function Game() {
                             {firstPlayer ? 'Waiting for another player...' : 'Waiting for the other player to set the game...'}
                         </div>
                     </div>
-                </div>
+                </>
             )}
             {gameStarted && gameInstance.current && (
                  <StartGame gameInstance={gameInstance.current} />

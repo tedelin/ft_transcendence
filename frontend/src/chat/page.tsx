@@ -10,7 +10,7 @@ import { NavBar } from '../components/NavBar';
 function Chat() {
 	return (
 		<div className="chat">
-            <SideBar />
+            {/* <SideBar /> */}
             <Channels />
             <ChatChannel />
             <Friends />

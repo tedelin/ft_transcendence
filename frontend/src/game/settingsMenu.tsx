@@ -9,20 +9,19 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                 <div className='label'>
                     <label htmlFor="ballSpeed">Ball Speed :</label>
                 </div>
-                <div className='input'>
-                    <input
-                        type="range"
-                        id="ballSpeed"
-                        min="1"
-                        max="10"
-                        step="1"
-                        value={ballSpeed}
-                        onChange={(e) => {
-                            //????? mdr
-                            setBallSpeed((prev) => parseInt(e.target.value));
-                            console.log('set ball : ' + ballSpeed)}}
-                    />
-                </div>
+                <input
+                    className='input'
+                    type="range"
+                    id="ballSpeed"
+                    min="1"
+                    max="10"
+                    step="1"
+                    value={ballSpeed}
+                    onChange={(e) => {
+                        setBallSpeed(() => parseInt(e.target.value));
+                        console.log('set ball : ' + ballSpeed)
+                    }}
+                />
                 <div className='number'>
                     <span>{ballSpeed}</span>
                 </div>
@@ -32,17 +31,16 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                 <div className='label'>
                     <label htmlFor="BallSize">Ball Size :</label>
                 </div>
-                <div className='input'>
-                    <input
-                        type="range"
-                        id='ballSize'
-                        min='5'
-                        max='30'
-                        step='1'
-                        value={ballSize}
-                        onChange={(e) => setBallSize(parseInt(e.target.value))}
-                    />
-                </div>
+                <input
+                    className='input'
+                    type="range"
+                    id='ballSize'
+                    min='5'
+                    max='30'
+                    step='1'
+                    value={ballSize}
+                    onChange={(e) => setBallSize(parseInt(e.target.value))}
+                />
                 <div className='number'>
                     <span>{ballSize}</span>
                 </div>
@@ -52,17 +50,16 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                 <div className='label'>
                     <label htmlFor="increasedBallSpeed">Increased Ball Speed/s :</label>
                 </div>
-                <div className='input'>
-                    <input
-                        type="range"
-                        id="increasedBallSpeed"
-                        min="0.001"
-                        max="0.010"
-                        step="0.001"
-                        value={increasedBallSpeed}
-                        onChange={(e) => setIncreasedBallSpeed(parseFloat(e.target.value))}
-                    />
-                </div>
+                <input
+                    className='input'
+                    type="range"
+                    id="increasedBallSpeed"
+                    min="0.001"
+                    max="0.010"
+                    step="0.001"
+                    value={increasedBallSpeed}
+                    onChange={(e) => setIncreasedBallSpeed(parseFloat(e.target.value))}
+                />
                 <div className='number'>
                     <span>{increasedBallSpeed}</span>
                 </div>
@@ -72,17 +69,16 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                 <div className='label'>
                     <label htmlFor="paddleHeight">Paddle Height :</label>
                 </div>
-                <div className='input'>
-                    <input
-                        type="range"
-                        id="paddleHeight"
-                        min="100"
-                        max="300"
-                        step="1"
-                        value={paddleHeight}
-                        onChange={(e) => setPaddleHeight(parseInt(e.target.value))}
-                    />
-                </div>
+                <input
+                    className='input'
+                    type="range"
+                    id="paddleHeight"
+                    min="100"
+                    max="300"
+                    step="1"
+                    value={paddleHeight}
+                    onChange={(e) => setPaddleHeight(parseInt(e.target.value))}
+                />
                 <div className='number'>
                     <span>{paddleHeight}</span>
                 </div>
@@ -92,17 +88,16 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                 <div className='label'>
                     <label htmlFor="paddleSpeed">Paddle Speed :</label>
                 </div>
-                <div className='input'>
-                    <input
-                        type="range"
-                        id="paddleSpeed"
-                        min="1"
-                        max="10"
-                        step="1"
-                        value={paddleSpeed}
-                        onChange={(e) => setPaddleSpeed(parseInt(e.target.value))}
-                    />
-                </div>
+                <input
+                    className='input'
+                    type="range"
+                    id="paddleSpeed"
+                    min="1"
+                    max="10"
+                    step="1"
+                    value={paddleSpeed}
+                    onChange={(e) => setPaddleSpeed(parseInt(e.target.value))}
+                />
                 <div className='number'>
                     <span>{paddleSpeed}</span>
                 </div>
