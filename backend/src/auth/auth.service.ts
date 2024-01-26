@@ -10,11 +10,11 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable({})
 export class AuthService{
 	constructor(private databaseService : DatabaseService, private jwtService: JwtService, private configService: ConfigService) {}
-	async signUp(dto : AuthDto) {
+	async signUp(authDto : AuthDto) {
 		try{
-			const hash = await argon.hash(dto.password)
+			authDto.password = await argon.hash(authDto.password)
 			const user = await this.databaseService.user.create({
-				data: dto,
+				data: authDto,
 			})
 			return this.signToken(user.id, user.username);
 		}
@@ -30,23 +30,18 @@ export class AuthService{
 		}
 	}
 
-	async login(dto : AuthDto) {
+	async login(loginUserDto: AuthDto) {
 		const user = await this.databaseService.user.findUnique({
-			where : {
-				username : dto.username
+			where: {
+				username: loginUserDto.username
 			}
-		})
-		if(!user)
-		{
-			throw new ForbiddenException('Credential incorrect',);
+		});
+		if (!user) {
+			throw new ForbiddenException('Invalid credentials');
 		}
-		const pwMatches = await argon.verify(
-			user.password,
-			dto.password,
-		)
-		if (!pwMatches)
-		{
-			throw new ForbiddenException('Credential incorrect',);
+		const isPasswordValid = await argon.verify(user.password, loginUserDto.password);
+		if (!isPasswordValid) {
+			throw new ForbiddenException('Invalid credentials');
 		}
 		return this.signToken(user.id, user.username);
 	}
