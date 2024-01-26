@@ -1,93 +1,97 @@
-import React, { useState, createContext, useEffect, useContext } from 'react';
-import jwt from 'jsonwebtoken';
+import React, { useState, createContext, useContext, useEffect } from 'react';
+import { fetchUrl } from '../fetch';
 
 
 type UserType = {
   id: string;
   username: string;
+  avatar: string;
+  useTwoFa: boolean;
 };
-
 
 interface AuthContextType {
-  user: UserType;
-  setUser: React.Dispatch<React.SetStateAction<UserType>>;
-}
+	user: UserType | null;
+	loading: boolean;
+	signin: (username: string, password: string, callback: VoidFunction) => Promise<void>;
+	signup: (username: string, password: string, callback: VoidFunction) => Promise<void>;
+	signout: (callback: VoidFunction) => void;
+  }
 
-interface AuthProviderProps {
-	children: React.ReactNode;
-}
+export const AuthContext = createContext<AuthContextType | null>(null);
 
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+	let [user, setUser] = useState<UserType | null>(null);
+	let [loading, setLoading] = useState(true);
 
-export const AuthContext = createContext<UserType | null>(null);
+	const handleAuth = async (token: string, callback: VoidFunction) => {
+	  try {
+		localStorage.setItem('jwtToken', token);
+		const response = await fetchUrl('/users/me', {
+		  method: 'GET',
+		  headers: {
+			Authorization: `Bearer ${token}`,
+		  },
+		});
+		setUser(response);
+		callback();
+	  } catch (error) {
+		console.error('Error during handleAuth:', error);
+	  }
+	};
+  
+	let signin = async (username: string, password: string, callback: VoidFunction) => {
+	  try {
+		const response = await fetchUrl('/auth/signin', {
+		  method: 'POST',
+		  headers: {
+			'Content-Type': 'application/json',
+		  },
+		  body: JSON.stringify({ username, password }),
+		});
+		const token = response.access_token;
+		handleAuth(token, callback);
+	  } catch (error) {
+		console.error('Error during signin:', error);
+	  }
+	};
+  
+	let signup = async (username: string, password: string, callback: VoidFunction) => {
+	  try {
+		const response = await fetchUrl('/auth/signup', {
+		  method: 'POST',
+		  headers: {
+			'Content-Type': 'application/json',
+		  },
+		  body: JSON.stringify({ username, password }),
+		});
+		const token = response.access_token;
+		handleAuth(token, callback);
+	  } catch (error) {
+		console.error('Error during signup:', error);
+	  }
+	};
+  
+	let signout = (callback: VoidFunction) => {
+	  localStorage.removeItem('jwtToken');
+	  setUser(null);
+	  callback();
+	};
 
-
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState([]);
-
-  useEffect(() => {
-	const storedToken = localStorage.getItem('jwtToken');
-	const getUser = async (storedToken : any) => {
-		try {
-		  const response = await fetch('http://127.0.0.1:3001/users/me', { 
-			method: 'GET',
-			headers: {
-			  'Content-Type': 'application/x-www-form-urlencoded',
-			  'Authorization': `Bearer ${storedToken}`,
-			},
-		  });
-		  const data = await response.json();
-		  setUser(data);
+	useEffect(() => {
+		const token = localStorage.getItem('jwtToken');
+		if (token) {
+			handleAuth(token, () => {
+				setLoading(false);
+			});
+		} else {
+			setLoading(false);
 		}
-		catch (error) {
-		  console.error("Erreur lors de l'envoi du formulaire: ", error);
-		}
-	}
-	if (storedToken)
-    	getUser(storedToken);
-    // if (!decodedToken) throw new Error('Invalid token');
-    // const decodedUser: UserType = {
-    //   id: decodedToken.sub,
-    //   username: decodedToken.userName,
-    // };
-    // setUser(decodedUser);
-
-
-        // ----------------------MOI----------------------
-
-
-        // const decodedToken = jwt.decode(storedToken);
-        // console.log('decodedToken type :', typeof(decodedToken))
-        // console.log('decodedToken :', decodedToken)
-        
-        // if (!decodedToken) throw new Error('Invalid token');
-        // const decodedUser: UserType = {
-        //   id: decodedToken.sub,
-        //   username: decodedToken.userName,
-        // };
-        // setUser(decodedUser);
-
-        // --------------------------------------------
-
-
-        // const decodedToken = jwt.decode(storedToken);
-        // console.log('decodedToken type :', typeof(decodedToken))
-        // console.log('decodedToken :', decodedToken)
-        
-        // if (!decodedToken) throw new Error('Invalid token');
-        // const decodedUser: UserType = {
-        //   id: decodedToken.sub,
-        //   username: decodedToken.userName,
-        // };
-        // setUser(decodedUser);
-    }, []);
-
-  return (
-    <AuthContext.Provider value={user}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+	}, []);
+  
+	let value = { user, loading, signin, signup, signout };
+  
+	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  }
 
 export function useUser() {
 	return useContext(AuthContext);

@@ -1,45 +1,29 @@
-import React, { use, useState, useEffect } from 'react';
-import { fetchUrl } from '../fetch';
+import { useState } from 'react';
+import {useUser } from '../components/AuthProvider'
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/login.css';
+
 
 export default function Login() {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
+	const navigate = useNavigate();
+	const auth = useUser();
+	const location = useLocation();
 
-	async function signup() {
-		try {
-			const response = await fetchUrl('/auth/signup', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
-				body : `username=${username}&password=${password}`
-			});
-			localStorage.setItem('jwtToken', response.access_token);
-			// setPassword('');
-			// setUsername('');
-		} catch (error) {
-			alert('Error creating user');
-		}
-	}
+	const from = location.state?.from?.pathname || '/';
 
-	async function signin() {
-		try {
-			const response = await fetchUrl('/auth/signin', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
-				body : `username=${username}&password=${password}`
-			});
-			localStorage.setItem('jwtToken', response.access_token);
-			// setPassword('');
-			// setUsername('');
-		} catch (error) {
-			console.log(error);
-			alert('Error signing in');
-		}
+	function signin() {
+		auth?.signin(username, password, () => {
+			navigate(from, { replace: true });
+		});
 	}
+	function signup() {
+		auth?.signup(username, password, () => {
+			navigate(from, { replace: true });
+		});
+	}
+	
 
 	return (
         <div className="fix">
