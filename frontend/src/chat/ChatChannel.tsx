@@ -3,7 +3,7 @@ import {MessageDisplay} from './MessageDisplay';
 import { useChat } from './ChatContext';
 import socket from '../socket';
 import '../styles/chat.css';
-import { useUser } from "../components/AuthProvider";
+import { useAuth } from "../components/AuthProvider";
 
 function TopBar() {
 	const chat = useChat();
@@ -12,7 +12,7 @@ function TopBar() {
 		<div className="topBarChat">
 			<img  className="smallAvatar" src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
 			<span className='spanMargin'>
-				{chat.channelTo.name}
+				{chat.channelTo?.name}
 			</span>
 		</div>
 	);
@@ -22,11 +22,11 @@ function TopBar() {
 export function ChatChannel() {
 	const [message, setMessage] = useState('');
     const chat = useChat();
-	const user = useUser();
+	const auth = useAuth();
 
 	function sendChannelMessage(e) {
 		if (chat.channelTo) {
-			socket.emit('channel-message', {channelId: chat.channelTo.name, senderId: user.id, content: message})
+			socket.emit('channel-message', {channelId: chat.channelTo.name, senderId: auth?.user?.id, content: message})
 			setMessage('');
 		}
 	}
@@ -43,7 +43,7 @@ export function ChatChannel() {
 		(chat.channelTo && (
 		<div className='chatArea'>
 			{/* <TopBar/> */}
-            <MessageDisplay key={chat.channelTo.id}/>
+            <MessageDisplay key={chat.channelTo?.name}/>
 			<div className='messageInput'>
 				<textarea 
                     value={message} 

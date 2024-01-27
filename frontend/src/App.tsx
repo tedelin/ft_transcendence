@@ -1,11 +1,15 @@
-import { useLocation, Outlet, Routes, Route, Navigate } from 'react-router-dom'
+import { useLocation, Outlet, Routes, Route, Navigate, createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Login from './pages/Login'
 import Chat from './chat/page'
 import { NavBar } from './components/NavBar'
 import { Game } from './game/page'
-import { AuthProvider, useUser } from './components/AuthProvider'
+import { AuthProvider, useAuth } from './components/AuthProvider'
 import './App.css'
 import './styles/chat.css'
+
+const router = createBrowserRouter([
+    { path: '*', Component: Root },
+]);
 
 function Layout() {
 	return (
@@ -19,7 +23,7 @@ function Layout() {
 }
 
 function RequireAuth({children}: {children: JSX.Element}) {
-	let auth = useUser();
+	let auth = useAuth();
 	let location = useLocation();
 
 	if (auth?.loading) {
@@ -32,7 +36,7 @@ function RequireAuth({children}: {children: JSX.Element}) {
 	return children;
 }
 
-function App() {
+function Root() {
 	return (
 		<AuthProvider>
 			<Routes>
@@ -57,6 +61,10 @@ function App() {
 			</Routes>
 		</AuthProvider>
 	)
+}
+
+function App() {
+    return <RouterProvider router={router} />;
 }
 
 export default App

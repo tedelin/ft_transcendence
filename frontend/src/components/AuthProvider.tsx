@@ -35,7 +35,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		setUser(response);
 		callback();
 	  } catch (error) {
-		console.error('Error during handleAuth:', error);
+        console.error('Error during handleAuth:', error);
+        setLoading(false);
 	  }
 	};
   
@@ -93,6 +94,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
   }
 
-export function useUser() {
+export function useAuth() {
 	return useContext(AuthContext);
 };

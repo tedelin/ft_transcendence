@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useChatDispatch, useChat } from './ChatContext';
 import { fetchUrl } from '../fetch';
 import { Channel } from './types/channel';
-import { useUser } from '../components/AuthProvider';
+import { useAuth } from '../components/AuthProvider';
 import socket from '../socket';
 
 export function SearchChannel({}) {
@@ -37,11 +37,11 @@ export function ChannelList() {
     const dispatch = useChatDispatch();
 	const channels = useChat().searchChannels;
     const chat = useChat();
-	const user = useUser();
+	const auth = useAuth();
 
     function joinChannel(channel: Channel) {
-		if (user) {
-			socket.emit('join-channel', {roomId: channel.name, password: '', userId: user.id});
+		if (auth?.user) {
+			socket.emit('join-channel', {roomId: channel.name, password: '', userId: auth.user.id});
 			leaveChannel();
 			dispatch({type: 'chat'});
 			dispatch({ type: 'setChannel', channelTo: channel });
@@ -64,7 +64,7 @@ export function ChannelList() {
 		return (() => {
 			socket.off('new-channel');
 		});
-	}, [channels, user]);
+	}, [channels, auth?.user]);
 
 	return (
 		<>

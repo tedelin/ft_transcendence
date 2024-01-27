@@ -1,10 +1,10 @@
-import { useUser } from './AuthProvider';
+import { useAuth } from './AuthProvider';
 import { NavLink } from 'react-router-dom'
 import '../styles/navbar.css';
 
 
 export function NavBar() {
-    const auth = useUser();
+    const auth = useAuth();
 
     function logout() {
         auth?.signout(() => {});

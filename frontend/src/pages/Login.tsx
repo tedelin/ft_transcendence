@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {useUser } from '../components/AuthProvider'
+import {useAuth } from '../components/AuthProvider'
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/login.css';
 
@@ -8,7 +8,7 @@ export default function Login() {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const navigate = useNavigate();
-	const auth = useUser();
+	const auth = useAuth();
 	const location = useLocation();
 
 	const from = location.state?.from?.pathname || '/';
