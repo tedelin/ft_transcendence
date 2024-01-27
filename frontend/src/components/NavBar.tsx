@@ -7,7 +7,7 @@ export function NavBar() {
     const auth = useAuth();
 
     function logout() {
-        auth?.signout(() => {});
+        auth?.signout();
     }
 
     return (

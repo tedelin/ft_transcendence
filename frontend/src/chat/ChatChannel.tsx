@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from "react";
+import { useState} from "react";
 import {MessageDisplay} from './MessageDisplay';
 import { useChat } from './ChatContext';
-import socket from '../socket';
-import '../styles/chat.css';
 import { useAuth } from "../components/AuthProvider";
+import '../styles/chat.css';
 
 function TopBar() {
 	const chat = useChat();
@@ -24,18 +23,18 @@ export function ChatChannel() {
     const chat = useChat();
 	const auth = useAuth();
 
-	function sendChannelMessage(e) {
+	function sendChannelMessage() {
 		if (chat.channelTo) {
-			socket.emit('channel-message', {channelId: chat.channelTo.name, senderId: auth?.user?.id, content: message})
+			auth?.socket?.emit('channel-message', {channelId: chat.channelTo.name, senderId: auth?.user?.id, content: message})
 			setMessage('');
 		}
 	}
 
-    function handleKeyDown(e) {
+    function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		if (e.key == 'Enter')
 			e.preventDefault();
         if (e.key === 'Enter' && !e.shiftKey && message.length > 0) {
-          	sendChannelMessage(e);
+          	sendChannelMessage();
         }
     };
     
@@ -59,7 +58,7 @@ export function ChatChannel() {
 				<button 
                     className='sendMessageBtn' 
                     disabled={message.length === 0} 
-                    onClick={(e) => sendChannelMessage(e)}
+                    onClick={sendChannelMessage}
                     >
 						<span className="material-symbols-outlined">
 							send

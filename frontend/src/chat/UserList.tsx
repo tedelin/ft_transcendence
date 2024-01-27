@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import socket from '../socket';
+import socket from '../game/socket';
 
 
 export function UserList() {

@@ -5,34 +5,76 @@ import '../styles/login.css';
 
 
 export default function Login() {
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
-	const navigate = useNavigate();
-	const auth = useAuth();
-	const location = useLocation();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-	const from = location.state?.from?.pathname || '/';
+    const navigate = useNavigate();
+    const auth = useAuth();
+    const location = useLocation();
 
-	function signin() {
-		auth?.signin(username, password, () => {
+    const from = location.state?.from?.pathname || '/';
+
+	async function handleSignIn() {
+		if (!username || !password) {
+			setError('Please enter both username and password.');
+			return;
+		}
+		try {
+			await auth?.signin(username, password);
 			navigate(from, { replace: true });
-		});
-	}
-	function signup() {
-		auth?.signup(username, password, () => {
-			navigate(from, { replace: true });
-		});
+		} catch(error) {
+			setError('Invalid credentials.');
+		}
 	}
 	
-
-	return (
+	async function handleSignUp() {
+		if (!username || !password) {
+			setError('Please enter both username and password.');
+			return;
+		}
+		try {
+			await auth?.signup(username, password);
+			navigate(from, { replace: true });
+		} catch(error) {
+			setError('Credentials already taken.');
+		}
+	}
+    return (
         <div className="fix">
             <div className="loginContainer">
-                <input className="field" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
-                <input className="field" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
-                <button className="button" onClick={signin}>Login</button>
-                <button className="button" onClick={signup}>Register</button>
+                <input
+                    className="field"
+                    type="text"
+                    placeholder="Username"
+                    onChange={(e) => {
+                        setUsername(e.target.value);
+                        setError('');
+                    }}
+                />
+                <input
+                    className="field"
+                    type="password"
+                    placeholder="Password"
+                    onChange={(e) => {
+                        setPassword(e.target.value);
+                        setError('');
+                    }}
+                />
+                {error && <span className="error">{error}</span>}
+                <button
+                    className="button"
+                    onClick={handleSignIn}
+                >
+                    Login
+                </button>
+                <button
+                    className="registerButton"
+                    onClick={handleSignUp}
+                >
+                    Register
+                </button>
             </div>
         </div>
-	)
+    );
 }

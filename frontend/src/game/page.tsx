@@ -1,7 +1,7 @@
 import { ClassGame } from './classGame';
 import { useEffect } from 'react';
 import { useState, useRef } from 'react';
-import socket from '../socket';
+import socket from './socket';
 import React from 'react';
 import './game.css';
 import  { SettingsMenu } from './settingsMenu';

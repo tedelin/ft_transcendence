@@ -1,5 +1,4 @@
-// const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
-const API_BASE_URL = "http://localhost:3001";
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export async function fetchUrl(endpoint: string, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
@@ -13,7 +12,6 @@ export async function fetchUrl(endpoint: string, options = {}) {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error with fetch:', error.message);
     throw error;
   }
 }

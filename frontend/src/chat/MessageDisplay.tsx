@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { fetchUrl } from '../fetch';
 import { useChat } from './ChatContext';
 import { useAuth } from "../components/AuthProvider";
-import socket from '../socket';
 import '../styles/chat.css';
 
-// function to display chat Messages
 export function MessageDisplay({}) {
 	const [receivedMessages, setReceivedMessages] = useState([]);
 	const messageContainer = useRef(null);
@@ -29,7 +27,7 @@ export function MessageDisplay({}) {
 	}
 
 	useEffect(() => {
-		socket.on('channel-message', (message) => {
+		auth?.socket?.on('channel-message', (message) => {
 			if (message.channelId !== chat.channelTo?.name) {
 				return ;
 			}
@@ -41,7 +39,7 @@ export function MessageDisplay({}) {
 
 		return () => {
 			setReceivedMessages([]);
-			socket.off('channel-message');
+			auth?.socket?.off('channel-message');
 		};
 	}, [chat.channelTo]);
 

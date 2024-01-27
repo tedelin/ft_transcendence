@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { useChatDispatch, useChat } from './ChatContext';
 import { UserChannel } from './UserChannel';
 import '../styles/chat.css';

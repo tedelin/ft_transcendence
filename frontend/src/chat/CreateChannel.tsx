@@ -2,16 +2,15 @@ import React, { useState} from 'react';
 import { fetchUrl } from '../fetch';
 import { useChatDispatch } from './ChatContext';
 import { useAuth } from '../components/AuthProvider';
-import socket from '../socket';
 import '../styles/chat.css';
 
 export function CreateChannel() {
+	const auth = useAuth();
 	const [channelName, setChannelName] = useState('');
 	const [channelPassword, setChannelPassword] = useState('');
 	const [channelVisibility, setChannelVisibility] = useState('public');
 	const [errorMessage, setErrorMessage] = useState('');
 	const dispatch = useChatDispatch();
-	const auth = useAuth();
 
 	async function create() {
 		if (channelName.length < 2 || channelName.length > 13) {
@@ -32,7 +31,7 @@ export function CreateChannel() {
 			}),
 		  });
 		  if (channelVisibility === 'public') {
-		  	socket.emit('new-channel', {name: channelName, visibility: channelVisibility});
+		  	auth?.socket?.emit('new-channel', {name: channelName, visibility: channelVisibility});
 		  }
 		  setChannelName('');
 		  setChannelPassword('');
@@ -45,7 +44,7 @@ export function CreateChannel() {
 	async function joinChannel() {
 		try {
 			const channel = await fetchUrl(`/chat/channels/${channelName}`);
-			socket.emit('join-channel', {roomId: channelName, password: channelPassword, userId: auth?.user?.id});
+			auth?.socket?.emit('join-channel', {roomId: channelName, password: channelPassword, userId: auth?.user?.id});
 			dispatch({ type: 'chat' });
 			dispatch({ type: 'setChannel', channelTo: channel });
 		} catch (error) {

@@ -43,7 +43,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	async handleDisconnect(client: Socket) {
-		console.log(client.id + " disconnected");
 		this.connectedUsers.delete(client.id);
 		this.sendConnectedUsers();
 	}
