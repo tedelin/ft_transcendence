@@ -8,20 +8,35 @@ datasource db {
 }
 
 model User {
-  id             Int              @id @default(autoincrement())
-  username       String           @unique
-  password       String
-  avatar         String           @default("default_avatar_url")
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  useTwoFA       Boolean          @default(false)
-  ChannelMessage ChannelMessage[]
-  channels       ChannelUser[]
-  matchHistory   MatchHistory[]
+  id                   Int              @id @default(autoincrement())
+  username             String           @unique
+  password             String
+  avatar               String           @default("default_avatar_url")
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  useTwoFA             Boolean          @default(false)
+  ChannelMessage       ChannelMessage[]
+  channels             ChannelUser[]
+  matchHistory         MatchHistory[]
+  friendshipsInitiated Friendship[]     @relation("Initiator")
+  friendshipsReceived  Friendship[]     @relation("Receiver")
   // sentMessages     PrivateMessage[] @relation("sentMessages")
   // receivedMessages PrivateMessage[] @relation("receivedMessages")
 
   @@map("users")
+}
+
+model Friendship {
+  id          Int      @id @default(autoincrement())
+  initiatorId Int
+  receiverId  Int
+  status      String   @default("NONE")
+  createdAt   DateTime @default(now())
+
+  initiator User @relation("Initiator", fields: [initiatorId], references: [id])
+  receiver  User @relation("Receiver", fields: [receiverId], references: [id])
+
+  @@unique([initiatorId, receiverId])
 }
 
 model Channel {
@@ -37,16 +52,16 @@ model Channel {
 }
 
 model ChannelUser {
-	channel  Channel @relation(fields: [channelName], references: [name])
-	channelName String
+  channel     Channel @relation(fields: [channelName], references: [name])
+  channelName String
 
-	user     User    @relation(fields: [userId], references: [id])
-	userId   Int
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @default(now()) @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
-	@@id([channelName, userId])
+  @@id([channelName, userId])
 }
 
 model ChannelMessage {

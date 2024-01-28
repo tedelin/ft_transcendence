@@ -8,17 +8,17 @@ import '../styles/chat.css';
 function Chat() {
 	return (
 		<div className="chat">
-            <SideBar />
-            <Channels />
-            <ChatChannel />
-            <Friends />
+			<SideBar />
+			<Channels />
+			<ChatChannel />
+			<Friends />
 		</div>
 	)
 }
 export default function ChatPage() {
-    return (
+	return (
 		<ChatProvider>
 			<Chat />
 		</ChatProvider>
-    );
+	);
 }
