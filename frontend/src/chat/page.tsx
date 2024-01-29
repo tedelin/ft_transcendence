@@ -8,7 +8,7 @@ import '../styles/chat.css';
 function Chat() {
 	return (
 		<div className="chat">
-            {/* <SideBar /> */}
+            <SideBar />
             <Channels />
             <ChatChannel />
             <Friends />
