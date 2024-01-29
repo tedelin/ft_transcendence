@@ -14,7 +14,7 @@ export class RoomService {
     public server : Server;
 
     constructor(private readonly pongService: PongService) {}
-
+s
     public setServer(server: Server) {
         this.server = server;
     }
@@ -82,15 +82,16 @@ export class RoomService {
         this.addClientToRoom(client, roomId);
     
         const roomState = this.rooms.get(roomId);
+
+        this.server.to(roomId).emit('matchmakingStats', {
+            playerOne: { id: roomState.players[0].id.substring(0, 5) },
+            playerTwo: (roomState.players.length < this.roomSize ? null : { id: roomState.players[1].id.substring(0, 5) })
+        })
         if (roomState.players.length < this.roomSize || !roomState.settings.settingsSet) {
             client.emit('gameMatchmaking', { 
                 settingDone: false,
                 firstPlayer: roomState.players.length === 1,
              });
-            this.server.to(roomId).emit('matchmakingStats', {
-                playerOne: { id: roomState.players[0].id.substring(0, 5) },
-                playerTwo: (roomState.players.length < this.roomSize ? null : { id: roomState.players[1].id.substring(0, 5) })
-            })
         }
         else {
             this.startGame(
@@ -142,7 +143,7 @@ export class RoomService {
     @Interval(1000 / 200)
     loop(): void {
         for (const [roomId, roomState] of this.rooms.entries()) {
-            if (roomId && roomState.state === RoomStatus.INGAME && roomState.gameState.status !== GameStatus.FINISHED)
+            if (roomId && roomState.state === RoomStatus.INGAME)// && roomState.gameState.status !== GameStatus.FINISHED)
             {
                 this.server.to(roomId).emit('gameStateUpdate', { gameState: roomState.gameState });
                 this.pongService.updateGameState(roomId);
@@ -155,7 +156,10 @@ export class RoomService {
         firstPlayer.gamesPlayed++;  
         secondPlayer.gamesPlayed++;
         this.rooms.get(roomId).state = RoomStatus.INGAME;
-        this.pongService.startGame(roomId, settings, this.server);
+        this.server.to(roomId).emit('letsGO');
+        setTimeout(() => {
+            this.pongService.startGame(roomId, settings, this.server);
+        }, 5200);
     }
 
     public cleanRoom(roomId) {

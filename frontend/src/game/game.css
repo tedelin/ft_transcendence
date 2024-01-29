@@ -71,6 +71,7 @@
 }
 
 .settingsMenu {
+
     position: absolute;
     width: 700px;
     /* height: 200px; */
@@ -110,25 +111,29 @@
     border-radius: 5px;
 }
 
-.input input {
+
+.input {
     width: 80%;
-    height: 5px;
+    height: 6px;
+    margin:0 ;
+    padding: 0;
     appearance: none;
-    background: linear-gradient(to right, #838383, #7f0000);
-    border-radius: 3px;
+    background:  linear-gradient(90deg, #af656500, #40444b, #7289da);
+    border-radius: 5px;
 }
 
-.input input::-webkit-slider-thumb {
+.input::-webkit-slider-thumb {
     appearance: none;
-    width: 10px;
+    width: 5px;
     height: 20px;
     background: #ffffff;
     border-radius: 3px;
     cursor: ew-resize;
 }
 
-.input input::-moz-range-thumb {
-    width: 10px;
+.input::-moz-range-thumb {
+    appearance: none;
+    width: 5px;
     height: 20px;
     background: #ffffff;
     border-radius: 3px;
@@ -155,6 +160,8 @@
 }
 
 .matchmaking-container {
+    color: white;
+    position: relative;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -173,8 +180,8 @@
 }
 
 .matchmaking-text {
-    margin-top: 20px;
     color: #fff;
+    margin-top: 10px;
     font-weight: bold;
 }
 
@@ -248,54 +255,96 @@
     margin-bottom: 10px;
 }
 
-.mmContent {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #1d1d1d;
-    color: #fff;
-    margin-top: 50px;
-    /* width: 20%; */
-    width: 400px;
-    max-width: 600px;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    z-index: 3;
+.leftPlayer img,
+.rightPlayer img{
+    padding: 15px;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
 }
 
-.playersLine {
+.leftPlayer span, 
+.rightPlayer span{
+    text-align: center;
+    font-weight: bold;
+
+}
+
+.playerInfo {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-
-.player {
-    display: flex;
+    justify-content: center;
     align-items: center;
-    background-color: rgb(73, 72, 72);
-    /* Couleur de fond pour les joueurs */
-    height: 50px;
-    padding-left: 10px;
+    color : white;
 }
 
-.player img {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-    border-radius: 50%;
-    /* Pour rendre l'image ronde */
+.leftPlayer,
+.rightPlayer
+{
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgb(54, 54, 54);
+    border-radius: 10px;
+    /* box-shadow: 5px 10px 2px rgba(64, 91, 209, 0.589); */
 }
 
-.playerBlue {
-    background-color: rgb(23, 53, 151);
-    /* Couleur bleue pour le joueur présent */
+.rightPlayer
+{
+    right: 12%;
 }
 
-.playerRed {
-    background-color: rgb(9, 151, 33);
-    /* Couleur rouge pour le joueur présent */
+.leftPlayer
+{
+    left: 12%;
+}
+
+
+.letsgo {
+    font-weight: bold;
+    font-size: 75px;
+    animation: fadeIn 4.8s ease-out;
+}
+
+.countDown {
+    color: #fff;
+    font-size: 60px;
+    animation: countDownAnimation 4.5s linear forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    95% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes countDownAnimation {
+    16.65% {
+        opacity: 1;
+    }
+    33.33% {
+        opacity: 0;
+    }
+    49.99% {
+        opacity: 1;
+    }
+    66.66% {
+        opacity: 0;
+    }
+    83.32% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }

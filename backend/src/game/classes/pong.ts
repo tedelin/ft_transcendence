@@ -22,11 +22,11 @@ export interface Pos {
     y: number;
 }
 
-export interface  Paddles {
+export interface Paddles {
     height: number,
     width: number,
     leftPos: Pos,
-    rightPos : Pos,
+    rightPos: Pos,
     speed: number
 }
 
@@ -47,39 +47,41 @@ export class GameState {
         public paddles: Paddles,
         public ball: Ball,
         public score: Score = { player1: 0, player2: 0 },
-        public status: GameStatus = GameStatus.RUNNING, 
+        public status: GameStatus = GameStatus.RUNNING,
         public keys: Keys = {
-            left : {
+            left: {
                 'ArrowUp': KeyState.RELEASE,
-                'ArrowDown' : KeyState.RELEASE
+                'ArrowDown': KeyState.RELEASE
             },
-            right : {
+            right: {
                 'ArrowUp': KeyState.RELEASE,
-                'ArrowDown' : KeyState.RELEASE
+                'ArrowDown': KeyState.RELEASE
             }
         },
         private canvasHeight = 800,
         private canvasWidth = 1200,
-    ) {}
-    
+    ) { }
+
     private resetSpeed(paddleHeight, ballSpeed, paddleSpeed, point_win) {
         this.paddles.height = paddleHeight;
-        // let i = Math.floor(Math.random() * (2 * ballSpeed + 1)) - ballSpeed;
-        // while (i === 0) i = Math.floor(Math.random() * (2 * ballSpeed + 1)) - ballSpeed;
-        this.ball.velocity = { x: ballSpeed * point_win, y: 0 };
+        let i = Math.floor(Math.random() * (2 * ballSpeed + 1)) - ballSpeed;
+        while (i === 0) i = Math.floor(Math.random() * (2 * ballSpeed + 1)) - ballSpeed;
+        this.ball.velocity = { x: ballSpeed * point_win, y: i };
         this.paddles.speed = paddleSpeed;
     }
 
-    public point(pHeight, bSpeed, pSpeed) : number{
+    public point(pHeight, bSpeed, pSpeed): number {
         if (this.ball.pos.x + this.ball.radius + this.ball.velocity.x > this.canvasWidth) {
             this.ball.pos = { x: this.canvasWidth / 2, y: this.canvasHeight / 2 };
             this.score.player1++;
             this.resetSpeed(pHeight, bSpeed, pSpeed, 1);
+            return 1;
         }
         else if (this.ball.pos.x - this.ball.radius + this.ball.velocity.x < 0) {
             this.ball.pos = { x: this.canvasWidth / 2, y: this.canvasHeight / 2 };
             this.score.player2++;
             this.resetSpeed(pHeight, bSpeed, pSpeed, -1);
+            return 1;
         }
 
         return 0;

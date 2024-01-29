@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import socket from './socket';
 import React from 'react';
 import './game.css';
-import  { SettingsMenu } from './settingsMenu';
+import { SettingsMenu } from './settingsMenu';
 import { EndGameMenu } from './endGameMenu';
 import { MatchmakingView } from './MatchmakingView';
 
@@ -58,11 +58,13 @@ export function Game() {
     const [showEndGameModal, setShowEndGameModal] = useState(false);
     const [playerStats, setPlayerStats] = useState([]);
     const [isAbandon, setIsAbandon] = useState(false);
+    const [letsGO, setLetsGO] = useState(false);
 
     const [playerOne, setPlayerOne] = useState([]);
     const [playerTwo, setPlayerTwo] = useState([]);
 
     function handleQuit() {
+        setLetsGO(false);
         setGameStarted(false);
         setGameEnded(true);
         setShowButton(true);
@@ -80,7 +82,7 @@ export function Game() {
         setPlayerTwo([]);
     }
 
-    function handleStart() {
+    function handletsart() {
         socket.emit('clickPlay');
         setShowButton(false);
         setGameEnded(false);
@@ -98,7 +100,23 @@ export function Game() {
         setSettingsToDo(false);
     }
 
-    // GAME COMMUNICATION WHILE PLAYING HANDLED HERE
+    function Countdown() {
+        const [count, setCount] = useState(3);
+
+        useEffect(() => {
+            const countdownInterval = setInterval(() => {
+                setCount((prevCount) => prevCount - 1);
+            }, 1500);
+
+            if (count === 0)
+                clearInterval(countdownInterval);
+
+            return () => clearInterval(countdownInterval);
+        }, [count]);
+
+        return <div className='countDown'>{count}</div>;
+    }
+
     useEffect(() => {
 
         socket.on('gameMatchmaking', (data) => {
@@ -138,23 +156,28 @@ export function Game() {
             setPlayerTwo([]);
         })
 
+        socket.on('letsGO', () => {
+            setLetsGO(true);
+        })
+
         return () => {
             socket.off('gameLaunch');
             socket.off('gameMatchmaking');
             socket.off('backToMenu');
             socket.off('gameFinishedShowStats');
+            socket.off('letsGO');
         }
     }, [gameStarted]);
 
     return (
         <div className="game">
             {!gameStarted && showButton && (
-                <button className='StartButton' onClick={handleStart}>Start Game</button>
+                <button className='StartButton' onClick={handletsart}>Start Game</button>
             )}
             {!gameStarted && !showButton && settingsToDo && (
                 <>
                     <div className='CrossIcon' onClick={() => socket.emit('crossMatchmaking')}>&#10006;</div>
-                    <MatchmakingView 
+                    <MatchmakingView
                         playerOne={playerOne}
                         playerTwo={playerTwo}
                     />
@@ -174,22 +197,30 @@ export function Game() {
                 </>
             )}
             {!gameStarted && !showButton && !settingsToDo && (
-                <div>
+                <>
                     <div className='CrossIcon' onClick={() => socket.emit('crossMatchmaking')}>&#10006;</div>
-                    <MatchmakingView 
+                    <MatchmakingView
                         playerOne={playerOne}
                         playerTwo={playerTwo}
                     />
-                    <div className="matchmaking-container">
-                        <div className="matchmaking-animation"></div>
-                        <div className="matchmaking-text">
-                            {firstPlayer ? 'Waiting for another player...' : 'Waiting for the other player to set the game...'}
+                    {!letsGO && (
+                        <div className="matchmaking-container">
+                            <div className="matchmaking-animation"></div>
+                            <div className="matchmaking-text">
+                                {firstPlayer ? 'Waiting for another player...' : 'Waiting for the other player to set the game...'}
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    )}
+                    {letsGO && (
+                        <div className="matchmaking-container">
+                            <span className="letsgo">Let's GO !</span>
+                            <Countdown/>
+                        </div>
+                    )}
+                </>
             )}
             {gameStarted && gameInstance.current && (
-                 <StartGame gameInstance={gameInstance.current} />
+                <StartGame gameInstance={gameInstance.current} />
             )}
             {gameStarted && !showEndGameModal && gameInstance.current && (
                 <>
