@@ -1,4 +1,5 @@
-import { useLocation, Outlet, Routes, Route, Navigate, createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { useLocation, Outlet, Routes, Route, Navigate, createBrowserRouter, RouterProvider} from 'react-router-dom'
+import { useEffect } from 'react'
 import Login from './pages/Login'
 import Chat from './chat/page'
 import { NavBar } from './components/NavBar'
@@ -37,6 +38,17 @@ function RequireAuth({children}: {children: JSX.Element}) {
 }
 
 function Root() {
+
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const token = urlParams.get('token');
+	  
+		if (token) {
+		  localStorage.setItem('jwtToken', token);
+		  document.location.search = '';
+		}
+	  }, []);
+
 	return (
 		<AuthProvider>
 			<Routes>

@@ -74,6 +74,11 @@ export default function Login() {
                 >
                     Register
                 </button>
+                <a href={import.meta.env.VITE_URL_OAUTH}>
+                    <button className="registerButton">
+                        Connect with 42
+                    </button>
+                </a>
             </div>
         </div>
     );
