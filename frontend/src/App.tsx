@@ -7,15 +7,18 @@ import { Game } from './game/page'
 import { AuthProvider, useAuth } from './components/AuthProvider'
 import './App.css'
 import './styles/chat.css'
+import { ErrorProvider, useError } from './components/ErrorProvider'
 
 const router = createBrowserRouter([
     { path: '*', Component: Root },
 ]);
 
 function Layout() {
+	const er = useError();
 	return (
 		<>
 			<NavBar />
+			{er.error && <div className="notification">{er.error}</div>}
 			<div className='container'>
 				<Outlet />
 			</div>
@@ -50,28 +53,30 @@ function Root() {
 	  }, []);
 
 	return (
-		<AuthProvider>
-			<Routes>
-				<Route element={<Layout />}>
-					<Route path="/" element={<Login />} />
-					<Route path="/login" element={<Login />} />
-					<Route 
-						path="/game" 
-						element={
-						<RequireAuth>
-							<Game />
-						</RequireAuth>}
-					/>
-					<Route 
-						path="/chat" 
-						element={
-						<RequireAuth>
-							<Chat />
-						</RequireAuth>}
-					/>
-				</Route>
-			</Routes>
-		</AuthProvider>
+		<ErrorProvider>
+			<AuthProvider>
+				<Routes>
+					<Route element={<Layout />}>
+						<Route path="/" element={<Login />} />
+						<Route path="/login" element={<Login />} />
+						<Route 
+							path="/game" 
+							element={
+							<RequireAuth>
+								<Game />
+							</RequireAuth>}
+						/>
+						<Route 
+							path="/chat" 
+							element={
+							<RequireAuth>
+								<Chat />
+							</RequireAuth>}
+						/>
+					</Route>
+				</Routes>
+			</AuthProvider>
+		</ErrorProvider>
 	)
 }
 

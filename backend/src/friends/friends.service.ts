@@ -1,4 +1,3 @@
-// friend.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 
@@ -64,7 +63,7 @@ export class FriendService {
         });
     }
 
-    async declineFriendRequest(friendshipId: number) {
+    async deleteFriend(friendshipId: number) {
         const friendship = await this.databaseService.friendship.findUnique({
             where: { id: friendshipId },
         });

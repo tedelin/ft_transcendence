@@ -2,6 +2,7 @@ import React, { useState} from 'react';
 import { fetchUrl } from '../fetch';
 import { useChatDispatch } from './ChatContext';
 import { useAuth } from '../components/AuthProvider';
+import { useError } from '../components/ErrorProvider';
 import '../styles/chat.css';
 
 export function CreateChannel() {
@@ -9,13 +10,12 @@ export function CreateChannel() {
 	const [channelName, setChannelName] = useState('');
 	const [channelPassword, setChannelPassword] = useState('');
 	const [channelVisibility, setChannelVisibility] = useState('public');
-	const [errorMessage, setErrorMessage] = useState('');
+	const err = useError();
 	const dispatch = useChatDispatch();
 
 	async function create() {
 		if (channelName.length < 2 || channelName.length > 13) {
-			setErrorMessage('Channel name must be between 3 and 12 characters');
-			setTimeout(() => setErrorMessage(''), 3000);
+			err.setError('Channel name must be between 2 and 13 characters');
 			return ;
 		}
 		try {
@@ -36,8 +36,7 @@ export function CreateChannel() {
 		  setChannelName('');
 		  setChannelPassword('');
 		} catch (error) {
-			setErrorMessage('Error creating channel check if channel already exists');
-		  	setTimeout(() => setErrorMessage(''), 3000);
+			err.setError(error.message);
 		}
 	}
 
@@ -48,8 +47,7 @@ export function CreateChannel() {
 			dispatch({ type: 'chat' });
 			dispatch({ type: 'setChannel', channelTo: channel });
 		} catch (error) {
-			setErrorMessage('Failed to join channel check if channel exists or password is correct');
-		  	setTimeout(() => setErrorMessage(''), 3000);
+			err.setError(error.message);
 		}
 	}
 
@@ -78,11 +76,6 @@ export function CreateChannel() {
 		  </select>
 		  <button className="createButton" onClick={create}>Create</button>
 		  <button disabled={channelName.length === 0} className='joinButton' onClick={joinChannel}>Join</button>
-		  {errorMessage && (
-			<div className="notification">
-				{errorMessage}
-			</div>
-		  )}
 		</div>
 	  );
 }

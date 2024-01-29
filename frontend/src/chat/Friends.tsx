@@ -2,17 +2,19 @@ import { useEffect, useState } from 'react';
 import { useChat } from './ChatContext';
 import { fetchUrl } from '../fetch';
 import { useAuth } from '../components/AuthProvider';
+import { useError } from '../components/ErrorProvider';
 import '../styles/chat.css';
 
 
 function AddFriend({ selected }) {
 	const [username, setUsername] = useState('');
 	const [user, setUser] = useState(null);
+	const er = useError();
 	const token = localStorage.getItem('jwtToken');
 
 	async function getUser() {
 		try {
-			const response = await fetchUrl(`/users/${username}`, {
+			const response = await fetchUrl(`/users/username/${username}`, {
 				method: "GET",
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -20,14 +22,15 @@ function AddFriend({ selected }) {
 			});
 			setUser(response);
 		} catch (error) {
-			alert('fail');
+			er.setError(error.message);
+			// alert('here');
 		}
 	}
 
 	async function sendRequest() {
 		await getUser();
 		try {
-			await fetchUrl(`/users/${user?.id}/friends`, {
+			await fetchUrl(`/friends/${user?.id}`, {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -35,8 +38,7 @@ function AddFriend({ selected }) {
 			});
 			alert('Friend request sent!');
 		} catch (error) {
-			console.log(error);
-			alert('fail send');
+			er.setError(error.message);
 		}
 	}
 
@@ -99,58 +101,69 @@ function SearchFriends({ selected }) {
 function FriendsList({ selected }) {
 	const [friends, setFriends] = useState([]);
 	const token = localStorage.getItem('jwtToken');
+	const er = useError();
 	const auth = useAuth();
 
 	async function acceptFriendRequest(requestId: string) {
 		try {
-			await fetchUrl(`/users/${requestId}/friends/accept`, {
+			await fetchUrl(`/friends/accept/${requestId}`, {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			 
+			setFriends((prevFriends) =>
+				prevFriends.filter((friend) => friend.id !== requestId)
+			);
 		} catch (error) {
-			alert(error);
+			er.setError(error.message);
+			// alert(error);
 		}
 	}
 
-	async function declineFriendRequest(requestId: string) {
+	async function deleteFriend(requestId: string) {
 		try {
-			await fetchUrl(`/users/${requestId}/friends/decline`, {
+			await fetchUrl(`/friends/delete/${requestId}`, {
 				method: "DELETE",
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			});
+			setFriends((prevFriends) =>
+				prevFriends.filter((friend) => friend.id !== requestId)
+			);
 		} catch (error) {
-			alert(error);
+			er.setError(error.message);
+			// alert(error);
 		}
 	}
 
 	async function getFriends() {
 		const token = localStorage.getItem('jwtToken');
 		try {
-			const response = await fetchUrl("/users/friends", {
+			const response = await fetchUrl("/friends/all", {
 				method: "GET",
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			// console.log(response);
 			setFriends(response);
 		} catch (error) {
-			alert(error);
+			er.setError(error.message);
+			// alert(error);
 		}
 	}
 
 	useEffect(() => {
 		getFriends();
-	}, []);
-	
+	}, [selected]);
+
 	const filteredFriends = friends.filter((friend) => {
 		if (selected === "Pending") {
-			return friend.status === "PENDING" && friend.initiatorId !== auth?.user?.id;
+			return (
+				friend.status === "PENDING" &&
+				friend.initiatorId !== auth?.user?.id
+			);
 		} else if (selected === "All") {
 			return friend.status === "ACCEPTED";
 		} else if (selected === "Blocked") {
@@ -163,26 +176,41 @@ function FriendsList({ selected }) {
 	return (
 		selected !== "AddFriend" && (
 			<div className='friendsList'>
-				{filteredFriends.length > 0 && filteredFriends.map((friend: any) => (
-					<div className='friendListItem' key={friend.id}>
-						<span className='sideBarChatName'>
-							{friend.id}
-						</span>
-						{/* <div className='friendStatus'>
-							{friend.status}
-						</div> */}
-						{friend.status === "PENDING" && (
-							<div className='friendActions'>
-								<button className='acceptFriend' onClick={() => acceptFriendRequest(friend.id)}>
-									Accept
-								</button>
-								<button className='declineFriend' onClick={() => declineFriendRequest(friend.id)}>
-									Decline
-								</button>
-							</div>
-						)}
-					</div>
-				))}
+				{filteredFriends.length > 0 &&
+					filteredFriends.map((friend: any) => (
+						<div className='friendListItem' key={friend.id}>
+							<span className='sideBarChatName'>{friend.id}</span>
+							{/* <div className='friendStatus'>
+								{friend.status}
+							</div> */}
+							{friend.status === "PENDING" && (
+								<div className='friendActions'>
+									<button
+										className='acceptFriend'
+										onClick={() => acceptFriendRequest(friend.id)}
+									>
+										Accept
+									</button>
+									<button
+										className='declineFriend'
+										onClick={() => deleteFriend(friend.id)}
+									>
+										Decline
+									</button>
+								</div>
+							)}
+							{friend.status === "ACCEPTED" && (
+								<div className='friendActions'>
+									<button
+										className='declineFriend'
+										onClick={() => deleteFriend(friend.id)}
+									>
+										Remove
+									</button>
+								</div>
+							)}
+						</div>
+					))}
 			</div>
 		)
 	);

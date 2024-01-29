@@ -21,9 +21,9 @@ export class AuthController {
   async callback(@Query('code') code: string, @Res() res: Response) {
     const tokenData = await this.authService.callback(code);
     if (tokenData) {
-        res.redirect(`http://localhost:3000/?token=${tokenData.access_token}`);
+        res.redirect(`${process.env.HOST}/?token=${tokenData.access_token}`);
     } else {
-        res.redirect(`http://localhost:3000/`);
+        res.redirect(`${process.env.HOST}/`);
     }
   }
 }

@@ -15,6 +15,7 @@ function Chat() {
 		</div>
 	)
 }
+
 export default function ChatPage() {
 	return (
 		<ChatProvider>
