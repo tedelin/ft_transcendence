@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { ChatProvider, useChatDispatch } from './ChatContext';
+import { ChatProvider } from './ChatContext';
 import { ChatChannel } from './ChatChannel';
 import { Channels } from './Channels';
 import { Friends } from './Friends';
 import { SideBar } from './SideBar';
 import '../styles/chat.css';
-import { NavBar } from '../components/NavBar';
 
 function Chat() {
 	return (

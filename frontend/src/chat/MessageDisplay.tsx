@@ -1,20 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { fetchUrl } from '../fetch';
 import { useChat } from './ChatContext';
-import { useUser } from "../components/AuthProvider";
-import socket from '../socket';
+import { useAuth } from "../components/AuthProvider";
 import '../styles/chat.css';
 
-// function to display chat Messages
 export function MessageDisplay({}) {
 	const [receivedMessages, setReceivedMessages] = useState([]);
 	const messageContainer = useRef(null);
     const chat = useChat();
-	const user = useUser();
+	const auth = useAuth();
 
 	async function fetchChannelsMessages() {
 		try {
-			const response = await fetchUrl(`/chat/channels/${chat.channelTo.name}/messages`);
+			const response = await fetchUrl(`/chat/channels/${chat.channelTo?.name}/messages`);
 			setReceivedMessages(response);
 		} catch (error) {
 			console.error('Error fetching channels:', error);
@@ -29,8 +27,8 @@ export function MessageDisplay({}) {
 	}
 
 	useEffect(() => {
-		socket.on('channel-message', (message) => {
-			if (message.channelId !== chat.channelTo.name) {
+		auth?.socket?.on('channel-message', (message) => {
+			if (message.channelId !== chat.channelTo?.name) {
 				return ;
 			}
 			setReceivedMessages(prevMessages => [...prevMessages, message]);
@@ -41,7 +39,7 @@ export function MessageDisplay({}) {
 
 		return () => {
 			setReceivedMessages([]);
-			socket.off('channel-message');
+			auth?.socket?.off('channel-message');
 		};
 	}, [chat.channelTo]);
 
@@ -52,7 +50,7 @@ export function MessageDisplay({}) {
 	return (
 		<div ref={messageContainer} className='messageContainer'>
             {receivedMessages.map((msg) => (
-               <div className={msg.senderId === user.id ? 'bubble-right' : 'bubble-left'} key={msg.id}>
+               <div className={msg.senderId === auth?.user?.id ? 'bubble-right' : 'bubble-left'} key={msg.id}>
                    <div className="sender">
               			{/* <img src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img> */}
 						<div className="senderName">

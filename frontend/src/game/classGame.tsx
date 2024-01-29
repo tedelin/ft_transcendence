@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import socket from '../socket';
+import socket from './socket';
 
 const RUNNING = 0;
 const ENDED = 1;

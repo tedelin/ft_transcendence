@@ -7,6 +7,11 @@ body {
 }
 
 
+.error {
+	color: rgba(255, 0, 0, 0.753);
+	text-align: center;
+}
+
 .fix {
     display: flex;
     align-items: center;
@@ -42,7 +47,7 @@ body {
 	color: #fff;
 }
 
-.button {
+.button, .registerButton {
     cursor: pointer;
     box-sizing: border-box;
     color: white;
@@ -51,6 +56,10 @@ body {
     margin: 5px 15px 5px 15px;
     border-radius: 6px;
     border: none;
+}
+
+.registerButton {
+	background-color: #267f49;
 }
 
 @media only screen and (max-width: 768px) {

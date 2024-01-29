@@ -1,23 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useChatDispatch, useChat } from './ChatContext';
 import { fetchUrl } from '../fetch';
 import { Channel } from './types/channel';
-import { useUser } from '../components/AuthProvider';
-import socket from '../socket';
+import { useAuth } from '../components/AuthProvider';
 
 
 export function UserChannel() {
     const dispatch = useChatDispatch();
 	const [channels, setChannels] = useState([]);
     const chat = useChat();
-	const user = useUser();
+	const auth = useAuth();
 
 	async function fetchUserChannels() {
 		try {
-			if (user) {
-				const response = await fetchUrl(`/users/${user.id}/channels`);
-				setChannels(response.channels);
-			}
+			const response = await fetchUrl(`/users/${auth?.user?.id}/channels`);
+			setChannels(response.channels);
 		} catch (error) {
 			console.log(error);
 		}
@@ -36,7 +33,7 @@ export function UserChannel() {
 
 	useEffect(() => {
 		fetchUserChannels();
-	}, [user, chat.channelTo]);
+	}, [chat.channelTo?.name]);
 
 	return (
 		<>

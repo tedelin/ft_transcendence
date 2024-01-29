@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useChatDispatch, useChat } from './ChatContext';
 import { fetchUrl } from '../fetch';
 import { Channel } from './types/channel';
-import { useUser } from '../components/AuthProvider';
-import socket from '../socket';
+import { useAuth } from '../components/AuthProvider';
 
 export function SearchChannel({}) {
 	const [input, setInput] = useState('');
@@ -37,34 +36,32 @@ export function ChannelList() {
     const dispatch = useChatDispatch();
 	const channels = useChat().searchChannels;
     const chat = useChat();
-	const user = useUser();
+	const auth = useAuth();
 
     function joinChannel(channel: Channel) {
-		if (user) {
-			socket.emit('join-channel', {roomId: channel.name, password: '', userId: user.id});
-			leaveChannel();
-			dispatch({type: 'chat'});
-			dispatch({ type: 'setChannel', channelTo: channel });
-		}
-    }
+		auth?.socket?.emit('join-channel', {roomId: channel.name, password: '', userId: auth?.user?.id});
+		leaveChannel();
+		dispatch({type: 'chat'});
+		dispatch({ type: 'setChannel', channelTo: channel });
+}
 
     function leaveChannel() {
         if (chat.channelTo) {
-            socket.emit('leave-channel', chat.channelTo.name);
+            auth?.socket.emit('leave-channel', chat.channelTo.name);
             dispatch({ type: 'setChannel', channelTo: null as any });
         }
     }
 
 	useEffect(() => {
-		socket.on('new-channel', (channel) => {
+		auth?.socket?.on('new-channel', (channel) => {
 			const updatedChannels = [...channels, channel];
 			dispatch({ type: 'searchChannels', channels: updatedChannels });	
 		});
 
 		return (() => {
-			socket.off('new-channel');
+			// auth.socket?.off('new-channel');
 		});
-	}, [channels, user]);
+	}, [channels, auth?.user]);
 
 	return (
 		<>

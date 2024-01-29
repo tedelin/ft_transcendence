@@ -1,94 +1,120 @@
-import React, { useState, createContext, useEffect, useContext } from 'react';
-import jwt from 'jsonwebtoken';
+import React, { useState, createContext, useContext, useEffect } from 'react';
+import { fetchUrl } from '../fetch';
+import { io } from 'socket.io-client';
 
 
 type UserType = {
   id: string;
   username: string;
+  avatar: string;
+  useTwoFa: boolean;
 };
-
 
 interface AuthContextType {
-  user: UserType;
-  setUser: React.Dispatch<React.SetStateAction<UserType>>;
-}
-
-interface AuthProviderProps {
-	children: React.ReactNode;
-}
-
-
-export const AuthContext = createContext<UserType | null>(null);
+	user: UserType | null;
+	loading: boolean;
+	socket: any;
+	signin: (username: string, password: string, callback: VoidFunction) => Promise<void>;
+	signup: (username: string, password: string, callback: VoidFunction) => Promise<void>;
+	signout: (callback: VoidFunction) => void;
+  }
 
 
+export const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState([]);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+	const [user, setUser] = useState<UserType | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [socket, setSocket] = useState<any>(null);
 
-  useEffect(() => {
-	const storedToken = localStorage.getItem('jwtToken');
-	const getUser = async (storedToken : any) => {
+	async function handleAuth(token: string): Promise<void> {
 		try {
-		  const response = await fetch('http://127.0.0.1:3001/users/me', { 
-			method: 'GET',
-			headers: {
-			  'Content-Type': 'application/x-www-form-urlencoded',
-			  'Authorization': `Bearer ${storedToken}`,
-			},
-		  });
-		  const data = await response.json();
-		  setUser(data);
-		}
-		catch (error) {
-		  console.error("Erreur lors de l'envoi du formulaire: ", error);
+			localStorage.setItem('jwtToken', token);
+			const response = await fetchUrl('/users/me', {
+				method: 'GET',
+				headers: {
+				Authorization: `Bearer ${token}`,
+				},
+			});
+			setUser(response);
+			const newSocket = io(import.meta.env.VITE_BACKEND_URL, {
+				query: { token },
+			});
+			setSocket(newSocket);
+		} catch (error) {
+			setLoading(false);
+			throw error;
 		}
 	}
-	if (storedToken)
-    	getUser(storedToken);
-    // if (!decodedToken) throw new Error('Invalid token');
-    // const decodedUser: UserType = {
-    //   id: decodedToken.sub,
-    //   username: decodedToken.userName,
-    // };
-    // setUser(decodedUser);
 
+	async function signin(username: string, password: string): Promise<void> {
+		try {
+			const response = await fetchUrl('/auth/signin', {
+				method: 'POST',
+				headers: {
+				'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ username, password }),
+			});
+			const token = response.access_token;
+			await handleAuth(token);
+		} catch (error) {
+			throw error;
+		}
+	}
 
-        // ----------------------MOI----------------------
+	async function signup(username: string, password: string): Promise<void> {
+		try {
+			const response = await fetchUrl('/auth/signup', {
+				method: 'POST',
+				headers: {
+				'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ username, password }),
+			});
+			const token = response.access_token;
+			await handleAuth(token);
+		} catch (error) {
+			throw error;
+		}
+	}
 
+	function signout(): void {
+		localStorage.removeItem('jwtToken');
+		setUser(null);
+	}
 
-        // const decodedToken = jwt.decode(storedToken);
-        // console.log('decodedToken type :', typeof(decodedToken))
-        // console.log('decodedToken :', decodedToken)
-        
-        // if (!decodedToken) throw new Error('Invalid token');
-        // const decodedUser: UserType = {
-        //   id: decodedToken.sub,
-        //   username: decodedToken.userName,
-        // };
-        // setUser(decodedUser);
+	useEffect(() => {
+		async function initAuth() {
+			const token = localStorage.getItem('jwtToken');
+			if (token) {
+				try {
+					await handleAuth(token);
+					setLoading(false);
+				} catch (error) {
+					setLoading(false);
+				}
+			} else {
+				setLoading(false);
+			}
+		};
 
-        // --------------------------------------------
+		initAuth();
 
+		return () => {
+			socket?.disconnect();
+		};
+	}, []);
 
-        // const decodedToken = jwt.decode(storedToken);
-        // console.log('decodedToken type :', typeof(decodedToken))
-        // console.log('decodedToken :', decodedToken)
-        
-        // if (!decodedToken) throw new Error('Invalid token');
-        // const decodedUser: UserType = {
-        //   id: decodedToken.sub,
-        //   username: decodedToken.userName,
-        // };
-        // setUser(decodedUser);
-    }, []);
+	let value = { user, loading, socket, signin, signup, signout };
 
-  return (
-    <AuthContext.Provider value={user}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+	return (
+		<AuthContext.Provider value={value}>
+			{children}
+		</AuthContext.Provider>
+	);
+}
 
-export function useUser() {
+export function useAuth() {
 	return useContext(AuthContext);
-};
+}

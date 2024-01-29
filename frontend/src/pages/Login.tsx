@@ -1,54 +1,85 @@
-import React, { use, useState, useEffect } from 'react';
-import { fetchUrl } from '../fetch';
+import { useState } from 'react';
+import {useAuth } from '../components/AuthProvider'
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/login.css';
 
+
 export default function Login() {
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-	async function signup() {
+    const navigate = useNavigate();
+    const auth = useAuth();
+    const location = useLocation();
+
+    const from = location.state?.from?.pathname || '/';
+
+	async function handleSignIn() {
+		if (!username || !password) {
+			setError('Please enter both username and password.');
+			return;
+		}
 		try {
-			const response = await fetchUrl('/auth/signup', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
-				body : `username=${username}&password=${password}`
-			});
-			localStorage.setItem('jwtToken', response.access_token);
-			// setPassword('');
-			// setUsername('');
-		} catch (error) {
-			alert('Error creating user');
+			await auth?.signin(username, password);
+			navigate(from, { replace: true });
+		} catch(error) {
+			setError('Invalid credentials.');
 		}
 	}
-
-	async function signin() {
+	
+	async function handleSignUp() {
+		if (!username || !password) {
+			setError('Please enter both username and password.');
+			return;
+		}
 		try {
-			const response = await fetchUrl('/auth/signin', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
-				body : `username=${username}&password=${password}`
-			});
-			localStorage.setItem('jwtToken', response.access_token);
-			// setPassword('');
-			// setUsername('');
-		} catch (error) {
-			console.log(error);
-			alert('Error signing in');
+			await auth?.signup(username, password);
+			navigate(from, { replace: true });
+		} catch(error) {
+			setError('Credentials already taken.');
 		}
 	}
-
-	return (
+    return (
         <div className="fix">
             <div className="loginContainer">
-                <input className="field" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
-                <input className="field" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
-                <button className="button" onClick={signin}>Login</button>
-                <button className="button" onClick={signup}>Register</button>
+                <input
+                    className="field"
+                    type="text"
+                    placeholder="Username"
+                    onChange={(e) => {
+                        setUsername(e.target.value);
+                        setError('');
+                    }}
+                />
+                <input
+                    className="field"
+                    type="password"
+                    placeholder="Password"
+                    onChange={(e) => {
+                        setPassword(e.target.value);
+                        setError('');
+                    }}
+                />
+                {error && <span className="error">{error}</span>}
+                <button
+                    className="button"
+                    onClick={handleSignIn}
+                >
+                    Login
+                </button>
+                <button
+                    className="registerButton"
+                    onClick={handleSignUp}
+                >
+                    Register
+                </button>
+                <a href={import.meta.env.VITE_URL_OAUTH}>
+                    <button className="registerButton">
+                        Connect with 42
+                    </button>
+                </a>
             </div>
         </div>
-	)
+    );
 }
