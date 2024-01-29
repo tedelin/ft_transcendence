@@ -213,6 +213,7 @@ input, select {
 .sideMenuTitleSelected,
 .sideBarSelected, 
 .sideBarChatItem:hover ,
+.friendListItem:hover ,
 .topBarAction:hover,
 .topBarActionSelected
 {
@@ -239,14 +240,14 @@ input, select {
 }
 
 
-.sideBarChatItem, .sideBarSelected {
+.sideBarChatItem, .sideBarSelected, .friendListItem {
 	display: flex;
 	align-items: center;
 	margin: 10px 0px 10px 0px;
 	border-radius: 8px;
 }
 
-.channelList {
+.channelList, .friendsList {
 	margin: 0px 25px 15px 25px;
     overflow-y: auto;
 }
@@ -310,6 +311,36 @@ input, select {
 	height: 72px;
 	align-items: center;
 	border-bottom: 3px solid #40444b;
+}
+
+.friendListItem span {
+	margin-left: 10px;
+}
+
+.friendActions {
+	display: flex;
+	align-items: center;
+	margin-left: auto;
+	/* margin: 15px; */
+}
+
+.acceptFriend, .declineFriend {
+	text-align: center;
+	box-sizing: border-box;
+    margin-left: 10px;
+	margin-right: 0px;
+    background-color: #267f49;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+	padding: 8px;
+	margin: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.declineFriend {
+	background-color: #e41414;
 }
 
 ::-webkit-scrollbar {

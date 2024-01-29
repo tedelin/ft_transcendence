@@ -23,5 +23,13 @@ export class UserService {
 			},
 		});
 	}
+
+	async getUserByUsername(username: string) {
+		return await this.databaseService.user.findUnique({
+			where: {
+				username,
+			},
+		});
+	}
 	
 }

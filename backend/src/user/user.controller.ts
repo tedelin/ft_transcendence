@@ -18,11 +18,17 @@ export class UserController {
         return req.user;
     }
 
-    @Get('friends')
-    @UseGuards(JwtGuard)
-    getFriends(@Req() req: Request) {
-        return this.friendService.getFriendships((req.user as { id: number }).id);
-    }
+	@Get('friends')
+	@UseGuards(JwtGuard)
+	getFriends(@Req() req: Request) {
+		return this.friendService.getFriendships((req.user as { id: number }).id);
+	}
+	
+	@Get(':username')
+	getUserByName(@Param('username') username: string) {
+		return this.userService.getUserByUsername(username);
+	}
+
 
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id: number) {
