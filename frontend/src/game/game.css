@@ -160,6 +160,7 @@
 }
 
 .matchmaking-container {
+    color: white;
     position: relative;
     text-align: center;
     display: flex;
@@ -273,6 +274,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    color : white;
 }
 
 .leftPlayer,
@@ -281,21 +283,67 @@
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 33%;
+    top: 50%;
+    transform: translateY(-50%);
     background-color: rgb(54, 54, 54);
     border-radius: 10px;
-    /* box-shadow: 5px 10px 10px rgba(64, 91, 209, 0.589); */
+    /* box-shadow: 5px 10px 2px rgba(64, 91, 209, 0.589); */
 }
 
 .rightPlayer
 {
     right: 12%;
-    /* background-color: rgb(53, 133, 51); */
 }
 
 .leftPlayer
 {
     left: 12%;
-    /* background-color: rgb(47, 34, 102); */
 }
 
+
+.letsgo {
+    font-weight: bold;
+    font-size: 75px;
+    animation: fadeIn 4.8s ease-out;
+}
+
+.countDown {
+    color: #fff;
+    font-size: 60px;
+    animation: countDownAnimation 4.5s linear forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    95% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes countDownAnimation {
+    16.65% {
+        opacity: 1;
+    }
+    33.33% {
+        opacity: 0;
+    }
+    49.99% {
+        opacity: 1;
+    }
+    66.66% {
+        opacity: 0;
+    }
+    83.32% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

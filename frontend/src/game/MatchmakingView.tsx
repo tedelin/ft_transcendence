@@ -8,7 +8,7 @@ export function MatchmakingView({ playerOne, playerTwo }) {
         const playerPhotoUrl = 'https://static-cdn.jtvnw.net/jtv_user_pictures/1423d0d6-ce51-4cd7-92e6-005832cc1408-profile_image-300x300.png'
 
         const photoUrl = player ? playerPhotoUrl : defaultPhotoUrl;
-        const playerName = player ? player.id : '';
+        const playerName = player ? player.id : 'Waiting for player...';
         const playerClass = player ? (isPlayerOne ? 'playerBlue' : 'playerRed') : 'player';
 
         return (
