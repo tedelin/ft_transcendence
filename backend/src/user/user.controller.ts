@@ -1,7 +1,10 @@
-import { Controller, Get, Param, ParseIntPipe, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Req, UseGuards, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
 import { Request } from 'express';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { UserService } from './user.service';
+import { FileInterceptor } from '@nestjs/platform-express'
+import { diskStorage } from 'multer';
+import { extname } from 'path'
 
 @Controller('users')
 export class UserController {
@@ -29,4 +32,33 @@ export class UserController {
     findUserChannels(@Param('id', ParseIntPipe) id: number) {
         return this.userService.getUserChannels(id)
     }
+
+	@Post('upload-avatar')
+	@UseInterceptors(FileInterceptor('avatar', {
+		storage: diskStorage({
+		  destination: './uploads/avatars',
+		  filename: (req, file, cb) => {
+			const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${extname(file.originalname)}`;
+			cb(null, uniqueName);
+		  }
+		}),
+		limits: { fileSize: 2 * 1024 * 1024 },
+		fileFilter: (req, file, cb) => {
+		  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+			return cb(new Error('Seuls les fichiers images sont autorisés !'), false);
+		  }
+		  cb(null, true);
+		},
+	  })) // gerer l'erreur grace a un filtre, determiner comment ecrire le filtre correctement avec la syntaxe de nestJS 
+
+	@UseGuards(JwtGuard)
+	async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Req() req) {
+	  const userId = req.user.id;
+	  const avatarUrl = `/uploads/avatars/${file.filename}`;
+  
+	  await this.userService.saveAvatarPath(avatarUrl, userId);
+  
+	  return { message: 'Avatar mis à jour avec succès', avatarUrl };
+	}
+
 }
