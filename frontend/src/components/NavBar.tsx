@@ -20,7 +20,7 @@ export function NavBar() {
 				</div>
 				{auth?.user?.username && <div className="navUser">
 					<img src="https://www.w3schools.com/howto/img_avatar.png" alt="User Avatar" />
-					<span>{auth ? auth.user.username : "undefined"}</span>
+					<NavLink to="/Settings">{auth ? auth.user.username : "undefined"}</NavLink>
 					<button onClick={logout}>Logout</button>
 				</div>}
 			</div>

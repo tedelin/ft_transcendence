@@ -50,7 +50,6 @@ export class UserController {
 		  cb(null, true);
 		},
 	  })) // gerer l'erreur grace a un filtre, determiner comment ecrire le filtre correctement avec la syntaxe de nestJS 
-
 	@UseGuards(JwtGuard)
 	async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Req() req) {
 	  const userId = req.user.id;

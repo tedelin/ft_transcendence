@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from './components/AuthProvider'
 import './App.css'
 import './styles/chat.css'
 import { ErrorProvider, useError } from './components/ErrorProvider'
+import Settings from './pages/Settings'
 
 const router = createBrowserRouter([
     { path: '*', Component: Root },
@@ -73,7 +74,14 @@ function Root() {
 								<Chat />
 							</RequireAuth>}
 						/>
-					</Route>
+						<Route 
+						path="/settings" 
+						element={
+						<RequireAuth>
+							<Settings />
+						</RequireAuth>}
+						/>
+						</Route>
 				</Routes>
 			</AuthProvider>
 		</ErrorProvider>
