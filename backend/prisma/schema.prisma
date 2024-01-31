@@ -17,12 +17,12 @@ model User {
   useTwoFA             Boolean          @default(false)
   ChannelMessage       ChannelMessage[]
   channels             ChannelUser[]
-  matchHistory         MatchHistory[]
   friendshipsInitiated Friendship[]     @relation("Initiator")
   friendshipsReceived  Friendship[]     @relation("Receiver")
   // sentMessages     PrivateMessage[] @relation("sentMessages")
   // receivedMessages PrivateMessage[] @relation("receivedMessages")
-
+  matchs         MatchUser[] // several games related to a user
+  stats          Stats?      // just one state related to each user
   @@map("users")
 }
 
@@ -84,21 +84,43 @@ model PrivateMessage {
   receiverId String
 }
 
-model MatchHistory {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  nbWin     Int
-  nbLoose   Int
-  nbGames   Int
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
+model Stats {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int      @unique
+  nbGames     Int
+  nbWin       Int
+  nbLoose     Int
+  @@map("stats")
+}
 
-  @@map("match_history")
+model Match {
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  players         MatchUser[]
+  
+  @@map("match")
+}
+
+model MatchUser {
+  player        User     @relation(fields:[playerId], references: [id])
+  playerId      Int
+  match         Match     @relation(fields:[matchId], references: [id])
+  matchId       Int
+  score         Int
+  role          playerRole
+
+  @@id([playerId, matchId])
 }
 
 enum UserStatus {
   ONLINE
   OFFLINE
   IN_GAME
+}
+
+enum playerRole {
+  PLAYER_ONE
+  PLAYER_TWO
 }

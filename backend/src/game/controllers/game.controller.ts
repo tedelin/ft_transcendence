@@ -4,6 +4,7 @@ import { CreateStatsDto } from '../dto/create-stats.dto';
 import { UpdateStatsDto } from '../dto/update-stats.dto';
 import { ValidationPipe } from '@nestjs/common';
 import { CreateHistoryDto } from '../dto/create-history.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('game')
 export class GameController {
@@ -15,12 +16,12 @@ export class GameController {
     }
 
     @Post('stats')      // POST /game/stats
-    createStats(@Body(ValidationPipe) createStatsDto: CreateStatsDto) {
+    createStats(@Body(ValidationPipe) createStatsDto: Prisma.StatsCreateInput) {
         return this.gameService.createStats(createStatsDto);
     }
 
     @Patch('stats/:id_user') // PATCH /game/stats/id
-    updateStats(@Param('id_user') id_user : string, @Body(ValidationPipe) updateStatsDto : UpdateStatsDto) {
+    updateStats(@Param('id_user') id_user : string, @Body(ValidationPipe) updateStatsDto : Prisma.StatsUpdateInput) {
         return this.gameService.updateStats(id_user, updateStatsDto);
     }
 
@@ -30,8 +31,8 @@ export class GameController {
     }
 
     @Post('history')       // POST /game/history
-    createGame(@Body(ValidationPipe) createHistoryDto: CreateHistoryDto) {
-        return this.gameService.createGame(createHistoryDto);
+    createGame(@Body(ValidationPipe) createMatchDto: Prisma.MatchCreateInput) {
+        return this.gameService.createGame(createMatchDto);
     }
 }
 
