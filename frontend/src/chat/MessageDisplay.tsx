@@ -1,18 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { fetchUrl } from '../fetch';
-import { useChat } from './ChatContext';
 import { useAuth } from "../components/AuthProvider";
 import '../styles/chat.css';
 
-export function MessageDisplay({}) {
+export function MessageDisplay({channel}) {
 	const [receivedMessages, setReceivedMessages] = useState([]);
 	const messageContainer = useRef(null);
-    const chat = useChat();
 	const auth = useAuth();
 
 	async function fetchChannelsMessages() {
 		try {
-			const response = await fetchUrl(`/chat/channels/${chat.channelTo?.name}/messages`);
+			const response = await fetchUrl(`/chat/channels/${channel}/messages`);
 			setReceivedMessages(response);
 		} catch (error) {
 			console.error('Error fetching channels:', error);
@@ -28,20 +26,20 @@ export function MessageDisplay({}) {
 
 	useEffect(() => {
 		auth?.socket?.on('channel-message', (message) => {
-			if (message.channelId !== chat.channelTo?.name) {
+			if (message.channelId !== channel) {
 				return ;
 			}
 			setReceivedMessages(prevMessages => [...prevMessages, message]);
 		});
 		
-		if (chat.channelTo)
+		if (channel)
 			fetchChannelsMessages();
 
 		return () => {
 			setReceivedMessages([]);
 			auth?.socket?.off('channel-message');
 		};
-	}, [chat.channelTo]);
+	}, []);
 
 	useEffect(() => {
 		scrollToBottom();

@@ -3,6 +3,7 @@ import {MessageDisplay} from './MessageDisplay';
 import { useChat } from './ChatContext';
 import { useAuth } from "../components/AuthProvider";
 import '../styles/chat.css';
+import { useParams } from "react-router-dom";
 
 function TopBar() {
 	const chat = useChat();
@@ -20,14 +21,16 @@ function TopBar() {
 
 export function ChatChannel() {
 	const [message, setMessage] = useState('');
-    const chat = useChat();
+	const {name} = useParams();
 	const auth = useAuth();
 
 	function sendChannelMessage() {
-		if (chat.channelTo) {
-			auth?.socket?.emit('channel-message', {channelId: chat.channelTo.name, senderId: auth?.user?.id, content: message})
-			setMessage('');
-		}
+		auth?.socket?.emit('channel-message', {channelId: name, senderId: auth?.user?.id, content: message})
+		setMessage('');
+		// else if (chat.dmTo) {
+		// 	auth?.socket?.emit('private-message', {senderId: auth?.user?.id, receiverId: chat.dmTo.receiverId, content: message})
+		// 	setMessage('');
+		// }
 	}
 
     function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -39,33 +42,31 @@ export function ChatChannel() {
     };
     
 	return (
-		(chat.channelTo && (
-		<div className='chatArea'>
+		<>
 			{/* <TopBar/> */}
-            <MessageDisplay key={chat.channelTo?.name}/>
+			<MessageDisplay key={name} channel={name}/>
 			<div className='messageInput'>
 				<textarea 
-                    value={message} 
-                    onKeyDown={handleKeyDown} 
-                    placeholder={'Send message to ' + chat.channelTo.name} 
-                    onChange={e => setMessage(e.target.value)} 
-                />
+					value={message} 
+					onKeyDown={handleKeyDown} 
+					placeholder={'Send message to ' + name} 
+					onChange={e => setMessage(e.target.value)} 
+				/>
 				<button className='inviteBtn'>
 					<span className="material-symbols-outlined">
 						stadia_controller
 					</span>
 				</button>
 				<button 
-                    className='sendMessageBtn' 
-                    disabled={message.length === 0} 
-                    onClick={sendChannelMessage}
-                    >
+					className='sendMessageBtn' 
+					disabled={message.length === 0} 
+					onClick={sendChannelMessage}
+					>
 						<span className="material-symbols-outlined">
 							send
 						</span>
-                </button>
+				</button>
 			</div>
-		</div>
-		))
+		</>
 	);
 }

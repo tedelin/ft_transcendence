@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useChat } from './ChatContext';
 import { fetchUrl } from '../fetch';
 import { useAuth } from '../components/AuthProvider';
 import { useError } from '../components/ErrorProvider';
@@ -21,9 +20,8 @@ function AddFriend({ selected }) {
 				},
 			});
 			setUser(response);
-		} catch (error) {
+		} catch (error: any) {
 			er.setError(error.message);
-			// alert('here');
 		}
 	}
 
@@ -37,8 +35,9 @@ function AddFriend({ selected }) {
 				},
 			});
 			alert('Friend request sent!');
-		} catch (error) {
+		} catch (error: any) {
 			er.setError(error.message);
+			alert(error)
 		}
 	}
 
@@ -115,9 +114,9 @@ function FriendsList({ selected }) {
 			setFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== requestId)
 			);
-		} catch (error) {
+		} catch (error: any) {
 			er.setError(error.message);
-			// alert(error);
+			alert(error);
 		}
 	}
 
@@ -134,7 +133,6 @@ function FriendsList({ selected }) {
 			);
 		} catch (error) {
 			er.setError(error.message);
-			// alert(error);
 		}
 	}
 
@@ -150,7 +148,6 @@ function FriendsList({ selected }) {
 			setFriends(response);
 		} catch (error) {
 			er.setError(error.message);
-			// alert(error);
 		}
 	}
 
@@ -218,17 +215,14 @@ function FriendsList({ selected }) {
 
 
 export function Friends() {
-	const chat = useChat();
 	const [selected, setSelected] = useState("Online");
 
 	return (
-		(chat.active === 'friends' && (
-			<div className='chatArea'>
-				<FriendsTopBar selected={selected} setSelected={setSelected} />
-				<AddFriend selected={selected} />
-				<SearchFriends selected={selected} />
-				<FriendsList selected={selected} />
-			</div>
-		))
+		<>
+			<FriendsTopBar selected={selected} setSelected={setSelected} />
+			<AddFriend selected={selected} />
+			<SearchFriends selected={selected} />
+			<FriendsList selected={selected} />
+		</>
 	);
 }

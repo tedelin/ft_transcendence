@@ -74,9 +74,11 @@ export default function Login() {
                 >
                     Register
                 </button>
-				<button className="registerButton" onClick={() => window.location.href = import.meta.env.VITE_URL_OAUTH}>
-					Connect with 42
-				</button>
+				<a href={import.meta.env.VITE_URL_OAUTH}>
+                    <button className="registerButton">
+                        Connect with 42
+                    </button>
+                </a>
             </div>
         </div>
     );

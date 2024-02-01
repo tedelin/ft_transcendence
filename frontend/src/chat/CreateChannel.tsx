@@ -1,17 +1,17 @@
 import React, { useState} from 'react';
 import { fetchUrl } from '../fetch';
-import { useChatDispatch } from './ChatContext';
 import { useAuth } from '../components/AuthProvider';
 import { useError } from '../components/ErrorProvider';
 import '../styles/chat.css';
+import { useNavigate } from 'react-router-dom';
 
 export function CreateChannel() {
 	const auth = useAuth();
 	const [channelName, setChannelName] = useState('');
 	const [channelPassword, setChannelPassword] = useState('');
 	const [channelVisibility, setChannelVisibility] = useState('public');
+	const navigate = useNavigate();
 	const err = useError();
-	const dispatch = useChatDispatch();
 
 	async function create() {
 		if (channelName.length < 2 || channelName.length > 13) {
@@ -35,18 +35,16 @@ export function CreateChannel() {
 		  }
 		  setChannelName('');
 		  setChannelPassword('');
-		} catch (error) {
+		} catch (error: any) {
 			err.setError(error.message);
 		}
 	}
 
 	async function joinChannel() {
 		try {
-			const channel = await fetchUrl(`/chat/channels/${channelName}`);
 			auth?.socket?.emit('join-channel', {roomId: channelName, password: channelPassword, userId: auth?.user?.id});
-			dispatch({ type: 'chat' });
-			dispatch({ type: 'setChannel', channelTo: channel });
-		} catch (error) {
+			navigate(channelName);
+		} catch (error: any) {
 			err.setError(error.message);
 		}
 	}

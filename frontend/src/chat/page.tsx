@@ -3,15 +3,16 @@ import { ChatChannel } from './ChatChannel';
 import { Channels } from './Channels';
 import { Friends } from './Friends';
 import { SideBar } from './SideBar';
+import { Outlet } from 'react-router-dom';
 import '../styles/chat.css';
 
 function Chat() {
 	return (
 		<div className="chat">
 			<SideBar />
-			<Channels />
-			<ChatChannel />
-			<Friends />
+			<div className='chatArea'>
+				<Outlet />
+			</div>
 		</div>
 	)
 }

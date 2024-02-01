@@ -4,7 +4,6 @@ import { DatabaseService } from 'src/database/database.service';
 import { ChannelMessageDto } from './dto/channelMessage.dto';
 import * as argon from 'argon2';
 import { JoinChannelDto } from './dto/joinChannel.dto';
-import { Certificate } from 'crypto';
 
 @Injectable()
 export class ChannelService {

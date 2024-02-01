@@ -27,19 +27,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		) { }
 
 	async handleConnection(client: Socket): Promise<void> {
-		// const token = client.handshake.query.token.toString();
-		// const payload = this.authService.verifyAccessToken(token);
-		// const user = payload && await this.userService.getUserById(payload.sub);
-		// if (!user) {
-		// 	client.disconnect(true);
-		// 	return ;
-		// }
-		// this.connectedUsers.set(client.id, user.id);
-		// const joinedChannels = await this.userService.getUserChannels(user.id);
-		// joinedChannels.channels.forEach((channel) => {
-		// 	client.join(channel.channelName);
-		// 	console.log(user.username + " joined " + channel.channelName);
-		// });
+		const token = client.handshake?.query?.token?.toString();
+		const payload = this.authService.verifyAccessToken(token);
+		const user = payload && await this.userService.getUserById(payload.sub);
+		if (!user) {
+			client.disconnect(true);
+			return ;
+		}
+		this.connectedUsers.set(client.id, user.id);
+		const joinedChannels = await this.userService.getUserChannels(user.id);
+		joinedChannels.channels.forEach((channel) => {
+			client.join(channel.channelName);
+			console.log(user.username + " joined " + channel.channelName);
+		});
 	}
 
 	async handleDisconnect(client: Socket) {

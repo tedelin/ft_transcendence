@@ -1,12 +1,11 @@
 import {ChannelList, SearchChannel } from './ChannelList';
-import { useChat, useChatDispatch } from './ChatContext';
+import { ChatProvider, useChat, useChatDispatch } from './ChatContext';
 import { CreateChannel } from './CreateChannel';
 import { fetchUrl } from '../fetch';
 import { useEffect } from 'react';
 import '../styles/chat.css';
 
 export function Channels() {
-	const chat = useChat();
 	const dispatch = useChatDispatch();
 
 	async function fetchChannels() {
@@ -23,13 +22,13 @@ export function Channels() {
 		fetchChannels();
 	}, []);
 
-	return ( (chat.active === 'channels' && (
-		<div className='chatArea'>
+	return (
+		<>
 			<CreateChannel />
 			<SearchChannel />
 			<div className="channelList">
 				<ChannelList />
 			</div>
-		</div>
-	)));
+		</>
+	);
 }
