@@ -1,10 +1,11 @@
-import { Controller, Get, Param, ParseIntPipe, Req, UseGuards, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
-import { Request } from 'express';
+import { Controller, Get, Param, ParseIntPipe, Req, UseGuards, Post, UploadedFile, UseInterceptors, Res, NotFoundException, StreamableFile} from '@nestjs/common';
+import { Request} from 'express';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer';
-import { extname } from 'path'
+import { extname, join} from 'path'
+import { createReadStream, existsSync } from 'fs';
 
 @Controller('users')
 export class UserController {
@@ -59,5 +60,15 @@ export class UserController {
   
 	  return { message: 'Avatar mis à jour avec succès', avatarUrl };
 	}
-
+	@Get('avatars/:filename')
+	seeUploadedFile(@Param('filename') filename): StreamableFile | NotFoundException {
+	  const path = join(process.cwd(), 'uploads', 'avatars', filename);
+  
+	  if (!existsSync(path)) {
+		throw new NotFoundException('Image not found.');
+	  }
+  
+	  const file = createReadStream(path);
+	  return new StreamableFile(file);
+	}
 }

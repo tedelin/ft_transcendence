@@ -5,8 +5,11 @@ import { useAuth } from './AuthProvider';
 function AvatarUpload() {
 	const [selectedFile, setSelectedFile] = useState(null);
 	const auth = useAuth();
-	const [preview, setPreview] = useState(auth?.user?.avatar);
-	const API_BASE_URL = import.meta.env.VITE_BACKEND_URL
+	const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
+	const filePath = auth?.user?.avatar;
+	const fileName = filePath?.split('/').pop();
+	const avatarUrl = API_BASE_URL + "/users/avatars/" + fileName;
+	const [preview, setPreview] = useState(avatarUrl);
 	const token = localStorage.getItem('jwtToken');
 
 	

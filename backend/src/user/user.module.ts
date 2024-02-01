@@ -5,6 +5,8 @@ import { UserController } from './user.controller';
 import { FriendService } from '../friends/friends.service';
 
 
+
+
 @Module({
 	imports: [DatabaseModule],
 	controllers: [UserController],

@@ -75,11 +75,11 @@ function Root() {
 							</RequireAuth>}
 						/>
 						<Route 
-						path="/settings" 
-						element={
-						<RequireAuth>
-							<Settings />
-						</RequireAuth>}
+							path="/settings" 
+							element={
+							<RequireAuth>
+								<Settings />
+							</RequireAuth>}
 						/>
 						</Route>
 				</Routes>

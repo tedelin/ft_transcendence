@@ -9,12 +9,18 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { FriendModule } from './friends/friends.module';
 
 @Module({
-  imports: [    
+  imports: [
     ConfigModule.forRoot({
-    isGlobal: true,
-  }),
-  ChatModule, 
-  DatabaseModule, 
-  AuthModule, UserModule, GameModule, FriendModule,ScheduleModule.forRoot()],
+      isGlobal: true,
+    }),
+    ChatModule, 
+    DatabaseModule, 
+    AuthModule, 
+    UserModule, 
+    GameModule, 
+    FriendModule,
+    ScheduleModule.forRoot()
+  ],
 })
 export class AppModule {}
+
