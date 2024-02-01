@@ -5,7 +5,7 @@ export enum KeyState {
 
 export enum GameStatus {
     RUNNING = 0,
-    FINISHED = 1
+    FINISHED = 1,
 }
 
 export interface PaddleKey {

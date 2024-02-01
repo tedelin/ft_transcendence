@@ -2,7 +2,7 @@ import { IsInt, IsEnum, Min, ArrayNotEmpty, IsArray } from 'class-validator';
 import { Type } from 'class-transformer';
 import { playerRole } from '@prisma/client';
 
-class PlayerData {
+export class PlayerData {
   @IsInt()
   playerId: number;
 

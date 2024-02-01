@@ -33,7 +33,7 @@ export class GameGateway implements OnGatewayInit
     ) { }
     
     afterInit(server: Server) {
-        this.roomService.setServer(server);
+        this.roomService.setServer(server, this.connectedUsers);
     }
 
     async handleConnection(client: Socket): Promise<void> {
@@ -65,8 +65,9 @@ export class GameGateway implements OnGatewayInit
             else if (roomState.state === RoomStatus.INGAME)
                 this.roomService.closingGame(gameId, this.roomService.findMyLifePartner(gameId, client).id);
         }
+        console.log((this.connectedUsers.get(client.id)).username + " disconnected from game");
+        this.connectedUsers.delete(client.id);
         this.roomService.playersData.delete(client.id);
-        console.log(client.id + " disconnected from game");
         this.roomService.logRooms();
     }
 

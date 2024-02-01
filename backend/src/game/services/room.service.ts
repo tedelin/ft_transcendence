@@ -2,8 +2,22 @@ import { Injectable, Inject, forwardRef } from "@nestjs/common";
 import { Interval } from '@nestjs/schedule';
 import { Socket, Server } from 'socket.io';
 import { pData, GameSettings, RoomState, RoomStatus } from '../classes/room'
-import { GameStatus } from "../classes/pong";
+import { GameState, GameStatus, Score } from "../classes/pong";
 import { PongService } from "./pong.service";
+import { GameService } from "./game.service";
+import { CreateMatchDto, PlayerData } from "../dto/create-match.dto";
+import { AuthService } from "src/auth/auth.service";
+import { UserService } from "src/user/user.service";
+import { User } from "@prisma/client";
+
+interface Matchs {
+    date: any,
+    players : Array<{
+        username: string,
+        score: number,
+        role: string
+    }>
+}
 
 @Injectable()
 export class RoomService {
@@ -12,11 +26,18 @@ export class RoomService {
     public playersData: Map<string, pData> = new Map();
     public roomSize = 2;
     public server : Server;
+    public connectedUsers: Map<string, User>;
 
-    constructor(private readonly pongService: PongService) {}
-s
-    public setServer(server: Server) {
+    constructor(
+        private readonly pongService: PongService,
+        private readonly gameService: GameService,
+        private readonly authService: AuthService,
+        private readonly userService: UserService
+    ) {}
+
+    public setServer(server: Server, connectedUsers : Map<string, User>) {
         this.server = server;
+        this.connectedUsers = connectedUsers;
     }
 
     public matchmakingExit(client: Socket, action : string, server) {
@@ -143,7 +164,9 @@ s
     @Interval(1000 / 200)
     loop(): void {
         for (const [roomId, roomState] of this.rooms.entries()) {
-            if (roomId && roomState.state === RoomStatus.INGAME)// && roomState.gameState.status !== GameStatus.FINISHED)
+            if (roomId && 
+                roomState.state != RoomStatus.LAUNCHING ||
+                (roomState.state === RoomStatus.INGAME && roomState.gameState.status !== GameStatus.FINISHED))
             {
                 this.server.to(roomId).emit('gameStateUpdate', { gameState: roomState.gameState });
                 this.pongService.updateGameState(roomId);
@@ -155,9 +178,10 @@ s
     public startGame(roomId : string, firstPlayer : pData, secondPlayer : pData, settings: GameSettings) {
         firstPlayer.gamesPlayed++;  
         secondPlayer.gamesPlayed++;
-        this.rooms.get(roomId).state = RoomStatus.INGAME;
+        this.rooms.get(roomId).state = RoomStatus.LAUNCHING;
         this.server.to(roomId).emit('letsGO');
         setTimeout(() => {
+            this.rooms.get(roomId).state = RoomStatus.INGAME
             this.pongService.startGame(roomId, settings, this.server);
         }, 5200);
     }
@@ -177,12 +201,31 @@ s
         this.rooms.delete(roomId);
     }
 
-    public closingGame(roomId : string, winner : string) {
+    private formatMatchData(roomState : RoomState) : CreateMatchDto {
+        const score : Score = roomState.gameState.score;
+        const userOne : User = this.connectedUsers.get(roomState.players[0].id);
+        const userTwo : User = this.connectedUsers.get(roomState.players[1].id);
+        const playerOne : PlayerData = {
+            playerId: userOne.id,
+            score: score.player1,
+            role: "PLAYER_ONE"
+        };
+        const playerTwo : PlayerData = {
+            playerId: userTwo.id,
+            score: score.player2,
+            role: "PLAYER_TWO"
+        };
+        return { players: [playerOne, playerTwo] };
+    }
+
+    async closingGame(roomId : string, winner : string) {
         const roomState = this.rooms.get(roomId);
         if (!roomState) return;
 
         // Send last update for classGame to stop and manage game field
         this.server.to(roomId).emit('gameStateUpdate', { gameState: roomState.gameState });
+    
+        // this.server.emit('historyAllMatch', games);
 
         // Update winner score, NEED TO CHANGE TO SEND IT TO DB LATER
         this.playersData.get(winner).wins++;
@@ -201,7 +244,7 @@ s
         }
         // if gameStatus = FINISHED -> emit: to 2 players fronts
         else {
-            roomState.players.forEach((player, index) => {
+            roomState.players.forEach((player) => {
                 this.server.to(player.id).emit('gameFinishedShowStats', {
                     winner: (player.id === winner), 
                     stats: stats,
@@ -210,8 +253,47 @@ s
             });
         }
 
+        const data = this.formatMatchData(roomState);
+
         // clean room
         this.cleanRoom(roomId);
+
+        await this.gameService.createMatch(data);
+        const games = this.formatMatchFront(await this.gameService.findAllGames());
+        // + implementer un limiter de nb de matchs ? ou dans db ?
+        games.forEach(game => {
+            console.log(`Date: ${game.date}`);
+            game.players.forEach(player => {
+                console.log(`Player : ${player.username}, Score: ${player.score}, Role: ${player.role}`);
+            })
+        });
+        this.server.emit('historyAllMatch', games);
+    }
+
+    private formatMatchFront(games) : Matchs[] {
+        const matchs = games.map(game => {
+            let match = {
+                date: game.createdAt,
+                players: game.players.map(player => {
+                    return {
+                        username: this.findUsername(player.playerId),
+                        score: player.score,
+                        role: player.role
+                    };
+                })
+            };
+            return match;
+        });
+        return matchs;
+    }
+
+    private findUsername(user_id) {
+        for (let [client, user] of this.connectedUsers.entries()) {
+            if (user.id === user_id) {
+                return user.username;
+            }
+        }
+        return null;
     }
 
     private getPlayersStats(players: Socket[]): { player1: any, player2: any } {
