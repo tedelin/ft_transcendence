@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import socket from './socket';
 
 const RUNNING = 0;
 const ENDED = 1;
@@ -37,6 +36,7 @@ interface GameState {
     status: number;
 }
 
+
 export class ClassGame {
     canvasRef: React.RefObject<HTMLCanvasElement>;
     socket: any;
@@ -45,11 +45,11 @@ export class ClassGame {
     localState: GameState ;
     win: boolean;
 
-    constructor(canvasRef : React.RefObject<HTMLCanvasElement>, gameState) {
+    constructor(canvasRef : React.RefObject<HTMLCanvasElement>, gameState, socket : any) {
         this.canvasRef = canvasRef;
-        this.socket = socket;
         this.canvasHeight = 800;
         this.canvasWidth = 1200;
+        this.socket = socket;
         this.updateCanvas = this.updateCanvas.bind(this);
         this.localState = this.copyState(gameState);
         this.win = false;

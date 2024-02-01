@@ -9,6 +9,11 @@ export class UserController {
         private readonly userService: UserService,
     ) { }
 
+    @Get('all') 
+    findAll() {
+        return this.userService.findAll();
+    }
+
     @UseGuards(JwtGuard)
     @Get('me')
     getMe(@Req() req: Request) {

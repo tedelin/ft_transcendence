@@ -5,6 +5,10 @@ import { Injectable } from "@nestjs/common";
 export class UserService {
 	constructor(private readonly databaseService: DatabaseService) {}
 
+	async findAll() {
+		return await this.databaseService.user.findMany();
+	}
+
 	async getUserById(id: number) {
 		return await this.databaseService.user.findUnique({
 			where: {

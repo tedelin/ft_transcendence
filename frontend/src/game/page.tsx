@@ -1,27 +1,30 @@
 import { ClassGame } from './classGame';
 import { useEffect } from 'react';
 import { useState, useRef } from 'react';
-import socket from './socket';
+// import socket from './socket';
 import React from 'react';
 import './game.css';
 import { SettingsMenu } from './settingsMenu';
 import { EndGameMenu } from './endGameMenu';
 import { MatchmakingView } from './MatchmakingView';
+import { useAuth } from '../components/AuthProvider';
 
 function StartGame({ gameInstance }) {
+    const auth = useAuth();
+    
+    const handleKeyDown = (event) => {
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            auth?.socket?.emit('keyAction', { key: event.key, action: 'pressed' });
+        }
+    };
+
+    const handleKeyUp = (event) => {
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            auth?.socket?.emit('keyAction', { key: event.key, action: 'released' });
+        }
+    };
+
     useEffect(() => {
-        const handleKeyDown = (event) => {
-            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-                socket.emit('keyAction', { key: event.key, action: 'pressed' });
-            }
-        };
-
-        const handleKeyUp = (event) => {
-            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-                socket.emit('keyAction', { key: event.key, action: 'released' });
-            }
-        };
-
         gameInstance.startGame();
 
         document.addEventListener('keydown', handleKeyDown);
@@ -62,6 +65,7 @@ export function Game() {
 
     const [playerOne, setPlayerOne] = useState([]);
     const [playerTwo, setPlayerTwo] = useState([]);
+    const auth = useAuth();
 
     function handleQuit() {
         setLetsGO(false);
@@ -83,14 +87,14 @@ export function Game() {
     }
 
     function handletsart() {
-        socket.emit('clickPlay');
+        auth?.socket?.emit('clickPlay');
         setShowButton(false);
         setGameEnded(false);
     }
 
     function handleSaveSettings() {
         console.log('ballSpeed : ' + ballSpeed);
-        socket.emit('clickSaveSettings', {
+        auth?.socket?.emit('clickSaveSettings', {
             ballSpeed: ballSpeed,
             paddleSpeed: paddleSpeed,
             paddleHeight: paddleHeight,
@@ -118,8 +122,7 @@ export function Game() {
     }
 
     useEffect(() => {
-
-        socket.on('gameMatchmaking', (data) => {
+        auth?.socket?.on('gameMatchmaking', (data) => {
             if (data.firstPlayer) {
                 setFirstPlayer(true);
                 if (!data.settingDone)
@@ -127,28 +130,28 @@ export function Game() {
             }
         })
 
-        socket.on('matchmakingStats', (data) => {
+        auth?.socket?.on('matchmakingStats', (data) => {
             setPlayerOne(data.playerOne);
             setPlayerTwo(data.playerTwo);
         })
 
-        socket.on('gameLaunch', (data) => {
+        auth?.socket?.on('gameLaunch', (data) => {
             console.log('GameLaunch');
             if (!gameStarted) {
-                gameInstance.current = new ClassGame(React.createRef(), data.gameState);
+                gameInstance.current = new ClassGame(React.createRef(), data.gameState, auth?.socket);
                 setGameStarted(true);
                 setSettingsToDo(false);
             }
         })
 
-        socket.on('gameFinishedShowStats', (data) => {
+        auth?.socket?.on('gameFinishedShowStats', (data) => {
             setWinner(data.winner);
             setPlayerStats(data.stats);
             setIsAbandon(data.isAbandon);
             setShowEndGameModal(true);
         })
 
-        socket.on('backToMenu', () => {
+        auth?.socket?.on('backToMenu', () => {
             setShowButton(true);
             setSettingsToDo(false);
             setFirstPlayer(false);
@@ -156,16 +159,16 @@ export function Game() {
             setPlayerTwo([]);
         })
 
-        socket.on('letsGO', () => {
+        auth?.socket?.on('letsGO', () => {
             setLetsGO(true);
         })
 
         return () => {
-            socket.off('gameLaunch');
-            socket.off('gameMatchmaking');
-            socket.off('backToMenu');
-            socket.off('gameFinishedShowStats');
-            socket.off('letsGO');
+            auth?.socket?.off('gameLaunch');
+            auth?.socket?.off('gameMatchmaking');
+            auth?.socket?.off('backToMenu');
+            auth?.socket?.off('gameFinishedShowStats');
+            auth?.socket?.off('letsGO');
         }
     }, [gameStarted]);
 
@@ -176,7 +179,7 @@ export function Game() {
             )}
             {!gameStarted && !showButton && settingsToDo && (
                 <>
-                    <div className='CrossIcon' onClick={() => socket.emit('crossMatchmaking')}>&#10006;</div>
+                    <div className='CrossIcon' onClick={() => auth?.socket?.emit('crossMatchmaking')}>&#10006;</div>
                     <MatchmakingView
                         playerOne={playerOne}
                         playerTwo={playerTwo}
@@ -198,7 +201,7 @@ export function Game() {
             )}
             {!gameStarted && !showButton && !settingsToDo && (
                 <>
-                    <div className='CrossIcon' onClick={() => socket.emit('crossMatchmaking')}>&#10006;</div>
+                    <div className='CrossIcon' onClick={() => auth?.socket?.emit('crossMatchmaking')}>&#10006;</div>
                     <MatchmakingView
                         playerOne={playerOne}
                         playerTwo={playerTwo}
@@ -214,7 +217,7 @@ export function Game() {
                     {letsGO && (
                         <div className="matchmaking-container">
                             <span className="letsgo">Let's GO !</span>
-                            <Countdown/>
+                            <Countdown />
                         </div>
                     )}
                 </>
@@ -225,7 +228,7 @@ export function Game() {
             {gameStarted && !showEndGameModal && gameInstance.current && (
                 <>
                     <div className='CrossIcon' onClick={() => {
-                        socket.emit('quitInGame');
+                        auth?.socket?.emit('quitInGame');
                         handleQuit();
                     }} >&#10006;</div>
                 </>

@@ -10,6 +10,9 @@ import {
 import { RoomService } from "../services/room.service";
 import { PongService } from "../services/pong.service";
 import { pData, RoomState, GameSettings, RoomStatus } from '../classes/room';
+import { AuthService } from "src/auth/auth.service";
+import { UserService } from "src/user/user.service";
+import { User } from "@prisma/client";
 
 @WebSocketGateway({
     cors: {
@@ -20,10 +23,13 @@ import { pData, RoomState, GameSettings, RoomStatus } from '../classes/room';
 export class GameGateway implements OnGatewayInit
 {
     @WebSocketServer() server: Server;
+    connectedUsers: Map<string, User> = new Map();
 
     constructor(
         private readonly roomService: RoomService,
-        private readonly pongService: PongService
+        private readonly pongService: PongService,
+        private readonly authService: AuthService,
+        private readonly userService: UserService,
     ) { }
     
     afterInit(server: Server) {
@@ -31,8 +37,16 @@ export class GameGateway implements OnGatewayInit
     }
 
     async handleConnection(client: Socket): Promise<void> {
-        this.roomService.playersData.set(client.id, new pData(client.id));
-        console.log(client.id + " connected to game");
+        const token = client.handshake.query.token.toString();
+		const payload = this.authService.verifyAccessToken(token);
+		const user = payload && await this.userService.getUserById(payload.sub);
+        if (!user) {
+			client.disconnect(true);
+			return ;
+		}
+        this.connectedUsers.set(client.id, user);
+        this.roomService.playersData.set(client.id, new pData(user.id));
+        console.log(user.username + " connected to game");
     }
 
     async handleDisconnect(client: Socket): Promise<void> {
@@ -119,4 +133,3 @@ export class GameGateway implements OnGatewayInit
         }
     }
 }
-
