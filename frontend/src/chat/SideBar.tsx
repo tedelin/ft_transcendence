@@ -1,11 +1,8 @@
-import { useChatDispatch, useChat } from './ChatContext';
 import { UserChannel } from './UserChannel';
-import '../styles/chat.css';
 import { NavLink } from 'react-router-dom';
+import '../styles/chat.css';
 
 export function SideBar() {
-	const chat = useChat();
-
 	return (
 		<div className='sideMenu'>
 			<NavLink className="sideMenuItem" to="/chat/channels">

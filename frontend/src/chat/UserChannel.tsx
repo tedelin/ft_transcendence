@@ -19,23 +19,22 @@ export function UserChannel() {
 		}
 	}
 
-    async function displayChannel(channelName : string) {
+	async function displayChannel(channelName: string) {
 		navigate(`channels/${channelName}`);
-    }
+	}
 
-    // function leaveChannel() {
-    //     dispatch({ type: 'setChannel', channelTo: null as any });
-    // }
+	// function leaveChannel() {
+	//     dispatch({ type: 'setChannel', channelTo: null as any });
+	// }
 
 	useEffect(() => {
-		if (auth?.user)
-			fetchUserChannels();
-	}, [auth?.user]);
+		fetchUserChannels();
+	}, []);
 
 	return (
 		<>
 			{channels.map((channel: Channel) =>
-				<div 
+				<div
 					key={channel.channelName}
 					className={"sideBarChatItem"}
 					onClick={() => { displayChannel(channel.channelName) }}
