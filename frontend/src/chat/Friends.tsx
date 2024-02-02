@@ -20,24 +20,22 @@ function AddFriend({ selected }) {
 				},
 			});
 			setUser(response);
+            await sendRequest();
 		} catch (error: any) {
 			er.setError(error.message);
 		}
 	}
 
 	async function sendRequest() {
-		await getUser();
-		try {
+        try {
 			await fetchUrl(`/friends/${user?.id}`, {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			alert('Friend request sent!');
 		} catch (error: any) {
 			er.setError(error.message);
-			alert(error)
 		}
 	}
 
@@ -50,7 +48,7 @@ function AddFriend({ selected }) {
 				type="text"
 				placeholder="You can add friends by typing their username"
 			/>
-			<button className='createButton' onClick={sendRequest}>
+			<button className='createButton' onClick={getUser}>
 				Send Friend Request
 			</button>
 		</div>

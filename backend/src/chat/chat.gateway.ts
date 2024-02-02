@@ -57,6 +57,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('join-channel')
 	async onChannelJoin(client: Socket, joinChannelDto: JoinChannelDto) {
 		const channel = await this.channelService.findByName(joinChannelDto.roomId);
+        if (!channel) {
+            throw new ForbiddenException("Channel not found");
+        }
 		if (joinChannelDto.password && joinChannelDto.password !== '') {
 			const pwMatches = await argon.verify(channel.password, joinChannelDto.password);
 			if (!pwMatches) {

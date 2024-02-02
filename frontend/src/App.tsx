@@ -70,15 +70,13 @@ function Layout() {
 	const er = useError();
 
 	return (
-		<ErrorProvider>
-			<AuthProvider>
-				<NavBar />
-				<div className='container'>
-					{er.error && <div className="notification">{er.error}</div>}
-					<Outlet />
-				</div>
-			</AuthProvider>
-		</ErrorProvider>
+        <AuthProvider>
+            <NavBar />
+            <div className='container'>
+                {er.error && <div className="notification">{er.error}</div>}
+                <Outlet />
+            </div>
+        </AuthProvider>
 	)
 }
 
@@ -98,6 +96,10 @@ function RequireAuth({children}: {children: JSX.Element}) {
 }
 
 export function App() {
-    return <RouterProvider router={router} />;
+    return (
+        <ErrorProvider>
+            <RouterProvider router={router} />;
+        </ErrorProvider>
+    );
 }
 

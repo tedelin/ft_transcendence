@@ -4,6 +4,7 @@ import { useChat } from './ChatContext';
 import { useAuth } from "../components/AuthProvider";
 import '../styles/chat.css';
 import { useParams } from "react-router-dom";
+import { fetchUrl } from "../fetch";
 
 function TopBar() {
 	const chat = useChat();
