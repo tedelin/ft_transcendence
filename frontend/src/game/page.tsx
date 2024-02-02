@@ -8,6 +8,7 @@ import { SettingsMenu } from './settingsMenu';
 import { EndGameMenu } from './endGameMenu';
 import { MatchmakingView } from './MatchmakingView';
 import { useAuth } from '../components/AuthProvider';
+import { MatchHistory } from './matchHistory';
 
 function StartGame({ gameInstance }) {
     const auth = useAuth();
@@ -65,6 +66,8 @@ export function Game() {
 
     const [playerOne, setPlayerOne] = useState([]);
     const [playerTwo, setPlayerTwo] = useState([]);
+
+    const [historyAll, setHistoryAll] = useState([]);
     const auth = useAuth();
 
     function handleQuit() {
@@ -163,9 +166,9 @@ export function Game() {
             setLetsGO(true);
         })
 
-        // auth?.socket?.on('historyAllMatch', (data) => {
-
-        // })
+        auth?.socket?.on('historyAllMatch', (data) => {
+            setHistoryAll(data);
+        })
 
         return () => {
             auth?.socket?.off('gameLaunch');
@@ -179,7 +182,10 @@ export function Game() {
     return (
         <div className="game">
             {!gameStarted && showButton && (
-                <button className='StartButton' onClick={handletsart}>Start Game</button>
+                <>
+                    <button className='StartButton' onClick={handletsart}>Start Game</button>
+                    <MatchHistory matchs={historyAll} />
+                </>
             )}
             {!gameStarted && !showButton && settingsToDo && (
                 <>

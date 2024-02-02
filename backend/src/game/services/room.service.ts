@@ -11,6 +11,7 @@ import { UserService } from "src/user/user.service";
 import { User } from "@prisma/client";
 
 interface Matchs {
+    id: number,
     date: any,
     players : Array<{
         username: string,
@@ -262,6 +263,7 @@ export class RoomService {
         const games = this.formatMatchFront(await this.gameService.findAllGames());
         // + implementer un limiter de nb de matchs ? ou dans db ?
         games.forEach(game => {
+            console.log(`id: ${game.id}`);
             console.log(`Date: ${game.date}`);
             game.players.forEach(player => {
                 console.log(`Player : ${player.username}, Score: ${player.score}, Role: ${player.role}`);
@@ -273,6 +275,7 @@ export class RoomService {
     private formatMatchFront(games) : Matchs[] {
         const matchs = games.map(game => {
             let match = {
+                id: game.id,
                 date: game.createdAt,
                 players: game.players.map(player => {
                     return {

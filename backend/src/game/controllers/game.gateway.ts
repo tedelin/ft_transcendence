@@ -44,9 +44,11 @@ export class GameGateway implements OnGatewayInit
 			client.disconnect(true);
 			return ;
 		}
-        this.connectedUsers.set(client.id, user);
-        this.roomService.playersData.set(client.id, new pData(user.id));
-        console.log(user.username + " connected to game");
+        if (!this.connectedUsers.has(client.id)) {
+            this.connectedUsers.set(client.id, user);
+            this.roomService.playersData.set(client.id, new pData(user.id));
+            console.log(user.username + " connected to game, id " + client.id);
+        }
     }
 
     async handleDisconnect(client: Socket): Promise<void> {
