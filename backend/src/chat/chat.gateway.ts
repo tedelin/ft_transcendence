@@ -93,7 +93,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage('typing')
-	async onTyping(client: Socket, username: string, roomId: string) {
+	async onTyping(client: Socket, { username, roomId }) {
 		client.to(roomId).emit('typing', username);
 	}
 

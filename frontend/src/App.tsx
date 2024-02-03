@@ -1,4 +1,4 @@
-import { useLocation, Outlet, Routes, Route, Navigate, createBrowserRouter, RouterProvider, useRouteError, LoaderFunctionArgs, redirect} from 'react-router-dom'
+import { useLocation, Outlet, Routes, Route, Navigate, createBrowserRouter, RouterProvider, useRouteError, LoaderFunctionArgs, redirect } from 'react-router-dom'
 import { useEffect } from 'react'
 import Login from './pages/Login'
 import Chat from './chat/page'
@@ -54,33 +54,33 @@ const router = createBrowserRouter([
 
 export default function ErrorPage() {
 	const error = useRouteError();
-  
+
 	return (
 		<div id="error-page">
 			<h1>Oops!</h1>
 			<p>Sorry, an unexpected error has occurred.</p>
 			<p>
-			<i>{error?.error?.toString() ?? error?.toString()}</i>
+				<i>{error?.error?.toString() ?? error?.toString()}</i>
 			</p>
 		</div>
 	);
-  }
+}
 
 function Layout() {
 	const er = useError();
 
 	return (
-        <AuthProvider>
-            <NavBar />
-            <div className='container'>
-                {er.error && <div className="notification">{er.error}</div>}
-                <Outlet />
-            </div>
-        </AuthProvider>
+		<AuthProvider>
+			<NavBar />
+			<div className='container'>
+				{er.error && <div className="notification">{er.error}</div>}
+				<Outlet />
+			</div>
+		</AuthProvider>
 	)
 }
 
-function RequireAuth({children}: {children: JSX.Element}) {
+function RequireAuth({ children }: { children: JSX.Element }) {
 	let auth = useAuth();
 	let location = useLocation();
 
@@ -89,17 +89,17 @@ function RequireAuth({children}: {children: JSX.Element}) {
 	}
 
 	if (!auth?.user) {
-		return <Navigate to="/login" state={{ from: location }} replace />;
+		return <Navigate to="/login" state={{ from: location }} replace />
 	}
-	
+
 	return children;
 }
 
 export function App() {
-    return (
-        <ErrorProvider>
-            <RouterProvider router={router} />;
-        </ErrorProvider>
-    );
+	return (
+		<ErrorProvider>
+			<RouterProvider router={router} />
+		</ErrorProvider>
+	);
 }
 

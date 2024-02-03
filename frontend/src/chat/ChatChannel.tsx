@@ -27,8 +27,9 @@ export function ChatChannel() {
 	const auth = useAuth();
 
 	// Event listener for message
-	() => {
+	function onTyping(e: any) {
 		auth?.socket?.emit("typing", { username: auth?.user?.username, roomId: name });
+		setMessage(e.target.value);
 	}
 
 	function sendChannelMessage() {
@@ -50,7 +51,9 @@ export function ChatChannel() {
 
 	useEffect(() => {
 		auth?.socket?.on("typing", (username: string) => {
-			setTyping(`${username} is typing`);
+			if (username === auth?.user?.username)
+				return;
+			setTyping(`${username} is typing ...`);
 			setTimeout(() => {
 				setTyping('');
 			}, 3000);
@@ -61,13 +64,13 @@ export function ChatChannel() {
 		<>
 			{/* <TopBar/> */}
 			<MessageDisplay key={name} channel={name} />
+			<div className="typingIndicator">{typing}</div>
 			<div className='messageInput'>
-				{typing && (<div>{typing}</div>)}
 				<textarea
 					value={message}
 					onKeyDown={handleKeyDown}
 					placeholder={'Send message to ' + name}
-					onChange={e => setMessage(e.target.value)}
+					onChange={onTyping}
 				/>
 				<button className='inviteBtn'>
 					<span className="material-symbols-outlined">
