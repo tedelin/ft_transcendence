@@ -260,8 +260,8 @@ export class RoomService {
         this.cleanRoom(roomId);
 
         await this.gameService.createMatch(data);
-        const games = this.formatMatchFront(await this.gameService.findAllGames());
-        // + implementer un limiter de nb de matchs ? ou dans db ?
+        const games = await this.formatMatchFront(await this.gameService.findAllGames());
+
         games.forEach(game => {
             console.log(`id: ${game.id}`);
             console.log(`Date: ${game.date}`);
@@ -272,21 +272,21 @@ export class RoomService {
         this.server.emit('historyAllMatch', games);
     }
 
-    private formatMatchFront(games) : Matchs[] {
-        const matchs = games.map(game => {
-            let match = {
+    async formatMatchFront(games) : Promise<Matchs[]> {
+        const matchs = await Promise.all (games.map(async (game) => {
+            const players = await Promise.all(game.players.map(async player => {
+                return {
+                    username: (await this.userService.getUserById(player.playerId)).username,
+                    score: player.score,
+                    role: player.role
+                };
+            }));
+            return {
                 id: game.id,
-                date: game.createdAt,
-                players: game.players.map(player => {
-                    return {
-                        username: this.findUsername(player.playerId),
-                        score: player.score,
-                        role: player.role
-                    };
-                })
+                date:game.createdAt,
+                players: players
             };
-            return match;
-        });
+        }));
         return matchs;
     }
 

@@ -13,6 +13,7 @@ import { pData, RoomState, GameSettings, RoomStatus } from '../classes/room';
 import { AuthService } from "src/auth/auth.service";
 import { UserService } from "src/user/user.service";
 import { User } from "@prisma/client";
+import { GameService } from "../services/game.service";
 
 @WebSocketGateway({
     cors: {
@@ -30,10 +31,19 @@ export class GameGateway implements OnGatewayInit
         private readonly pongService: PongService,
         private readonly authService: AuthService,
         private readonly userService: UserService,
+        private readonly gameService: GameService
     ) { }
     
     afterInit(server: Server) {
         this.roomService.setServer(server, this.connectedUsers);
+    }
+
+    private isAlreadyConnected(userId : number) : boolean {
+        for (let user of this.connectedUsers.values()) {
+            if (user.id === userId)
+                return true;
+        }
+        return false;
     }
 
     async handleConnection(client: Socket): Promise<void> {
@@ -44,11 +54,19 @@ export class GameGateway implements OnGatewayInit
 			client.disconnect(true);
 			return ;
 		}
-        if (!this.connectedUsers.has(client.id)) {
-            this.connectedUsers.set(client.id, user);
-            this.roomService.playersData.set(client.id, new pData(user.id));
-            console.log(user.username + " connected to game, id " + client.id);
-        }
+        this.connectedUsers.set(client.id, user);
+        this.roomService.playersData.set(client.id, new pData(user.id));
+        console.log(user.username + " connected to game, id " + client.id);
+        // const games = await this.roomService.formatMatchFront(await this.gameService.findAllGames());
+        // console.log("<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>");
+        // games.forEach(game => {
+        //     console.log(`id: ${game.id}`);
+        //     console.log(`Date: ${game.date}`);
+        //     game.players.forEach(player => {
+        //         console.log(`Player : ${player.username}, Score: ${player.score}, Role: ${player.role}`);
+        //     })
+        // });
+        // this.server.emit('historyAllMatch', games);
     }
 
     async handleDisconnect(client: Socket): Promise<void> {

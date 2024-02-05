@@ -9,6 +9,8 @@ import { EndGameMenu } from './endGameMenu';
 import { MatchmakingView } from './MatchmakingView';
 import { useAuth } from '../components/AuthProvider';
 import { MatchHistory } from './matchHistory';
+import { fetchUrl } from '../fetch';
+// import { useError } from '../components/ErrorProvider';
 
 function StartGame({ gameInstance }) {
     const auth = useAuth();
@@ -68,6 +70,7 @@ export function Game() {
     const [playerTwo, setPlayerTwo] = useState([]);
 
     const [historyAll, setHistoryAll] = useState([]);
+    // const [historyOk, setHistoryOk] = useState(false);
     const auth = useAuth();
 
     function handleQuit() {
@@ -124,6 +127,52 @@ export function Game() {
         return <div className='countDown'>{count}</div>;
     }
 
+    const formatMatchFront = (games) => {
+        return games.map((game) => {
+          const players = game.players.map(player => ({
+            username: player.username,
+            score: player.score,
+            role: player.role,
+          }));
+          return {
+            id: game.id,
+            date: game.createdAt,
+            players: players,
+          };
+        });
+      };
+
+    useEffect(() => {
+        // Définition de la fonction asynchrone pour récupérer les matchs
+        const fetchMatchHistory = async () => {
+            try {
+                const dataHistory = await fetchUrl('/game/history', {
+                    method: "GET"
+                });
+                setHistoryAll(dataHistory);
+            } catch (error) {
+                console.error("Failed to fetch match history:", error);
+            }
+        };
+        console.log("fetMatchHistory")
+        fetchMatchHistory();
+    }, []);
+    
+    async function getUser() {
+		try {
+			const response = await fetchUrl(`/users/${username}`, {
+				method: "GET",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			setUser(response);
+		} catch (error) {
+			er.setError(error.message);
+			// alert('here');
+		}
+	}
+
     useEffect(() => {
         auth?.socket?.on('gameMatchmaking', (data) => {
             if (data.firstPlayer) {
@@ -167,6 +216,7 @@ export function Game() {
         })
 
         auth?.socket?.on('historyAllMatch', (data) => {
+            console.log("historyAllllllllll");
             setHistoryAll(data);
         })
 
@@ -181,7 +231,7 @@ export function Game() {
 
     return (
         <div className="game">
-            {!gameStarted && showButton && (
+            {!gameStarted && showButton && historyAll && (
                 <>
                     <button className='StartButton' onClick={handletsart}>Start Game</button>
                     <MatchHistory matchs={historyAll} />
