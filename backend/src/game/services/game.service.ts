@@ -55,7 +55,11 @@ export class GameService {
           }
         return this.databaseService.match.findMany({
             include: {
-              players: true,
+                players: {
+                    include: {
+                        player: true,
+                    }
+                },
             },
         });
     }

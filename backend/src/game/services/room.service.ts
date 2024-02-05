@@ -260,35 +260,36 @@ export class RoomService {
         this.cleanRoom(roomId);
 
         await this.gameService.createMatch(data);
-        const games = await this.formatMatchFront(await this.gameService.findAllGames());
-
+        // const games = await this.formatMatchFront(await this.gameService.findAllGames());
+        const games = await this.gameService.findAllGames();
+        // console.log(games);
         games.forEach(game => {
             console.log(`id: ${game.id}`);
-            console.log(`Date: ${game.date}`);
-            game.players.forEach(player => {
-                console.log(`Player : ${player.username}, Score: ${player.score}, Role: ${player.role}`);
+            console.log(`Date: ${game.createdAt}`);
+            game.players.forEach(player => 
+                console.log(player.player.username));
+                // console.log(`Player : ${player.player.username}, Score: ${player.score}, Role: ${player.role}`));
             })
-        });
-        this.server.emit('historyAllMatch', games);
-    }
+        // this.server.emit('historyAllMatch', games);
+        }
 
-    async formatMatchFront(games) : Promise<Matchs[]> {
-        const matchs = await Promise.all (games.map(async (game) => {
-            const players = await Promise.all(game.players.map(async player => {
-                return {
-                    username: (await this.userService.getUserById(player.playerId)).username,
-                    score: player.score,
-                    role: player.role
-                };
-            }));
-            return {
-                id: game.id,
-                date:game.createdAt,
-                players: players
-            };
-        }));
-        return matchs;
-    }
+    // async formatMatchFront(games) : Promise<Matchs[]> {
+    //     const matchs = await Promise.all (games.map(async (game) => {
+    //         const players = await Promise.all(game.players.map(async player => {
+    //             return {
+    //                 username: (await this.userService.getUserById(player.playerId)).username,
+    //                 score: player.score,
+    //                 role: player.role
+    //             };
+    //         }));
+    //         return {
+    //             id: game.id,
+    //             date:game.createdAt,
+    //             players: players
+    //         };
+    //     }));
+    //     return matchs;
+    // }
 
     private findUsername(user_id) {
         for (let [client, user] of this.connectedUsers.entries()) {

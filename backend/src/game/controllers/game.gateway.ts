@@ -85,7 +85,7 @@ export class GameGateway implements OnGatewayInit
             else if (roomState.state === RoomStatus.INGAME)
                 this.roomService.closingGame(gameId, this.roomService.findMyLifePartner(gameId, client).id);
         }
-        console.log((this.connectedUsers.get(client.id)).username + " disconnected from game");
+        console.log(this.connectedUsers.get(client.id).username + " disconnected from game");
         this.connectedUsers.delete(client.id);
         this.roomService.playersData.delete(client.id);
         this.roomService.logRooms();
