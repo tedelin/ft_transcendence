@@ -10,7 +10,7 @@ import './styles/chat.css'
 import { ErrorProvider, useError } from './components/ErrorProvider'
 import { Channels } from './chat/Channels'
 import { Friends } from './chat/Friends'
-import { ChatChannel } from './chat/ChatChannel'
+import { ChatBox } from './chat/ChatBox'
 
 const router = createBrowserRouter([
 	{
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
 					},
 					{
 						path: 'channels/:name',
-						element: <ChatChannel />,
+						element: <ChatBox />,
 					},
 					{
 						path: 'friends',
@@ -44,10 +44,10 @@ const router = createBrowserRouter([
 				path: "login",
 				element: <Login />
 			},
-			// {
-			// 	path: "game",
-			// 	element: <RequireAuth><Game /></RequireAuth>
-			// }
+			{
+				path: "game",
+				element: <RequireAuth><Game /></RequireAuth>
+			}
 		],
 	},
 ])

@@ -1,33 +1,31 @@
-import {ChannelList, SearchChannel } from './ChannelList';
-import { ChatProvider, useChat, useChatDispatch } from './ChatContext';
-import { CreateChannel } from './CreateChannel';
+import { ChannelList, SearchChannel } from './ChannelList';
+import { ChannelActions } from './ChannelActions';
 import { fetchUrl } from '../fetch';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import '../styles/chat.css';
 
 export function Channels() {
-	const dispatch = useChatDispatch();
+	const [channels, setChannels] = useState([]);
 
 	async function fetchChannels() {
 		try {
-		  const data = await fetchUrl('/chat/channels');	  
-		  dispatch({ type: 'fetchChannels', channels: data });
-		  dispatch({ type: 'searchChannels', channels: data });
+			const data = await fetchUrl('/chat/channels');
+			setChannels(data);
 		} catch (error) {
-		  console.error('Error fetching channels:', error);
+			console.error('Error fetching channels:', error);
 		}
 	};
-	
+
 	useEffect(() => {
 		fetchChannels();
 	}, []);
 
 	return (
 		<>
-			<CreateChannel />
-			<SearchChannel />
+			<ChannelActions />
+			<SearchChannel setChannels={setChannels} />
 			<div className="channelList">
-				<ChannelList />
+				<ChannelList channels={channels} setChannels={setChannels} />
 			</div>
 		</>
 	);

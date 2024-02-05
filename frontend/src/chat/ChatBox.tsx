@@ -1,26 +1,23 @@
 import { useEffect, useState } from "react";
 import { MessageDisplay } from './MessageDisplay';
-import { useChat } from './ChatContext';
 import { useAuth } from "../components/AuthProvider";
-import '../styles/chat.css';
 import { useParams } from "react-router-dom";
-import { fetchUrl } from "../fetch";
+import '../styles/chat.css';
 
-function TopBar() {
-	const chat = useChat();
+// function TopBar() {
 
-	return (
-		<div className="topBarChat">
-			<img className="smallAvatar" src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
-			<span className='spanMargin'>
-				{chat.channelTo?.name}
-			</span>
-		</div>
-	);
-}
+// 	return (
+// 		<div className="topBarChat">
+// 			<img className="smallAvatar" src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
+// 			<span className='spanMargin'>
+// 				{chat.channelTo?.name}
+// 			</span>
+// 		</div>
+// 	);
+// }
 
 
-export function ChatChannel() {
+export function ChatBox() {
 	const [message, setMessage] = useState('');
 	const [typing, setTyping] = useState('');
 	const { name } = useParams();
