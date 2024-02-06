@@ -49,11 +49,19 @@ export class GameService {
                     },
                 },
                 include: {
-                    players: true,
+                    players: {
+                        include: {
+                            player: true, // Assurez-vous que les détails du joueur sont inclus
+                        }
+                    },
                 },
             });
           }
         return this.databaseService.match.findMany({
+            orderBy: {
+                createdAt: 'desc', // Trier par date de création dans un ordre décroissant
+            },
+            take: 10,
             include: {
                 players: {
                     include: {

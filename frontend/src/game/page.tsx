@@ -127,29 +127,29 @@ export function Game() {
         return <div className='countDown'>{count}</div>;
     }
 
-    const formatMatchFront = (games) => {
-        return games.map((game) => {
-          const players = game.players.map(player => ({
-            username: player.username,
-            score: player.score,
-            role: player.role,
-          }));
-          return {
-            id: game.id,
-            date: game.createdAt,
-            players: players,
-          };
-        });
-      };
+    // const formatMatchFront = (games) => {
+    //     return games.map((game) => {
+    //       const players = game.players.map(player => ({
+    //         username: player.username,
+    //         score: player.score,
+    //         role: player.role,
+    //       }));
+    //       return {
+    //         id: game.id,
+    //         date: game.createdAt,
+    //         players: players,
+    //       };
+    //     });
+    //   };
 
     useEffect(() => {
         // Définition de la fonction asynchrone pour récupérer les matchs
         const fetchMatchHistory = async () => {
             try {
-                const dataHistory = await fetchUrl('/game/history', {
+                const data = await fetchUrl('/game/history', {
                     method: "GET"
                 });
-                setHistoryAll(dataHistory);
+                setHistoryAll(data);
             } catch (error) {
                 console.error("Failed to fetch match history:", error);
             }
@@ -157,21 +157,6 @@ export function Game() {
         console.log("fetMatchHistory")
         fetchMatchHistory();
     }, []);
-    
-    async function getUser() {
-		try {
-			const response = await fetchUrl(`/users/${username}`, {
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			setUser(response);
-		} catch (error) {
-			er.setError(error.message);
-			// alert('here');
-		}
-	}
 
     useEffect(() => {
         auth?.socket?.on('gameMatchmaking', (data) => {

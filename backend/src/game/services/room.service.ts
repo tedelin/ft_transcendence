@@ -267,38 +267,10 @@ export class RoomService {
             console.log(`id: ${game.id}`);
             console.log(`Date: ${game.createdAt}`);
             game.players.forEach(player => 
-                console.log(player.player.username));
-                // console.log(`Player : ${player.player.username}, Score: ${player.score}, Role: ${player.role}`));
+                console.log(`Player : ${player.player.username}, Score: ${player.score}, Role: ${player.role}`));
             })
-        // this.server.emit('historyAllMatch', games);
+        this.server.emit('historyAllMatch', games);
         }
-
-    // async formatMatchFront(games) : Promise<Matchs[]> {
-    //     const matchs = await Promise.all (games.map(async (game) => {
-    //         const players = await Promise.all(game.players.map(async player => {
-    //             return {
-    //                 username: (await this.userService.getUserById(player.playerId)).username,
-    //                 score: player.score,
-    //                 role: player.role
-    //             };
-    //         }));
-    //         return {
-    //             id: game.id,
-    //             date:game.createdAt,
-    //             players: players
-    //         };
-    //     }));
-    //     return matchs;
-    // }
-
-    private findUsername(user_id) {
-        for (let [client, user] of this.connectedUsers.entries()) {
-            if (user.id === user_id) {
-                return user.username;
-            }
-        }
-        return null;
-    }
 
     private getPlayersStats(players: Socket[]): { player1: any, player2: any } {
         const player1Stats = {

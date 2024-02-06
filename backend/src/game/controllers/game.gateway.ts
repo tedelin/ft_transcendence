@@ -57,16 +57,6 @@ export class GameGateway implements OnGatewayInit
         this.connectedUsers.set(client.id, user);
         this.roomService.playersData.set(client.id, new pData(user.id));
         console.log(user.username + " connected to game, id " + client.id);
-        // const games = await this.roomService.formatMatchFront(await this.gameService.findAllGames());
-        // console.log("<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>");
-        // games.forEach(game => {
-        //     console.log(`id: ${game.id}`);
-        //     console.log(`Date: ${game.date}`);
-        //     game.players.forEach(player => {
-        //         console.log(`Player : ${player.username}, Score: ${player.score}, Role: ${player.role}`);
-        //     })
-        // });
-        // this.server.emit('historyAllMatch', games);
     }
 
     async handleDisconnect(client: Socket): Promise<void> {
