@@ -174,7 +174,7 @@ function FriendsList({ selected }) {
 				{filteredFriends.length > 0 &&
 					filteredFriends.map((friend: any) => (
 						<div className='friendListItem' key={friend.id}>
-							<span className='sideBarChatName'>{friend.id}</span>
+							<span className='sideBarChatName'>{friend.initiatorId == auth?.user?.id ? friend.receiver.username : friend.initiator.username}</span>
 							{/* <div className='friendStatus'>
 								{friend.status}
 							</div> */}

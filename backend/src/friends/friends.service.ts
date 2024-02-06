@@ -43,6 +43,21 @@ export class FriendService {
                     { receiverId: userId },
                 ],
             },
+			include: {
+				initiator: {
+					select: {
+						username: true,
+						avatar: true,
+					}
+				},
+				receiver: {
+					select: {
+						username: true,
+						avatar: true,
+					}
+				}
+
+			}
         });
     }
 

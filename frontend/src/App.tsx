@@ -44,10 +44,10 @@ const router = createBrowserRouter([
 				path: "login",
 				element: <Login />
 			},
-			{
-				path: "game",
-				element: <RequireAuth><Game /></RequireAuth>
-			}
+			// {
+			// 	path: "game",
+			// 	element: <RequireAuth><Game /></RequireAuth>
+			// }
 		],
 	},
 ])
