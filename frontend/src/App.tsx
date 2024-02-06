@@ -1,4 +1,4 @@
-import { useLocation, Outlet, Routes, Route, Navigate, createBrowserRouter, RouterProvider} from 'react-router-dom'
+import { useLocation, Outlet, Routes, Route, Navigate, createBrowserRouter, RouterProvider, useRouteError, LoaderFunctionArgs, redirect } from 'react-router-dom'
 import { useEffect } from 'react'
 import Login from './pages/Login'
 import Chat from './chat/page'
@@ -9,25 +9,83 @@ import './App.css'
 import './styles/chat.css'
 import { ErrorProvider, useError } from './components/ErrorProvider'
 import Settings from './pages/Settings'
+import { Channels } from './chat/Channels'
+import { Friends } from './chat/Friends'
+import { ChatBox } from './chat/ChatBox'
 
 const router = createBrowserRouter([
-    { path: '*', Component: Root },
-]);
+	{
+		path: "/",
+		element: <Layout />,
+		errorElement: <ErrorPage />,
+		children: [
+			{
+				path: "",
+				element: <div className='chatArea'></div>
+			},
+			{
+				path: "chat",
+				element: <RequireAuth><Chat /></RequireAuth>,
+				children: [
+					{
+						path: 'channels',
+						element: <Channels />,
+					},
+					{
+						path: 'channels/:name',
+						element: <ChatBox />,
+					},
+					{
+						path: 'friends',
+						element: <Friends />,
+					}
+				]
+			},
+			{
+				path: "login",
+				element: <Login />
+			},
+			{
+				path: "settings",
+				element: <RequireAuth><Settings /></RequireAuth>
+			},
+			// {
+			// 	path: "game",
+			// 	element: <RequireAuth><Game /></RequireAuth>
+			// }
+		],
+	},
+])
+
+export default function ErrorPage() {
+	const error = useRouteError();
+
+	return (
+		<div id="error-page">
+			<h1>Oops!</h1>
+			<p>Sorry, an unexpected error has occurred.</p>
+			<p>
+				<i>{error?.error?.toString() ?? error?.toString()}</i>
+			</p>
+		</div>
+	);
+}
 
 function Layout() {
 	const er = useError();
+
 	return (
-		<>
+		<AuthProvider>
 			<NavBar />
-			{er.error && <div className="notification">{er.error}</div>}
 			<div className='container'>
+				{er.error && <div className="notification">{er.error}</div>}
 				<Outlet />
 			</div>
-		</>
+		</AuthProvider>
 	)
 }
 
-function RequireAuth({children}: {children: JSX.Element}) {
+function RequireAuth({ children }: { children: JSX.Element }) {
 	let auth = useAuth();
 	let location = useLocation();
 
@@ -36,60 +94,17 @@ function RequireAuth({children}: {children: JSX.Element}) {
 	}
 
 	if (!auth?.user) {
-		return <Navigate to="/login" state={{ from: location }} replace />;
+		return <Navigate to="/login" state={{ from: location }} replace />
 	}
+
 	return children;
 }
 
-function Root() {
-
-	useEffect(() => {
-		const urlParams = new URLSearchParams(window.location.search);
-		const token = urlParams.get('token');
-	  
-		if (token) {
-		  localStorage.setItem('jwtToken', token);
-		  document.location.search = '';
-		}
-	  }, []);
-
+export function App() {
 	return (
 		<ErrorProvider>
-			<AuthProvider>
-				<Routes>
-					<Route element={<Layout />}>
-						<Route path="/" element={<Login />} />
-						<Route path="/login" element={<Login />} />
-						<Route 
-							path="/game" 
-							element={
-							<RequireAuth>
-								<Game />
-							</RequireAuth>}
-						/>
-						<Route 
-							path="/chat" 
-							element={
-							<RequireAuth>
-								<Chat />
-							</RequireAuth>}
-						/>
-						<Route 
-							path="/settings" 
-							element={
-							<RequireAuth>
-								<Settings />
-							</RequireAuth>}
-						/>
-						</Route>
-				</Routes>
-			</AuthProvider>
+			<RouterProvider router={router} />
 		</ErrorProvider>
-	)
+	);
 }
 
-function App() {
-    return <RouterProvider router={router} />;
-}
-
-export default App

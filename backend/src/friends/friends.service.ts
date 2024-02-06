@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
@@ -7,7 +7,7 @@ export class FriendService {
 
     async createFriendRequest(initiatorId: number, receiverId: number) {
         if (initiatorId === receiverId)
-            throw new Error('Cannot send friend request to yourself');
+            throw new ForbiddenException('Cannot send friend request to yourself');
         await this.checkUserExistence(initiatorId);
         await this.checkUserExistence(receiverId);
 
@@ -21,7 +21,7 @@ export class FriendService {
         });
 
         if (existingFriendship) {
-            throw new Error('Friendship already exists');
+            throw new ConflictException('Friendship already exists');
         }
 
         return this.databaseService.friendship.create({
@@ -43,6 +43,21 @@ export class FriendService {
                     { receiverId: userId },
                 ],
             },
+			include: {
+				initiator: {
+					select: {
+						username: true,
+						avatar: true,
+					}
+				},
+				receiver: {
+					select: {
+						username: true,
+						avatar: true,
+					}
+				}
+
+			}
         });
     }
 
@@ -55,7 +70,7 @@ export class FriendService {
             throw new NotFoundException('Friendship not found');
         }
         if (friendship.receiverId !== userId) {
-            throw new Error('You cannot accept this friend request');
+            throw new ForbiddenException('You cannot accept this friend request');
         }
         return this.databaseService.friendship.update({
             where: { id: friendshipId },

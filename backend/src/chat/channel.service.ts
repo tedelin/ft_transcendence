@@ -4,7 +4,6 @@ import { DatabaseService } from 'src/database/database.service';
 import { ChannelMessageDto } from './dto/channelMessage.dto';
 import * as argon from 'argon2';
 import { JoinChannelDto } from './dto/joinChannel.dto';
-import { Certificate } from 'crypto';
 
 @Injectable()
 export class ChannelService {
@@ -94,7 +93,15 @@ export class ChannelService {
 
 	async createMessage(createChannelMessageDto: ChannelMessageDto) {
 		const channelMessage = await this.databaseService.channelMessage.create({
-			data: createChannelMessageDto
+			data: createChannelMessageDto,
+			include: {
+				sender: {
+					select: {
+						username: true,
+						avatar: true,
+					}
+				}
+			}
 		});
 		return channelMessage;
 	}
@@ -103,6 +110,14 @@ export class ChannelService {
 		return await this.databaseService.channelMessage.findMany({
 			where: {
 				channelId: name,
+			},
+			include: {
+				sender: {
+					select: {
+						username: true,
+						avatar: true,
+					}
+				}
 			}
 		})
 	}

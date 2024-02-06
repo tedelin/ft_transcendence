@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 import { useAuth } from './AuthProvider';
-import { NavLink } from 'react-router-dom'
+import { NavLink, Navigate } from 'react-router-dom'
 import '../styles/navbar.css';
 
 
@@ -24,10 +24,11 @@ export function NavBar() {
 					<NavLink className="navBarItem" to="/">Home</NavLink>
 					<NavLink className="navBarItem" to="/chat">Chat</NavLink>
 					<NavLink className="navBarItem" to="/game">Game</NavLink>
+					<NavLink className="navBarItem" to="/login">Login</NavLink>
 				</div>
 				{auth?.user?.username && <div className="navUser">
 					<img src={avatarUrl} alt="User Avatar" />
-					<NavLink to="/Settings">{auth ? auth.user.username : "undefined"}</NavLink>
+					<NavLink className="navBarItem" to="/Settings">{auth ? auth.user.username : "undefined"}</NavLink>
 					<button onClick={logout}>Logout</button>
 				</div>}
 			</div>

@@ -24,22 +24,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		private readonly privateMessageService: PrivateMessageService,
 		private readonly authService: AuthService,
 		private readonly userService: UserService,
-		) { }
+	) { }
 
 	async handleConnection(client: Socket): Promise<void> {
-		// const token = client.handshake.query.token.toString();
-		// const payload = this.authService.verifyAccessToken(token);
-		// const user = payload && await this.userService.getUserById(payload.sub);
-		// if (!user) {
-		// 	client.disconnect(true);
-		// 	return ;
-		// }
-		// this.connectedUsers.set(client.id, user.id);
-		// const joinedChannels = await this.userService.getUserChannels(user.id);
-		// joinedChannels.channels.forEach((channel) => {
-		// 	client.join(channel.channelName);
-		// 	console.log(user.username + " joined " + channel.channelName);
-		// });
+		const token = client.handshake?.query?.token?.toString();
+		const payload = this.authService.verifyAccessToken(token);
+		const user = payload && await this.userService.getUserById(payload.sub);
+		if (!user) {
+			client.disconnect(true);
+			return;
+		}
+		this.connectedUsers.set(client.id, user.id);
+		const joinedChannels = await this.userService.getUserChannels(user.id);
+		joinedChannels.channels.forEach((channel) => {
+			client.join(channel.channelName);
+			console.log(user.username + " joined " + channel.channelName);
+		});
 	}
 
 	async handleDisconnect(client: Socket) {
@@ -47,7 +47,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.sendConnectedUsers();
 	}
 
-	
+
 	@SubscribeMessage('channel-message')
 	async onChannelMessage(client: Socket, channelMessageDto: ChannelMessageDto) {
 		const storedMessage = await this.channelService.createMessage(channelMessageDto);
@@ -57,10 +57,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('join-channel')
 	async onChannelJoin(client: Socket, joinChannelDto: JoinChannelDto) {
 		const channel = await this.channelService.findByName(joinChannelDto.roomId);
+		if (!channel) {
+			throw new ForbiddenException("Channel not found");
+		}
 		if (joinChannelDto.password && joinChannelDto.password !== '') {
 			const pwMatches = await argon.verify(channel.password, joinChannelDto.password);
 			if (!pwMatches) {
-				throw new ForbiddenException("Wrong password");        
+				throw new ForbiddenException("Wrong password");
 			}
 		}
 		const userChannels = await this.userService.getUserChannels(joinChannelDto.userId);
@@ -90,8 +93,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage('typing')
-	async onTyping(client: Socket, username: string, receiver: string) {
-		client.to(receiver).emit('typing', username);
+	async onTyping(client: Socket, { username, roomId }) {
+		client.to(roomId).emit('typing', username);
 	}
 
 	@SubscribeMessage('get-connected-users')
