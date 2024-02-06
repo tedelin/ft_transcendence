@@ -70,7 +70,8 @@ export function Game() {
     const [playerTwo, setPlayerTwo] = useState([]);
 
     const [historyAll, setHistoryAll] = useState([]);
-    // const [historyOk, setHistoryOk] = useState(false);
+    const [newMatchIndex, setNewMatchIndex] = useState(null);
+
     const auth = useAuth();
 
     function handleQuit() {
@@ -126,21 +127,6 @@ export function Game() {
 
         return <div className='countDown'>{count}</div>;
     }
-
-    // const formatMatchFront = (games) => {
-    //     return games.map((game) => {
-    //       const players = game.players.map(player => ({
-    //         username: player.username,
-    //         score: player.score,
-    //         role: player.role,
-    //       }));
-    //       return {
-    //         id: game.id,
-    //         date: game.createdAt,
-    //         players: players,
-    //       };
-    //     });
-    //   };
 
     useEffect(() => {
         // Définition de la fonction asynchrone pour récupérer les matchs
@@ -202,7 +188,10 @@ export function Game() {
 
         auth?.socket?.on('historyAllMatch', (data) => {
             console.log("historyAllllllllll");
-            setHistoryAll(data);
+            setHistoryAll(data.games);
+            // setNewMatchIndex(data.new);
+            // console.log(data.new);
+            // setTimeout(() => setNewMatchIndex(null), 500);
         })
 
         return () => {

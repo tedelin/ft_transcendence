@@ -61,7 +61,6 @@ export class GameService {
             orderBy: {
                 createdAt: 'desc', // Trier par date de création dans un ordre décroissant
             },
-            take: 10,
             include: {
                 players: {
                     include: {

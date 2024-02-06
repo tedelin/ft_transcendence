@@ -259,7 +259,7 @@ export class RoomService {
         // clean room
         this.cleanRoom(roomId);
 
-        await this.gameService.createMatch(data);
+        const newMatch = await this.gameService.createMatch(data);
         // const games = await this.formatMatchFront(await this.gameService.findAllGames());
         const games = await this.gameService.findAllGames();
         // console.log(games);
@@ -269,8 +269,9 @@ export class RoomService {
             game.players.forEach(player => 
                 console.log(`Player : ${player.player.username}, Score: ${player.score}, Role: ${player.role}`));
             })
-        this.server.emit('historyAllMatch', games);
-        }
+        console.log(newMatch.id);
+        this.server.emit('historyAllMatch', { games: games, new: newMatch.id });
+}
 
     private getPlayersStats(players: Socket[]): { player1: any, player2: any } {
         const player1Stats = {

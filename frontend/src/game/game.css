@@ -31,17 +31,24 @@
     border-radius: 6px;
 }
 
-.matchs-menu {
+.history-menu {
     position: absolute;
-    top: 55%;
-    color: white;
+    top: 60%;
     display: flex;
     flex-direction: column;
-    border: none;
     background-color:#1d1d1d;
     border-radius: 6px;
     padding: 10px;
     gap: 2px;
+}
+
+.matchs-menu {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    background-color:#46464633;
+    max-height: 290px;
+    overflow-y: auto;
 }
 
 .matchs-title {
@@ -61,6 +68,15 @@
     background-color: rgba(0, 0, 0, 0.4); /* Fond noir transparent pour chaque match item */
     align-items: center; /* Centrer le contenu verticalement */
     justify-items: center; /* Centrer le contenu horizontalement */
+}
+
+.highlight {
+    animation: highlightAnimation 0.5s forwards;
+}
+
+@keyframes highlightAnimation {
+    from { background-color: white; }
+    to { background-color: transparent; }
 }
 
 .loadMore {
