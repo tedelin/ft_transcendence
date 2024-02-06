@@ -52,12 +52,12 @@ export class AuthService {
 		const url = 'https://api.intra.42.fr/oauth/token';
 
 		const formData = new FormData();
-		// const redirectUri = encodeURIComponent(process.env.HOST);
+		// const redirectUri = encodeURIComponent(process.env.NEXT_PUBLIC_REDIRECT_URI);
 		formData.append('grant_type', 'authorization_code');
 		formData.append('client_id', `${this.configService.get<string>('CLIENT_ID')}`);
 		formData.append('client_secret', `${this.configService.get<string>('CLIENT_SECRET')}`);
 		formData.append('code', `${code}`);
-		// formData.append('redirect_uri', `${process.env.REDIRECT_BASE}${redirectUri}&response_type=code`);
+		formData.append('redirect_uri', `${this.configService.get<string>('REDIRECT_URI')}`);
 
 		try {
 			const response = await fetch(url, {

@@ -101,6 +101,16 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 }
 
 export function App() {
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const token = urlParams.get('token');
+
+		if (token) {
+		  localStorage.setItem('jwtToken', token);
+		  document.location.search = '';
+		}
+	  }, []);
+
 	return (
 		<ErrorProvider>
 			<RouterProvider router={router} />
