@@ -1,8 +1,9 @@
-import { Controller, Get, Param, Delete, Post, Body, Patch } from '@nestjs/common';
+import { Controller, Get, Param, Delete, Post, Body, Patch, UseGuards, Req } from '@nestjs/common';
 import { PrivateMessageService } from './private-message.service';
 import { ChannelService } from './channel.service';
 import { Prisma } from '@prisma/client';
 import { ChannelMessageDto } from './dto/channelMessage.dto';
+import { JwtGuard } from 'src/auth/guard';
 
 @Controller('chat')
 export class ChatController {
@@ -40,7 +41,8 @@ export class ChatController {
 	}
 
 	@Get('channels/:name/messages')
-	getChannelMessages(@Param('name') name: string) {
-		return this.channelService.findMessages(name);
+	@UseGuards(JwtGuard)
+	getChannelMessages(@Param('name') name: string, @Req() user: any) {
+		return this.channelService.findMessages(user.id, name);
 	}
 }

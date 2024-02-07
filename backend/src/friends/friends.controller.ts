@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Post, Req, UseGuards, Delete } from '@nestjs/common';
+import { Controller, Patch, Get, Param, ParseIntPipe, Post, Req, UseGuards, Delete } from '@nestjs/common';
 import { FriendService  } from "./friends.service";
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { Request } from 'express';
@@ -18,6 +18,12 @@ export class FriendController {
 	@UseGuards(JwtGuard)
 	createFriendRequest(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
 		return this.friendService.createFriendRequest((req.user as { id: number }).id, id);
+	}
+
+	@Patch('block/:id')
+	@UseGuards(JwtGuard)
+	blockFriend(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
+		return this.friendService.blockUser((req.user as { id: number }).id, id);
 	}
 
 	@Post('accept/:id')

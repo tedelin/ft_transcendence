@@ -52,6 +52,7 @@ export class FriendService {
 				},
 				receiver: {
 					select: {
+						id: true,
 						username: true,
 						avatar: true,
 					}
@@ -91,6 +92,33 @@ export class FriendService {
             where: { id: friendshipId },
         });
     }
+
+	async blockUser(userId: number, blockedUserId: number) {
+		await this.databaseService.friendship.deleteMany({
+			where: {
+				OR: [
+					{ initiatorId: userId, receiverId: blockedUserId },
+					{ initiatorId: blockedUserId, receiverId: userId },
+				],
+			},
+		});
+		return await this.databaseService.friendship.create({
+			data: {
+				initiatorId: userId,
+				receiverId: blockedUserId,
+				status: "BLOCKED",
+			},
+		});
+	}
+
+	async findBlockedUsers(userId: number) {
+		return this.databaseService.friendship.findMany({
+			where: {
+				initiatorId: userId, 
+				status: "BLOCKED",
+			},
+		});
+	}
 
     private async checkUserExistence(userId: number): Promise<void> {
         const user = await this.databaseService.user.findUnique({

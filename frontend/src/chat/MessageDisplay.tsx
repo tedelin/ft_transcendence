@@ -10,7 +10,13 @@ export function MessageDisplay({channel}) {
 
 	async function fetchChannelsMessages() {
 		try {
-			const response = await fetchUrl(`/chat/channels/${channel}/messages`);
+			const token = localStorage.getItem('jwtToken');
+			const response = await fetchUrl(`/chat/channels/${channel}/messages`, {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${token}`,
+				},
+			});
 			setReceivedMessages(response);
 		} catch (error) {
 			console.error('Error fetching channels:', error);

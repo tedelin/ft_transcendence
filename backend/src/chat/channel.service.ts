@@ -2,12 +2,16 @@ import { Injectable, ConflictException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import { ChannelMessageDto } from './dto/channelMessage.dto';
-import * as argon from 'argon2';
 import { JoinChannelDto } from './dto/joinChannel.dto';
+import { FriendService } from 'src/friends/friends.service';
+import * as argon from 'argon2';
 
 @Injectable()
 export class ChannelService {
-	constructor(private readonly databaseService: DatabaseService) {}
+	constructor(
+		private readonly databaseService: DatabaseService,
+		private readonly friendService: FriendService,
+	) {}
 
     async create(createChannelDto: Prisma.ChannelCreateInput) {
 		if (createChannelDto.name === '') {
@@ -106,10 +110,14 @@ export class ChannelService {
 		return channelMessage;
 	}
 
-	async findMessages(name: string) {
+	async findMessages(userId: number, name: string) {
+		const blockedUser = await this.friendService.findBlockedUsers(userId);
 		return await this.databaseService.channelMessage.findMany({
 			where: {
 				channelId: name,
+				senderId: {
+					notIn: blockedUser.map(friend => friend.receiverId)
+				}
 			},
 			include: {
 				sender: {
@@ -119,6 +127,6 @@ export class ChannelService {
 					}
 				}
 			}
-		})
+		});
 	}
 }
