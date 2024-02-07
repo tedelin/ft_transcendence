@@ -3,19 +3,19 @@ import { useAuth } from './AuthProvider';
 
 
 function AvatarUpload() {
-	const [selectedFile, setSelectedFile] = useState(null);
-	const auth = useAuth();
-	const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
-	const filePath = auth?.user?.avatar;
-	const fileName = filePath?.split('/').pop();
-	const avatarUrl = API_BASE_URL + "/users/avatars/" + fileName;
-	const [preview, setPreview] = useState(avatarUrl);
-	const token = localStorage.getItem('jwtToken');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const auth = useAuth();
+  const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
+  const filePath = auth?.user?.avatar;
+  const fileName = filePath?.split('/').pop();
+  const avatarUrl = API_BASE_URL + "/users/avatars/" + fileName;
+  const [preview, setPreview] = useState(avatarUrl);
+  const token = localStorage.getItem('jwtToken');
 
-	
-	// Gère la sélection du fichier et met à jour l'aperçu
-	const handleFileChange = (event) => {
-	const file = event.target.files[0];
+
+  // Gère la sélection du fichier et met à jour l'aperçu
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
       setPreview(URL.createObjectURL(file)); // Crée un URL pour l'aperçu
@@ -36,9 +36,9 @@ function AvatarUpload() {
     try {
       const response = await fetch(API_BASE_URL + "/users/upload-avatar", {
         method: 'POST',
-		headers: {
-			'Authorization': `Bearer ${token}`,
-		  },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
         body: formData,
       });
 
