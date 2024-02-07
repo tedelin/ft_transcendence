@@ -84,21 +84,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		setUser(null);
 	}
 
-	useEffect(() => {
-		async function initAuth() {
-			const token = localStorage.getItem('jwtToken');
-			if (token) {
-				try {
-					await handleAuth(token);
-					setLoading(false);
-				} catch (error) {
-					setLoading(false);
-				}
-			} else {
+	async function initAuth() {
+		const token = localStorage.getItem('jwtToken');
+		if (token) {
+			try {
+				await handleAuth(token);
+				setLoading(false);
+			} catch (error) {
 				setLoading(false);
 			}
-		};
+		} else {
+			setLoading(false);
+		}
+	};
 
+	useEffect(() => {
 		initAuth();
 
 		return () => {
