@@ -45,7 +45,7 @@
 .matchs-menu {
     color: white;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     background-color:#46464633;
     max-height: 290px;
     overflow-y: auto;
@@ -61,7 +61,7 @@
     display: grid;
     color: white;
     font-size: 0.85rem;
-    grid-template-columns: 200px 75px 40px 40px 75px;
+    grid-template-columns: 200px 75px 75px 75px;
     gap: 5px;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -70,30 +70,20 @@
     justify-items: center; /* Centrer le contenu horizontalement */
 }
 
-.highlight {
-    animation: highlightAnimation 0.5s forwards;
+.view-match-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-@keyframes highlightAnimation {
-    from { background-color: white; }
-    to { background-color: transparent; }
-}
-
-.loadMore {
-    display:inline-block;
-    padding: 5px 5px; /* Ajuste le padding autour du texte pour un meilleur contrôle */
-    background-color: transparent; /* Optionnel : rend le fond transparent */
-    color: white; /* Couleur du texte */
-    border: 1px solid rgba(0, 0, 0, 0); /* Bordure pour rendre le bouton plus visible */
-    cursor: pointer; /* Change le curseur en main quand survolé */
-    font-size: 1rem; /* Taille du texte */
-    border-radius: 5px; /* Arrondit les coins du bouton */
-    padding-left: 10px;
-}
-
-.loadMore:hover {
-    background-color: rgba(255, 255, 255, 0.781); /* Change la couleur de fond au survol pour un effet visuel */
-    color: #1d1d1d; /* Change la couleur du texte au survol */
+.view-match-button img {
+    display: block; /* Assure une bonne mise en page de l'image */
+    width: 20px; /* Ajustez selon la taille souhaitée */
+    height: 20px; /* Ajustez selon la taille souhaitée */
 }
 
 .StartMessage {

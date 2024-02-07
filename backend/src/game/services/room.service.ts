@@ -9,6 +9,7 @@ import { CreateMatchDto, PlayerData } from "../dto/create-match.dto";
 import { AuthService } from "src/auth/auth.service";
 import { UserService } from "src/user/user.service";
 import { User } from "@prisma/client";
+import { UpdateMatchDto } from "../dto/update-match.dto";
 
 interface Matchs {
     id: number,
@@ -175,14 +176,19 @@ export class RoomService {
         }
     }
 
-    // TO HANDLE
     public startGame(roomId : string, firstPlayer : pData, secondPlayer : pData, settings: GameSettings) {
         firstPlayer.gamesPlayed++;  
         secondPlayer.gamesPlayed++;
-        this.rooms.get(roomId).state = RoomStatus.LAUNCHING;
+        let roomState = this.rooms.get(roomId);
+        roomState.state = RoomStatus.LAUNCHING;
         this.server.to(roomId).emit('letsGO');
-        setTimeout(() => {
+        setTimeout(async () => {
             this.rooms.get(roomId).state = RoomStatus.INGAME
+            const data : CreateMatchDto = this.formatCreateMatchData(roomState);
+            const match = await this.gameService.createMatch(data);
+            roomState.id = match.id;
+            console.log(`${match.id} just created`);
+            this.server.emit('matchCreated', match);
             this.pongService.startGame(roomId, settings, this.server);
         }, 5200);
     }
@@ -202,7 +208,7 @@ export class RoomService {
         this.rooms.delete(roomId);
     }
 
-    private formatMatchData(roomState : RoomState) : CreateMatchDto {
+    private formatUpdateMatchData(roomState : RoomState) : UpdateMatchDto {
         const score : Score = roomState.gameState.score;
         const userOne : User = this.connectedUsers.get(roomState.players[0].id);
         const userTwo : User = this.connectedUsers.get(roomState.players[1].id);
@@ -216,7 +222,29 @@ export class RoomService {
             score: score.player2,
             role: "PLAYER_TWO"
         };
-        return { players: [playerOne, playerTwo] };
+        return { 
+            players: [playerOne, playerTwo],
+            status: "FINISHED",
+        };
+    }
+
+    private formatCreateMatchData(roomState : RoomState) : CreateMatchDto {
+        const userOne : User = this.connectedUsers.get(roomState.players[0].id);
+        const userTwo : User = this.connectedUsers.get(roomState.players[1].id);
+        const playerOne : PlayerData = {
+            playerId: userOne.id,
+            score: 0,
+            role: "PLAYER_ONE"
+        };
+        const playerTwo : PlayerData = {
+            playerId: userTwo.id,
+            score: 0,
+            role: "PLAYER_TWO"
+        };
+        return { 
+            players: [playerOne, playerTwo],
+            status: "IN_GAME",
+        };
     }
 
     async closingGame(roomId : string, winner : string) {
@@ -254,23 +282,18 @@ export class RoomService {
             });
         }
 
-        const data = this.formatMatchData(roomState);
+        const data = this.formatUpdateMatchData(roomState);
 
         // clean room
         this.cleanRoom(roomId);
 
-        const newMatch = await this.gameService.createMatch(data);
-        // const games = await this.formatMatchFront(await this.gameService.findAllGames());
-        const games = await this.gameService.findAllGames();
-        // console.log(games);
-        games.forEach(game => {
-            console.log(`id: ${game.id}`);
-            console.log(`Date: ${game.createdAt}`);
-            game.players.forEach(player => 
-                console.log(`Player : ${player.player.username}, Score: ${player.score}, Role: ${player.role}`));
-            })
-        console.log(newMatch.id);
-        this.server.emit('historyAllMatch', { games: games, new: newMatch.id });
+        const match = await this.gameService.updateMatch(roomState.id, data);
+        console.log(`id: ${match.id} juste updated :`);
+        console.log(`Date: ${match.createdAt}`);
+        match.players.forEach(player => 
+            console.log(`Player : ${player.player.username}, Score: ${player.score}, Role: ${player.role}`));
+        // const allMatchs = await this.gameService.findAllGames();
+        this.server.emit('matchUpdated', match);
 }
 
     private getPlayersStats(players: Socket[]): { player1: any, player2: any } {

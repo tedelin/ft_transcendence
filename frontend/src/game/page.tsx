@@ -70,7 +70,7 @@ export function Game() {
     const [playerTwo, setPlayerTwo] = useState([]);
 
     const [historyAll, setHistoryAll] = useState([]);
-    const [newMatchIndex, setNewMatchIndex] = useState(null);
+    const [historyNewMatch, setHistoryNewMatch] = useState(null);
 
     const auth = useAuth();
 
@@ -186,12 +186,18 @@ export function Game() {
             setLetsGO(true);
         })
 
-        auth?.socket?.on('historyAllMatch', (data) => {
-            console.log("historyAllllllllll");
-            setHistoryAll(data.games);
-            // setNewMatchIndex(data.new);
-            // console.log(data.new);
-            // setTimeout(() => setNewMatchIndex(null), 500);
+        auth?.socket?.on('matchCreated', (data) => {
+            console.log("matchCreated");
+            setHistoryNewMatch(data);
+            setHistoryAll(currentHistory =>[...currentHistory, data]);
+            setHistoryNewMatch(null);
+        })
+
+        auth?.socket?.on('matchUpdated', (data) => {
+            console.log("matchUpdated");
+            setHistoryAll(currentHistory => currentHistory.map(match => 
+                match.id === data.id ? data : match
+            ));
         })
 
         return () => {

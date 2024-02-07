@@ -98,6 +98,7 @@ model Match {
   id              Int      @id @default(autoincrement())
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  status          gameStatus
   players         MatchUser[]
   
   @@map("match")
@@ -123,4 +124,9 @@ enum UserStatus {
 enum playerRole {
   PLAYER_ONE
   PLAYER_TWO
+}
+
+enum gameStatus {
+  IN_GAME
+  FINISHED
 }

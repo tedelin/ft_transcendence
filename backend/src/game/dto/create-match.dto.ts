@@ -1,6 +1,7 @@
 import { IsInt, IsEnum, Min, ArrayNotEmpty, IsArray } from 'class-validator';
 import { Type } from 'class-transformer';
 import { playerRole } from '@prisma/client';
+import { gameStatus } from '@prisma/client';
 
 export class PlayerData {
   @IsInt()
@@ -14,6 +15,9 @@ export class PlayerData {
 }
 
 export class CreateMatchDto {
+  @IsEnum(gameStatus)
+  status: gameStatus;
+
   @IsArray()
   @ArrayNotEmpty()
   @Type(() => PlayerData)

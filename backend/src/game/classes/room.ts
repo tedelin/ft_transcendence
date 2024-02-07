@@ -32,6 +32,7 @@ export class RoomState {
         public players: Socket[] = [],
         public gameState: GameState | null = null,
         public settings: GameSettings = new GameSettings(0, 0, 0, 0, 0, false),
-        public state: number = 0
+        public state: number = 0,
+        public id: number = 0
     ) {}
 }
