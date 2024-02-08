@@ -46,6 +46,7 @@ export class AuthService {
         if (!isPasswordValid) {
             throw new ForbiddenException('Invalid credentials');
         }
+
         return this.signToken(user.id, user.username);
     }
 

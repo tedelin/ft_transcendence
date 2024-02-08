@@ -7,7 +7,7 @@ type UserType = {
 	id: string;
 	username: string;
 	avatar: string;
-	useTwoFa: boolean;
+	useTwoFA: boolean;
 };
 
 interface AuthContextType {

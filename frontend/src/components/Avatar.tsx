@@ -14,7 +14,7 @@ function AvatarUpload() {
 
 
   // Gère la sélection du fichier et met à jour l'aperçu
-  const handleFileChange = (event) => {
+  const handleFileChange = (event : any) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
@@ -23,7 +23,7 @@ function AvatarUpload() {
   };
 
   // Gère la soumission du formulaire
-  const handleUpload = async (event) => {
+  const handleUpload = async (event : any) => {
     event.preventDefault();
 
     if (!selectedFile) {

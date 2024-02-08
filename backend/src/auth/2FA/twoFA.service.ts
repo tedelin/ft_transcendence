@@ -24,7 +24,7 @@ export class TwoFAService {
 
             const qrCodeImage = await QRCode.toDataURL(otpauthUrl);
 
-            return qrCodeImage;
+            return { qrcode: qrCodeImage, secret: temp_secret };
         } catch (error) {
             console.error('Error generating QR code', error);
             throw new Error('Could not generate QR code');
@@ -76,5 +76,22 @@ export class TwoFAService {
 
         if (!isValid) return { validated: false };
         return { validated: true };
+    }
+
+    async turnoff2FA(userObj: any) {
+        const userId = userObj.id;
+
+        try {
+            await this.databaseService.user.update({
+                where: { id: userId },
+                data: {
+                    secretTwoFA: null,
+                    useTwoFA: false,
+                },
+            });
+        } catch (error) {
+            console.error('Error turning off 2FA :', error);
+            throw new Error('Could not turn off 2FA');
+        }
     }
 }

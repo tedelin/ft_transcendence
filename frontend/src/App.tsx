@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 import Login from './pages/Login'
 import Chat from './chat/page'
 import { NavBar } from './components/NavBar'
-import { Game } from './game/page'
 import { AuthProvider, useAuth } from './components/AuthProvider'
 import './App.css'
 import './styles/chat.css'
@@ -12,6 +11,7 @@ import Settings from './pages/Settings'
 import { Channels } from './chat/Channels'
 import { Friends } from './chat/Friends'
 import { ChatBox } from './chat/ChatBox'
+import twoFaRoutes from './pages/two-facteur-auth/two-fa-routes'
 
 const router = createBrowserRouter([
 	{
@@ -55,6 +55,7 @@ const router = createBrowserRouter([
 			// }
 		],
 	},
+	twoFaRoutes
 ])
 
 export default function ErrorPage() {
@@ -106,10 +107,10 @@ export function App() {
 		const token = urlParams.get('token');
 
 		if (token) {
-		  localStorage.setItem('jwtToken', token);
-		  document.location.search = '';
+			localStorage.setItem('jwtToken', token);
+			document.location.search = '';
 		}
-	  }, []);
+	}, []);
 
 	return (
 		<ErrorProvider>

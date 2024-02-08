@@ -43,7 +43,7 @@ export class AuthController {
         console.log('no token');
     }
     @UseGuards(JwtGuard)
-    @Post('register-2fa')
+    @Get('register-2fa')
     async register2fa(@User() id: any) {
         return this.twoFAService.register2fa(id);
     }
@@ -58,5 +58,10 @@ export class AuthController {
     @Post('verify-2fa')
     async verify2fa(@User() id: any, @Body() dto: twoFaDto) {
         return this.twoFAService.verify2fa(id, dto);
+    }
+    @UseGuards(JwtGuard)
+    @Get('turnOff-2fa')
+    turnoff2FA(@User() id: any) {
+        return this.twoFAService.turnoff2FA(id);
     }
 }
