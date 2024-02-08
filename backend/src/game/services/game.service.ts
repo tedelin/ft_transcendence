@@ -1,11 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { CreateStatsDto } from '../dto/create-stats.dto';
-import { UpdateStatsDto } from '../dto/update-stats.dto';
 import { CreateMatchDto } from "../dto/create-match.dto";
-import { NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { DatabaseService } from "src/database/database.service";
-import { UserService } from "src/user/user.service";
 import { UpdateMatchDto } from "../dto/update-match.dto";
 
 @Injectable()

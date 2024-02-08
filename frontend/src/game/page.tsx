@@ -186,18 +186,8 @@ export function Game() {
             setLetsGO(true);
         })
 
-        auth?.socket?.on('matchCreated', (data) => {
-            console.log("matchCreated");
-            setHistoryNewMatch(data);
-            setHistoryAll(currentHistory =>[...currentHistory, data]);
-            setHistoryNewMatch(null);
-        })
-
-        auth?.socket?.on('matchUpdated', (data) => {
-            console.log("matchUpdated");
-            setHistoryAll(currentHistory => currentHistory.map(match => 
-                match.id === data.id ? data : match
-            ));
+        auth?.socket?.on('matchs', (data) => {
+            setHistoryAll(data);
         })
 
         return () => {

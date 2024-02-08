@@ -95,10 +95,17 @@ export class RoomService {
 
     public logRooms() {
         this.rooms.forEach((roomState, roomId) => {
-            console.log(`Room ID: ${roomId}, Number of Clients: ${roomState.players.length}`);
+            const playerUsernames = roomState.players.map(playerSocket => {
+                const user = this.connectedUsers.get(playerSocket.id);
+                return user ? user.username : "Unknown";
+            }).join(', ');
+            const spectatorUsernames = roomState.spectators.map(spectatorSocket => {
+                const user = this.connectedUsers.get(spectatorSocket.id);
+                return user ? user.username : "Unknown";
+            }).join(', ');
+            console.log(`Room ID: ${roomId}, Players: [${playerUsernames}], Spectators: [${spectatorUsernames}]`);
         });
     }
-
 
     public assignClientToRoom(client: Socket) : string {
         const roomId = this.findAvailableRoom() || this.createRoom(client);
@@ -188,7 +195,8 @@ export class RoomService {
             const match = await this.gameService.createMatch(data);
             roomState.id = match.id;
             console.log(`${match.id} just created`);
-            this.server.emit('matchCreated', match);
+            const allMatchs = await this.gameService.findAllGames();
+            this.server.emit('matchs', allMatchs);
             this.pongService.startGame(roomId, settings, this.server);
         }, 5200);
     }
@@ -199,7 +207,7 @@ export class RoomService {
             console.error(`Room with ID ${roomId} does not exist.`);
             return;
         }
-        const clients = roomState.players;
+        const clients = roomState.players.concat(roomState.spectators);
         if (clients) {
             clients.forEach(client => {
                 client.leave(roomId);
@@ -292,8 +300,8 @@ export class RoomService {
         console.log(`Date: ${match.createdAt}`);
         match.players.forEach(player => 
             console.log(`Player : ${player.player.username}, Score: ${player.score}, Role: ${player.role}`));
-        // const allMatchs = await this.gameService.findAllGames();
-        this.server.emit('matchUpdated', match);
+        const allMatchs = await this.gameService.findAllGames();
+        this.server.emit('matchs', allMatchs);
 }
 
     private getPlayersStats(players: Socket[]): { player1: any, player2: any } {

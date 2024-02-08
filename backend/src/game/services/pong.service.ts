@@ -50,7 +50,7 @@ export class PongService {
     }
 
     private calculateWinner(gameState: GameState) {
-        if (gameState.score.player1 === 3 || gameState.score.player2 === 3) {
+        if (gameState.score.player1 === 1000 || gameState.score.player2 === 1000) {
             let winner = gameState.score.player1 === 3 ? 1 : 2;
             return (winner);
         }
@@ -65,7 +65,6 @@ export class PongService {
         const gameState = roomState.gameState;
         if (!gameState) return;
 
-        // Update game logic here (paddle movements, ball movement, collision detection, etc.)
         winner = this.calculateWinner(gameState);
         if (winner) {
             gameState.status = GameStatus.FINISHED;

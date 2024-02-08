@@ -38,10 +38,25 @@ export class GameGateway implements OnGatewayInit
         this.roomService.setServer(server, this.connectedUsers);
     }
 
-    private isAlreadyConnected(userId : number) : boolean {
-        for (let user of this.connectedUsers.values()) {
-            if (user.id === userId)
+    private cleanUpSpectator(client: Socket) {
+        for (const [room, roomState] of this.roomService.rooms.entries()) {
+            const spectIndex = roomState.spectators.findIndex(s => s.id === client.id);
+            if (spectIndex !== -1) {
+                roomState.spectators.splice(spectIndex, 1); // Nettoyage des spectateurs
+                client.leave(room); // Le client quitte la room
+                console.log(`Spectator ${client.id} has left room ${room}`);
+                console.log(`LENGTH OF SPECTATORS VECTOR AFTER HE LEFT ROOM : ${roomState.spectators.length}`);
+                break;
+            }
+        }
+    }
+
+    private isASpectator(client: Socket): boolean {
+        for (const roomState of this.roomService.rooms.values()) {
+            if (roomState.spectators.some(spectator => spectator.id === client.id)) {
+                console.log(`${client.id} is a spectator!!!`);
                 return true;
+            }
         }
         return false;
     }
@@ -62,7 +77,7 @@ export class GameGateway implements OnGatewayInit
     async handleDisconnect(client: Socket): Promise<void> {
         let gameId : string, roomState : RoomState;
         for (const [room, roomstate] of this.roomService.rooms) {
-            if (roomstate.players.includes(client)) {
+            if (roomstate.players.includes(client) || roomstate.spectators.includes(client)) {
                 gameId = room;
                 roomState = roomstate
                 break;
@@ -70,7 +85,10 @@ export class GameGateway implements OnGatewayInit
         }
         if (roomState)
         {
-            if (roomState.state == RoomStatus.MATCHMAKING)
+            console.log("in roomstate");
+            if (this.isASpectator(client))
+                this.cleanUpSpectator(client);
+            else if (roomState.state == RoomStatus.MATCHMAKING)
                 this.roomService.matchmakingExit(client, 'disconnect', this.server);
             else if (roomState.state === RoomStatus.INGAME)
                 this.roomService.closingGame(gameId, this.roomService.findMyLifePartner(gameId, client).id);
@@ -93,8 +111,13 @@ export class GameGateway implements OnGatewayInit
     handleCrossGame(@ConnectedSocket() client: Socket) {
         let roomId = Array.from(client.rooms)[1];
         let roomPartner = this.roomService.findMyLifePartner(roomId, client);
-    
-        this.roomService.closingGame(roomId, roomPartner.id);
+        
+        if (this.isASpectator(client)) {
+            this.cleanUpSpectator(client);
+            this.roomService.logRooms();
+        }
+        else
+            this.roomService.closingGame(roomId, roomPartner.id);
     }
 
     @SubscribeMessage('crossMatchmaking')
@@ -106,7 +129,49 @@ export class GameGateway implements OnGatewayInit
     @SubscribeMessage('keyAction')
     handleKeyUp(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
         let roomId = Array.from(client.rooms)[1];
+        let roomState = this.roomService.rooms.get(roomId);
+        if (!roomState || !roomState.players.some(player => player.id === client.id)) {
+            return;
+        }
         this.pongService.updatePaddlePosition(client.id, roomId, data.key, data.action);
+    }
+
+    @SubscribeMessage('viewMatch')
+    handleViewMatch(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
+        const userId = data.userId;
+        let userSocketId: string | null = null;
+        for (let [socketId, user] of this.connectedUsers.entries()) {
+            if (user.id === userId) {
+                userSocketId = socketId;
+                break;
+            }
+        }
+        if (!userSocketId) {
+            console.log("User socket not found");
+            return;
+        }
+        let roomId: string | null = null;
+        for (let [room, roomState] of this.roomService.rooms.entries()) {
+            if (roomState.players.some(socket => socket.id === userSocketId)) {
+                roomId = room;
+                break;
+            }
+        }
+        if (!roomId) {
+            console.log("Room not found");
+            return;
+        }
+        const roomState = this.roomService.rooms.get(roomId);
+        if (roomState) {
+            client.join(roomId);
+            if (!roomState.spectators.includes(client))
+                roomState.spectators.push(client);
+        }
+        else
+            console.log("no roomState");
+        console.log(`roomId : ${roomId}, spectator ${userSocketId} added` );
+        client.emit('gameLaunch', { gameState: roomState.gameState });
+        this.roomService.logRooms();
     }
 
     @SubscribeMessage('clickSaveSettings')
