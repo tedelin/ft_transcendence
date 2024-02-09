@@ -120,6 +120,15 @@ export class FriendService {
 		});
 	}
 
+	async findBlockedByUsers(userId: number) {
+		return this.databaseService.friendship.findMany({
+			where: {
+				receiverId: userId,
+				status: "BLOCKED",
+			},
+		});
+	}
+
     private async checkUserExistence(userId: number): Promise<void> {
         const user = await this.databaseService.user.findUnique({
             where: { id: userId },

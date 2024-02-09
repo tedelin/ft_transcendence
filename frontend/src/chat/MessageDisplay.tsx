@@ -11,7 +11,7 @@ export function MessageDisplay({channel}) {
 	async function fetchChannelsMessages() {
 		try {
 			const token = localStorage.getItem('jwtToken');
-			const response = await fetchUrl(`/chat/channels/${channel}/messages`, {
+			const response = await fetchUrl(`/chat/channels/messages/${channel}`, {
 				method: 'GET',
 				headers: {
 					'Authorization': `Bearer ${token}`,

@@ -45,17 +45,17 @@ model Channel {
   updatedAt  DateTime         @default(now()) @updatedAt
   password   String?
   visibility String           @default("public")
-  //   channelOwner   User             @relation(fields: [channelOwnerId], references: [id])
-  // channelOwnerId Int
   messages   ChannelMessage[]
   users      ChannelUser[]
 }
 
 model ChannelUser {
-  channel     Channel @relation(fields: [channelName], references: [name])
+  channel     Channel		  @relation(fields: [channelName], references: [name])
   channelName String
 
-  user   User @relation(fields: [userId], references: [id])
+  role   	  String		  @default("MEMBER")
+
+  user   User 				  @relation(fields: [userId], references: [id])
   userId Int
 
   createdAt DateTime @default(now())

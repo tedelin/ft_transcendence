@@ -3,18 +3,77 @@ import { MessageDisplay } from './MessageDisplay';
 import { useAuth } from "../components/AuthProvider";
 import { useParams } from "react-router-dom";
 import '../styles/chat.css';
+import { useError } from "../components/ErrorProvider";
+import { fetchUrl } from "../fetch";
 
-// function TopBar() {
+function Settings({enabled, channel}) {
+	const [channelUsers, setChannelUsers] = useState([]);
+	const er = useError();
+	const auth = useAuth();
 
-// 	return (
-// 		<div className="topBarChat">
-// 			<img className="smallAvatar" src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
-// 			<span className='spanMargin'>
-// 				{chat.channelTo?.name}
-// 			</span>
-// 		</div>
-// 	);
-// }
+	async function fetchChannelUsers() {
+		try {
+			const response = await fetchUrl(`/chat/channels/users/${channel}`, {
+				method: 'GET',
+			});
+			setChannelUsers(response);
+		} catch (error) {
+			er.setError(error.message);
+		}
+	}
+
+	function banUser(userId: number, roomId: string) {
+		auth?.socket?.emit('ban-user', { userId, roomId });
+	}
+
+	function kickUser(userId: number, roomId: string) {
+		auth?.socket?.emit('kick-user', { userId, roomId });
+	}
+
+	useEffect(() => {
+		if (enabled)
+			fetchChannelUsers();
+	}, [enabled]);
+
+	return (
+		enabled && (
+			<div className="userList">
+				{channelUsers.map((channel) => (
+					<div key={channel.id} className="user">
+						{/* <img src={channel.user.avatar} alt="User Avatar"></img> */}
+						<span>{channel.user.username}</span>
+						<button 
+							className="declineFriend"
+							onClick={() => {kickUser(channel.user.id, channel.channelName)}}
+						>
+							Kick
+						</button>
+						<button 
+							className="declineFriend"
+							onClick={() => {banUser(channel.user.id, channel.channelName)}}
+						>
+							Ban
+						</button>
+					</div>
+				))}
+			</div>
+		)
+	)
+}
+
+function TopBar({channel}) {
+	const [settings, setSettings] = useState(false);
+
+	return (
+		<div className="topBarChat">
+			<Settings enabled={settings} channel={channel} />
+			<img className="smallAvatar" src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
+			<span onClick={() => {setSettings(true);}} className='spanMargin'>
+				{channel}
+			</span>
+		</div>
+	);
+}
 
 
 export function ChatBox() {
@@ -59,7 +118,7 @@ export function ChatBox() {
 
 	return (
 		<>
-			{/* <TopBar/> */}
+			<TopBar channel={name}/>
 			<MessageDisplay key={name} channel={name} />
 			<div className="typingIndicator">{typing}</div>
 			<div className='messageInput'>

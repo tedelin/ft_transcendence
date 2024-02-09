@@ -1,13 +1,13 @@
-import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer, } from '@nestjs/websockets';
+import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer, } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { ChannelService } from './channel.service';
-import { PrivateMessageService } from './private-message.service';
 import { AuthService } from 'src/auth/auth.service';
 import { UserService } from 'src/user/user.service';
 import { Prisma } from '@prisma/client';
-import { ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, UseGuards } from '@nestjs/common';
 import { JoinChannelDto } from './dto/joinChannel.dto';
 import { ChannelMessageDto } from './dto/channelMessage.dto';
+import { FriendService } from 'src/friends/friends.service';
 import * as argon from 'argon2';
 
 @WebSocketGateway({
@@ -21,9 +21,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	connectedUsers: Map<string, number> = new Map();
 
 	constructor(private readonly channelService: ChannelService,
-		private readonly privateMessageService: PrivateMessageService,
 		private readonly authService: AuthService,
 		private readonly userService: UserService,
+		private readonly friendService: FriendService,
 	) { }
 
 	async handleConnection(client: Socket): Promise<void> {
@@ -37,6 +37,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.connectedUsers.set(client.id, user.id);
 		const joinedChannels = await this.userService.getUserChannels(user.id);
 		joinedChannels.channels.forEach((channel) => {
+			if (channel.role === "BANNED") {
+				return ;
+			}
 			client.join(channel.channelName);
 			console.log(user.username + " joined " + channel.channelName);
 		});
@@ -51,7 +54,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('channel-message')
 	async onChannelMessage(client: Socket, channelMessageDto: ChannelMessageDto) {
 		const storedMessage = await this.channelService.createMessage(channelMessageDto);
-		this.server.to(channelMessageDto.channelId).emit('channel-message', storedMessage);
+		const blockedUsers = await this.friendService.findBlockedByUsers(channelMessageDto.senderId);
+		const blockedUsersIds = blockedUsers.map((blockedUser) => blockedUser.initiatorId);
+		const socketIds = [];
+		blockedUsersIds.forEach((userId) => {
+			socketIds.push(this.getKeyByValue(userId));
+		});
+		this.server.to(channelMessageDto.channelId).except(socketIds).emit('channel-message', storedMessage);
 	}
 
 	@SubscribeMessage('join-channel')
@@ -68,6 +77,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 		const userChannels = await this.userService.getUserChannels(joinChannelDto.userId);
 		const alreadyJoined = userChannels.channels.find((channel) => channel.channelName === joinChannelDto.roomId);
+		console.log(alreadyJoined);
+		if (alreadyJoined && alreadyJoined.role == "BANNED") {
+			return ;
+		}
 		if (!alreadyJoined) {
 			this.channelService.joinChannel(joinChannelDto);
 		}
@@ -86,16 +99,29 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.server.emit('new-channel', channelDto);
 	}
 
-	@SubscribeMessage('private-message')
-	async onPrivateMessage(client: Socket, privateMessageDto: Prisma.PrivateMessageCreateInput) {
-		// this.privateMessageService.createMessage(privateMessageDto);
-		client.to(privateMessageDto.receiverId).emit('private-message', privateMessageDto.content);
-	}
-
 	@SubscribeMessage('typing')
 	async onTyping(client: Socket, { username, roomId }) {
 		client.to(roomId).emit('typing', username);
 	}
+
+	@SubscribeMessage('kick-user')
+	async onKickUser(client: Socket, { userId, roomId }) {
+		// Add check if user is admin
+		const kickedClient = this.getClientByUserId(userId);
+		this.channelService.kickUser(userId, roomId);
+		kickedClient.leave(roomId);
+		kickedClient.emit('kicked', roomId);
+	}
+
+	@SubscribeMessage('ban-user')
+	async onBanUser(client: Socket, { userId, roomId }) {
+		// Add check if user is admin
+		const bannedClient = this.getClientByUserId(userId);
+		this.channelService.banUser(userId, roomId);
+		bannedClient.leave(roomId);
+		bannedClient.emit('banned', roomId);
+	}
+
 
 	@SubscribeMessage('get-connected-users')
 	async onGetConnectedUsers(client: Socket) {
@@ -104,5 +130,26 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	private sendConnectedUsers() {
 		this.server.emit('connected-users', Array.from(this.connectedUsers.values()));
+	}
+
+	private getClientByUserId(userId: number): Socket | null {
+		for (const [key, value] of this.connectedUsers.entries()) {
+		  if (value === userId) {
+			const kickedClient = this.server.sockets.sockets.get(key);
+	
+			return kickedClient;
+		  }
+		}
+	
+		return null;
+	}
+
+	private getKeyByValue(searchValue: number): string | undefined {
+		for (let [key, value] of this.connectedUsers.entries()) {
+			if (value === searchValue) {
+				return key;
+			}
+		}
+		return null;
 	}
 }

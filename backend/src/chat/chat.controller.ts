@@ -40,9 +40,18 @@ export class ChatController {
 		return this.channelService.createMessage(createChannelMessageDto);
 	}
 
-	@Get('channels/:name/messages')
+	@Get('channels/messages/:name')
 	@UseGuards(JwtGuard)
 	getChannelMessages(@Param('name') name: string, @Req() user: any) {
 		return this.channelService.findMessages(user.id, name);
 	}
+
+	@Get('channels/users/:name')
+	getChannelUsers(@Param('name') name: string) {
+		return this.channelService.findChannelUsers(name);
+	}
+
+	// @Delete('channels/kick/:name/:userId')
+	// kickUser(@Param('name') name: string, @Param('userId') userId: number) {
+	// }
 }

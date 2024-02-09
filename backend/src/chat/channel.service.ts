@@ -31,6 +31,15 @@ export class ChannelService {
     }
 
 	async joinChannel(joinChannelDto: JoinChannelDto) {
+		const exist = await this.databaseService.channelUser.findFirst({
+			where: {
+				userId: joinChannelDto.userId,
+				channelName: joinChannelDto.roomId,
+			}
+		});
+		if (exist && exist.role === 'BANNED') {
+			throw new ConflictException('You are banned from this channel');
+		}
 		return await this.databaseService.channelUser.create({
 			data: {
 				userId: joinChannelDto.userId,
@@ -125,6 +134,48 @@ export class ChannelService {
 						username: true,
 						avatar: true,
 					}
+				}
+			}
+		});
+	}
+
+	async findChannelUsers(name: string) {
+		return await this.databaseService.channelUser.findMany({
+			where: {
+				channelName: name,
+			},
+			include: {
+				user: {
+					select: {
+						id: true,
+						username: true,
+						avatar: true,
+					}
+				}
+			}
+		});
+	}
+
+	async banUser(userId: number, roomId: string) {
+		return await this.databaseService.channelUser.update({
+			where: {
+				channelName_userId: {
+					channelName: roomId,
+					userId: userId,
+				},
+			},
+			data: {
+				role: 'BANNED',
+			}
+		});
+	}
+
+	async kickUser(userId: number, roomId: string) {
+		return await this.databaseService.channelUser.delete({
+			where: {
+				channelName_userId: {
+					channelName: roomId,
+					userId: userId,
 				}
 			}
 		});

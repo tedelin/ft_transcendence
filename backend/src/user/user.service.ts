@@ -35,12 +35,11 @@ export class UserService {
         }
         return user;
 	}
+
 	async saveAvatarPath(avatar: string, userId : number){
 			await this.databaseService.user.update({
 		where: { id: userId },
 		data: { avatar },
 	  });
 	}
-
-	
 }
