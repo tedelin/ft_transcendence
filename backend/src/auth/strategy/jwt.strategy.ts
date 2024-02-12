@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseService } from '../../database/database.service';
 
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     constructor(config: ConfigService, private databaseService: DatabaseService) {
@@ -18,10 +19,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         const user = await this.databaseService.user.findUnique({
             where: {
                 id: payload.sub
-            }
+            },
+			select: {
+				id: true,
+				username: true,
+				avatar: true,
+			},
         })
-        delete user.password
-        return user
+        return user;
     }
 
 }

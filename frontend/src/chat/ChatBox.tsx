@@ -8,8 +8,7 @@ import { fetchUrl } from "../fetch";
 
 function Settings({enabled, channel}) {
 	const [channelUsers, setChannelUsers] = useState([]);
-	const er = useError();
-	const auth = useAuth();
+	const err = useError();
 
 	async function fetchChannelUsers() {
 		try {
@@ -18,16 +17,36 @@ function Settings({enabled, channel}) {
 			});
 			setChannelUsers(response);
 		} catch (error) {
-			er.setError(error.message);
+			err.setError(error.message);
 		}
 	}
 
-	function banUser(userId: number, roomId: string) {
-		auth?.socket?.emit('ban-user', { userId, roomId });
+	async function banUser(userId: number, roomId: string) {
+		try {
+			const token = localStorage.getItem('jwtToken');
+			await fetchUrl(`/moderation/ban/${roomId}/${userId}`, {
+				method: 'PATCH',
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			})
+		} catch (error) {
+			err.setError(error.message)
+		}
 	}
 
-	function kickUser(userId: number, roomId: string) {
-		auth?.socket?.emit('kick-user', { userId, roomId });
+	async function kickUser(userId: number, roomId: string) {
+		try {
+			const token = localStorage.getItem('jwtToken');
+			await fetchUrl(`/moderation/kick/${roomId}/${userId}`, {
+				method: 'DELETE',
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			})
+		} catch (error) {
+			err.setError(error.message)
+		}
 	}
 
 	useEffect(() => {
@@ -39,7 +58,7 @@ function Settings({enabled, channel}) {
 		enabled && (
 			<div className="userList">
 				{channelUsers.map((channel) => (
-					<div key={channel.id} className="user">
+					<div key={channel.user.id} className="user">
 						{/* <img src={channel.user.avatar} alt="User Avatar"></img> */}
 						<span>{channel.user.username}</span>
 						<button 
@@ -66,9 +85,9 @@ function TopBar({channel}) {
 
 	return (
 		<div className="topBarChat">
-			<Settings enabled={settings} channel={channel} />
+			<Settings key={channel.id} enabled={settings} channel={channel} />
 			<img className="smallAvatar" src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
-			<span onClick={() => {setSettings(true);}} className='spanMargin'>
+			<span onClick={() => {setSettings(!settings);}} className='spanMargin'>
 				{channel}
 			</span>
 		</div>
@@ -81,20 +100,30 @@ export function ChatBox() {
 	const [typing, setTyping] = useState('');
 	const { name } = useParams();
 	const auth = useAuth();
+	const err = useError();
 
-	// Event listener for message
 	function onTyping(e: any) {
 		auth?.socket?.emit("typing", { username: auth?.user?.username, roomId: name });
 		setMessage(e.target.value);
 	}
 
-	function sendChannelMessage() {
-		auth?.socket?.emit('channel-message', { channelId: name, senderId: auth?.user?.id, content: message })
-		setMessage('');
-		// else if (chat.dmTo) {
-		// 	auth?.socket?.emit('private-message', {senderId: auth?.user?.id, receiverId: chat.dmTo.receiverId, content: message})
-		// 	setMessage('');
-		// }
+	async function sendChannelMessage() {
+		try {
+			await fetchUrl("/chat/channels/message", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					channelId: name,
+					senderId: auth?.user?.id, 
+					content: message 
+				}),
+			});
+			setMessage('');
+		} catch (error: any) {
+			err.setError(error.message);
+		}
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {

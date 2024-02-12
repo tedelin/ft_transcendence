@@ -19,7 +19,13 @@ export class UserService {
 				id,
 			},
 			select: {
-				channels: true,
+				channels: {
+					where: {
+						role: {
+							not: 'BANNED',
+						},
+					},
+				},
 			},
 		});
 	}
@@ -30,16 +36,14 @@ export class UserService {
 				username,
 			},
 		});
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
+        if (!user) throw new NotFoundException('User not found');
         return user;
 	}
 
 	async saveAvatarPath(avatar: string, userId : number){
-			await this.databaseService.user.update({
-		where: { id: userId },
-		data: { avatar },
+		await this.databaseService.user.update({
+			where: { id: userId },
+			data: { avatar },
 	  });
 	}
 }

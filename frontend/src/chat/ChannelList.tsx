@@ -3,6 +3,7 @@ import { fetchUrl } from '../fetch';
 import { Channel } from './types/channel';
 import { useAuth } from '../components/AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import { useError } from '../components/ErrorProvider';
 
 export function SearchChannel({ setChannels }) {
 	const [input, setInput] = useState('');
@@ -33,11 +34,26 @@ export function SearchChannel({ setChannels }) {
 
 export function ChannelList({ channels, setChannels }) {
 	const auth = useAuth();
+	const err = useError();
 	const navigate = useNavigate();
 
-	function joinChannel(channel: Channel) {
-		auth?.socket?.emit('join-channel', { roomId: channel.name, password: '', userId: auth?.user?.id });
-		navigate(channel.name);
+	async function joinChannel(channel: Channel) {
+		try {
+			const token = localStorage.getItem('jwtToken');
+			await fetchUrl("/chat/channels/join", {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`,
+				},
+				body: JSON.stringify({ 
+					roomId: channel.name,
+				}),
+			})
+			navigate(channel.name);
+		} catch (error: any) {
+			err.setError(error.message);
+		}
 	}
 
 	// function leaveChannel() {

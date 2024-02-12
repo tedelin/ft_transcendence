@@ -2,6 +2,7 @@ import { Controller, Patch, Get, Param, ParseIntPipe, Post, Req, UseGuards, Dele
 import { FriendService  } from "./friends.service";
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { Request } from 'express';
+import { UserRequest, User } from '../user/decorators/user-request.decorator';
 
 
 @Controller('friends')
@@ -10,26 +11,26 @@ export class FriendController {
 
 	@Get('all')
 	@UseGuards(JwtGuard)
-	getFriends(@Req() req: Request) {
-		return this.friendService.getFriendships((req.user as { id: number }).id);
+	getFriends(@UserRequest() user: User) {
+		return this.friendService.getFriendships(user.id);
 	}
 	
 	@Post(':id')
 	@UseGuards(JwtGuard)
-	createFriendRequest(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
-		return this.friendService.createFriendRequest((req.user as { id: number }).id, id);
+	createFriendRequest(@UserRequest() user: User, @Param('id', ParseIntPipe) id: number) {
+		return this.friendService.createFriendRequest(user.id, id);
 	}
 
 	@Patch('block/:id')
 	@UseGuards(JwtGuard)
-	blockFriend(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
-		return this.friendService.blockUser((req.user as { id: number }).id, id);
+	blockFriend(@UserRequest() user: User, @Param('id', ParseIntPipe) id: number) {
+		return this.friendService.blockUser(user.id, id);
 	}
 
 	@Post('accept/:id')
 	@UseGuards(JwtGuard)
-	acceptFriendRequest(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
-		return this.friendService.acceptFriendRequest(id, (req.user as { id: number }).id);
+	acceptFriendRequest(@UserRequest() user: User, @Param('id', ParseIntPipe) id: number) {
+		return this.friendService.acceptFriendRequest(id, user.id);
 	}
 
 	@Delete('delete/:id')

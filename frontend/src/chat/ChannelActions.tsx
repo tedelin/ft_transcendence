@@ -19,10 +19,12 @@ export function ChannelActions() {
 			return;
 		}
 		try {
+			const token = localStorage.getItem('jwtToken');
 			await fetchUrl('/chat/channels', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
 				},
 				body: JSON.stringify({
 					name: channelName,
@@ -30,11 +32,9 @@ export function ChannelActions() {
 					visibility: channelVisibility,
 				}),
 			});
-			if (channelVisibility === 'public') {
-				auth?.socket?.emit('new-channel', { name: channelName, visibility: channelVisibility });
-			}
-			setChannelName('');
-			setChannelPassword('');
+			navigate(channelName);
+			// setChannelName('');
+			// setChannelPassword('');
 		} catch (error: any) {
 			err.setError(error.message);
 		}
@@ -42,7 +42,16 @@ export function ChannelActions() {
 
 	async function joinChannel() {
 		try {
-			auth?.socket?.emit('join-channel', { roomId: channelName, password: channelPassword, userId: auth?.user?.id });
+			await fetchUrl("/chat/channels/join", {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ 
+					roomId: channelName, 
+					password: channelPassword, 
+				}),
+			})
 			navigate(channelName);
 		} catch (error: any) {
 			err.setError(error.message);

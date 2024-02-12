@@ -1,14 +1,16 @@
 import { Controller, Get, Param, Delete, Post, Body, Patch, UseGuards, Req } from '@nestjs/common';
-import { PrivateMessageService } from './private-message.service';
 import { ChannelService } from './channel.service';
 import { Prisma } from '@prisma/client';
-import { ChannelMessageDto } from './dto/channelMessage.dto';
+import { ChannelMessageDto } from './dto/chat.dto';
 import { JwtGuard } from 'src/auth/guard';
+import { JoinChannelDto } from './dto/chat.dto';
+import { UserRequest, User } from '../user/decorators/user-request.decorator';
 
 @Controller('chat')
 export class ChatController {
-	constructor(private readonly privateMessageService: PrivateMessageService,
-		private readonly channelService: ChannelService) { }
+	constructor(
+		private readonly channelService: ChannelService
+	) {}
 
 	@Get('channels')
 	getPublicChannels() {
@@ -16,10 +18,11 @@ export class ChatController {
 	}
 
 	@Post('channels')
-	create(@Body() createChannelDto: Prisma.ChannelCreateInput) {
-		return this.channelService.create(createChannelDto);
+	@UseGuards(JwtGuard)
+	create(@UserRequest() user: User, @Body() createChannelDto: Prisma.ChannelCreateInput) {
+		return this.channelService.create(user.id, createChannelDto);
 	}
-
+	
 	@Get('channels/:name')
 	getChannel(@Param('name') name: string) {
 		return this.channelService.findByName(name);
@@ -35,14 +38,20 @@ export class ChatController {
 		return this.channelService.remove(name);
 	}
 
-	@Post('channels/messages')
+	@UseGuards(JwtGuard)
+	@Post('channels/join')
+	joinChannel(@UserRequest() user: User, @Body() joinChannelDto: JoinChannelDto) {
+		return this.channelService.joinChannel(user.id, joinChannelDto);
+	}
+
+	@Post('channels/message')
 	createMessage(@Body() createChannelMessageDto: ChannelMessageDto) {
 		return this.channelService.createMessage(createChannelMessageDto);
 	}
 
 	@Get('channels/messages/:name')
 	@UseGuards(JwtGuard)
-	getChannelMessages(@Param('name') name: string, @Req() user: any) {
+	getChannelMessages(@UserRequest() user: User, @Param('name') name: string) {
 		return this.channelService.findMessages(user.id, name);
 	}
 
@@ -50,8 +59,4 @@ export class ChatController {
 	getChannelUsers(@Param('name') name: string) {
 		return this.channelService.findChannelUsers(name);
 	}
-
-	// @Delete('channels/kick/:name/:userId')
-	// kickUser(@Param('name') name: string, @Param('userId') userId: number) {
-	// }
 }

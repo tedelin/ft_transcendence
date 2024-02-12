@@ -1,9 +1,10 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
-import { ChannelMessageDto } from './dto/channelMessage.dto';
-import { JoinChannelDto } from './dto/joinChannel.dto';
+import { ChannelMessageDto, CreateChannelDto } from './dto/chat.dto';
+import { JoinChannelDto } from './dto/chat.dto';
 import { FriendService } from 'src/friends/friends.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as argon from 'argon2';
 
 @Injectable()
@@ -11,38 +12,52 @@ export class ChannelService {
 	constructor(
 		private readonly databaseService: DatabaseService,
 		private readonly friendService: FriendService,
+		private eventEmitter: EventEmitter2,
 	) {}
 
-    async create(createChannelDto: Prisma.ChannelCreateInput) {
-		if (createChannelDto.name === '') {
-			throw new ConflictException('Channel name is empty');
-		}
+    async create(userId, createChannelDto: CreateChannelDto) {
 		const exist = await this.findByName(createChannelDto.name);
-		if (exist) {
-			throw new ConflictException('Channel name already exists');
-		}
-		if (createChannelDto.password !== '') {
+		if (exist) throw new ConflictException('Channel name already exists');
+		if (createChannelDto.password) {
 			const hash = await argon.hash(createChannelDto.password);
 			createChannelDto.password = hash;
 		}
-		return this.databaseService.channel.create({
+		const channel = await this.databaseService.channel.create({
 			data: createChannelDto
-        });
+		});
+		this.eventEmitter.emit('new.channel', createChannelDto);
+		await this.databaseService.channelUser.create({
+			data: {
+				channelName: channel.name,
+				role: "OWNER",
+				userId: userId
+			}
+		})
+		this.eventEmitter.emit("join.channel", { roomId: channel.name});
+		return channel;
     }
 
-	async joinChannel(joinChannelDto: JoinChannelDto) {
-		const exist = await this.databaseService.channelUser.findFirst({
+	async joinChannel(userId: number, joinChannelDto: JoinChannelDto) {
+		const channel = await this.findByName(joinChannelDto.roomId);
+		if (!channel) throw new NotFoundException("Channel doesn't exist");
+		const alreadyJoined = await this.databaseService.channelUser.findFirst({
 			where: {
-				userId: joinChannelDto.userId,
+				userId: userId,
 				channelName: joinChannelDto.roomId,
 			}
 		});
-		if (exist && exist.role === 'BANNED') {
-			throw new ConflictException('You are banned from this channel');
+		if (alreadyJoined && alreadyJoined.role === 'BANNED') throw new ConflictException('You are banned from this channel');
+		if (alreadyJoined) return alreadyJoined;
+		if (joinChannelDto.password) {
+			const pwMatches = await argon.verify(channel.password, joinChannelDto.password);
+			if (!pwMatches) {
+				throw new ForbiddenException("Wrong password");
+			}
 		}
+		this.eventEmitter.emit('join.channel', userId, joinChannelDto);
 		return await this.databaseService.channelUser.create({
 			data: {
-				userId: joinChannelDto.userId,
+				userId: userId,
 				channelName: joinChannelDto.roomId,
 			}
 		})
@@ -113,9 +128,10 @@ export class ChannelService {
 						username: true,
 						avatar: true,
 					}
-				}
+				},
 			}
 		});
+		this.eventEmitter.emit("channel.message", createChannelMessageDto, channelMessage);
 		return channelMessage;
 	}
 
@@ -125,7 +141,7 @@ export class ChannelService {
 			where: {
 				channelId: name,
 				senderId: {
-					notIn: blockedUser.map(friend => friend.receiverId)
+					notIn: blockedUser.map(friendship => friendship.receiverId)
 				}
 			},
 			include: {
@@ -151,31 +167,6 @@ export class ChannelService {
 						username: true,
 						avatar: true,
 					}
-				}
-			}
-		});
-	}
-
-	async banUser(userId: number, roomId: string) {
-		return await this.databaseService.channelUser.update({
-			where: {
-				channelName_userId: {
-					channelName: roomId,
-					userId: userId,
-				},
-			},
-			data: {
-				role: 'BANNED',
-			}
-		});
-	}
-
-	async kickUser(userId: number, roomId: string) {
-		return await this.databaseService.channelUser.delete({
-			where: {
-				channelName_userId: {
-					channelName: roomId,
-					userId: userId,
 				}
 			}
 		});

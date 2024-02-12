@@ -6,8 +6,7 @@ export class FriendService {
     constructor(private databaseService: DatabaseService) { }
 
     async createFriendRequest(initiatorId: number, receiverId: number) {
-        if (initiatorId === receiverId)
-            throw new ForbiddenException('Cannot send friend request to yourself');
+        if (initiatorId === receiverId) throw new ForbiddenException('Cannot send friend request to yourself');
         await this.checkUserExistence(initiatorId);
         await this.checkUserExistence(receiverId);
 
@@ -20,11 +19,9 @@ export class FriendService {
             },
         });
 
-        if (existingFriendship) {
-            throw new ConflictException('Friendship already exists');
-        }
+        if (existingFriendship) throw new ConflictException('Friendship already exists');
 
-        return this.databaseService.friendship.create({
+        return await this.databaseService.friendship.create({
             data: {
                 initiatorId,
                 receiverId,
@@ -36,7 +33,7 @@ export class FriendService {
     async getFriendships(userId: number) {
         await this.checkUserExistence(userId);
 
-        return this.databaseService.friendship.findMany({
+        return await this.databaseService.friendship.findMany({
             where: {
                 OR: [
                     { initiatorId: userId },
@@ -73,7 +70,7 @@ export class FriendService {
         if (friendship.receiverId !== userId) {
             throw new ForbiddenException('You cannot accept this friend request');
         }
-        return this.databaseService.friendship.update({
+        return await this.databaseService.friendship.update({
             where: { id: friendshipId },
             data: { status: "ACCEPTED" },
         });
@@ -112,7 +109,7 @@ export class FriendService {
 	}
 
 	async findBlockedUsers(userId: number) {
-		return this.databaseService.friendship.findMany({
+		return await this.databaseService.friendship.findMany({
 			where: {
 				initiatorId: userId, 
 				status: "BLOCKED",
@@ -121,7 +118,7 @@ export class FriendService {
 	}
 
 	async findBlockedByUsers(userId: number) {
-		return this.databaseService.friendship.findMany({
+		return await this.databaseService.friendship.findMany({
 			where: {
 				receiverId: userId,
 				status: "BLOCKED",
@@ -133,9 +130,6 @@ export class FriendService {
         const user = await this.databaseService.user.findUnique({
             where: { id: userId },
         });
-
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
+        if (!user) throw new NotFoundException('User not found');
     }
 }
