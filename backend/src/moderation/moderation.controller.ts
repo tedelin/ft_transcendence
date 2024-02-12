@@ -34,4 +34,16 @@ export class ModerationController {
 		if (user.id == +userId) throw new ForbiddenException('Cannot kick yourself');
 		return this.moderationService.kickUser(+userId, name);
 	}
+
+	@Roles(['OWNER', 'ADMIN'])
+	@Patch('promote/:name/:userId')
+	promoteUser(@UserRequest() user: User, @Param('name') name: string, @Param('userId') userId: string) {
+		return this.moderationService.promoteUser(+userId, name);
+	}
+
+	@Roles(['OWNER', 'ADMIN'])
+	@Patch('demote/:name/:userId')
+	demoteUser(@UserRequest() user: User, @Param('name') name: string, @Param('userId') userId: string) {
+		return this.moderationService.demoteUser(+userId, name);
+	}
 }

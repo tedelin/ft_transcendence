@@ -58,6 +58,38 @@ export class ModerationService {
 		return banUser;
 	}
 
+	async promoteUser(userId: number, roomId: string) {
+		const userRole = await this.getRole(userId, roomId);
+		if (userRole === 'OWNER') throw new UnauthorizedException('You cannot demote the owner');
+		return await this.databaseService.channelUser.update({
+			where: {
+				channelName_userId: {
+					channelName: roomId,
+					userId: userId,
+				},
+			},
+			data: {
+				role: 'ADMIN',
+			}
+		});
+	}
+
+	async demoteUser(userId: number, roomId: string) {
+		const userRole = await this.getRole(userId, roomId);
+		if (userRole === 'OWNER') throw new UnauthorizedException('You cannot demote the owner');
+		return await this.databaseService.channelUser.update({
+			where: {
+				channelName_userId: {
+					channelName: roomId,
+					userId: userId,
+				},
+			},
+			data: {
+				role: 'MEMBER',
+			}
+		});
+	}
+
 	async getRole(userId: number, roomId: string) {
 		const channel = await this.databaseService.channelUser.findUnique({
 			where: {
