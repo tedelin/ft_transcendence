@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { GameModule } from './game/game.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { FriendModule } from './friends/friends.module';
+import { ModerationModule } from './moderation/moderation.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -19,7 +21,9 @@ import { FriendModule } from './friends/friends.module';
     UserModule, 
     GameModule, 
     FriendModule,
-    ScheduleModule.forRoot()
+	ModerationModule,
+    ScheduleModule.forRoot(),
+	EventEmitterModule.forRoot()
   ],
 })
 export class AppModule {}

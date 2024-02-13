@@ -20,8 +20,6 @@ model User {
   matchHistory         MatchHistory[]
   friendshipsInitiated Friendship[]     @relation("Initiator")
   friendshipsReceived  Friendship[]     @relation("Receiver")
-  // sentMessages     PrivateMessage[] @relation("sentMessages")
-  // receivedMessages PrivateMessage[] @relation("receivedMessages")
 
   @@map("users")
 }
@@ -30,8 +28,7 @@ model Friendship {
   id          Int      @id @default(autoincrement())
   initiatorId Int
   receiverId  Int
-  status      String   @default("NONE")
-  createdAt   DateTime @default(now())
+  status      FriendshipStatus
 
   initiator User @relation("Initiator", fields: [initiatorId], references: [id])
   receiver  User @relation("Receiver", fields: [receiverId], references: [id])
@@ -44,22 +41,17 @@ model Channel {
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @default(now()) @updatedAt
   password   String?
-  visibility String           @default("public")
-  //   channelOwner   User             @relation(fields: [channelOwnerId], references: [id])
-  // channelOwnerId Int
+  visibility Visibility
   messages   ChannelMessage[]
   users      ChannelUser[]
 }
 
 model ChannelUser {
-  channel     Channel @relation(fields: [channelName], references: [name])
+  channel     Channel		  @relation(fields: [channelName], references: [name])
   channelName String
-
-  user   User @relation(fields: [userId], references: [id])
+  role   	  Role
+  user   User 				  @relation(fields: [userId], references: [id])
   userId Int
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
 
   @@id([channelName, userId])
 }
@@ -72,16 +64,6 @@ model ChannelMessage {
   channel   Channel  @relation(fields: [channelId], references: [name])
   senderId  Int
   sender    User     @relation(fields: [senderId], references: [id])
-}
-
-model PrivateMessage {
-  id         Int      @id @default(autoincrement())
-  timestamp  DateTime @default(now())
-  content    String
-  //   sender     User     @relation("sentMessages", fields: [senderId], references: [id])
-  //   receiver   User     @relation("receivedMessages", fields: [receiverId], references: [id])
-  senderId   String
-  receiverId String
 }
 
 model MatchHistory {
@@ -101,4 +83,24 @@ enum UserStatus {
   ONLINE
   OFFLINE
   IN_GAME
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+  PROTECTED
+}
+
+enum Role {
+	OWNER
+	ADMIN
+	MEMBER
+	MUTED
+	BANNED
 }

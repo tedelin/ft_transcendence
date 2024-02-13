@@ -9,7 +9,7 @@ export function ChannelActions() {
 	const auth = useAuth();
 	const [channelName, setChannelName] = useState('');
 	const [channelPassword, setChannelPassword] = useState('');
-	const [channelVisibility, setChannelVisibility] = useState('public');
+	const [channelVisibility, setChannelVisibility] = useState('PUBLIC');
 	const navigate = useNavigate();
 	const err = useError();
 
@@ -19,10 +19,12 @@ export function ChannelActions() {
 			return;
 		}
 		try {
+			const token = localStorage.getItem('jwtToken');
 			await fetchUrl('/chat/channels', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
 				},
 				body: JSON.stringify({
 					name: channelName,
@@ -30,11 +32,9 @@ export function ChannelActions() {
 					visibility: channelVisibility,
 				}),
 			});
-			if (channelVisibility === 'public') {
-				auth?.socket?.emit('new-channel', { name: channelName, visibility: channelVisibility });
-			}
-			setChannelName('');
-			setChannelPassword('');
+			navigate(channelName);
+			// setChannelName('');
+			// setChannelPassword('');
 		} catch (error: any) {
 			err.setError(error.message);
 		}
@@ -42,7 +42,16 @@ export function ChannelActions() {
 
 	async function joinChannel() {
 		try {
-			auth?.socket?.emit('join-channel', { roomId: channelName, password: channelPassword, userId: auth?.user?.id });
+			await fetchUrl("/chat/channels/join", {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ 
+					roomId: channelName, 
+					password: channelPassword, 
+				}),
+			})
 			navigate(channelName);
 		} catch (error: any) {
 			err.setError(error.message);
@@ -68,9 +77,9 @@ export function ChannelActions() {
 				onChange={(e) => setChannelPassword(e.target.value)}
 			/>}
 			<select value={channelVisibility} onChange={handleVisibilityChange}>
-				<option value="public">Public</option>
-				<option value="private">Private</option>
-				<option value="protected">Protected</option>
+				<option value="PUBLIC">Public</option>
+				<option value="PRIVATE">Private</option>
+				<option value="PROTECTED">Protected</option>
 			</select>
 			<button className="createButton" onClick={create}>Create</button>
 			<button disabled={channelName.length === 0} className='joinButton' onClick={joinChannel}>Join</button>

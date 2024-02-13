@@ -28,12 +28,14 @@ function AddFriend({ selected }) {
 
 	async function sendRequest() {
         try {
-			await fetchUrl(`/friends/${user?.id}`, {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
+			if (user) {
+				await fetchUrl(`/friends/${user.id}`, {
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				});
+			}
 		} catch (error: any) {
 			er.setError(error.message);
 		}
@@ -134,6 +136,24 @@ function FriendsList({ selected }) {
 		}
 	}
 
+	async function blockFriend(friendRequest: any) {
+		const userId = auth?.user?.id === friendRequest.initiatorId ? friendRequest.receiverId : friendRequest.initiatorId;
+		try {
+			await fetchUrl(`/friends/block/${userId}`, {
+				method: "PATCH",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			setFriends((prevFriends) =>
+				prevFriends.filter((friend) => friend.id !== friendRequest.id)
+			);
+		} catch (error) {
+			er.setError(error.message);
+		}
+	
+	}
+
 	async function getFriends() {
 		const token = localStorage.getItem('jwtToken');
 		try {
@@ -162,7 +182,7 @@ function FriendsList({ selected }) {
 		} else if (selected === "All") {
 			return friend.status === "ACCEPTED";
 		} else if (selected === "Blocked") {
-			return friend.status === "BLOCKED";
+			return (friend.status === "BLOCKED" && friend.initiatorId == auth?.user?.id);
 		} else {
 			return friend.status === "Accepted";
 		}
@@ -201,6 +221,12 @@ function FriendsList({ selected }) {
 										onClick={() => deleteFriend(friend.id)}
 									>
 										Remove
+									</button>
+									<button 
+										className='declineFriend'
+										onClick={() => blockFriend(friend)}
+									>
+										Block
 									</button>
 								</div>
 							)}

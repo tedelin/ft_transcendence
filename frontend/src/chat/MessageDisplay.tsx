@@ -10,7 +10,13 @@ export function MessageDisplay({channel}) {
 
 	async function fetchChannelsMessages() {
 		try {
-			const response = await fetchUrl(`/chat/channels/${channel}/messages`);
+			const token = localStorage.getItem('jwtToken');
+			const response = await fetchUrl(`/chat/channels/messages/${channel}`, {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${token}`,
+				},
+			});
 			setReceivedMessages(response);
 		} catch (error) {
 			console.error('Error fetching channels:', error);
@@ -56,7 +62,7 @@ export function MessageDisplay({channel}) {
 				        </div>
                     </div>
                    <div className="message">{msg.content}</div>
-                   <div className="timestamp">{msg.timestamp}</div>
+				   <div className="timestamp">{new Date(msg.timestamp).toLocaleString()}</div>
            </div>
             ))}
 		</div>
