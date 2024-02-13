@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DatabaseService } from "src/database/database.service";
+import {Role } from '@prisma/client';
 
 
 @Injectable()
@@ -12,7 +13,7 @@ export class ModerationService {
 
 	async banUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
-		if (userRole === 'OWNER') throw new UnauthorizedException('You cannot ban the owner');
+		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot ban the owner');
 		const banUser = await this.databaseService.channelUser.update({
 			where: {
 				channelName_userId: {
@@ -21,7 +22,7 @@ export class ModerationService {
 				},
 			},
 			data: {
-				role: 'BANNED',
+				role: Role.BANNED,
 			}
 		});
 		this.eventEmitter.emit("ban.user", {userId, roomId});
@@ -30,7 +31,7 @@ export class ModerationService {
 
 	async kickUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
-		if (userRole === 'OWNER') throw new UnauthorizedException('You cannot kick the owner');
+		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot kick the owner');
 		const kickUser = await this.databaseService.channelUser.delete({
 			where: {
 				channelName_userId: {
@@ -52,7 +53,7 @@ export class ModerationService {
 				},
 			},
 			data: {
-				role: 'MEMBER',
+				role: Role.MEMBER,
 			}
 		});
 		return banUser;
@@ -60,7 +61,7 @@ export class ModerationService {
 
 	async promoteUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
-		if (userRole === 'OWNER') throw new UnauthorizedException('You cannot demote the owner');
+		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot demote the owner');
 		return await this.databaseService.channelUser.update({
 			where: {
 				channelName_userId: {
@@ -69,14 +70,14 @@ export class ModerationService {
 				},
 			},
 			data: {
-				role: 'ADMIN',
+				role: Role.ADMIN,
 			}
 		});
 	}
 
 	async demoteUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
-		if (userRole === 'OWNER') throw new UnauthorizedException('You cannot demote the owner');
+		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot demote the owner');
 		return await this.databaseService.channelUser.update({
 			where: {
 				channelName_userId: {
@@ -85,7 +86,7 @@ export class ModerationService {
 				},
 			},
 			data: {
-				role: 'MEMBER',
+				role: Role.MEMBER,
 			}
 		});
 	}

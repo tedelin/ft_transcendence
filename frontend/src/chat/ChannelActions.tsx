@@ -9,7 +9,7 @@ export function ChannelActions() {
 	const auth = useAuth();
 	const [channelName, setChannelName] = useState('');
 	const [channelPassword, setChannelPassword] = useState('');
-	const [channelVisibility, setChannelVisibility] = useState('public');
+	const [channelVisibility, setChannelVisibility] = useState('PUBLIC');
 	const navigate = useNavigate();
 	const err = useError();
 
@@ -77,9 +77,9 @@ export function ChannelActions() {
 				onChange={(e) => setChannelPassword(e.target.value)}
 			/>}
 			<select value={channelVisibility} onChange={handleVisibilityChange}>
-				<option value="public">Public</option>
-				<option value="private">Private</option>
-				<option value="protected">Protected</option>
+				<option value="PUBLIC">Public</option>
+				<option value="PRIVATE">Private</option>
+				<option value="PROTECTED">Protected</option>
 			</select>
 			<button className="createButton" onClick={create}>Create</button>
 			<button disabled={channelName.length === 0} className='joinButton' onClick={joinChannel}>Join</button>

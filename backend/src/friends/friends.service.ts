@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
+import { FriendshipStatus } from '@prisma/client';
 
 @Injectable()
 export class FriendService {
@@ -25,7 +26,7 @@ export class FriendService {
             data: {
                 initiatorId,
                 receiverId,
-                status: "PENDING",
+                status: FriendshipStatus.PENDING,
             },
         });
     }
@@ -72,7 +73,7 @@ export class FriendService {
         }
         return await this.databaseService.friendship.update({
             where: { id: friendshipId },
-            data: { status: "ACCEPTED" },
+            data: { status: FriendshipStatus.ACCEPTED },
         });
     }
 
@@ -103,7 +104,7 @@ export class FriendService {
 			data: {
 				initiatorId: userId,
 				receiverId: blockedUserId,
-				status: "BLOCKED",
+				status: FriendshipStatus.BLOCKED,
 			},
 		});
 	}
@@ -112,7 +113,7 @@ export class FriendService {
 		return await this.databaseService.friendship.findMany({
 			where: {
 				initiatorId: userId, 
-				status: "BLOCKED",
+				status: FriendshipStatus.BLOCKED,
 			},
 		});
 	}
@@ -121,7 +122,7 @@ export class FriendService {
 		return await this.databaseService.friendship.findMany({
 			where: {
 				receiverId: userId,
-				status: "BLOCKED",
+				status: FriendshipStatus.BLOCKED,
 			},
 		});
 	}

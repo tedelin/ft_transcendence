@@ -49,7 +49,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@OnEvent('channel.message')
 	async onChannelMessage(channelMessageDto: ChannelMessageDto, storedMessage: Prisma.ChannelMessageCreateInput) {
 		const blockedUsers = await this.friendService.findBlockedByUsers(channelMessageDto.senderId);
-		console.log(blockedUsers);
 		const blockedUsersIds = blockedUsers.map((blockedUser) => blockedUser.initiatorId);
 		const socketIds = [];
 		blockedUsersIds.forEach((userId) => {
@@ -59,9 +58,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@OnEvent('join.channel')
-	async onChannelJoin(userId: number, joinChannelDto: JoinChannelDto) {
+	async onChannelJoin(userId: number, roomId: string) {
 		const client = this.getClientByUserId(userId);
-		client.join(joinChannelDto.roomId);
+		client.join(roomId);
 	}
 
 	@OnEvent('new.channel')

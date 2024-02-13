@@ -1,4 +1,5 @@
 import {IsString, IsOptional, IsNotEmpty, IsNumber } from 'class-validator';
+import { Visibility } from '@prisma/client';
 
 export class CreateChannelDto {
 	@IsString()
@@ -10,9 +11,7 @@ export class CreateChannelDto {
 	@IsNotEmpty()
 	password?: string;
 
-	@IsString()
-	@IsOptional()
-	visibility?: string;
+	visibility: Visibility;
 }
 
 export class JoinChannelDto {

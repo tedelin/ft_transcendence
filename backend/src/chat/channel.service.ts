@@ -1,5 +1,5 @@
 import { Injectable, ConflictException, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, Visibility, Role } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import { ChannelMessageDto, CreateChannelDto } from './dto/chat.dto';
 import { JoinChannelDto } from './dto/chat.dto';
@@ -23,17 +23,17 @@ export class ChannelService {
 			createChannelDto.password = hash;
 		}
 		const channel = await this.databaseService.channel.create({
-			data: createChannelDto
+			data: createChannelDto,
 		});
 		this.eventEmitter.emit('new.channel', createChannelDto);
 		await this.databaseService.channelUser.create({
 			data: {
 				channelName: channel.name,
-				role: "OWNER",
-				userId: userId
-			}
-		})
-		this.eventEmitter.emit("join.channel", { roomId: channel.name});
+				role: Role.OWNER,
+				userId: userId,
+			},
+		});
+		this.eventEmitter.emit("join.channel", userId, createChannelDto.name);
 		return channel;
     }
 
@@ -46,7 +46,7 @@ export class ChannelService {
 				channelName: joinChannelDto.roomId,
 			}
 		});
-		if (alreadyJoined && alreadyJoined.role === 'BANNED') throw new ConflictException('You are banned from this channel');
+		if (alreadyJoined && alreadyJoined.role === Role.BANNED) throw new ConflictException('You are banned from this channel');
 		if (alreadyJoined) return alreadyJoined;
 		if (joinChannelDto.password) {
 			const pwMatches = await argon.verify(channel.password, joinChannelDto.password);
@@ -54,11 +54,12 @@ export class ChannelService {
 				throw new ForbiddenException("Wrong password");
 			}
 		}
-		this.eventEmitter.emit('join.channel', userId, joinChannelDto);
+		this.eventEmitter.emit('join.channel', userId, joinChannelDto.roomId);
 		return await this.databaseService.channelUser.create({
 			data: {
 				userId: userId,
 				channelName: joinChannelDto.roomId,
+				role: Role.MEMBER,
 			}
 		})
 	}
@@ -66,7 +67,7 @@ export class ChannelService {
 	async findPublicChannels() {
 		return await this.databaseService.channel.findMany({
 			where: {
-				visibility: 'public',
+				visibility: Visibility.PUBLIC,
 			},
 			select: {
 				name: true,
