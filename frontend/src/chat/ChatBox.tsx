@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { MessageDisplay } from './MessageDisplay';
 import { useAuth } from "../components/AuthProvider";
 import { useParams } from "react-router-dom";
-import '../styles/chat.css';
 import { useError } from "../components/ErrorProvider";
 import { fetchUrl } from "../fetch";
+import '../styles/chat.css';
 
 function Settings({enabled, channel}) {
 	const [channelUsers, setChannelUsers] = useState([]);
+	const token = localStorage.getItem('jwtToken');
 	const err = useError();
 
 	async function fetchChannelUsers() {
@@ -23,7 +24,6 @@ function Settings({enabled, channel}) {
 
 	async function banUser(userId: number, roomId: string) {
 		try {
-			const token = localStorage.getItem('jwtToken');
 			await fetchUrl(`/moderation/ban/${roomId}/${userId}`, {
 				method: 'PATCH',
 				headers: {
@@ -37,13 +37,51 @@ function Settings({enabled, channel}) {
 
 	async function kickUser(userId: number, roomId: string) {
 		try {
-			const token = localStorage.getItem('jwtToken');
 			await fetchUrl(`/moderation/kick/${roomId}/${userId}`, {
 				method: 'DELETE',
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			})
+		} catch (error) {
+			err.setError(error.message)
+		}
+	}
+
+	async function muteUser(userId: number, roomId: string) {
+		try {
+			await fetchUrl(`/moderation/mute/${roomId}/${userId}/10`, {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+		} catch (error) {
+			err.setError(error.message)
+		}
+	}
+
+	async function promoteUser(userId: number, roomId: string) {
+		try {
+			await fetchUrl(`/moderation/promote/${roomId}/${userId}`, {
+				method: 'PATCH',
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+		} catch (error) {
+			err.setError(error.message)
+		}
+	}
+
+	async function demoteUser(userId: number, roomId: string) {
+		try {
+			await fetchUrl(`/moderation/demote/${roomId}/${userId}`, {
+				method: 'PATCH',
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
 		} catch (error) {
 			err.setError(error.message)
 		}
@@ -72,6 +110,24 @@ function Settings({enabled, channel}) {
 							onClick={() => {banUser(channel.user.id, channel.channelName)}}
 						>
 							Ban
+						</button>
+						<button 
+							className="declineFriend"
+							onClick={() => {muteUser(channel.user.id, channel.channelName)}}
+						>
+							Mute
+						</button>
+						<button 
+							className="declineFriend"
+							onClick={() => {promoteUser(channel.user.id, channel.channelName)}}
+						>
+							Promote
+						</button>
+						<button 
+							className="declineFriend"
+							onClick={() => {demoteUser(channel.user.id, channel.channelName)}}
+						>
+							Demote
 						</button>
 					</div>
 				))}

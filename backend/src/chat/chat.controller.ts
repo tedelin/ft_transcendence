@@ -5,6 +5,8 @@ import { ChannelMessageDto } from './dto/chat.dto';
 import { JwtGuard } from 'src/auth/guard';
 import { JoinChannelDto } from './dto/chat.dto';
 import { UserRequest, User } from '../user/decorators/user-request.decorator';
+import { RolesGuard } from 'src/moderation/guards/roles.guards';
+import { Roles } from 'src/moderation/decorators/roles.decorator';
 
 @Controller('chat')
 export class ChatController {
@@ -49,8 +51,9 @@ export class ChatController {
 		return this.channelService.createMessage(createChannelMessageDto);
 	}
 
+	@UseGuards(JwtGuard, RolesGuard)
+	@Roles(['MEMBER', 'ADMIN', 'OWNER'])
 	@Get('channels/messages/:name')
-	@UseGuards(JwtGuard)
 	getChannelMessages(@UserRequest() user: User, @Param('name') name: string) {
 		return this.channelService.findMessages(user.id, name);
 	}

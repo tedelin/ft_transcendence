@@ -28,12 +28,14 @@ function AddFriend({ selected }) {
 
 	async function sendRequest() {
         try {
-			await fetchUrl(`/friends/${user?.id}`, {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
+			if (user) {
+				await fetchUrl(`/friends/${user.id}`, {
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				});
+			}
 		} catch (error: any) {
 			er.setError(error.message);
 		}

@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DatabaseService } from "src/database/database.service";
-import {Role } from '@prisma/client';
+import { Role } from '@prisma/client';
 
 
 @Injectable()
@@ -61,7 +61,7 @@ export class ModerationService {
 
 	async promoteUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
-		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot demote the owner');
+		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot promote the owner');
 		return await this.databaseService.channelUser.update({
 			where: {
 				channelName_userId: {
@@ -78,6 +78,38 @@ export class ModerationService {
 	async demoteUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
 		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot demote the owner');
+		return await this.databaseService.channelUser.update({
+			where: {
+				channelName_userId: {
+					channelName: roomId,
+					userId: userId,
+				},
+			},
+			data: {
+				role: Role.MEMBER,
+			}
+		});
+	}
+
+	async muteUser(userId: number, roomId: string, duration: number) {
+		const muted = await this.databaseService.channelUser.update({
+			where: {
+				channelName_userId: {
+					channelName: roomId,
+					userId: userId,
+				},
+			},
+			data: {
+				role: Role.MUTED,
+			}
+		});
+		setTimeout(() => {
+			this.unmuteUser(userId, roomId);
+		}, duration * 1000);
+		return muted;
+	}
+
+	async unmuteUser(userId: number, roomId: string) {
 		return await this.databaseService.channelUser.update({
 			where: {
 				channelName_userId: {

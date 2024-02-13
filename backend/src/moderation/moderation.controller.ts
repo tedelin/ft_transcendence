@@ -14,13 +14,13 @@ export class ModerationController {
 		private readonly moderationService: ModerationService,
 	) {}
 
-	// Implement mute
 
-	// @Roles(['OWNER', 'ADMIN'])
-	// @Post('mute/:userId')
-	// muteUser(@UserRequest() user: User, @Param('userId', ParseIntPipe) userId: number) {
-	// 	return this.muteUser(userId);
-	// }
+	@Roles([Role.OWNER, Role.ADMIN])
+	@Post('mute/:name/:userId/:duration')
+	muteUser(@UserRequest() user: User, @Param('name') name: string, @Param('userId', ParseIntPipe) userId: number, @Param('duration', ParseIntPipe) duration: number) {
+		if (user.id == userId) throw new ForbiddenException('Cannot mute yourself');
+		return this.moderationService.muteUser(userId, name, duration);
+	}
 
 	@Roles([Role.OWNER, Role.ADMIN])
 	@Patch('ban/:name/:userId')

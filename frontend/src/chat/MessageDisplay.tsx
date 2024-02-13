@@ -62,7 +62,7 @@ export function MessageDisplay({channel}) {
 				        </div>
                     </div>
                    <div className="message">{msg.content}</div>
-                   <div className="timestamp">{msg.timestamp}</div>
+				   <div className="timestamp">{new Date(msg.timestamp).toLocaleString()}</div>
            </div>
             ))}
 		</div>

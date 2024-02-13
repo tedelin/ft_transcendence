@@ -101,5 +101,6 @@ enum Role {
 	OWNER
 	ADMIN
 	MEMBER
+	MUTED
 	BANNED
 }

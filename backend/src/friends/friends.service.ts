@@ -65,12 +65,8 @@ export class FriendService {
             where: { id: friendshipId },
         });
 
-        if (!friendship) {
-            throw new NotFoundException('Friendship not found');
-        }
-        if (friendship.receiverId !== userId) {
-            throw new ForbiddenException('You cannot accept this friend request');
-        }
+        if (!friendship) throw new NotFoundException('Friendship not found');
+        if (friendship.receiverId !== userId) throw new ForbiddenException('You cannot accept this friend request');
         return await this.databaseService.friendship.update({
             where: { id: friendshipId },
             data: { status: FriendshipStatus.ACCEPTED },
@@ -127,10 +123,11 @@ export class FriendService {
 		});
 	}
 
-    private async checkUserExistence(userId: number): Promise<void> {
+    private async checkUserExistence(userId: number) {
         const user = await this.databaseService.user.findUnique({
             where: { id: userId },
         });
         if (!user) throw new NotFoundException('User not found');
+		return true;
     }
 }

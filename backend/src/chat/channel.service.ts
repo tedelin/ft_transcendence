@@ -4,6 +4,7 @@ import { DatabaseService } from 'src/database/database.service';
 import { ChannelMessageDto, CreateChannelDto } from './dto/chat.dto';
 import { JoinChannelDto } from './dto/chat.dto';
 import { FriendService } from 'src/friends/friends.service';
+import { ModerationService } from 'src/moderation/moderation.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as argon from 'argon2';
 
@@ -13,6 +14,7 @@ export class ChannelService {
 		private readonly databaseService: DatabaseService,
 		private readonly friendService: FriendService,
 		private eventEmitter: EventEmitter2,
+		private readonly moderationService: ModerationService,
 	) {}
 
     async create(userId, createChannelDto: CreateChannelDto) {
@@ -120,9 +122,11 @@ export class ChannelService {
         })
     }
 
-	async createMessage(createChannelMessageDto: ChannelMessageDto) {
-		const channelMessage = await this.databaseService.channelMessage.create({
-			data: createChannelMessageDto,
+	async createMessage(channelMessage: ChannelMessageDto) {
+		const userMuted = await this.moderationService.getRole(channelMessage.senderId, channelMessage.channelId);
+		if (userMuted === Role.MUTED) throw new ForbiddenException('You are muted');
+		const message = await this.databaseService.channelMessage.create({
+			data: channelMessage,
 			include: {
 				sender: {
 					select: {
@@ -132,8 +136,8 @@ export class ChannelService {
 				},
 			}
 		});
-		this.eventEmitter.emit("channel.message", createChannelMessageDto, channelMessage);
-		return channelMessage;
+		this.eventEmitter.emit("channel.message", channelMessage, message);
+		return message;
 	}
 
 	async findMessages(userId: number, name: string) {

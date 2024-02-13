@@ -6,9 +6,10 @@ import { ChatController } from './chat.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserModule } from 'src/user/user.module';
 import { FriendModule } from 'src/friends/friends.module';
+import { ModerationModule } from 'src/moderation/moderation.module';
 
 @Module({
-	imports: [DatabaseModule, AuthModule, UserModule, FriendModule],
+	imports: [DatabaseModule, AuthModule, UserModule, FriendModule, ModerationModule],
 	controllers: [ChatController],
 	providers: [ChatGateway, ChannelService],
 })
