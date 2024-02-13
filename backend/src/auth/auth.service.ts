@@ -50,6 +50,24 @@ export class AuthService {
         return this.signToken(user.id, user.username);
     }
 
+    async twoFaStatus(dto: AuthDto) {
+        const user = await this.databaseService.user.findUnique({
+            where: {
+                username: dto.username,
+            },
+        });
+        if (!user) {
+            throw new ForbiddenException('Invalid credentials');
+        }
+        const isPasswordValid = await argon.verify(user.password, dto.password);
+        if (!isPasswordValid) {
+            throw new ForbiddenException('Invalid credentials');
+        }
+
+        const isTwoFa = user.useTwoFA;
+
+        return { status: isTwoFa };
+    }
     // This function will be used to authenticate the user with the 42 API
 
     async callback(code: string) {

@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { TwoFAService } from './2FA/twoFA.service';
-import { AuthDto, twoFaDto } from './dto';
+import { AuthDto, twoFaDto, totpDto } from './dto';
 import { Response } from 'express';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { User } from 'src/common/decorators/user.decorator';
@@ -31,6 +31,16 @@ export class AuthController {
         return this.authService.login(dto);
     }
 
+    @Post('validate-2fa')
+    async validate2fa(@Body() dto: totpDto) {
+        return this.twoFAService.validate2fa(dto);
+    }
+
+    @Post('twoFaStatus')
+    async twoFaStatus(@Body() dto: AuthDto) {
+        return this.authService.twoFaStatus(dto);
+    }
+
     @Get('callback')
     async callback(@Query('code') code: string, @Res() res: Response) {
         const tokenData = await this.authService.callback(code);
@@ -46,12 +56,6 @@ export class AuthController {
     @Get('register-2fa')
     async register2fa(@User() id: any) {
         return this.twoFAService.register2fa(id);
-    }
-
-    @UseGuards(JwtGuard)
-    @Post('validate-2fa')
-    async validate2fa(@User() id: any, @Body() dto: twoFaDto) {
-        return this.twoFAService.validate2fa(id, dto);
     }
 
     @UseGuards(JwtGuard)

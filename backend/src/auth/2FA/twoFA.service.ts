@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
-import { twoFaDto } from '../dto';
+import { twoFaDto, totpDto } from '../dto';
 import { authenticator } from 'otplib';
 import * as QRCode from 'qrcode';
 
@@ -59,24 +59,39 @@ export class TwoFAService {
         return { verified: true };
     }
 
-    async validate2fa(userObj: any, dto: twoFaDto) {
-        const userId = userObj.id;
+    async validate2fa(dto: totpDto) {
+        const userName = dto.username;
         const user = await this.databaseService.user.findUnique({
-            where: { id: userId },
+            where: { username: userName },
         });
 
-        if (!user.useTwoFA) {
-            throw new Error('2FA not enabled for this user');
-        }
-
-        const isValid = authenticator.verify({
-            token: dto.token,
+        const isVerified = authenticator.verify({
+            token: dto.totp,
             secret: user.secretTwoFA,
         });
 
-        if (!isValid) return { validated: false };
+        if (!isVerified) return { validated: false };
         return { validated: true };
     }
+
+    // async validate2fa(userObj: any, dto: twoFaDto) {
+    //     const userId = userObj.id;
+    //     const user = await this.databaseService.user.findUnique({
+    //         where: { id: userId },
+    //     });
+
+    //     if (!user.useTwoFA) {
+    //         throw new Error('2FA not enabled for this user');
+    //     }
+
+    //     const isValid = authenticator.verify({
+    //         token: dto.token,
+    //         secret: user.secretTwoFA,
+    //     });
+
+    //     if (!isValid) return { validated: false };
+    //     return { validated: true };
+    // }
 
     async turnoff2FA(userObj: any) {
         const userId = userObj.id;

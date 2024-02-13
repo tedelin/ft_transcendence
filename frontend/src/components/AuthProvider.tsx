@@ -14,9 +14,11 @@ interface AuthContextType {
 	user: UserType | null;
 	loading: boolean;
 	socket: any;
-	signin: (username: string, password: string, callback: VoidFunction) => Promise<void>;
-	signup: (username: string, password: string, callback: VoidFunction) => Promise<void>;
+	signin: (username: string, password: string) => Promise<void>;
+	signup: (username: string, password: string) => Promise<void>;
 	signout: (callback: VoidFunction) => void;
+	verifyTotp: (username: string, password: string, totp: string) => void;
+	getTwoFaStatus: (username: string, password: string) => void;
 }
 
 
@@ -57,6 +59,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			const token = response.access_token;
 			localStorage.setItem('jwtToken', token);
 			await handleAuth(token);
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async function getTwoFaStatus(username: string, password: string) {
+		try {
+			const response = await fetchUrl('/auth/twoFaStatus', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ username, password }),
+			});
+			const { status } = response;
+			return status;
+		} catch (error) {
+			throw error;
+		}
+	}
+
+
+	async function verifyTotp(username: string, password: string, totp: string): Promise<void> {
+		try {
+			const response = await fetchUrl('/auth/validate-2fa', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ username, password, totp }),
+			});
+			if (response.validated == true)
+				console.log("OK !")
+			else
+				throw "NO !"
 		} catch (error) {
 			throw error;
 		}
@@ -106,7 +143,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		};
 	}, []);
 
-	let value = { user, loading, socket, signin, signup, signout };
+	let value = { user, loading, socket, signin, signup, signout, getTwoFaStatus, verifyTotp };
 
 	return (
 		<AuthContext.Provider value={value}>
