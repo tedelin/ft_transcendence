@@ -1,5 +1,5 @@
 import Verify from './Verify'
-import Register from './register'
+import Register from './Register'
 import Validate from './Validate'
 import Congrats from './Congrats'
 import LayoutTwoFaSetup from './LayoutTwoFaSetup'

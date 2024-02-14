@@ -19,6 +19,7 @@ interface AuthContextType {
 	signout: (callback: VoidFunction) => void;
 	verifyTotp: (username: string, password: string, totp: string) => void;
 	getTwoFaStatus: (username: string, password: string) => void;
+	handleAuth : (token : string) => Promise<void>;
 }
 
 
@@ -143,7 +144,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		};
 	}, []);
 
-	let value = { user, loading, socket, signin, signup, signout, getTwoFaStatus, verifyTotp };
+	let value = { user, loading, socket, signin, signup, signout, getTwoFaStatus, verifyTotp, handleAuth};
 
 	return (
 		<AuthContext.Provider value={value}>

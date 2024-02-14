@@ -1,6 +1,6 @@
 import { useAuth } from './AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import "../styles/TwoFaSetup.css";
+import "../styles/twofa-setup.css";
 
 function TwoFaSettings() {
 	const useTwoFA = useAuth()?.user?.useTwoFA;

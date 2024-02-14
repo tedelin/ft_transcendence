@@ -3,10 +3,15 @@ import { DatabaseService } from '../../database/database.service';
 import { twoFaDto, totpDto } from '../dto';
 import { authenticator } from 'otplib';
 import * as QRCode from 'qrcode';
+import { JwtService } from '@nestjs/jwt';
+import {AuthService} from '../auth.service'
 
 @Injectable()
 export class TwoFAService {
-    constructor(private databaseService: DatabaseService) {}
+    constructor(private databaseService: DatabaseService, 
+		private JwtService : JwtService,
+		private AuthService : AuthService
+	) {}
     async register2fa(userObj: any) {
         const temp_secret = authenticator.generateSecret();
         const userId = userObj.id;
@@ -74,24 +79,28 @@ export class TwoFAService {
         return { validated: true };
     }
 
-    // async validate2fa(userObj: any, dto: twoFaDto) {
-    //     const userId = userObj.id;
-    //     const user = await this.databaseService.user.findUnique({
-    //         where: { id: userId },
-    //     });
-
-    //     if (!user.useTwoFA) {
-    //         throw new Error('2FA not enabled for this user');
-    //     }
-
-    //     const isValid = authenticator.verify({
-    //         token: dto.token,
-    //         secret: user.secretTwoFA,
-    //     });
-
-    //     if (!isValid) return { validated: false };
-    //     return { validated: true };
-    // }
+	async validate2faToken(token: string, totpCode: string) {
+		// Décoder le token pour obtenir les infos de l'utilisateur
+		const userInfo = this.JwtService.decode(token);
+		console.log("userInfo : ", userInfo);
+		// Récupérer l'utilisateur depuis la base de données
+		const user = await this.databaseService.user.findUnique({
+			where: { username: userInfo.userName }, // ou username: userInfo.username, selon le contenu de ton token
+		});
+		// Vérifier le code TOTP
+		const isVerified = authenticator.verify({
+			token: totpCode,
+			secret: user.secretTwoFA,
+		});
+	
+		if (!isVerified) return { validated: false };
+		const finaltoken = await this.AuthService.signToken(user.id, user.username);
+		console.log("finaltoken : ", finaltoken);
+		return {
+			finaltoken, 
+			validated: true };
+	}
+	
 
     async turnoff2FA(userObj: any) {
         const userId = userObj.id;

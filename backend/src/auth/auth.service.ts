@@ -114,13 +114,30 @@ export class AuthService {
                 const authDto = new AuthDto();
                 authDto.username = username;
                 authDto.password = `42st4d3nt${infos.id}`; // Recovers password according to pattern
-                return await this.login(authDto);
+				if (user.useTwoFA) {
+					const tempToken = await this.signTempTokenFor2FA(authDto.username, authDto.password);
+					console.log("tempToken : ", tempToken)
+					return {
+						token : tempToken,
+						isTwoFa : true
+					}
+					//return `${process.env.HOST}:3000/enter-2fa-code?tempToken=${tempToken}`;
+				}
+                const token =  await this.login(authDto);
+				return {
+					token,
+					isTwoFa : false
+				}
             } else {
                 // The user doesn't exist, sign him up
                 const authDto = new AuthDto();
                 authDto.username = username;
                 authDto.password = `42st4d3nt${infos.id}`; // Generates password according to pattern
-                return await this.signUp(authDto);
+				const token =  await this.signUp(authDto);
+				return {
+					token,
+					isTwoFa : false
+				}
             }
         } catch (error) {
             console.error('Erreur:', error);
@@ -170,6 +187,18 @@ export class AuthService {
         });
 
         return { access_token: token }; // Return an object token to the client
+    }
+
+    async signTempTokenFor2FA(userName: string, password: string) {
+        const payload = {
+            userName,
+			password
+        };
+        const secret = process.env.TEMP_SECRET2fA;
+        const token = this.jwtService.signAsync(payload, {
+			secret
+		});
+        return { access_token: token }; 
     }
 
     verifyAccessToken(accessToken: string) {

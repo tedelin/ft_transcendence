@@ -27,3 +27,9 @@ export class totpDto {
     @IsNotEmpty()
     totp: string;
 }
+
+export class TokenTotpDto {
+    @IsString()
+    @IsNotEmpty()
+    totp: string;
+}
