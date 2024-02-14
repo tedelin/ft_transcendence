@@ -3,7 +3,7 @@ import { fetchUrl } from '../fetch';
 import { Channel } from './types/channel';
 import { useAuth } from '../components/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import { useError } from '../components/ErrorProvider';
+import { useToast } from '../utils/hooks/useToast';
 
 export function SearchChannel({ setChannels }) {
 	const [input, setInput] = useState('');
@@ -34,7 +34,7 @@ export function SearchChannel({ setChannels }) {
 
 export function ChannelList({ channels, setChannels }) {
 	const auth = useAuth();
-	const err = useError();
+	const {error, success} = useToast();
 	const navigate = useNavigate();
 
 	async function joinChannel(channel: Channel) {
@@ -51,8 +51,8 @@ export function ChannelList({ channels, setChannels }) {
 				}),
 			})
 			navigate(channel.name);
-		} catch (error: any) {
-			err.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 

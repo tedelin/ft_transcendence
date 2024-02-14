@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { fetchUrl } from '../fetch';
 import { useAuth } from '../components/AuthProvider';
-import { useError } from '../components/ErrorProvider';
+import { useToast } from '../utils/hooks/useToast';
 import '../styles/chat.css';
 
 
 function AddFriend({ selected }) {
 	const [username, setUsername] = useState('');
 	const [user, setUser] = useState(null);
-	const er = useError();
+	const {error, success} = useToast();
 	const token = localStorage.getItem('jwtToken');
 
 	async function getUser() {
@@ -21,8 +21,8 @@ function AddFriend({ selected }) {
 			});
 			setUser(response);
             await sendRequest();
-		} catch (error: any) {
-			er.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
@@ -35,9 +35,10 @@ function AddFriend({ selected }) {
 						Authorization: `Bearer ${token}`,
 					},
 				});
+				success('Friend request sent');
 			}
-		} catch (error: any) {
-			er.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
@@ -100,7 +101,7 @@ function SearchFriends({ selected }) {
 function FriendsList({ selected }) {
 	const [friends, setFriends] = useState([]);
 	const token = localStorage.getItem('jwtToken');
-	const er = useError();
+	const {error, success} = useToast();
 	const auth = useAuth();
 
 	async function acceptFriendRequest(requestId: string) {
@@ -114,9 +115,9 @@ function FriendsList({ selected }) {
 			setFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== requestId)
 			);
-		} catch (error: any) {
-			er.setError(error.message);
-			alert(error);
+			success('Friend request accepted');
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
@@ -131,8 +132,8 @@ function FriendsList({ selected }) {
 			setFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== requestId)
 			);
-		} catch (error) {
-			er.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
@@ -148,8 +149,8 @@ function FriendsList({ selected }) {
 			setFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== friendRequest.id)
 			);
-		} catch (error) {
-			er.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	
 	}
@@ -164,8 +165,8 @@ function FriendsList({ selected }) {
 				},
 			});
 			setFriends(response);
-		} catch (error) {
-			er.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 

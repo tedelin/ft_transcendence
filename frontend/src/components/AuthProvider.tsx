@@ -14,9 +14,9 @@ interface AuthContextType {
 	user: UserType | null;
 	loading: boolean;
 	socket: any;
-	signin: (username: string, password: string, callback: VoidFunction) => Promise<void>;
-	signup: (username: string, password: string, callback: VoidFunction) => Promise<void>;
-	signout: (callback: VoidFunction) => void;
+	signin: (username: string, password: string) => Promise<void>;
+	signup: (username: string, password: string) => Promise<void>;
+	signout: () => void;
 }
 
 

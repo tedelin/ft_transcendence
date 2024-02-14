@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { MessageDisplay } from './MessageDisplay';
 import { useAuth } from "../components/AuthProvider";
 import { useParams } from "react-router-dom";
-import { useError } from "../components/ErrorProvider";
 import { fetchUrl } from "../fetch";
+import { useToast } from "../utils/hooks/useToast";
 import '../styles/chat.css';
 
 function Settings({enabled, channel}) {
 	const [channelUsers, setChannelUsers] = useState([]);
 	const token = localStorage.getItem('jwtToken');
-	const err = useError();
+	const {error} = useToast();
 
 	async function fetchChannelUsers() {
 		try {
@@ -17,8 +17,8 @@ function Settings({enabled, channel}) {
 				method: 'GET',
 			});
 			setChannelUsers(response);
-		} catch (error) {
-			err.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
@@ -30,8 +30,8 @@ function Settings({enabled, channel}) {
 					Authorization: `Bearer ${token}`,
 				},
 			})
-		} catch (error) {
-			err.setError(error.message)
+		} catch (err: any) {
+			error(err.message)
 		}
 	}
 
@@ -43,8 +43,8 @@ function Settings({enabled, channel}) {
 					Authorization: `Bearer ${token}`,
 				},
 			})
-		} catch (error) {
-			err.setError(error.message)
+		} catch (err: any) {
+			error(err.message)
 		}
 	}
 
@@ -56,8 +56,8 @@ function Settings({enabled, channel}) {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-		} catch (error) {
-			err.setError(error.message)
+		} catch (err: any) {
+			error(err.message)
 		}
 	}
 
@@ -69,8 +69,8 @@ function Settings({enabled, channel}) {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-		} catch (error) {
-			err.setError(error.message)
+		} catch (err: any) {
+			error(err.message)
 		}
 	}
 
@@ -82,8 +82,8 @@ function Settings({enabled, channel}) {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-		} catch (error) {
-			err.setError(error.message)
+		} catch (err: any) {
+			error(err.message)
 		}
 	}
 
@@ -156,7 +156,7 @@ export function ChatBox() {
 	const [typing, setTyping] = useState('');
 	const { name } = useParams();
 	const auth = useAuth();
-	const err = useError();
+	const {error} = useToast();
 
 	function onTyping(e: any) {
 		auth?.socket?.emit("typing", { username: auth?.user?.username, roomId: name });
@@ -177,8 +177,8 @@ export function ChatBox() {
 				}),
 			});
 			setMessage('');
-		} catch (error: any) {
-			err.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 

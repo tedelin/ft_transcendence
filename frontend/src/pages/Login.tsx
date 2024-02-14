@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useAuth } from '../components/AuthProvider'
+import { useAuth } from '../components/AuthProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useError } from '../components/ErrorProvider'
+import { useToast } from '../utils/hooks/useToast';
 import '../styles/login.css';
 
 
@@ -12,35 +12,33 @@ export default function Login() {
     const navigate = useNavigate();
     const auth = useAuth();
     const location = useLocation();
-    const err = useError();
+    const {error} = useToast();
 
     const from = location.state?.from?.pathname || '/';
 
     async function handleSignIn() {
         if (!username || !password) {
-            err.setError('Please enter both username and password.');
+            error('Please enter both username and password.');
             return;
         }
         try {
             await auth?.signin(username, password);
             navigate(from, { replace: true });
-        } catch (error) {
-            console.log(error);
-            err.setError(error.message);
+        } catch (err: any) {
+            error(err.message);
         }
     }
 
     async function handleSignUp() {
         if (!username || !password) {
-            err.setError('Please enter both username and password.');
+            error('Please enter both username and password.');
             return;
         }
         try {
             await auth?.signup(username, password);
             navigate(from, { replace: true });
-        } catch (error) {
-            console.log(error);
-            err.setError(error.message);
+        } catch (err: any) {
+            error(err.message);
         }
     }
     return (

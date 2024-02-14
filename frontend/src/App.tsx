@@ -1,17 +1,18 @@
-import { useLocation, Outlet, Routes, Route, Navigate, createBrowserRouter, RouterProvider, useRouteError, LoaderFunctionArgs, redirect } from 'react-router-dom'
-import { useEffect } from 'react'
-import Login from './pages/Login'
-import Chat from './chat/page'
-import { NavBar } from './components/NavBar'
-import { Game } from './game/page'
-import { AuthProvider, useAuth } from './components/AuthProvider'
-import './App.css'
-import './styles/chat.css'
-import { ErrorProvider, useError } from './components/ErrorProvider'
-import Settings from './pages/Settings'
-import { Channels } from './chat/Channels'
-import { Friends } from './chat/Friends'
-import { ChatBox } from './chat/ChatBox'
+import { useLocation, Outlet, Navigate, createBrowserRouter, RouterProvider, useRouteError } from 'react-router-dom';
+import { useEffect } from 'react';
+import Login from './pages/Login';
+import Chat from './chat/page';
+import { NavBar } from './components/NavBar';
+import { Game } from './game/page';
+import { AuthProvider, useAuth } from './components/AuthProvider';
+import './App.css';
+import './styles/chat.css';
+import Settings from './pages/Settings';
+import { Channels } from './chat/Channels';
+import { Friends } from './chat/Friends';
+import { ChatBox } from './chat/ChatBox';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const router = createBrowserRouter([
 	{
@@ -72,15 +73,13 @@ export default function ErrorPage() {
 }
 
 function Layout() {
-	const er = useError();
-
 	return (
 		<AuthProvider>
 			<NavBar />
 			<div className='container'>
-				{er.error && <div className="notification">{er.error}</div>}
 				<Outlet />
 			</div>
+			<ToastContainer theme='dark' />
 		</AuthProvider>
 	)
 }
@@ -112,9 +111,7 @@ export function App() {
 	  }, []);
 
 	return (
-		<ErrorProvider>
-			<RouterProvider router={router} />
-		</ErrorProvider>
+		<RouterProvider router={router} />
 	);
 }
 
