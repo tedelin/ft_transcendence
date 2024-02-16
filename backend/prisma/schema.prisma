@@ -20,6 +20,9 @@ model User {
   matchHistory         MatchHistory[]
   friendshipsInitiated Friendship[]     @relation("Initiator")
   friendshipsReceived  Friendship[]     @relation("Receiver")
+  sentMessages         PrivateMessage[] @relation("PrivateMessageSender")
+  receivedMessages     PrivateMessage[] @relation("PrivateMessageReceiver")
+
 
   @@map("users")
 }
@@ -77,6 +80,18 @@ model MatchHistory {
   userId    Int
 
   @@map("match_history")
+}
+
+model PrivateMessage {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  senderId  Int
+  receiverId Int
+  sender    User     @relation("PrivateMessageSender", fields: [senderId], references: [id])
+  receiver  User     @relation("PrivateMessageReceiver", fields: [receiverId], references: [id])
+
+  @@map("private_messages")
 }
 
 enum UserStatus {
