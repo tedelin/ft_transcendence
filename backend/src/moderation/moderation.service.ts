@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DatabaseService } from "src/database/database.service";
 import { Role } from '@prisma/client';
@@ -9,7 +9,7 @@ export class ModerationService {
 	constructor(
 		private readonly databaseService: DatabaseService,
 		private eventEmitter: EventEmitter2,
-	) {}
+	) { }
 
 	async banUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
@@ -25,7 +25,7 @@ export class ModerationService {
 				role: Role.BANNED,
 			}
 		});
-		this.eventEmitter.emit("ban.user", {userId, roomId});
+		this.eventEmitter.emit("ban.user", { userId, roomId });
 		return banUser;
 	}
 
@@ -40,7 +40,7 @@ export class ModerationService {
 				}
 			}
 		});
-		this.eventEmitter.emit("kick.user", {userId, roomId});
+		this.eventEmitter.emit("kick.user", { userId, roomId });
 		return kickUser;
 	}
 
@@ -132,6 +132,7 @@ export class ModerationService {
 				},
 			}
 		})
+		if (!channel) throw new NotFoundException('User is not in the channel');
 		return (channel.role);
 	}
 }

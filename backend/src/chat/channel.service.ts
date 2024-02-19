@@ -15,9 +15,9 @@ export class ChannelService {
 		private readonly friendService: FriendService,
 		private eventEmitter: EventEmitter2,
 		private readonly moderationService: ModerationService,
-	) {}
+	) { }
 
-    async create(userId, createChannelDto: CreateChannelDto) {
+	async create(userId, createChannelDto: CreateChannelDto) {
 		const exist = await this.findByName(createChannelDto.name);
 		if (exist) throw new ConflictException('Channel name already exists');
 		if (createChannelDto.password) {
@@ -37,7 +37,7 @@ export class ChannelService {
 		});
 		this.eventEmitter.emit("join.channel", userId, createChannelDto.name);
 		return channel;
-    }
+	}
 
 	async joinChannel(userId: number, joinChannelDto: JoinChannelDto) {
 		const channel = await this.findByName(joinChannelDto.roomId);
@@ -62,6 +62,20 @@ export class ChannelService {
 				userId: userId,
 				channelName: joinChannelDto.roomId,
 				role: Role.MEMBER,
+			}
+		})
+	}
+
+	async leaveChannel(userId: number, joinChannelDto: JoinChannelDto) {
+		const channel = await this.findByName(joinChannelDto.roomId);
+		if (!channel) throw new NotFoundException("Channel doesn't exist");
+		this.eventEmitter.emit('leave.channel', userId, joinChannelDto.roomId);
+		return await this.databaseService.channelUser.delete({
+			where: {
+				channelName_userId: {
+					channelName: joinChannelDto.roomId,
+					userId: userId,
+				},
 			}
 		})
 	}
@@ -105,22 +119,22 @@ export class ChannelService {
 		});
 	}
 
-    async update(name: string, updateChannelDto: Prisma.ChannelUpdateInput) {
-        return await this.databaseService.channel.update({
-            where: {
-                name,
-            },
-            data: updateChannelDto,
-        })
-    }
+	async update(name: string, updateChannelDto: Prisma.ChannelUpdateInput) {
+		return await this.databaseService.channel.update({
+			where: {
+				name,
+			},
+			data: updateChannelDto,
+		})
+	}
 
-    async remove(name: string) {
-        return await this.databaseService.channel.delete({
-            where: {
-                name,
-            }
-        })
-    }
+	async remove(name: string) {
+		return await this.databaseService.channel.delete({
+			where: {
+				name,
+			}
+		})
+	}
 
 	async createMessage(channelMessage: ChannelMessageDto) {
 		const userMuted = await this.moderationService.getRole(channelMessage.senderId, channelMessage.channelId);

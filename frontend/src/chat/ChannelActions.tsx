@@ -9,7 +9,7 @@ export function ChannelActions() {
 	const [channelPassword, setChannelPassword] = useState('');
 	const [channelVisibility, setChannelVisibility] = useState('PUBLIC');
 	const navigate = useNavigate();
-	const {error, success }= useToast();
+	const { error, success } = useToast();
 
 	async function create() {
 		if (channelName.length < 2 || channelName.length > 13) {
@@ -31,8 +31,6 @@ export function ChannelActions() {
 				}),
 			});
 			navigate(channelName);
-			// setChannelName('');
-			// setChannelPassword('');
 			success('Channel created');
 		} catch (err: any) {
 			error(err.message);
@@ -46,9 +44,9 @@ export function ChannelActions() {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ 
-					roomId: channelName, 
-					password: channelPassword, 
+				body: JSON.stringify({
+					roomId: channelName,
+					password: channelPassword,
 				}),
 			})
 			navigate(channelName);
