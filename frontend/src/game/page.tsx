@@ -10,6 +10,7 @@ import { MatchmakingView } from './MatchmakingView';
 import { useAuth } from '../components/AuthProvider';
 import { MatchHistory } from './matchHistory';
 import { fetchUrl } from '../fetch';
+import { useNavigate, useLocation } from 'react-router-dom';
 // import { useError } from '../components/ErrorProvider';
 
 function StartGame({ gameInstance }) {
@@ -70,8 +71,11 @@ export function Game() {
     const [playerTwo, setPlayerTwo] = useState([]);
 
     const [historyAll, setHistoryAll] = useState([]);
-    const [historyNewMatch, setHistoryNewMatch] = useState(null);
+    const [isNavigationAllowed, setIsNavigationAllowed] = useState(false);
+    const [isSpectator, setIsSpectator] = useState(false);
 
+    // const navigate = useNavigate();
+    // const location = useLocation();
     const auth = useAuth();
 
     function handleQuit() {
@@ -91,12 +95,15 @@ export function Game() {
         setWinner(false);
         setPlayerOne([]);
         setPlayerTwo([]);
+        setIsNavigationAllowed(false);
     }
 
     function handletsart() {
         auth?.socket?.emit('clickPlay');
         setShowButton(false);
         setGameEnded(false);
+        setIsNavigationAllowed(true);
+        // navigate(`/game`, { state : { phase : 'gameok' } });
     }
 
     function handleSaveSettings() {
@@ -144,6 +151,47 @@ export function Game() {
         fetchMatchHistory();
     }, []);
 
+    // useEffect(() => {
+    //     console.log("yo");
+    //     console.log(`location : ${location.pathname}, isNavAllowed : ${isNavigationAllowed}, state: ${location.state}`)
+    //     if (!isNavigationAllowed && location.pathname.includes('/game') && location.state) {
+    //         console.log("Navigation non autorisée détectée, retour à /game");
+    //         // navigate('/game', { state: null, replace: true });
+    //     }
+    //     if (isNavigationAllowed &&
+    //         location.pathname === '/game' 
+    //         && !location.state) {
+    //         console.log("on sort");
+    //         if (!showButton && !gameStarted)
+    //         {
+    //             auth?.socket?.emit('crossMatchmaking');
+    //             setIsNavigationAllowed(false);
+    //         }
+    //         else if (gameStarted)
+    //         {
+    //             auth?.socket?.emit('quitInGame');
+    //             handleQuit();
+    //             setIsNavigationAllowed(false);
+    //         }
+    //         return ;
+    //     }
+    // }, [location.state]);
+
+    function quitBack() {
+        console.log(`showButton : ${showButton}, game: ${gameStarted}`);
+        console.log(`${letsGO}, ${playerOne}`)
+        console.log(`gameCurrent: ${gameInstance.current}`);
+        if (!gameInstance.current)
+        {
+            auth?.socket?.emit('crossMatchmaking');
+        }
+        else if (gameInstance.current)
+        {
+            auth?.socket?.emit('quitInGame');
+            handleQuit();
+        }
+    }
+
     useEffect(() => {
         auth?.socket?.on('gameMatchmaking', (data) => {
             if (data.firstPlayer) {
@@ -171,6 +219,7 @@ export function Game() {
             setWinner(data.winner);
             setPlayerStats(data.stats);
             setIsAbandon(data.isAbandon);
+            setIsSpectator(data.isSpectator);
             setShowEndGameModal(true);
         })
 
@@ -196,8 +245,13 @@ export function Game() {
             auth?.socket?.off('backToMenu');
             auth?.socket?.off('gameFinishedShowStats');
             auth?.socket?.off('letsGO');
+            auth?.socket?.off('matchs');
+            auth?.socket?.off('matchmakingStats');
+            quitBack();
         }
-    }, [gameStarted]);
+    }, []);
+
+    // useDetectNavigation(showButton, gameStarted, auth, handleQuit, navigate);
 
     return (
         <div className="game">
@@ -209,7 +263,10 @@ export function Game() {
             )}
             {!gameStarted && !showButton && settingsToDo && (
                 <>
-                    <div className='CrossIcon' onClick={() => auth?.socket?.emit('crossMatchmaking')}>&#10006;</div>
+                    <div className='CrossIcon' onClick={() => {
+                        auth?.socket?.emit('crossMatchmaking');
+                        // navigate('/game');
+                        }}>&#10006;</div>
                     <MatchmakingView
                         playerOne={playerOne}
                         playerTwo={playerTwo}
@@ -231,7 +288,10 @@ export function Game() {
             )}
             {!gameStarted && !showButton && !settingsToDo && (
                 <>
-                    <div className='CrossIcon' onClick={() => auth?.socket?.emit('crossMatchmaking')}>&#10006;</div>
+                    <div className='CrossIcon' onClick={() => {
+                        auth?.socket?.emit('crossMatchmaking');
+                        // navigate('/game');
+                        }}>&#10006;</div>
                     <MatchmakingView
                         playerOne={playerOne}
                         playerTwo={playerTwo}
@@ -260,6 +320,7 @@ export function Game() {
                     <div className='CrossIcon' onClick={() => {
                         auth?.socket?.emit('quitInGame');
                         handleQuit();
+                        // navigate('/game');
                     }} >&#10006;</div>
                 </>
             )}
@@ -268,6 +329,7 @@ export function Game() {
                     Winner={Winner}
                     isAbandon={isAbandon}
                     playerStats={playerStats}
+                    isSpect={isSpectator}
                     onQuit={handleQuit}
                 />
             )}

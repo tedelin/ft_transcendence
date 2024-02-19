@@ -50,7 +50,7 @@ export class PongService {
     }
 
     private calculateWinner(gameState: GameState) {
-        if (gameState.score.player1 === 1000 || gameState.score.player2 === 1000) {
+        if (gameState.score.player1 === 8 || gameState.score.player2 === 8) {
             let winner = gameState.score.player1 === 3 ? 1 : 2;
             return (winner);
         }

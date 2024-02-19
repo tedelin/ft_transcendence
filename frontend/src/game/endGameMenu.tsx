@@ -1,12 +1,12 @@
 import React from 'react';
 import './game.css';
 
-export function EndGameMenu({ Winner, isAbandon, playerStats, onQuit }) {
+export function EndGameMenu({ Winner, isAbandon, playerStats, isSpect, onQuit }) {
     return (
         <div className="endGameMenu">
             <div className="menuContent">
                 <div className="menuHeader">
-                    {Winner ? `You won${isAbandon ? " by abandon" : "!"}`: "You lost !"}
+                    {isSpect ? `${Winner} won${isAbandon ? " by abandon " : "!"}` : Winner ? `You won${isAbandon ? " by abandon" : "!"}`: "You lost !"}
                 </div>
                 <div className="conteneur">
                     <div className="statsLine legend">

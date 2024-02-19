@@ -204,7 +204,8 @@ export class GameGateway implements OnGatewayInit
             });
             client.emit('matchmakingStats', {
                 playerOne: { id: roomState.players[0].id.substring(0, 5) },
-                playerTwo: null
+                playerTwo: null,
+                roomId: roomId
             });
         }
     }

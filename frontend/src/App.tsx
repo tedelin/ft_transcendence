@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from './components/AuthProvider'
 import './App.css'
 import './styles/chat.css'
 import { ErrorProvider, useError } from './components/ErrorProvider'
+import { Book } from './Book'
 
 const router = createBrowserRouter([
     { path: '*', Component: Root },
@@ -59,13 +60,9 @@ function Root() {
 					<Route element={<Layout />}>
 						<Route path="/" element={<Login />} />
 						<Route path="/login" element={<Login />} />
-						<Route 
-							path="/game" 
-							element={
-							<RequireAuth>
-								<Game />
-							</RequireAuth>}
-						/>
+						<Route path="/game" element={<RequireAuth><Game /></RequireAuth>}>
+        					{/* <Route path="playing" element={<RequireAuth><Game /></RequireAuth>} /> */}
+						</Route>
 						<Route 
 							path="/chat" 
 							element={

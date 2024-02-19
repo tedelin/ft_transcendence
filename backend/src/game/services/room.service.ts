@@ -74,7 +74,8 @@ export class RoomService {
         // console.log('Staying alone in the room '+ gameId);
         this.server.to(gameId).emit('matchmakingStats', {
             playerOne: { id: roomState.players[0].id.substring(0, 5) },
-            playerTwo: null
+            playerTwo: null,
+            roomId: gameId
         })
     }
 
@@ -115,7 +116,8 @@ export class RoomService {
 
         this.server.to(roomId).emit('matchmakingStats', {
             playerOne: { id: roomState.players[0].id.substring(0, 5) },
-            playerTwo: (roomState.players.length < this.roomSize ? null : { id: roomState.players[1].id.substring(0, 5) })
+            playerTwo: (roomState.players.length < this.roomSize ? null : { id: roomState.players[1].id.substring(0, 5) }),
+            roomId: roomId
         })
         if (roomState.players.length < this.roomSize || !roomState.settings.settingsSet) {
             client.emit('gameMatchmaking', { 
@@ -145,7 +147,7 @@ export class RoomService {
     }
     
     private createRoom(client: Socket): string {
-        const newRoomId = `game_${new Date().getTime()}`;
+        const newRoomId = `${new Date().getTime()}`;
         this.rooms.set(newRoomId, new RoomState([client]));
         return newRoomId;
     }
@@ -161,10 +163,13 @@ export class RoomService {
 
     public findMyLifePartner(roomId : string, otherClient : Socket) {
         console.log("roomId = " + roomId);
-        let clients = this.rooms.get(roomId).players;
-        for (const targetClient of clients) {
-            if (targetClient.id != otherClient.id)
-                return targetClient;
+        const roomState = this.rooms.get(roomId);
+        if (roomState) {
+            let clients = this.rooms.get(roomId).players;
+            for (const targetClient of clients) {
+                if (targetClient.id != otherClient.id)
+                    return targetClient;
+            }
         }
         return null;
     }
@@ -177,6 +182,7 @@ export class RoomService {
                 roomState.state != RoomStatus.LAUNCHING ||
                 (roomState.state === RoomStatus.INGAME && roomState.gameState.status !== GameStatus.FINISHED))
             {
+                // console.log("y");
                 this.server.to(roomId).emit('gameStateUpdate', { gameState: roomState.gameState });
                 this.pongService.updateGameState(roomId);
             }
@@ -276,7 +282,8 @@ export class RoomService {
             this.server.to(winner).emit('gameFinishedShowStats', {
                 winner: true,
                 stats: stats,
-                isAbandon: true
+                isAbandon: true,
+                isSpectator : false
             })
         }
         // if gameStatus = FINISHED -> emit: to 2 players fronts
@@ -285,11 +292,23 @@ export class RoomService {
                 this.server.to(player.id).emit('gameFinishedShowStats', {
                     winner: (player.id === winner), 
                     stats: stats,
-                    isAbandon: false
+                    isAbandon: false,
+                    isSpectator : false
                 });
             });
         }
 
+        if (roomState.spectators.length > 0)
+        {
+            roomState.spectators.forEach((spectator) => {
+                this.server.to(spectator.id).emit('gameFinishedShowStats', {
+                    winner: winner, 
+                    stats: stats,
+                    isAbandon: (roomState.gameState.status === GameStatus.RUNNING ? true : false),
+                    isSpectator : true
+                });
+            })
+        }
         const data = this.formatUpdateMatchData(roomState);
 
         // clean room

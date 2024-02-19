@@ -42,7 +42,7 @@ export class ClassGame {
     socket: any;
     canvasWidth: number;
     canvasHeight: number;
-    localState: GameState ;
+    localState: GameState | null ;
     win: boolean;
 
     constructor(canvasRef : React.RefObject<HTMLCanvasElement>, gameState, socket : any) {
@@ -55,7 +55,9 @@ export class ClassGame {
         this.win = false;
     }
 
-    copyState(gameState) : GameState {
+    copyState(gameState) : GameState | null {
+        if (!gameState)
+            return null;
         return {
             paddles: {
                 ...gameState.paddles,
