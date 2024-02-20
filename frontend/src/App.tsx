@@ -12,6 +12,7 @@ import Settings from './pages/Settings'
 import { Channels } from './chat/Channels'
 import { Friends } from './chat/Friends'
 import { ChatBox } from './chat/ChatBox'
+import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
 
 const router = createBrowserRouter([
 	{
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
 					{
 						path: 'friends',
 						element: <Friends />,
+					},
+					{
+						path: "private-messages",
+						element: <PrivateMessagesPage />,
 					}
 				]
 			},
