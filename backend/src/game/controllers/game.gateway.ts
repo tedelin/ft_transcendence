@@ -14,6 +14,7 @@ import { AuthService } from "src/auth/auth.service";
 import { UserService } from "src/user/user.service";
 import { User } from "@prisma/client";
 import { GameService } from "../services/game.service";
+import { GameStatus } from "../classes/pong";
 
 @WebSocketGateway({
     cors: {
@@ -116,7 +117,13 @@ export class GameGateway implements OnGatewayInit
     handleReturnBack(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
         let roomId : string = Array.from(client.rooms)[1];
         let roomState = this.roomService.rooms.get(roomId);
-        if (roomState.state === RoomStatus.LAUNCHING || data.gameInstance)
+        console.log(`returnBack`);
+        console.log(`roomST: ${roomState}, gameInst: ${data.gameInstance}`);
+        if (roomState)
+            console.log(`roomST state : ${roomState.state}`);
+        if (roomState && roomState.gameState)
+            console.log(`game status : ${roomState.gameState.status}`)
+        if ((roomState && roomState.state === RoomStatus.LAUNCHING) || (data.gameInstance))
             this.quitInGame(client);
         else if (!data.gameInstance)
             this.roomService.matchmakingExit(client, 'cross', this.server);
@@ -130,7 +137,7 @@ export class GameGateway implements OnGatewayInit
             this.cleanUpSpectator(client);
             this.roomService.logRooms();
         }
-        else
+        else if (roomPartner)
             this.roomService.closingGame(roomId, roomPartner.id);
     }
 

@@ -77,7 +77,6 @@ export function Game() {
     function handleQuit() {
         setLetsGO(false);
         setGameStarted(false);
-        setGameEnded(true);
         setShowButton(true);
         setFirstPlayer(false);
         setSettingsToDo(false);
@@ -91,15 +90,11 @@ export function Game() {
         setWinner(false);
         setPlayerOne([]);
         setPlayerTwo([]);
-        setIsNavigationAllowed(false);
     }
 
     function handletsart() {
         auth?.socket?.emit('clickPlay');
         setShowButton(false);
-        setGameEnded(false);
-        setIsNavigationAllowed(true);
-        // navigate(`/game`, { state : { phase : 'gameok' } });
     }
 
     function handleSaveSettings() {
@@ -147,37 +142,19 @@ export function Game() {
         fetchMatchHistory();
     }, []);
 
-    // useEffect(() => {
-    //     console.log("yo");
-    //     console.log(`location : ${location.pathname}, isNavAllowed : ${isNavigationAllowed}, state: ${location.state}`)
-    //     if (!isNavigationAllowed && location.pathname.includes('/game') && location.state) {
-    //         console.log("Navigation non autorisée détectée, retour à /game");
-    //         // navigate('/game', { state: null, replace: true });
-    //     }
-    //     if (isNavigationAllowed &&
-    //         location.pathname === '/game' 
-    //         && !location.state) {
-    //         console.log("on sort");
-    //         if (!showButton && !gameStarted)
-    //         {
-    //             auth?.socket?.emit('crossMatchmaking');
-    //             setIsNavigationAllowed(false);
-    //         }
-    //         else if (gameStarted)
-    //         {
-    //             auth?.socket?.emit('quitInGame');
-    //             handleQuit();
-    //             setIsNavigationAllowed(false);
-    //         }
-    //         return ;
-    //     }
-    // }, [location.state]);
-
     function quitBack() {
-        // console.log(`showButton : ${showButton}, game: ${gameStarted}`);
-        // console.log(`${letsGO}, ${playerOne}`)
-        // console.log(`gameCurrent: ${gameInstance.current}`);
-        auth?.socket?.emit('returnBack', { gameInstance: gameInstance.current });
+        console.log(`showButton : ${showButton}, game: ${gameStarted}`);
+        console.log(`${letsGO}, ${playerOne}`)
+        console.log(`gameCurrent: ${gameInstance.current}`);
+        if (!gameInstance.current)
+        {
+            auth?.socket?.emit('returnBack', { gameInstance: gameInstance.current });
+        }
+        else if (gameInstance.current)
+        {
+            auth?.socket?.emit('quitInGame');
+            handleQuit();
+        }
     }
 
     useEffect(() => {
