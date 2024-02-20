@@ -70,7 +70,7 @@ export class GameService {
     async createMatch(createMatchDto: CreateMatchDto) {
         const match = await this.databaseService.match.create({
             data: {
-                status : "IN_GAME",
+                status : createMatchDto.status,
                 players: {
                     createMany: {
                         data: createMatchDto.players.map(player => ({
@@ -127,7 +127,8 @@ export class GameService {
             });
         });
         await Promise.all(updatePromises);
-        return this.findOne(id_match);
+        const match = await this.findOne(id_match);
+        return match;
     }
 
     async findUserById(id: number) {

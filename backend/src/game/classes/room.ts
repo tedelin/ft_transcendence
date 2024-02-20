@@ -4,7 +4,8 @@ import { GameState } from './pong';
 export enum RoomStatus {
     MATCHMAKING = 0,
     INGAME = 1,
-    LAUNCHING = 2
+    LAUNCHING = 2,
+    INTERRUPT = 3
 }
 
 export class pData {

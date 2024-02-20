@@ -50,7 +50,6 @@ function StartGame({ gameInstance }) {
 
 export function Game() {
     const [gameStarted, setGameStarted] = useState(false);
-    const [gameEnded, setGameEnded] = useState(false);
     const [showButton, setShowButton] = useState(true);
     const [settingsToDo, setSettingsToDo] = useState(false);
     const [firstPlayer, setFirstPlayer] = useState(false);
@@ -71,11 +70,8 @@ export function Game() {
     const [playerTwo, setPlayerTwo] = useState([]);
 
     const [historyAll, setHistoryAll] = useState([]);
-    const [isNavigationAllowed, setIsNavigationAllowed] = useState(false);
     const [isSpectator, setIsSpectator] = useState(false);
 
-    // const navigate = useNavigate();
-    // const location = useLocation();
     const auth = useAuth();
 
     function handleQuit() {
@@ -178,18 +174,10 @@ export function Game() {
     // }, [location.state]);
 
     function quitBack() {
-        console.log(`showButton : ${showButton}, game: ${gameStarted}`);
-        console.log(`${letsGO}, ${playerOne}`)
-        console.log(`gameCurrent: ${gameInstance.current}`);
-        if (!gameInstance.current)
-        {
-            auth?.socket?.emit('crossMatchmaking');
-        }
-        else if (gameInstance.current)
-        {
-            auth?.socket?.emit('quitInGame');
-            handleQuit();
-        }
+        // console.log(`showButton : ${showButton}, game: ${gameStarted}`);
+        // console.log(`${letsGO}, ${playerOne}`)
+        // console.log(`gameCurrent: ${gameInstance.current}`);
+        auth?.socket?.emit('returnBack', { gameInstance: gameInstance.current });
     }
 
     useEffect(() => {

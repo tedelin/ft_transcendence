@@ -90,8 +90,9 @@ export class GameGateway implements OnGatewayInit
             console.log("in roomstate");
             if (this.isASpectator(client))
                 this.cleanUpSpectator(client);
-            else if (roomState.state == RoomStatus.MATCHMAKING)
+            else if (roomState.state == RoomStatus.MATCHMAKING) {
                 this.roomService.matchmakingExit(client, 'disconnect', this.server);
+            }
             else if (roomState.state === RoomStatus.INGAME || roomState.state === RoomStatus.LAUNCHING)
                 this.roomService.closingGame(gameId, this.roomService.findMyLifePartner(gameId, client).id);
         }
@@ -111,17 +112,31 @@ export class GameGateway implements OnGatewayInit
         console.log(client.id + " connected to room " + roomId);
     }
 
-    @SubscribeMessage('quitInGame')
-    handleCrossGame(@ConnectedSocket() client: Socket) {
-        let roomId = Array.from(client.rooms)[1];
+    @SubscribeMessage('returnBack')
+    handleReturnBack(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
+        let roomId : string = Array.from(client.rooms)[1];
+        let roomState = this.roomService.rooms.get(roomId);
+        if (roomState.state === RoomStatus.LAUNCHING || data.gameInstance)
+            this.quitInGame(client);
+        else if (!data.gameInstance)
+            this.roomService.matchmakingExit(client, 'cross', this.server);
+    }
+
+    public quitInGame(client : Socket) {
+        let roomId : string = Array.from(client.rooms)[1];
         let roomPartner = this.roomService.findMyLifePartner(roomId, client);
-        
+        let roomState = this.roomService.rooms.get(roomId);
         if (this.isASpectator(client)) {
             this.cleanUpSpectator(client);
             this.roomService.logRooms();
         }
         else
             this.roomService.closingGame(roomId, roomPartner.id);
+    }
+
+    @SubscribeMessage('quitInGame')
+    handleCrossGame(@ConnectedSocket() client: Socket) {
+        this.quitInGame(client);
     }
 
     @SubscribeMessage('crossMatchmaking')

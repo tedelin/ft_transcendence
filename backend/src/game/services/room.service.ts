@@ -80,7 +80,7 @@ export class RoomService {
     }
 
     private playerOneMatchmakingExit(gameId, client) {
-        const roomState = this.rooms.get(gameId);
+        const roomState = this.rooms.get(gameId); 
         if (!roomState) return ;
         let roomPartner : Socket | null = this.findMyLifePartner(gameId, client);
 
@@ -196,8 +196,13 @@ export class RoomService {
         this.server.to(roomId).emit('letsGO');
         roomState.state = RoomStatus.LAUNCHING;
         setTimeout(async () => {
-            this.rooms.get(roomId).state = RoomStatus.INGAME
-            const data : CreateMatchDto = this.formatCreateMatchData(roomState);
+            if (roomState.state === RoomStatus.INTERRUPT) {
+                console.log("INTERRUPT!!!");
+                return ;
+            }
+            this.rooms.get(roomId).state = RoomStatus.INGAME;
+            // console.log(`test DBEUG : id 1 : ${this.connectedUsers.get(roomState.players[0]).id}`)
+            const data : CreateMatchDto = this.formatCreateMatchData(roomState, this.connectedUsers.get(roomState.players[0].id), this.connectedUsers.get(roomState.players[1].id));
             const match = await this.gameService.createMatch(data);
             roomState.id = match.id;
             console.log(`${match.id} just created`);
@@ -222,10 +227,10 @@ export class RoomService {
         this.rooms.delete(roomId);
     }
 
-    private formatUpdateMatchData(roomState : RoomState) : UpdateMatchDto {
+    private formatUpdateMatchData(roomState : RoomState, pOne : User, pTwo : User) : UpdateMatchDto {
         const score : Score = roomState.gameState.score;
-        const userOne : User = this.connectedUsers.get(roomState.players[0].id);
-        const userTwo : User = this.connectedUsers.get(roomState.players[1].id);
+        const userOne : User = pOne;
+        const userTwo : User = pTwo;
         const playerOne : PlayerData = {
             playerId: userOne.id,
             score: score.player1,
@@ -242,9 +247,9 @@ export class RoomService {
         };
     }
 
-    private formatCreateMatchData(roomState : RoomState) : CreateMatchDto {
-        const userOne : User = this.connectedUsers.get(roomState.players[0].id);
-        const userTwo : User = this.connectedUsers.get(roomState.players[1].id);
+    private formatCreateMatchData(roomState : RoomState, pOne : User, pTwo : User) : CreateMatchDto {
+        const userOne : User = pOne;
+        const userTwo : User = pTwo;
         const playerOne : PlayerData = {
             playerId: userOne.id,
             score: 0,
@@ -257,7 +262,7 @@ export class RoomService {
         };
         return { 
             players: [playerOne, playerTwo],
-            status: "IN_GAME",
+            status: (roomState.state === RoomStatus.INTERRUPT ? "FINISHED" : "IN_GAME")
         };
     }
 
@@ -273,16 +278,19 @@ export class RoomService {
         const roomState = this.rooms.get(roomId);
         if (!roomState) return;
 
+        
         this.server.to(roomId).emit('gameStateUpdate', { gameState: roomState.gameState });
         this.cleanRoom(roomId);
 
         const looser = this.findLoser(roomState, winner);
         const winnerUser = this.connectedUsers.get(winner);
         const looserUser = this.connectedUsers.get(looser);
+        const playerOne = this.connectedUsers.get(roomState.players[0].id);
+        const playerTwo = this.connectedUsers.get(roomState.players[1].id);
         await this.gameService.addMatchToStats(winnerUser.id, looserUser.id);
         let stats = await this.gameService.getPlayersStats(winnerUser.id, looserUser.id);
 
-        if (roomState.gameState.status === GameStatus.RUNNING) {
+        if (!roomState.gameState || roomState.gameState.status === GameStatus.RUNNING) {
             this.server.to(winner).emit('gameFinishedShowStats', {
                 winner: true,
                 stats: stats,
@@ -312,9 +320,16 @@ export class RoomService {
                 });
             })
         }
-        const data = this.formatUpdateMatchData(roomState);
-
-        const match = await this.gameService.updateMatch(roomState.id, data);
+        if (!roomState.gameState) {
+            roomState.state = RoomStatus.INTERRUPT;
+            const data = this.formatCreateMatchData(roomState, playerOne, playerTwo);
+            console.log(`data before creating empty match: ${data.status}`);
+            await this.gameService.createMatch(data);
+        }
+        else {
+            const data = this.formatUpdateMatchData(roomState, playerOne, playerTwo);
+            await this.gameService.updateMatch(roomState.id, data);
+        }
         const allMatchs = await this.gameService.findAllGames();
         this.server.emit('matchs', allMatchs);
     }
