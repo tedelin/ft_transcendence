@@ -71,7 +71,8 @@ export class GameGateway implements OnGatewayInit
 		}
         this.connectedUsers.set(client.id, user);
         this.roomService.playersData.set(client.id, new pData(user.id));
-        console.log(user.username + " connected to game, id " + client.id);
+        console.log(this.connectedUsers.get(client.id).username + " connected to game, id " + client.id);
+        await this.gameService.createStats(this.connectedUsers.get(client.id).id);
     }
 
     async handleDisconnect(client: Socket): Promise<void> {
@@ -91,7 +92,7 @@ export class GameGateway implements OnGatewayInit
             else if (roomState.state == RoomStatus.MATCHMAKING)
                 this.roomService.matchmakingExit(client, 'disconnect', this.server);
             else if (roomState.state === RoomStatus.INGAME)
-                this.roomService.closingGame(gameId, this.roomService.findMyLifePartner(gameId, client).id);
+                this.roomService.closingGame(gameId, this.roomService.findMyLifePartner(gameId, client).id, client.id);
         }
         console.log(this.connectedUsers.get(client.id).username + " disconnected from game");
         this.connectedUsers.delete(client.id);
@@ -104,7 +105,7 @@ export class GameGateway implements OnGatewayInit
     handleClickPlay(@ConnectedSocket() client: Socket) {
 		console.log("clickplay");
         let roomId = this.roomService.assignClientToRoom(client);
-        console.log(client.id + " connected to room " + roomId);
+        console.log(this.connectedUsers.get(client.id).username + " connected to room " + roomId);
     }
 
     @SubscribeMessage('quitInGame')
@@ -117,7 +118,7 @@ export class GameGateway implements OnGatewayInit
             this.roomService.logRooms();
         }
         else
-            this.roomService.closingGame(roomId, roomPartner.id);
+            this.roomService.closingGame(roomId, roomPartner.id, client.id);
     }
 
     @SubscribeMessage('crossMatchmaking')

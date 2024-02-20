@@ -11,15 +11,15 @@ import { UserService } from "src/user/user.service";
 import { User } from "@prisma/client";
 import { UpdateMatchDto } from "../dto/update-match.dto";
 
-interface Matchs {
-    id: number,
-    date: any,
-    players : Array<{
-        username: string,
-        score: number,
-        role: string
-    }>
-}
+// interface Matchs {
+//     id: number,
+//     date: any,
+//     players : Array<{
+//         username: string,
+//         score: number,
+//         role: string
+//     }>
+// }
 
 @Injectable()
 export class RoomService {
@@ -33,8 +33,8 @@ export class RoomService {
     constructor(
         private readonly pongService: PongService,
         private readonly gameService: GameService,
-        private readonly authService: AuthService,
-        private readonly userService: UserService
+        // private readonly authService: AuthService,
+        // private readonly userService: UserService
     ) {}
 
     public setServer(server: Server, connectedUsers : Map<string, User>) {
@@ -261,7 +261,7 @@ export class RoomService {
         };
     }
 
-    async closingGame(roomId : string, winner : string) {
+    async closingGame(roomId : string, winner : string, looser : string) {
         const roomState = this.rooms.get(roomId);
         if (!roomState) return;
 
@@ -271,11 +271,13 @@ export class RoomService {
         // this.server.emit('historyAllMatch', games);
 
         // Update winner score, NEED TO CHANGE TO SEND IT TO DB LATER
-        this.playersData.get(winner).wins++;
+        await this.gameService.addMatchToStats(this.connectedUsers.get(winner).id, this.connectedUsers.get(looser).id);
 
         // Get stats of 2 players, NEED TO CHANGE TO GET IT FROM DB LATER
-        let stats = this.getPlayersStats(roomState.players);
-
+        let stats = await this.gameService.getPlayersStats(this.connectedUsers.get(winner).id, this.connectedUsers.get(looser).id);
+        console.log("STATS!!!!!!!!!!!!!!!!!!!");
+        console.log(stats.player1);
+        console.log(stats.player2);
         // Emit end of game, winner, stats and isAbandon to front to display the stats screen above game field
         // if gameStatus = RUNNING (so a player gave up) -> emit: only to winner front
         if (roomState.gameState.status === GameStatus.RUNNING) {
@@ -323,19 +325,19 @@ export class RoomService {
         this.server.emit('matchs', allMatchs);
 }
 
-    private getPlayersStats(players: Socket[]): { player1: any, player2: any } {
-        const player1Stats = {
-            id: players[0].id.substring(0, 5),
-            wins: this.playersData.get(players[0].id).wins,
-            gamesPlayed: this.playersData.get(players[0].id).gamesPlayed
-        };
+    // private getPlayersStats(players: Socket[]): { player1: any, player2: any } {
+    //     const player1Stats = {
+    //         id: players[0].id.substring(0, 5),
+    //         wins: this.playersData.get(players[0].id).wins,
+    //         gamesPlayed: this.playersData.get(players[0].id).gamesPlayed
+    //     };
     
-        const player2Stats = {
-            id: players[1].id.substring(0, 5),
-            wins: this.playersData.get(players[1].id).wins,
-            gamesPlayed: this.playersData.get(players[1].id).gamesPlayed
-        };
+    //     const player2Stats = {
+    //         id: players[1].id.substring(0, 5),
+    //         wins: this.playersData.get(players[1].id).wins,
+    //         gamesPlayed: this.playersData.get(players[1].id).gamesPlayed
+    //     };
     
-        return { player1: player1Stats, player2: player2Stats };
-    }
+    //     return { player1: player1Stats, player2: player2Stats };
+    // }
 }

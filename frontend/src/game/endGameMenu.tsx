@@ -13,12 +13,12 @@ export function EndGameMenu({ Winner, isAbandon, playerStats, isSpect, onQuit })
                         <div className="box id">    </div>
                         <div className="box wins">Victories</div>
                         <div className="box gamesPlayed">Total of games</div>
-                        <div className="box id">{playerStats.player1.id}</div>
-                        <div className="box wins">{playerStats.player1.wins}</div>
-                        <div className="box gamesPlayed">{playerStats.player1.gamesPlayed}</div>
-                        <div className="box id">{playerStats.player2.id}</div>
-                        <div className="box wins">{playerStats.player2.wins}</div>
-                        <div className="box gamesPlayed">{playerStats.player2.gamesPlayed}</div>
+                        <div className="box id">{playerStats.player1.user.username}</div>
+                        <div className="box wins">{playerStats.player1.nbWin}</div>
+                        <div className="box gamesPlayed">{playerStats.player1.nbGames}</div>
+                        <div className="box id">{playerStats.player2.user.username}</div>
+                        <div className="box wins">{playerStats.player2.nbWin}</div>
+                        <div className="box gamesPlayed">{playerStats.player2.nbGames}</div>
                     </div>
                 </div>
                 <button className="menuButton" onClick={onQuit}>Quit</button>

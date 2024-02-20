@@ -113,7 +113,6 @@ export class GameService {
             data: { status: "FINISHED" },
         });
     
-        // Ensuite, mettez à jour les détails de chaque joueur associé au match
         const updatePromises = updateMatchDto.players.map(player => {
             return this.databaseService.matchUser.updateMany({
                 where: {
@@ -129,4 +128,78 @@ export class GameService {
         await Promise.all(updatePromises);
         return this.findOne(id_match);
     }
+
+    async findUserById(id: number) {
+        const stats = await this.databaseService.stats.findUnique({
+            where: {
+                id: id,
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                    },
+                },
+            },
+        });
+        return stats;
+    }
+
+    async createStats(id_user: number) {
+        const User = await this.findUserById(id_user);
+        if (User)
+            return;
+        const stats = await this.databaseService.stats.create({
+            data:
+            {
+                userId: id_user,
+                nbGames: 0,
+                nbWin: 0,
+                nbLoose: 0,
+            },
+        });
+
+        return stats;
+    }
+
+    async updateStats(winner: any, looser: any) {
+        await this.databaseService.stats.update({
+            where: {
+                id: winner.id,
+            },
+            data: {
+                nbWin: winner.nbWin + 1,
+                nbGames: winner.nbGames + 1,
+            },
+        });
+        await this.databaseService.stats.update({
+            where: {
+                id: looser.id,
+            },
+            data: {
+                nbLoose: looser.nbLoose + 1,
+                nbGames: looser.nbGames + 1,
+            },
+        });
+    }
+
+    async getPlayersStats(winner: number, looser: number) {
+        const player1Stats = await this.findUserById(winner);
+        const player2Stats = await this.findUserById(looser);
+        console.log(player1Stats);
+        console.log("-----------------")
+        console.log(player2Stats);
+        return { player1: player1Stats, player2: player2Stats };
+    }
+
+    async addMatchToStats(winner: number, looser: number) {
+        const win_stats = await this.findUserById(winner);
+        const loose_stats = await this.findUserById(looser);
+        if (!win_stats || !loose_stats)
+            return;
+        this.updateStats(win_stats, loose_stats);
+    }
 }
+
+

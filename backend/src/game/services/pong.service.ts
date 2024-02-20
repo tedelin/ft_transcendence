@@ -68,7 +68,7 @@ export class PongService {
         winner = this.calculateWinner(gameState);
         if (winner) {
             gameState.status = GameStatus.FINISHED;
-            this.roomService.closingGame(roomId, roomState.players[winner - 1].id);
+            this.roomService.closingGame(roomId, roomState.players[winner - 1].id, roomState.players[2 - winner].id);
             return;
         }
         gameState.point(roomState.settings.paddleHeight, roomState.settings.ballSpeed, roomState.settings.paddleSpeed)

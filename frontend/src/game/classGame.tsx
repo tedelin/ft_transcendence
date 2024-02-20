@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 
-const RUNNING = 0;
+// const RUNNING = 0;
 const ENDED = 1;
-const ballTrail = [];
+// const ballTrail = [];
 
 interface Pos {
     x: number;
