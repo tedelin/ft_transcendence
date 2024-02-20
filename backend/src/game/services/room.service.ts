@@ -11,15 +11,15 @@ import { UserService } from "src/user/user.service";
 import { User } from "@prisma/client";
 import { UpdateMatchDto } from "../dto/update-match.dto";
 
-// interface Matchs {
-//     id: number,
-//     date: any,
-//     players : Array<{
-//         username: string,
-//         score: number,
-//         role: string
-//     }>
-// }
+interface Matchs {
+    id: number,
+    date: any,
+    players : Array<{
+        username: string,
+        score: number,
+        role: string
+    }>
+}
 
 @Injectable()
 export class RoomService {
@@ -33,8 +33,8 @@ export class RoomService {
     constructor(
         private readonly pongService: PongService,
         private readonly gameService: GameService,
-        // private readonly authService: AuthService,
-        // private readonly userService: UserService
+        private readonly authService: AuthService,
+        private readonly userService: UserService
     ) {}
 
     public setServer(server: Server, connectedUsers : Map<string, User>) {
@@ -73,7 +73,7 @@ export class RoomService {
         client.leave(gameId);
         // console.log('Staying alone in the room '+ gameId);
         this.server.to(gameId).emit('matchmakingStats', {
-            playerOne: { id: roomState.players[0].id.substring(0, 5) },
+            playerOne: { id: this.connectedUsers.get(client.id).username },
             playerTwo: null,
             roomId: gameId
         })
@@ -115,8 +115,8 @@ export class RoomService {
         const roomState = this.rooms.get(roomId);
 
         this.server.to(roomId).emit('matchmakingStats', {
-            playerOne: { id: roomState.players[0].id.substring(0, 5) },
-            playerTwo: (roomState.players.length < this.roomSize ? null : { id: roomState.players[1].id.substring(0, 5) }),
+            playerOne: { id: this.connectedUsers.get(roomState.players[0].id).username },
+            playerTwo: (roomState.players.length < this.roomSize ? null : { id: this.connectedUsers.get(client.id).username }),
             roomId: roomId
         })
         if (roomState.players.length < this.roomSize || !roomState.settings.settingsSet) {
@@ -193,8 +193,8 @@ export class RoomService {
         firstPlayer.gamesPlayed++;  
         secondPlayer.gamesPlayed++;
         let roomState = this.rooms.get(roomId);
-        roomState.state = RoomStatus.LAUNCHING;
         this.server.to(roomId).emit('letsGO');
+        roomState.state = RoomStatus.LAUNCHING;
         setTimeout(async () => {
             this.rooms.get(roomId).state = RoomStatus.INGAME
             const data : CreateMatchDto = this.formatCreateMatchData(roomState);
@@ -261,25 +261,27 @@ export class RoomService {
         };
     }
 
-    async closingGame(roomId : string, winner : string, looser : string) {
+    findLoser(roomState : RoomState, winner : string ){
+        const p1 = roomState.players[0].id;
+        const p2 = roomState.players[1].id;
+        if (p1 === winner)
+            return p2;
+        return p1;
+    }
+
+    async closingGame(roomId : string, winner : string) {
         const roomState = this.rooms.get(roomId);
         if (!roomState) return;
 
-        // Send last update for classGame to stop and manage game field
         this.server.to(roomId).emit('gameStateUpdate', { gameState: roomState.gameState });
-    
-        // this.server.emit('historyAllMatch', games);
+        this.cleanRoom(roomId);
 
-        // Update winner score, NEED TO CHANGE TO SEND IT TO DB LATER
-        await this.gameService.addMatchToStats(this.connectedUsers.get(winner).id, this.connectedUsers.get(looser).id);
+        const looser = this.findLoser(roomState, winner);
+        const winnerUser = this.connectedUsers.get(winner);
+        const looserUser = this.connectedUsers.get(looser);
+        await this.gameService.addMatchToStats(winnerUser.id, looserUser.id);
+        let stats = await this.gameService.getPlayersStats(winnerUser.id, looserUser.id);
 
-        // Get stats of 2 players, NEED TO CHANGE TO GET IT FROM DB LATER
-        let stats = await this.gameService.getPlayersStats(this.connectedUsers.get(winner).id, this.connectedUsers.get(looser).id);
-        console.log("STATS!!!!!!!!!!!!!!!!!!!");
-        console.log(stats.player1);
-        console.log(stats.player2);
-        // Emit end of game, winner, stats and isAbandon to front to display the stats screen above game field
-        // if gameStatus = RUNNING (so a player gave up) -> emit: only to winner front
         if (roomState.gameState.status === GameStatus.RUNNING) {
             this.server.to(winner).emit('gameFinishedShowStats', {
                 winner: true,
@@ -288,7 +290,6 @@ export class RoomService {
                 isSpectator : false
             })
         }
-        // if gameStatus = FINISHED -> emit: to 2 players fronts
         else {
             roomState.players.forEach((player) => {
                 this.server.to(player.id).emit('gameFinishedShowStats', {
@@ -304,7 +305,7 @@ export class RoomService {
         {
             roomState.spectators.forEach((spectator) => {
                 this.server.to(spectator.id).emit('gameFinishedShowStats', {
-                    winner: winner, 
+                    winner: winnerUser.username, 
                     stats: stats,
                     isAbandon: (roomState.gameState.status === GameStatus.RUNNING ? true : false),
                     isSpectator : true
@@ -313,31 +314,8 @@ export class RoomService {
         }
         const data = this.formatUpdateMatchData(roomState);
 
-        // clean room
-        this.cleanRoom(roomId);
-
         const match = await this.gameService.updateMatch(roomState.id, data);
-        console.log(`id: ${match.id} juste updated :`);
-        console.log(`Date: ${match.createdAt}`);
-        match.players.forEach(player => 
-            console.log(`Player : ${player.player.username}, Score: ${player.score}, Role: ${player.role}`));
         const allMatchs = await this.gameService.findAllGames();
         this.server.emit('matchs', allMatchs);
-}
-
-    // private getPlayersStats(players: Socket[]): { player1: any, player2: any } {
-    //     const player1Stats = {
-    //         id: players[0].id.substring(0, 5),
-    //         wins: this.playersData.get(players[0].id).wins,
-    //         gamesPlayed: this.playersData.get(players[0].id).gamesPlayed
-    //     };
-    
-    //     const player2Stats = {
-    //         id: players[1].id.substring(0, 5),
-    //         wins: this.playersData.get(players[1].id).wins,
-    //         gamesPlayed: this.playersData.get(players[1].id).gamesPlayed
-    //     };
-    
-    //     return { player1: player1Stats, player2: player2Stats };
-    // }
+    }
 }

@@ -71,8 +71,9 @@ export class GameGateway implements OnGatewayInit
 		}
         this.connectedUsers.set(client.id, user);
         this.roomService.playersData.set(client.id, new pData(user.id));
-        console.log(this.connectedUsers.get(client.id).username + " connected to game, id " + client.id);
-        await this.gameService.createStats(this.connectedUsers.get(client.id).id);
+        console.log(user.username + " connected to game, id " + client.id);
+        // console.log("user id : " + user.id);
+        this.gameService.createStats(user.id);
     }
 
     async handleDisconnect(client: Socket): Promise<void> {
@@ -91,11 +92,13 @@ export class GameGateway implements OnGatewayInit
                 this.cleanUpSpectator(client);
             else if (roomState.state == RoomStatus.MATCHMAKING)
                 this.roomService.matchmakingExit(client, 'disconnect', this.server);
-            else if (roomState.state === RoomStatus.INGAME)
-                this.roomService.closingGame(gameId, this.roomService.findMyLifePartner(gameId, client).id, client.id);
+            else if (roomState.state === RoomStatus.INGAME || roomState.state === RoomStatus.LAUNCHING)
+                this.roomService.closingGame(gameId, this.roomService.findMyLifePartner(gameId, client).id);
         }
-        console.log(this.connectedUsers.get(client.id).username + " disconnected from game");
-        this.connectedUsers.delete(client.id);
+        if (this.connectedUsers.get(client.id)) {
+            console.log(this.connectedUsers.get(client.id).username + " disconnected from game");
+            this.connectedUsers.delete(client.id);
+        }
         this.roomService.playersData.delete(client.id);
         this.roomService.logRooms();
     }
@@ -105,7 +108,7 @@ export class GameGateway implements OnGatewayInit
     handleClickPlay(@ConnectedSocket() client: Socket) {
 		console.log("clickplay");
         let roomId = this.roomService.assignClientToRoom(client);
-        console.log(this.connectedUsers.get(client.id).username + " connected to room " + roomId);
+        console.log(client.id + " connected to room " + roomId);
     }
 
     @SubscribeMessage('quitInGame')
@@ -118,7 +121,7 @@ export class GameGateway implements OnGatewayInit
             this.roomService.logRooms();
         }
         else
-            this.roomService.closingGame(roomId, roomPartner.id, client.id);
+            this.roomService.closingGame(roomId, roomPartner.id);
     }
 
     @SubscribeMessage('crossMatchmaking')
@@ -204,7 +207,7 @@ export class GameGateway implements OnGatewayInit
                 firstPlayer : true
             });
             client.emit('matchmakingStats', {
-                playerOne: { id: roomState.players[0].id.substring(0, 5) },
+                playerOne: { id: this.connectedUsers.get(client.id).username },
                 playerTwo: null,
                 roomId: roomId
             });

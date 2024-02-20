@@ -9,7 +9,7 @@ export function MatchmakingView({ playerOne, playerTwo }) {
 
         const photoUrl = player ? playerPhotoUrl : defaultPhotoUrl;
         const playerName = player ? player.id : 'Waiting for player...';
-        // const playerClass = player ? (isPlayerOne ? 'playerBlue' : 'playerRed') : 'player';
+        const playerClass = player ? (isPlayerOne ? 'playerBlue' : 'playerRed') : 'player';
 
         return (
             <div className="playerInfo">

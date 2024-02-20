@@ -51,7 +51,7 @@ export class PongService {
 
     private calculateWinner(gameState: GameState) {
         if (gameState.score.player1 === 8 || gameState.score.player2 === 8) {
-            let winner = gameState.score.player1 === 3 ? 1 : 2;
+            let winner = gameState.score.player1 === 8 ? 1 : 2;
             return (winner);
         }
         return 0;
@@ -67,8 +67,9 @@ export class PongService {
 
         winner = this.calculateWinner(gameState);
         if (winner) {
+            console.log(winner);
             gameState.status = GameStatus.FINISHED;
-            this.roomService.closingGame(roomId, roomState.players[winner - 1].id, roomState.players[2 - winner].id);
+            this.roomService.closingGame(roomId, roomState.players[winner - 1].id);
             return;
         }
         gameState.point(roomState.settings.paddleHeight, roomState.settings.ballSpeed, roomState.settings.paddleSpeed)

@@ -113,6 +113,7 @@ export class GameService {
             data: { status: "FINISHED" },
         });
     
+        // Ensuite, mettez à jour les détails de chaque joueur associé au match
         const updatePromises = updateMatchDto.players.map(player => {
             return this.databaseService.matchUser.updateMany({
                 where: {
@@ -132,7 +133,7 @@ export class GameService {
     async findUserById(id: number) {
         const stats = await this.databaseService.stats.findUnique({
             where: {
-                id: id,
+                userId : id,
             },
             include: {
                 user: {
@@ -147,7 +148,9 @@ export class GameService {
     }
 
     async createStats(id_user: number) {
+        // console.log(`createStats ${id_user}`);
         const User = await this.findUserById(id_user);
+        // console.log(User);
         if (User)
             return;
         const stats = await this.databaseService.stats.create({
@@ -164,6 +167,8 @@ export class GameService {
     }
 
     async updateStats(winner: any, looser: any) {
+        console.log(`before update winner : ${winner}`);
+        console.log(`before update winner : ${looser}`);
         await this.databaseService.stats.update({
             where: {
                 id: winner.id,
@@ -182,11 +187,20 @@ export class GameService {
                 nbGames: looser.nbGames + 1,
             },
         });
+        const player1Stats = await this.findUserById(winner.userId);
+        const player2Stats = await this.findUserById(looser.userId);
+        console.log("AFTER :::::: ")
+        console.log(player1Stats);
+        console.log("-----------------")
+        console.log(player2Stats);
     }
 
     async getPlayersStats(winner: number, looser: number) {
+        console.log(`winner id = ${winner}`);
+        console.log(`looser id = ${looser}`);
         const player1Stats = await this.findUserById(winner);
         const player2Stats = await this.findUserById(looser);
+        console.log("SENDING :::::: ")
         console.log(player1Stats);
         console.log("-----------------")
         console.log(player2Stats);
@@ -198,8 +212,6 @@ export class GameService {
         const loose_stats = await this.findUserById(looser);
         if (!win_stats || !loose_stats)
             return;
-        this.updateStats(win_stats, loose_stats);
+        await this.updateStats(win_stats, loose_stats);
     }
 }
-
-

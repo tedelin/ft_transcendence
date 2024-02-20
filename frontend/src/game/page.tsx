@@ -10,7 +10,7 @@ import { MatchmakingView } from './MatchmakingView';
 import { useAuth } from '../components/AuthProvider';
 import { MatchHistory } from './matchHistory';
 import { fetchUrl } from '../fetch';
-// import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 // import { useError } from '../components/ErrorProvider';
 
 function StartGame({ gameInstance }) {
@@ -50,7 +50,7 @@ function StartGame({ gameInstance }) {
 
 export function Game() {
     const [gameStarted, setGameStarted] = useState(false);
-    // const [gameEnded, setGameEnded] = useState(false);
+    const [gameEnded, setGameEnded] = useState(false);
     const [showButton, setShowButton] = useState(true);
     const [settingsToDo, setSettingsToDo] = useState(false);
     const [firstPlayer, setFirstPlayer] = useState(false);
@@ -71,7 +71,7 @@ export function Game() {
     const [playerTwo, setPlayerTwo] = useState([]);
 
     const [historyAll, setHistoryAll] = useState([]);
-    // const [isNavigationAllowed, setIsNavigationAllowed] = useState(false);
+    const [isNavigationAllowed, setIsNavigationAllowed] = useState(false);
     const [isSpectator, setIsSpectator] = useState(false);
 
     // const navigate = useNavigate();
@@ -81,7 +81,7 @@ export function Game() {
     function handleQuit() {
         setLetsGO(false);
         setGameStarted(false);
-        // setGameEnded(true);
+        setGameEnded(true);
         setShowButton(true);
         setFirstPlayer(false);
         setSettingsToDo(false);
@@ -95,14 +95,14 @@ export function Game() {
         setWinner(false);
         setPlayerOne([]);
         setPlayerTwo([]);
-        // setIsNavigationAllowed(false);
+        setIsNavigationAllowed(false);
     }
 
     function handletsart() {
         auth?.socket?.emit('clickPlay');
         setShowButton(false);
-        // setGameEnded(false);
-        // setIsNavigationAllowed(true);
+        setGameEnded(false);
+        setIsNavigationAllowed(true);
         // navigate(`/game`, { state : { phase : 'gameok' } });
     }
 
@@ -265,6 +265,7 @@ export function Game() {
                 <>
                     <div className='CrossIcon' onClick={() => {
                         auth?.socket?.emit('crossMatchmaking');
+                        // navigate('/game');
                         }}>&#10006;</div>
                     <MatchmakingView
                         playerOne={playerOne}
