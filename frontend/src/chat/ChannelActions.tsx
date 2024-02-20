@@ -43,6 +43,7 @@ export function ChannelActions() {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
 				},
 				body: JSON.stringify({
 					roomId: channelName,
@@ -62,12 +63,13 @@ export function ChannelActions() {
 	return (
 		<div className='createChannelContainer'>
 			<input
+			className='input'
 				type="text"
 				placeholder="Enter Channel Name"
 				value={channelName}
 				onChange={(e) => setChannelName(e.target.value)}
 			/>
-			{channelVisibility === "protected" && <input
+			{channelVisibility === "PROTECTED" && <input
 				type="password"
 				placeholder="Enter Channel Password"
 				value={channelPassword}

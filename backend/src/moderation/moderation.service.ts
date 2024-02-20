@@ -123,6 +123,20 @@ export class ModerationService {
 		});
 	}
 
+	async setOwnership(userId: number, roomId: string) {
+		return await this.databaseService.channelUser.update({
+			where: {
+				channelName_userId: {
+					channelName: roomId,
+					userId: userId,
+				},
+			},
+			data: {
+				role: Role.OWNER,
+			}
+		});
+	}
+
 	async getRole(userId: number, roomId: string) {
 		const channel = await this.databaseService.channelUser.findUnique({
 			where: {

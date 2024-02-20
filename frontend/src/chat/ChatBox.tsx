@@ -1,22 +1,51 @@
 import { useEffect, useState } from "react";
 import { MessageDisplay } from './MessageDisplay';
 import { useAuth } from "../components/AuthProvider";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchUrl } from "../fetch";
 import { useToast } from "../utils/hooks/useToast";
-import { Moderation } from "./ChannelSettings";
+import { ChannelSettings, Moderation } from "./ChannelSettings";
 import '../styles/chat.css';
 
 function TopBar({ channel }) {
+	const [moderation, setModeration] = useState(false);
 	const [settings, setSettings] = useState(false);
+	const { error } = useToast();
+	const navigate = useNavigate();
+
+	async function leaveChannel() {
+		try {
+			await fetchUrl("/chat/channels/leave", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+				},
+				body: JSON.stringify({
+					roomId: channel,
+				}),
+			});
+			navigate('/chat/channels');	
+		} catch (err: any) {
+			error(err.message);
+		}
+	}
 
 	return (
 		<div className="topBarChat">
-			<Moderation key={channel.id} enabled={settings} channel={channel} setEnabled={setSettings} />
+			<Moderation key={channel.id} enabled={moderation} channel={channel} setEnabled={setModeration} />
+			<ChannelSettings key={channel.id} enabled={settings} name={channel} setEnabled={setSettings} />
 			<img className="smallAvatar" src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
-			<span onClick={() => { setSettings(!settings); }} className='spanMargin'>
+			<span onClick={() => { setModeration(!moderation); }} className='spanMargin'>
 				{channel}
 			</span>
+			<button 
+				className="declineFriend"
+				onClick={leaveChannel}
+			>
+				Leave
+			</button>
+			<span onClick={() => { setSettings(!settings); }} className='material-symbols-outlined' >settings</span>
 		</div>
 	);
 }
@@ -25,8 +54,8 @@ export function ChatBox() {
 	const [message, setMessage] = useState('');
 	const [typing, setTyping] = useState('');
 	const { name } = useParams();
-	const auth = useAuth();
 	const { error } = useToast();
+	const auth = useAuth();
 
 	function onTyping(e: any) {
 		auth?.socket?.emit("typing", { username: auth?.user?.username, roomId: name });
@@ -59,16 +88,20 @@ export function ChatBox() {
 			sendChannelMessage();
 		}
 	};
-
+	
 	useEffect(() => {
 		auth?.socket?.on("typing", (username: string) => {
 			if (username === auth?.user?.username)
-				return;
+			return;
 			setTyping(`${username} is typing ...`);
 			setTimeout(() => {
 				setTyping('');
 			}, 3000);
 		});
+	
+		return () => {
+			auth?.socket?.off("typing");
+		}
 	}, [])
 
 	return (

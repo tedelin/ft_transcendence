@@ -1,11 +1,64 @@
 import { useState, useEffect } from 'react';
 import { fetchUrl } from '../fetch';
 import { useToast } from '../utils/hooks/useToast';
+import '../styles/modal.css';
 import Modal from '../components/Modal';
 
 
-export function ChannelSettings({ channel }) {
-    const [channelName, setChannelName] = useState(channel.name);
+export function ChannelSettings({ enabled, setEnabled, name }) {
+	const [channelPassword, setChannelPassword] = useState('');
+	const { error } = useToast();
+	const [channel, setChannel] = useState(null);
+
+	function closeSettings() {
+        setEnabled(false);
+    }
+
+	async function saveChanges() {
+		try {
+			await fetchUrl(`/chat/channels/${name}`, {
+				method: 'PATCH',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					name: name,
+					password: channelPassword,
+					visibility: channel?.visibility,
+				}),
+			});
+		} catch (err: any) {
+			error(err.message);
+		}
+	}
+
+	async function fetchChannel(name: any) {
+		try {
+			const response = await fetchUrl(`/chat/channels/${name}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+			setChannel(response);
+		} catch (err: any) {
+			error(err.message);
+		}
+	}
+
+	function changeVisibility(newVisibility: string) {
+		setChannel(prevChannel => ({
+			...prevChannel,
+			visibility: newVisibility
+		}));
+	}
+
+	useEffect(() => {
+		if (enabled) {
+			fetchChannel(name);
+		}
+	}, [enabled]);
 
     return (
         <Modal
@@ -13,9 +66,50 @@ export function ChannelSettings({ channel }) {
             onClose={closeSettings}
             title='Channel Settings'
         >
-            <input type="text" placeholder="Channel Name" value={channelName} onChange={(e) => setChannelName(e.target.value)} />
-            <button>Cancel</button>
-            <button>Save Changes</button>
+			<div className="channelSettings">
+				<input 
+					className='edit'
+					type="text" 
+					placeholder="Channel Name" 
+					value={name} 
+					onChange={(e) => setChannelName(e.target.value)}
+				/>
+				{channel?.visibility === 'PUBLIC' ? 
+				<button
+					className='modalButton'
+					onClick={() => changeVisibility('PROTECTED')}
+				>
+					Add Password
+				</button> :
+				(<div>
+					<input
+						className='edit'
+						onChange={(e) => setChannelPassword(e.target.value)}
+						value={channelPassword}
+						type="password" 
+						placeholder="Channel Password" 
+					/>
+					<button 
+						className='cancelButton'
+						onClick={() => changeVisibility('PUBLIC')}
+					>
+						Remove Password
+					</button>
+					<button className='saveButton'>Change Password</button>
+				</div>)}
+				<button
+					onClick={closeSettings}
+					className='cancelButton'
+				>
+						Cancel
+				</button>
+				<button
+					onClick={saveChanges}
+					className='saveButton'
+				>
+					Save Changes
+				</button>
+			</div>
         </Modal>
     )
 }
@@ -114,7 +208,6 @@ export function Moderation({ enabled, channel, setEnabled }) {
     }, [enabled]);
 
     return (
-        // enabled && (
         <Modal
             isOpen={enabled}
             onClose={closeModeration}
@@ -161,5 +254,4 @@ export function Moderation({ enabled, channel, setEnabled }) {
             </div>
         </Modal>
     )
-    // )
 }

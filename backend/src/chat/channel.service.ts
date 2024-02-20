@@ -69,13 +69,35 @@ export class ChannelService {
 	async leaveChannel(userId: number, joinChannelDto: JoinChannelDto) {
 		const channel = await this.findByName(joinChannelDto.roomId);
 		if (!channel) throw new NotFoundException("Channel doesn't exist");
-		this.eventEmitter.emit('leave.channel', userId, joinChannelDto.roomId);
-		return await this.databaseService.channelUser.delete({
+		const user = await this.databaseService.channelUser.findUnique({
 			where: {
 				channelName_userId: {
 					channelName: joinChannelDto.roomId,
 					userId: userId,
 				},
+			}
+		})
+		if (!user) throw new NotFoundException("You are not in this channel");
+		this.eventEmitter.emit('leave.channel', userId, joinChannelDto.roomId);
+		if (user.role === Role.OWNER) {
+			const newOwner = await this.databaseService.channelUser.findFirst({
+				where: {
+					channelName: joinChannelDto.roomId,
+					role: Role.MEMBER || Role.ADMIN,
+				},
+				select: {
+					userId: true,
+				}
+			});
+			if (!newOwner) return this.remove(joinChannelDto.roomId);
+			else this.moderationService.setOwnership(newOwner.userId, joinChannelDto.roomId);
+		}
+		return await this.databaseService.channelUser.delete({
+			where: {
+				channelName_userId: {
+					channelName: joinChannelDto.roomId,
+					userId: userId,
+				}
 			}
 		})
 	}
@@ -120,6 +142,13 @@ export class ChannelService {
 	}
 
 	async update(name: string, updateChannelDto: Prisma.ChannelUpdateInput) {
+		console.log(updateChannelDto);
+		if (updateChannelDto.password) {
+			console.log('hashing password');
+			const password = updateChannelDto.password as string;
+			const hash = await argon.hash(password);
+			updateChannelDto.password = hash;
+		}
 		return await this.databaseService.channel.update({
 			where: {
 				name,
@@ -129,6 +158,11 @@ export class ChannelService {
 	}
 
 	async remove(name: string) {
+		await this.databaseService.channelUser.deleteMany({
+			where: {
+				channelName: name,
+			}
+		});
 		return await this.databaseService.channel.delete({
 			where: {
 				name,
