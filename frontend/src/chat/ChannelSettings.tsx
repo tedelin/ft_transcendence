@@ -7,7 +7,7 @@ import Modal from '../components/Modal';
 
 export function ChannelSettings({ enabled, setEnabled, name }) {
 	const [channelPassword, setChannelPassword] = useState('');
-	const { error } = useToast();
+	const { error, success } = useToast();
 	const [channel, setChannel] = useState(null);
 
 	function closeSettings() {
@@ -28,6 +28,7 @@ export function ChannelSettings({ enabled, setEnabled, name }) {
 					visibility: channel?.visibility,
 				}),
 			});
+			success('Channel settings updated !');
 		} catch (err: any) {
 			error(err.message);
 		}

@@ -42,13 +42,13 @@ export class ModerationController {
 		return this.moderationService.kickUser(userId, name);
 	}
 
-	@Roles([Role.OWNER, Role.ADMIN])
+	@Roles([Role.OWNER])
 	@Patch('promote/:name/:userId')
 	promoteUser(@UserRequest() user: User, @Param('name') name: string, @Param('userId', ParseIntPipe) userId: number) {
 		return this.moderationService.promoteUser(userId, name);
 	}
 
-	@Roles([Role.OWNER, Role.ADMIN])
+	@Roles([Role.OWNER])
 	@Patch('demote/:name/:userId')
 	demoteUser(@UserRequest() user: User, @Param('name') name: string, @Param('userId', ParseIntPipe) userId: number) {
 		return this.moderationService.demoteUser(userId, name);

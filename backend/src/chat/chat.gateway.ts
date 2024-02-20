@@ -72,7 +72,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async onChannelLeave(userId, roomId: string) {
 		const client = this.getClientByUserId(userId);
 		client.leave(roomId);
-		this.client.emit('leave-channel', roomId);
+		this.server.to(client).emit('leave-channel', roomId);
 	}
 
 

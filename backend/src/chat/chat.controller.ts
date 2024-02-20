@@ -30,6 +30,8 @@ export class ChatController {
 		return this.channelService.findByName(name);
 	}
 
+	@UseGuards(JwtGuard, RolesGuard)
+	@Roles(['OWNER'])
 	@Patch('channels/:name')
 	update(@Param('name') name: string, @Body() updateChannelDto: Prisma.ChannelUpdateInput) {
 		return this.channelService.update(name, updateChannelDto);
