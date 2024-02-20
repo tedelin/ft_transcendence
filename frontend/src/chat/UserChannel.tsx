@@ -24,10 +24,6 @@ export function UserChannel() {
 		navigate(`channels/${channelName}`);
 	}
 
-	// function leaveChannel() {
-	//     dispatch({ type: 'setChannel', channelTo: null as any });
-	// }
-
 	useEffect(() => {
 		auth?.socket?.on("leave-channel", (channel: any) => {
 			setChannels(channels.filter((c: any) => c.channelName !== channel));

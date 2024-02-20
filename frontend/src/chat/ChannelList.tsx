@@ -56,18 +56,18 @@ export function ChannelList({ channels, setChannels }) {
 		}
 	}
 
-	// function leaveChannel() {
-	// 	auth?.socket.emit('leave-channel', name);
-	// }
-
 	useEffect(() => {
 		auth?.socket?.on('new-channel', (channel) => {
-			const updatedChannels = [...channels, channel];
-			setChannels(updatedChannels);
+			setChannels([...channels, channel]);
+		});
+
+		auth?.socket?.on('delete-channel', (channel) => {
+			setChannels(channels.filter((c: Channel) => c.name !== channel));
 		});
 
 		return (() => {
 			auth?.socket?.off('new-channel');
+			auth?.socket?.off('delete-channel');
 		});
 	}, [channels]);
 

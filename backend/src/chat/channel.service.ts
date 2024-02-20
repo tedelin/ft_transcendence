@@ -163,6 +163,7 @@ export class ChannelService {
 				channelName: name,
 			}
 		});
+		this.eventEmitter.emit('delete.channel', name);
 		return await this.databaseService.channel.delete({
 			where: {
 				name,
