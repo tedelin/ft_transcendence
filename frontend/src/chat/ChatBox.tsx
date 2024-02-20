@@ -4,7 +4,8 @@ import { useAuth } from "../components/AuthProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchUrl } from "../fetch";
 import { useToast } from "../utils/hooks/useToast";
-import { ChannelSettings, Moderation } from "./ChannelSettings";
+import { ChannelSettings } from "./ChannelSettings";
+import { Moderation } from "./Moderation";
 import '../styles/chat.css';
 
 function TopBar({ channel }) {

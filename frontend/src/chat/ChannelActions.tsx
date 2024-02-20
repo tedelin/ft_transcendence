@@ -69,7 +69,8 @@ export function ChannelActions() {
 				value={channelName}
 				onChange={(e) => setChannelName(e.target.value)}
 			/>
-			{channelVisibility === "PROTECTED" && <input
+			{channelVisibility === "PROTECTED" && 
+			<input
 				type="password"
 				placeholder="Enter Channel Password"
 				value={channelPassword}

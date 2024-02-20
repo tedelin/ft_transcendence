@@ -9,7 +9,7 @@ interface ModalProps {
     className?: string;
 }
 
-function Modal({ isOpen, onClose, children, className = "modal-content", title = "" }: ModalProps) {
+export function Modal({ isOpen, onClose, children, className = "modal-content", title = "" }: ModalProps) {
     const [isVisible, setIsVisible] = useState(isOpen);
 
     function handleBackdropClick(e: React.MouseEvent<HTMLDivElement>) {
@@ -38,5 +38,3 @@ function Modal({ isOpen, onClose, children, className = "modal-content", title =
         </div>
     ) : null;
 };
-
-export default Modal;
