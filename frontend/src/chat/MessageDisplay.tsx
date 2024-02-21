@@ -32,6 +32,7 @@ export function MessageDisplay({channel}) {
 
 	useEffect(() => {
 		auth?.socket?.on('channel-message', (message) => {
+			console.log('Received message:', message);
 			if (message.channelId !== channel) {
 				return ;
 			}
