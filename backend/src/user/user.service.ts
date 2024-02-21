@@ -1,5 +1,5 @@
 import { DatabaseService } from "src/database/database.service";
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 
 @Injectable()
 export class UserService {
@@ -23,17 +23,31 @@ export class UserService {
 				id,
 			},
 			select: {
-				channels: true,
+				channels: {
+					where: {
+						role: {
+							not: 'BANNED',
+						},
+					},
+				},
 			},
 		});
 	}
 
 	async getUserByUsername(username: string) {
-		return await this.databaseService.user.findUnique({
+		const user = await this.databaseService.user.findUnique({
 			where: {
 				username,
 			},
 		});
+        if (!user) throw new NotFoundException('User not found');
+        return user;
 	}
-	
+
+	async saveAvatarPath(avatar: string, userId : number){
+		await this.databaseService.user.update({
+			where: { id: userId },
+			data: { avatar },
+	  });
+	}
 }

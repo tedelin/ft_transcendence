@@ -4,10 +4,10 @@ import { io } from 'socket.io-client';
 
 
 type UserType = {
-  id: string;
-  username: string;
-  avatar: string;
-  useTwoFa: boolean;
+	id: string;
+	username: string;
+	avatar: string;
+	useTwoFa: boolean;
 };
 
 interface AuthContextType {
@@ -17,7 +17,7 @@ interface AuthContextType {
 	signin: (username: string, password: string, callback: VoidFunction) => Promise<void>;
 	signup: (username: string, password: string, callback: VoidFunction) => Promise<void>;
 	signout: (callback: VoidFunction) => void;
-  }
+}
 
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -29,18 +29,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	async function handleAuth(token: string): Promise<void> {
 		try {
-			localStorage.setItem('jwtToken', token);
 			const response = await fetchUrl('/users/me', {
 				method: 'GET',
 				headers: {
-				Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${token}`,
 				},
 			});
 			setUser(response);
-			const newSocket = io(import.meta.env.VITE_BACKEND_URL, {
+			setSocket(io(import.meta.env.VITE_BACKEND_URL, {
 				query: { token },
-			});
-			setSocket(newSocket);
+			}));
 		} catch (error) {
 			setLoading(false);
 			throw error;
@@ -52,11 +50,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			const response = await fetchUrl('/auth/signin', {
 				method: 'POST',
 				headers: {
-				'Content-Type': 'application/json',
+					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ username, password }),
 			});
 			const token = response.access_token;
+			localStorage.setItem('jwtToken', token);
 			await handleAuth(token);
 		} catch (error) {
 			throw error;
@@ -68,11 +67,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			const response = await fetchUrl('/auth/signup', {
 				method: 'POST',
 				headers: {
-				'Content-Type': 'application/json',
+					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ username, password }),
 			});
 			const token = response.access_token;
+			localStorage.setItem('jwtToken', token);
 			await handleAuth(token);
 		} catch (error) {
 			throw error;
@@ -84,21 +84,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		setUser(null);
 	}
 
-	useEffect(() => {
-		async function initAuth() {
-			const token = localStorage.getItem('jwtToken');
-			if (token) {
-				try {
-					await handleAuth(token);
-					setLoading(false);
-				} catch (error) {
-					setLoading(false);
-				}
-			} else {
+	async function initAuth() {
+		const token = localStorage.getItem('jwtToken');
+		if (token) {
+			try {
+				await handleAuth(token);
+				setLoading(false);
+			} catch (error) {
 				setLoading(false);
 			}
-		};
+		} else {
+			setLoading(false);
+		}
+	};
 
+	useEffect(() => {
 		initAuth();
 
 		return () => {

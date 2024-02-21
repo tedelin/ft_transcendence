@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useChat } from './ChatContext';
 import { fetchUrl } from '../fetch';
 import { useAuth } from '../components/AuthProvider';
 import { useError } from '../components/ErrorProvider';
@@ -21,23 +20,23 @@ function AddFriend({ selected }) {
 				},
 			});
 			setUser(response);
-		} catch (error) {
+            await sendRequest();
+		} catch (error: any) {
 			er.setError(error.message);
-			// alert('here');
 		}
 	}
 
 	async function sendRequest() {
-		await getUser();
-		try {
-			await fetchUrl(`/friends/${user?.id}`, {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			alert('Friend request sent!');
-		} catch (error) {
+        try {
+			if (user) {
+				await fetchUrl(`/friends/${user.id}`, {
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				});
+			}
+		} catch (error: any) {
 			er.setError(error.message);
 		}
 	}
@@ -51,7 +50,7 @@ function AddFriend({ selected }) {
 				type="text"
 				placeholder="You can add friends by typing their username"
 			/>
-			<button className='createButton' onClick={sendRequest}>
+			<button className='createButton' onClick={getUser}>
 				Send Friend Request
 			</button>
 		</div>
@@ -115,9 +114,9 @@ function FriendsList({ selected }) {
 			setFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== requestId)
 			);
-		} catch (error) {
+		} catch (error: any) {
 			er.setError(error.message);
-			// alert(error);
+			alert(error);
 		}
 	}
 
@@ -134,8 +133,25 @@ function FriendsList({ selected }) {
 			);
 		} catch (error) {
 			er.setError(error.message);
-			// alert(error);
 		}
+	}
+
+	async function blockFriend(friendRequest: any) {
+		const userId = auth?.user?.id === friendRequest.initiatorId ? friendRequest.receiverId : friendRequest.initiatorId;
+		try {
+			await fetchUrl(`/friends/block/${userId}`, {
+				method: "PATCH",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			setFriends((prevFriends) =>
+				prevFriends.filter((friend) => friend.id !== friendRequest.id)
+			);
+		} catch (error) {
+			er.setError(error.message);
+		}
+	
 	}
 
 	async function getFriends() {
@@ -150,7 +166,6 @@ function FriendsList({ selected }) {
 			setFriends(response);
 		} catch (error) {
 			er.setError(error.message);
-			// alert(error);
 		}
 	}
 
@@ -167,7 +182,7 @@ function FriendsList({ selected }) {
 		} else if (selected === "All") {
 			return friend.status === "ACCEPTED";
 		} else if (selected === "Blocked") {
-			return friend.status === "BLOCKED";
+			return (friend.status === "BLOCKED" && friend.initiatorId == auth?.user?.id);
 		} else {
 			return friend.status === "Accepted";
 		}
@@ -179,7 +194,7 @@ function FriendsList({ selected }) {
 				{filteredFriends.length > 0 &&
 					filteredFriends.map((friend: any) => (
 						<div className='friendListItem' key={friend.id}>
-							<span className='sideBarChatName'>{friend.id}</span>
+							<span className='sideBarChatName'>{friend.initiatorId == auth?.user?.id ? friend.receiver.username : friend.initiator.username}</span>
 							{/* <div className='friendStatus'>
 								{friend.status}
 							</div> */}
@@ -207,6 +222,12 @@ function FriendsList({ selected }) {
 									>
 										Remove
 									</button>
+									<button 
+										className='declineFriend'
+										onClick={() => blockFriend(friend)}
+									>
+										Block
+									</button>
 								</div>
 							)}
 						</div>
@@ -218,17 +239,14 @@ function FriendsList({ selected }) {
 
 
 export function Friends() {
-	const chat = useChat();
 	const [selected, setSelected] = useState("Online");
 
 	return (
-		(chat.active === 'friends' && (
-			<div className='chatArea'>
-				<FriendsTopBar selected={selected} setSelected={setSelected} />
-				<AddFriend selected={selected} />
-				<SearchFriends selected={selected} />
-				<FriendsList selected={selected} />
-			</div>
-		))
+		<>
+			<FriendsTopBar selected={selected} setSelected={setSelected} />
+			<AddFriend selected={selected} />
+			<SearchFriends selected={selected} />
+			<FriendsList selected={selected} />
+		</>
 	);
 }

@@ -1,25 +1,34 @@
-import { ChatProvider } from './ChatContext';
-import { ChatChannel } from './ChatChannel';
-import { Channels } from './Channels';
-import { Friends } from './Friends';
 import { SideBar } from './SideBar';
+import { Outlet, useNavigate } from 'react-router-dom';
 import '../styles/chat.css';
+import { useEffect } from 'react';
+import { useAuth } from '../components/AuthProvider';
+import { useError } from '../components/ErrorProvider';
 
-function Chat() {
+export default function ChatPage() {
+	const auth = useAuth();
+	const navigate = useNavigate();
+	const err = useError();
+
+	useEffect(() => {
+		auth?.socket?.on('kicked', (room) => {
+			err.setError('You have been kicked from ' + room);
+			navigate('/chat/channels');
+		});
+
+		auth?.socket?.on('banned', (room) => {
+			err.setError('You have been banned from ' + room);
+			navigate('/chat/channels');
+		});
+	}, []);
+
+
 	return (
 		<div className="chat">
 			<SideBar />
-			<Channels />
-			<ChatChannel />
-			<Friends />
+			<div className='chatArea'>
+				<Outlet />
+			</div>
 		</div>
-	)
-}
-
-export default function ChatPage() {
-	return (
-		<ChatProvider>
-			<Chat />
-		</ChatProvider>
 	);
 }
