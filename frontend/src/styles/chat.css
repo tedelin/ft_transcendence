@@ -6,36 +6,15 @@
     font-size: 16px;
     height: 100vh;
     flex-grow: 1;
+	margin-left: 60px;
 }
 
 .chat {
     display: flex;
     flex-grow: 1;
     margin: 0;
-    margin-top: 45px;
     padding: 0;
     font-family: 'Nunito', Arial, Helvetica, sans-serif;
-}
-
-.sideMenu {
-    max-width: 275px;
-    min-width: 200px;
-    width: 20%;
-    background-color: #36393f;
-    color: #fff;
-    overflow-y: hidden;
-}
-
-.sideMenu:hover {
-    overflow-y: auto;
-}
-
-.sideMenuItem {
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    text-decoration: none;
-    color: #fff;
 }
 
 .chatArea {
@@ -120,7 +99,7 @@
 .messageInput textarea,
 .messageInput textarea:focus {
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 13px;
     flex-grow: 1;
     border-radius: 10px;
     background-color: #40444b;
@@ -260,7 +239,6 @@ select {
 @media only screen and (min-width: 768px) {
     .friendsTopBar {
         display: flex;
-        height: 72px;
         align-items: center;
         border-bottom: 3px solid #40444b;
         overflow-y: hidden;
@@ -273,11 +251,11 @@ select {
     margin-left: 15px;
 }
 
-.spanMargin {
+/* .spanMargin {
     padding-right: 15px;
     margin-right: 15px;
     border-right: 3px solid #40444b;
-}
+} */
 
 .topBarAction,
 .topBarAction span,
@@ -297,8 +275,7 @@ select {
 
 .createChannelContainer {
     display: flex;
-    height: 72px;
-    border-bottom: 3px solid #40444b;
+    /* height: 72px; */
 }
 
 .createChannelContainer input,
@@ -309,9 +286,23 @@ select {
 
 .topBarChat {
     display: flex;
-    height: 72px;
+	padding: 5px;
     align-items: center;
+	justify-content: space-between;
     border-bottom: 3px solid #40444b;
+}
+
+.topChannel {
+	display: flex;
+	padding: 5px;
+	align-items: center;
+}
+
+.topSettings {
+	display: flex;
+	padding: 5px;
+    align-items: center;
+	justify-content: space-between;
 }
 
 .friendListItem span {

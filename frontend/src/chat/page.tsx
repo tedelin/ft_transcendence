@@ -25,7 +25,7 @@ export default function ChatPage() {
 
 	return (
 		<div className="chat">
-			<SideBar />
+			{/* <SideBar /> */}
 			<div className='chatArea'>
 				<Outlet />
 			</div>

@@ -47,7 +47,6 @@ function AddFriend({ selected }) {
 			<input 
 				value={username}
 				onChange={(e) => setUsername(e.target.value)}
-				className="searchBar" 
 				type="text"
 				placeholder="You can add friends by typing their username"
 			/>
@@ -93,7 +92,7 @@ function FriendsTopBar({ setSelected, selected }) {
 function SearchFriends({ selected }) {
 	return (
 		(selected !== "AddFriend" && <>
-			<input className="searchBar" type="text" placeholder="Search friends" />
+			<input type="text" placeholder="Search friends" />
 		</>)
 	);
 }

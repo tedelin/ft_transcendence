@@ -36,17 +36,21 @@ function TopBar({ channel }) {
 		<div className="topBarChat">
 			<Moderation key={channel.id} enabled={moderation} channel={channel} setEnabled={setModeration} />
 			<ChannelSettings key={channel.id} enabled={settings} name={channel} setEnabled={setSettings} />
-			<img className="smallAvatar" src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
-			<span onClick={() => { setModeration(!moderation); }} className='spanMargin'>
-				{channel}
-			</span>
-			<button 
-				className="declineFriend"
-				onClick={leaveChannel}
-			>
-				Leave
-			</button>
-			<span onClick={() => { setSettings(!settings); }} className='material-symbols-outlined' >settings</span>
+			<div className="topChannel">
+				<img className="smallAvatar" src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
+				<span onClick={() => { setModeration(!moderation); }} className='spanMargin'>
+					{channel}
+				</span>
+			</div>
+			<div className="topSettings">
+				<span 
+					className="material-symbols-outlined"
+					onClick={leaveChannel}
+				>
+					logout
+				</span>
+				<span onClick={() => { setSettings(!settings); }} className='material-symbols-outlined' >settings</span>
+			</div>
 		</div>
 	);
 }
