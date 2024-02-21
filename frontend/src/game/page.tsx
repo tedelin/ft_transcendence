@@ -253,10 +253,9 @@ export function Game() {
             )}
             {!gameStarted && !showButton && !settingsToDo && (
                 <>
-                    <div className='CrossIcon' onClick={() => {
+                    {!letsGO && <div className='CrossIcon' onClick={() => {
                         auth?.socket?.emit('crossMatchmaking');
-                        // navigate('/game');
-                        }}>&#10006;</div>
+                        }}>&#10006;</div>}
                     <MatchmakingView
                         playerOne={playerOne}
                         playerTwo={playerTwo}

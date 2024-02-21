@@ -55,7 +55,6 @@ export class GameGateway implements OnGatewayInit
     private isASpectator(client: Socket): boolean {
         for (const roomState of this.roomService.rooms.values()) {
             if (roomState.spectators.some(spectator => spectator.id === client.id)) {
-                console.log(`${client.id} is a spectator!!!`);
                 return true;
             }
         }
@@ -73,7 +72,6 @@ export class GameGateway implements OnGatewayInit
         this.connectedUsers.set(client.id, user);
         this.roomService.playersData.set(client.id, new pData(user.id));
         console.log(user.username + " connected to game, id " + client.id);
-        // console.log("user id : " + user.id);
         this.gameService.createStats(user.id);
     }
 

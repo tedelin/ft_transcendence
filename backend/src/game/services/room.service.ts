@@ -162,7 +162,7 @@ export class RoomService {
     }
 
     public findMyLifePartner(roomId : string, otherClient : Socket) {
-        console.log("roomId = " + roomId);
+        // console.log("roomId = " + roomId);
         const roomState = this.rooms.get(roomId);
         if (roomState) {
             let clients = this.rooms.get(roomId).players;
@@ -323,7 +323,7 @@ export class RoomService {
         if (!roomState.gameState) {
             roomState.state = RoomStatus.INTERRUPT;
             const data = this.formatCreateMatchData(roomState, playerOne, playerTwo);
-            console.log(`data before creating empty match: ${data.status}`);
+            // console.log(`data before creating empty match: ${data.status}`);
             await this.gameService.createMatch(data);
         }
         else {
