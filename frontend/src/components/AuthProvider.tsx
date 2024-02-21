@@ -1,17 +1,12 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 import { fetchUrl } from '../fetch';
 import { io } from 'socket.io-client';
+import { User } from '../utils/types';
 
 
-type UserType = {
-	id: string;
-	username: string;
-	avatar: string;
-	useTwoFa: boolean;
-};
 
 interface AuthContextType {
-	user: UserType | null;
+	user: User | null;
 	loading: boolean;
 	socket: any;
 	signin: (username: string, password: string) => Promise<void>;
@@ -23,7 +18,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-	const [user, setUser] = useState<UserType | null>(null);
+	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [socket, setSocket] = useState<any>(null);
 

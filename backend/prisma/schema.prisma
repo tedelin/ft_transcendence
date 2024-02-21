@@ -86,8 +86,8 @@ enum UserStatus {
 }
 
 enum FriendshipStatus {
-  PENDING
   ACCEPTED
+  PENDING
   BLOCKED
 }
 
@@ -98,9 +98,9 @@ enum Visibility {
 }
 
 enum Role {
-	OWNER
-	ADMIN
 	MEMBER
-	MUTED
 	BANNED
+	MUTED
+	ADMIN
+	OWNER
 }

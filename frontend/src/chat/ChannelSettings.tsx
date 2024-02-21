@@ -3,12 +3,14 @@ import { fetchUrl } from '../fetch';
 import { useToast } from '../utils/hooks/useToast';
 import { Modal } from '../components/Modal';
 import '../styles/modal.css';
+import { Channel } from '../utils/types';
 
 
-export function ChannelSettings({ enabled, setEnabled, name }) {
+export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boolean, setEnabled: Function, name: string }) {
 	const [channelPassword, setChannelPassword] = useState('');
+	const [channelName, setChannelName] = useState(name);
+	const [channel, setChannel] = useState<Channel | null>(null);
 	const { error, success } = useToast();
-	const [channel, setChannel] = useState(null);
 
 	function closeSettings() {
         setEnabled(false);
@@ -72,7 +74,7 @@ export function ChannelSettings({ enabled, setEnabled, name }) {
 					className='edit'
 					type="text" 
 					placeholder="Channel Name" 
-					value={name} 
+					value={channelName} 
 					onChange={(e) => setChannelName(e.target.value)}
 				/>
 				{channel?.visibility === 'PUBLIC' ? 

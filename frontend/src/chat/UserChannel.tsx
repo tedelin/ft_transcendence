@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { fetchUrl } from '../fetch';
-import { Channel } from './types/channel';
 import { useAuth } from '../components/AuthProvider';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ChannelUser } from '../utils/types';
 
 
 export function UserChannel() {
-	const [channels, setChannels] = useState([]);
+	const [channels, setChannels] = useState<ChannelUser[] | []>([]);
 	const navigate = useNavigate();
 	const {name} = useParams();
 	const auth = useAuth();
@@ -25,15 +25,15 @@ export function UserChannel() {
 	}
 
 	useEffect(() => {
-		auth?.socket?.on("leave-channel", (channel: any) => {
-			setChannels(channels.filter((c: any) => c.channelName !== channel));
+		auth?.socket?.on("leave-channel", (channel: string) => {
+			setChannels(channels.filter((c: ChannelUser) => c.channelName !== channel));
 		});
 		fetchUserChannels();
 	}, [channels]);
 
 	return (
 		<>
-			{channels.map((channel: Channel) =>
+			{channels.map((channel: ChannelUser) =>
 				<div
 					key={channel.channelName}
 					className={name === channel.channelName ? 'sideBarSelected' : 'sideBarChatItem'}

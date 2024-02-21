@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { fetchUrl } from '../fetch';
 import { useToast } from '../utils/hooks/useToast';
 import { Modal } from '../components/Modal';
+import { ChannelUser, User } from '../utils/types';
 import '../styles/modal.css';
 
 
-export function Moderation({ enabled, channel, setEnabled }) {
+export function Moderation({ enabled, channel, setEnabled } : { enabled: boolean, channel: string, setEnabled: Function }) {
     const [channelUsers, setChannelUsers] = useState([]);
     const token = localStorage.getItem('jwtToken');
     const { error } = useToast();
@@ -47,7 +48,7 @@ export function Moderation({ enabled, channel, setEnabled }) {
                 },
             });
             setChannelUsers((prevUsers) =>
-                prevUsers.filter((user) => user.id !== userId)
+                prevUsers.filter((user: User) => user.id !== userId)
             );
         } catch (err: any) {
             error(err.message)
@@ -106,7 +107,7 @@ export function Moderation({ enabled, channel, setEnabled }) {
         >
 
             <div className="userList">
-                {channelUsers.map((channel) => (
+                {channelUsers.map((channel: ChannelUser) => (
                     <div key={channel.user.id} className="user">
                         {/* <img src={channel.user.avatar} alt="User Avatar"></img> */}
                         <span>{channel.user.username}</span>

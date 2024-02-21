@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { fetchUrl } from '../fetch';
 import { useAuth } from "../components/AuthProvider";
+import { ChannelMessage } from '../utils/types';
 import '../styles/chat.css';
 
-export function MessageDisplay({channel}) {
-	const [receivedMessages, setReceivedMessages] = useState([]);
+export function MessageDisplay({channel} : {channel: string}) {
+	const [receivedMessages, setReceivedMessages] = useState<ChannelMessage[] | []>([]);
 	const messageContainer = useRef(null);
 	const auth = useAuth();
 
@@ -26,13 +27,12 @@ export function MessageDisplay({channel}) {
 
 	function scrollToBottom() {
 		if (messageContainer.current) {
-			messageContainer.current.scrollTop = messageContainer.current.scrollHeight + 1000;
+			(messageContainer.current as HTMLElement).scrollTop = (messageContainer.current as HTMLElement).scrollHeight + 1000;
 		}
 	}
 
 	useEffect(() => {
-		auth?.socket?.on('channel-message', (message) => {
-			console.log('Received message:', message);
+		auth?.socket?.on('channel-message', (message: ChannelMessage) => {
 			if (message.channelId !== channel) {
 				return ;
 			}
@@ -55,7 +55,7 @@ export function MessageDisplay({channel}) {
 	return (
 		<div ref={messageContainer} className='messageContainer'>
             {receivedMessages.map((msg) => (
-               <div className={msg.senderId === auth?.user?.id ? 'bubble-right' : 'bubble-left'} key={msg.id}>
+               <div className={msg.sender.id === auth?.user?.id ? 'bubble-right' : 'bubble-left'} key={msg.id}>
                    <div className="sender">
               			<img src={msg.sender?.avatar} alt="User Avatar"></img>
 						<div className="senderName">

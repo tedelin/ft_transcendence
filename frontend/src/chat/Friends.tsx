@@ -3,11 +3,12 @@ import { fetchUrl } from '../fetch';
 import { useAuth } from '../components/AuthProvider';
 import { useToast } from '../utils/hooks/useToast';
 import '../styles/chat.css';
+import { Friendship, User } from '../utils/types';
 
 
-function AddFriend({ selected }) {
+function AddFriend({ selected } : { selected: string }) {
 	const [username, setUsername] = useState('');
-	const [user, setUser] = useState(null);
+	const [user, setUser] = useState<User | null>(null);
 	const {error, success} = useToast();
 	const token = localStorage.getItem('jwtToken');
 
@@ -57,7 +58,7 @@ function AddFriend({ selected }) {
 	));
 }
 
-function FriendsTopBar({ setSelected, selected }) {
+function FriendsTopBar({ setSelected, selected } : { setSelected: Function, selected: string }) {
 	const options = ["Online", "All", "Pending", "Blocked"];
 
 	const handleOptionClick = (option: string) => {
@@ -89,7 +90,7 @@ function FriendsTopBar({ setSelected, selected }) {
 }
 
 
-function SearchFriends({ selected }) {
+function SearchFriends({ selected } : { selected: string }) {
 	return (
 		(selected !== "AddFriend" && <>
 			<input type="text" placeholder="Search friends" />
@@ -97,13 +98,13 @@ function SearchFriends({ selected }) {
 	);
 }
 
-function FriendsList({ selected }) {
-	const [friends, setFriends] = useState([]);
+function FriendsList({ selected } : { selected: string }) {
+	const [friends, setFriends] = useState<Friendship[] | []>([]);
 	const token = localStorage.getItem('jwtToken');
 	const {error, success} = useToast();
 	const auth = useAuth();
 
-	async function acceptFriendRequest(requestId: string) {
+	async function acceptFriendRequest(requestId: number) {
 		try {
 			await fetchUrl(`/friends/accept/${requestId}`, {
 				method: "POST",
@@ -120,7 +121,7 @@ function FriendsList({ selected }) {
 		}
 	}
 
-	async function deleteFriend(requestId: string) {
+	async function deleteFriend(requestId: number) {
 		try {
 			await fetchUrl(`/friends/delete/${requestId}`, {
 				method: "DELETE",
@@ -136,7 +137,7 @@ function FriendsList({ selected }) {
 		}
 	}
 
-	async function blockFriend(friendRequest: any) {
+	async function blockFriend(friendRequest: Friendship) {
 		const userId = auth?.user?.id === friendRequest.initiatorId ? friendRequest.receiverId : friendRequest.initiatorId;
 		try {
 			await fetchUrl(`/friends/block/${userId}`, {
@@ -173,7 +174,7 @@ function FriendsList({ selected }) {
 		getFriends();
 	}, [selected]);
 
-	const filteredFriends = friends.filter((friend) => {
+	const filteredFriends = friends.filter((friend : Friendship) => {
 		if (selected === "Pending") {
 			return (
 				friend.status === "PENDING" &&
@@ -184,7 +185,7 @@ function FriendsList({ selected }) {
 		} else if (selected === "Blocked") {
 			return (friend.status === "BLOCKED" && friend.initiatorId == auth?.user?.id);
 		} else {
-			return friend.status === "Accepted";
+			return friend.status === "ACCEPTED";
 		}
 	});
 
@@ -195,9 +196,6 @@ function FriendsList({ selected }) {
 					filteredFriends.map((friend: any) => (
 						<div className='friendListItem' key={friend.id}>
 							<span className='sideBarChatName'>{friend.initiatorId == auth?.user?.id ? friend.receiver.username : friend.initiator.username}</span>
-							{/* <div className='friendStatus'>
-								{friend.status}
-							</div> */}
 							{friend.status === "PENDING" && (
 								<div className='friendActions'>
 									<button

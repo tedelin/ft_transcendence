@@ -11,13 +11,13 @@ export default function ChatPage() {
 	const {error} = useToast();
 
 	useEffect(() => {
-		auth?.socket?.on('kicked', (room) => {
-			error('You have been kicked from ' + room);
+		auth?.socket?.on('kicked', (channel: string) => {
+			error('You have been kicked from ' + channel);
 			navigate('/chat/channels');
 		});
 
-		auth?.socket?.on('banned', (room) => {
-			error('You have been banned from ' + room);
+		auth?.socket?.on('banned', (channel: string) => {
+			error('You have been banned from ' + channel);
 			navigate('/chat/channels');
 		});
 	}, []);
