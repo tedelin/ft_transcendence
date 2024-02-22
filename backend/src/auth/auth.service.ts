@@ -2,26 +2,26 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { AuthDto } from './dto';
 import * as argon from 'argon2'
 import { DatabaseService } from '../database/database.service';
-import { Prisma} from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 
 @Injectable({})
-export class AuthService{
-	constructor(private databaseService : DatabaseService, private jwtService: JwtService, private configService: ConfigService) {}
-	async signUp(authDto : AuthDto) {
-		try{
+export class AuthService {
+	constructor(private databaseService: DatabaseService, private jwtService: JwtService, private configService: ConfigService) { }
+	async signUp(authDto: AuthDto) {
+		try {
 			authDto.password = await argon.hash(authDto.password)
 			const user = await this.databaseService.user.create({
 				data: authDto,
 			})
 			return this.signToken(user.id, user.username);
 		}
-		catch(error) {
+		catch (error) {
 			console.log(error);
-			if (error instanceof Prisma.PrismaClientKnownRequestError){
-				if (error.code === "P2002"){
+			if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				if (error.code === "P2002") {
 					throw new ForbiddenException("Credential taken");
 				}
 			}
@@ -50,15 +50,15 @@ export class AuthService{
 
 	async callback(code: string) {
 		const url = 'https://api.intra.42.fr/oauth/token';
-	
+
 		const formData = new FormData();
-		const redirectUri = encodeURIComponent(process.env.HOST);
+		// const redirectUri = encodeURIComponent(process.env.NEXT_PUBLIC_REDIRECT_URI);
 		formData.append('grant_type', 'authorization_code');
 		formData.append('client_id', `${this.configService.get<string>('CLIENT_ID')}`);
 		formData.append('client_secret', `${this.configService.get<string>('CLIENT_SECRET')}`);
 		formData.append('code', `${code}`);
-		formData.append('redirect_uri', `${process.env.REDIRECT_BASE}${redirectUri}&response_type=code`);
-	
+		formData.append('redirect_uri', `${this.configService.get<string>('REDIRECT_URI')}`);
+
 		try {
 			const response = await fetch(url, {
 				method: 'POST',
@@ -66,18 +66,18 @@ export class AuthService{
 			});
 			const data = await response.json();
 			const infos = await this.getInfoFromToken(data.access_token);
-	
+
 			if (!infos || !infos.login) {
 				throw new Error('Informations utilisateur manquantes');
 			}
-	
+
 			const username = infos["login"];
 			let user = await this.databaseService.user.findUnique({
 				where: {
 					username
 				}
 			});
-	
+
 			if (user) {
 				// The user already exists, log him in
 				const authDto = new AuthDto();
@@ -96,13 +96,13 @@ export class AuthService{
 			return null;
 		}
 	}
-	
+
 	// A mettre en private ?
 
 	// This function will be used to get the user's information from the token
 	async getInfoFromToken(token: string) {
 		const url = 'https://api.intra.42.fr/v2/me';
-		const accessToken = token; 
+		const accessToken = token;
 
 		try {
 			const response = await fetch(url, {
@@ -125,15 +125,15 @@ export class AuthService{
 
 	// This function will be used to sign a token for the client
 	// The token will be used to authenticate the client and it will be used by the client
-	async signToken(userId: number, username: string) : Promise<{access_token :string}>{ 
+	async signToken(userId: number, username: string): Promise<{ access_token: string }> {
 		const payload = {
-			sub: userId, 
+			sub: userId,
 			username
-		} 
+		}
 		const secret = this.configService.get<string>('JWT_SECRET')
-		const token = await this.jwtService.signAsync(payload, {secret: secret})
+		const token = await this.jwtService.signAsync(payload, { secret: secret })
 
-		return { access_token : token } // Return an object token to the client
+		return { access_token: token } // Return an object token to the client
 	}
 
 	verifyAccessToken(accessToken: string) {

@@ -1,18 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
 import { fetchUrl } from '../fetch';
-import { useChat } from './ChatContext';
 import { useAuth } from "../components/AuthProvider";
 import '../styles/chat.css';
 
-export function MessageDisplay({}) {
+export function MessageDisplay({channel}) {
 	const [receivedMessages, setReceivedMessages] = useState([]);
 	const messageContainer = useRef(null);
-    const chat = useChat();
 	const auth = useAuth();
 
 	async function fetchChannelsMessages() {
 		try {
-			const response = await fetchUrl(`/chat/channels/${chat.channelTo?.name}/messages`);
+			const token = localStorage.getItem('jwtToken');
+			const response = await fetchUrl(`/chat/channels/messages/${channel}`, {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${token}`,
+				},
+			});
 			setReceivedMessages(response);
 		} catch (error) {
 			console.error('Error fetching channels:', error);
@@ -28,20 +32,20 @@ export function MessageDisplay({}) {
 
 	useEffect(() => {
 		auth?.socket?.on('channel-message', (message) => {
-			if (message.channelId !== chat.channelTo?.name) {
+			if (message.channelId !== channel) {
 				return ;
 			}
 			setReceivedMessages(prevMessages => [...prevMessages, message]);
 		});
 		
-		if (chat.channelTo)
+		if (channel)
 			fetchChannelsMessages();
 
 		return () => {
 			setReceivedMessages([]);
 			auth?.socket?.off('channel-message');
 		};
-	}, [chat.channelTo]);
+	}, []);
 
 	useEffect(() => {
 		scrollToBottom();
@@ -52,13 +56,13 @@ export function MessageDisplay({}) {
             {receivedMessages.map((msg) => (
                <div className={msg.senderId === auth?.user?.id ? 'bubble-right' : 'bubble-left'} key={msg.id}>
                    <div className="sender">
-              			{/* <img src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img> */}
+              			<img src={msg.sender?.avatar} alt="User Avatar"></img>
 						<div className="senderName">
-                            {}
+                            {msg.sender?.username}
 				        </div>
                     </div>
                    <div className="message">{msg.content}</div>
-                   <div className="timestamp">{msg.timestamp}</div>
+				   <div className="timestamp">{new Date(msg.timestamp).toLocaleString()}</div>
            </div>
             ))}
 		</div>

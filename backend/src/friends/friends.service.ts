@@ -1,13 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
+import { FriendshipStatus } from '@prisma/client';
 
 @Injectable()
 export class FriendService {
     constructor(private databaseService: DatabaseService) { }
 
     async createFriendRequest(initiatorId: number, receiverId: number) {
-        if (initiatorId === receiverId)
-            throw new Error('Cannot send friend request to yourself');
+        if (initiatorId === receiverId) throw new ForbiddenException('Cannot send friend request to yourself');
         await this.checkUserExistence(initiatorId);
         await this.checkUserExistence(receiverId);
 
@@ -20,15 +20,13 @@ export class FriendService {
             },
         });
 
-        if (existingFriendship) {
-            throw new Error('Friendship already exists');
-        }
+        if (existingFriendship) throw new ConflictException('Friendship already exists');
 
-        return this.databaseService.friendship.create({
+        return await this.databaseService.friendship.create({
             data: {
                 initiatorId,
                 receiverId,
-                status: "PENDING",
+                status: FriendshipStatus.PENDING,
             },
         });
     }
@@ -36,13 +34,29 @@ export class FriendService {
     async getFriendships(userId: number) {
         await this.checkUserExistence(userId);
 
-        return this.databaseService.friendship.findMany({
+        return await this.databaseService.friendship.findMany({
             where: {
                 OR: [
                     { initiatorId: userId },
                     { receiverId: userId },
                 ],
             },
+			include: {
+				initiator: {
+					select: {
+						username: true,
+						avatar: true,
+					}
+				},
+				receiver: {
+					select: {
+						id: true,
+						username: true,
+						avatar: true,
+					}
+				}
+
+			}
         });
     }
 
@@ -51,15 +65,11 @@ export class FriendService {
             where: { id: friendshipId },
         });
 
-        if (!friendship) {
-            throw new NotFoundException('Friendship not found');
-        }
-        if (friendship.receiverId !== userId) {
-            throw new Error('You cannot accept this friend request');
-        }
-        return this.databaseService.friendship.update({
+        if (!friendship) throw new NotFoundException('Friendship not found');
+        if (friendship.receiverId !== userId) throw new ForbiddenException('You cannot accept this friend request');
+        return await this.databaseService.friendship.update({
             where: { id: friendshipId },
-            data: { status: "ACCEPTED" },
+            data: { status: FriendshipStatus.ACCEPTED },
         });
     }
 
@@ -77,13 +87,47 @@ export class FriendService {
         });
     }
 
-    private async checkUserExistence(userId: number): Promise<void> {
+	async blockUser(userId: number, blockedUserId: number) {
+		await this.databaseService.friendship.deleteMany({
+			where: {
+				OR: [
+					{ initiatorId: userId, receiverId: blockedUserId },
+					{ initiatorId: blockedUserId, receiverId: userId },
+				],
+			},
+		});
+		return await this.databaseService.friendship.create({
+			data: {
+				initiatorId: userId,
+				receiverId: blockedUserId,
+				status: FriendshipStatus.BLOCKED,
+			},
+		});
+	}
+
+	async findBlockedUsers(userId: number) {
+		return await this.databaseService.friendship.findMany({
+			where: {
+				initiatorId: userId, 
+				status: FriendshipStatus.BLOCKED,
+			},
+		});
+	}
+
+	async findBlockedByUsers(userId: number) {
+		return await this.databaseService.friendship.findMany({
+			where: {
+				receiverId: userId,
+				status: FriendshipStatus.BLOCKED,
+			},
+		});
+	}
+
+    private async checkUserExistence(userId: number) {
         const user = await this.databaseService.user.findUnique({
             where: { id: userId },
         });
-
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
+        if (!user) throw new NotFoundException('User not found');
+		return true;
     }
 }
