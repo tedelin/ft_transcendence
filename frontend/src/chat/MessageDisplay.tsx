@@ -3,12 +3,13 @@ import { fetchUrl } from '../fetch';
 import { useAuth } from "../components/AuthProvider";
 import { ChannelMessage } from '../utils/types';
 import '../styles/chat.css';
+import { getAvatar } from '../utils/utils';
 
 export function MessageDisplay({channel} : {channel: string}) {
 	const [receivedMessages, setReceivedMessages] = useState<ChannelMessage[] | []>([]);
 	const messageContainer = useRef(null);
 	const auth = useAuth();
-
+	
 	async function fetchChannelsMessages() {
 		try {
 			const token = localStorage.getItem('jwtToken');
@@ -57,7 +58,7 @@ export function MessageDisplay({channel} : {channel: string}) {
             {receivedMessages.map((msg) => (
                <div className={msg.sender.id === auth?.user?.id ? 'bubble-right' : 'bubble-left'} key={msg.id}>
                    <div className="sender">
-              			<img src={msg.sender?.avatar} alt="User Avatar"></img>
+              			<img src={getAvatar(msg.sender.avatar)} alt="User Avatar"></img>
 						<div className="senderName">
                             {msg.sender?.username}
 				        </div>

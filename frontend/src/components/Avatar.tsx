@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { useAuth } from './AuthProvider';
+import { getAvatar } from '../utils/utils';
 
 
 function AvatarUpload() {
 	const [selectedFile, setSelectedFile] = useState(null);
 	const auth = useAuth();
-	const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
-	const filePath = auth?.user?.avatar;
-	const fileName = filePath?.split('/').pop();
-	const avatarUrl = API_BASE_URL + "/users/avatars/" + fileName;
-	const [preview, setPreview] = useState(avatarUrl);
+	const [preview, setPreview] = useState(getAvatar(auth?.user?.avatar));
 	const token = localStorage.getItem('jwtToken');
 
 	
@@ -34,7 +31,7 @@ function AvatarUpload() {
     const formData = new FormData();
     formData.append('avatar', selectedFile);
     try {
-      const response = await fetch(API_BASE_URL + "/users/upload-avatar", {
+      const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/users/upload-avatar", {
         method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${token}`,

@@ -54,7 +54,7 @@ export class UserController {
 	@UseGuards(JwtGuard)
 	async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Req() req) {
 	  const userId = req.user.id;
-	  const avatarUrl = `/uploads/avatars/${file.filename}`;
+	  const avatarUrl = `${file.filename}`;
   
 	  await this.userService.saveAvatarPath(avatarUrl, userId);
   
@@ -67,7 +67,6 @@ export class UserController {
 	  if (!existsSync(path)) {
 		throw new NotFoundException('Image not found.');
 	  }
-  
 	  const file = createReadStream(path);
 	  return new StreamableFile(file);
 	}

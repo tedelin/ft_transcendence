@@ -179,6 +179,7 @@ export class ChannelService {
 			include: {
 				sender: {
 					select: {
+						id: true,
 						username: true,
 						avatar: true,
 					}
@@ -201,6 +202,7 @@ export class ChannelService {
 			include: {
 				sender: {
 					select: {
+						id: true,
 						username: true,
 						avatar: true,
 					}

@@ -10,6 +10,13 @@ export interface Friendship {
 	status: 'ACCEPTED' | 'PENDING' | 'BLOCKED';
 }
 
+export interface User {
+	id: number;
+	username: string;
+	avatar: string;
+	useTwoFa: boolean;
+};
+
 export interface ChannelMessage {
 	id: number;
 	content: string;
@@ -18,12 +25,6 @@ export interface ChannelMessage {
 	timestamp: string;
 }
 
-export interface User {
-	id: number;
-	username: string;
-	avatar: string;
-	useTwoFa: boolean;
-};
 
 export interface ChannelUser {
 	user: User;
