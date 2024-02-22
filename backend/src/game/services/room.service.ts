@@ -71,7 +71,6 @@ export class RoomService {
         
         roomState.players = roomState.players.filter(c => c.id !== client.id);
         client.leave(gameId);
-        // console.log('Staying alone in the room '+ gameId);
         this.server.to(gameId).emit('matchmakingStats', {
             playerOne: { id: this.connectedUsers.get(client.id).username },
             playerTwo: null,
@@ -199,11 +198,9 @@ export class RoomService {
         roomState.state = RoomStatus.LAUNCHING;
         setTimeout(async () => {
             if (roomState.state === RoomStatus.INTERRUPT) {
-                console.log("INTERRUPT!!!");
                 return ;
             }
             this.rooms.get(roomId).state = RoomStatus.INGAME;
-            // console.log(`test DBEUG : id 1 : ${this.connectedUsers.get(roomState.players[0]).id}`)
             const data : CreateMatchDto = this.formatCreateMatchData(roomState, this.connectedUsers.get(roomState.players[0].id), this.connectedUsers.get(roomState.players[1].id));
             const match = await this.gameService.createMatch(data);
             roomState.id = match.id;
@@ -280,7 +277,6 @@ export class RoomService {
         const roomState = this.rooms.get(roomId);
         if (!roomState) return;
 
-        
         this.server.to(roomId).emit('gameStateUpdate', { gameState: roomState.gameState });
         this.cleanRoom(roomId);
 
@@ -326,7 +322,6 @@ export class RoomService {
         if (!roomState.gameState) {
             roomState.state = RoomStatus.INTERRUPT;
             const data = this.formatCreateMatchData(roomState, playerOne, playerTwo);
-            // console.log(`data before creating empty match: ${data.status}`);
             await this.gameService.createMatch(data);
         }
         else {

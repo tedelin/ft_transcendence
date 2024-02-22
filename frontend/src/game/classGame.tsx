@@ -42,10 +42,10 @@ export class ClassGame {
     socket: any;
     canvasWidth: number;
     canvasHeight: number;
-    localState: GameState | null ;
+    localState: GameState | null;
     win: boolean;
 
-    constructor(canvasRef : React.RefObject<HTMLCanvasElement>, gameState, socket : any) {
+    constructor(canvasRef: React.RefObject<HTMLCanvasElement>, gameState, socket: any) {
         this.canvasRef = canvasRef;
         this.canvasHeight = 800;
         this.canvasWidth = 1200;
@@ -55,7 +55,7 @@ export class ClassGame {
         this.win = false;
     }
 
-    copyState(gameState) : GameState | null {
+    copyState(gameState): GameState | null {
         if (!gameState)
             return null;
         return {
@@ -75,6 +75,12 @@ export class ClassGame {
     }
 
     draw(context) {
+        // paddles
+        context.fillStyle = 'white';
+        context.fillRect(15, this.localState.paddles.leftPos.y, this.localState.paddles.width, this.localState.paddles.height);
+        context.fillRect(this.canvasWidth - this.localState.paddles.width - 15, this.localState.paddles.rightPos.y, this.localState.paddles.width, this.localState.paddles.height);
+
+        // line
         context.fillStyle = 'grey';
         context.fillRect(this.canvasWidth / 2 - 2.5, 0, 5, this.canvasHeight);
         context.strokeStyle = 'grey';
@@ -83,18 +89,11 @@ export class ClassGame {
         context.arc(this.canvasWidth / 2, this.canvasHeight / 2, 150, 0, 2 * Math.PI);
         context.stroke();
 
-        // paddles
-        context.fillStyle = 'white';
-        context.fillRect(15, this.localState.paddles.leftPos.y, this.localState.paddles.width, this.localState.paddles.height);
-        context.fillRect(this.canvasWidth - this.localState.paddles.width - 15, this.localState.paddles.rightPos.y, this.localState.paddles.width, this.localState.paddles.height);
-
         // ball
-        if (this.localState.status !== ENDED) {
-            context.beginPath();
-            context.arc(this.localState.ball.pos.x, this.localState.ball.pos.y, this.localState.ball.radius, 0, 2 * Math.PI);
-            context.fillStyle = 'white';
-            context.fill();
-        }
+        context.beginPath();
+        context.arc(this.localState.ball.pos.x, this.localState.ball.pos.y, this.localState.ball.radius, 0, 2 * Math.PI);
+        context.fillStyle = 'white';
+        context.fill();
 
         // score
         context.font = '100px Arial';
@@ -102,6 +101,7 @@ export class ClassGame {
         context.fillText(`${this.localState.score.player1}`, this.canvasWidth / 4, this.canvasHeight / 6);
         context.fillText(`${this.localState.score.player2}`, this.canvasWidth - this.canvasWidth / 4, this.canvasHeight / 6);
     }
+
 
     updateCanvas() {
         const canvas = this.canvasRef.current;

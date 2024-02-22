@@ -10,7 +10,7 @@ export class PongService {
     constructor(
         @Inject(forwardRef(() => RoomService)) private readonly roomService: RoomService,
         private readonly gameService: GameService,
-        ) { }
+    ) { }
 
     private initGameState(settings: GameSettings): GameState {
         let paddleWidth = 20;
@@ -71,6 +71,7 @@ export class PongService {
 
         winner = this.calculateWinner(gameState);
         if (winner) {
+            await new Promise(resolve => setTimeout(resolve, 200));
             if (gameState.score.player1 === 0 || gameState.score.player2 === 0)
                 score_O = true;
             console.log(winner);

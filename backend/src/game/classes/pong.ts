@@ -66,7 +66,7 @@ export class GameState {
         this.paddles.height = paddleHeight;
         let i = Math.floor(Math.random() * (2 * ballSpeed + 1)) - ballSpeed;
         while (i === 0) i = Math.floor(Math.random() * (2 * ballSpeed + 1)) - ballSpeed;
-        this.ball.velocity = { x: ballSpeed * point_win, y: 0 };
+        this.ball.velocity = { x: ballSpeed * point_win, y: i };
         this.paddles.speed = paddleSpeed;
     }
 
