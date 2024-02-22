@@ -66,7 +66,7 @@ export class GameState {
         this.paddles.height = paddleHeight;
         let i = Math.floor(Math.random() * (2 * ballSpeed + 1)) - ballSpeed;
         while (i === 0) i = Math.floor(Math.random() * (2 * ballSpeed + 1)) - ballSpeed;
-        this.ball.velocity = { x: ballSpeed * point_win, y: i };
+        this.ball.velocity = { x: ballSpeed * point_win, y: 0 };
         this.paddles.speed = paddleSpeed;
     }
 
@@ -118,6 +118,7 @@ export class GameState {
     }
 
     public speedChange() {
+        const save_balle_velocity_x = this.ball.velocity.x;
         this.ball.pos = {
             x: this.ball.pos.x + this.ball.velocity.x,
             y: this.ball.pos.y + this.ball.velocity.y,
@@ -127,7 +128,8 @@ export class GameState {
         this.ball.velocity.x -= (this.ball.velocity.x > -10 && this.ball.velocity.x < 0) ? this.ball.increaseBallSpeed : 0;
         this.ball.velocity.y += (this.ball.velocity.y < 10 && this.ball.velocity.y > 0) ? this.ball.increaseBallSpeed : 0;
         this.ball.velocity.y -= (this.ball.velocity.y > -10 && this.ball.velocity.y < 0) ? this.ball.increaseBallSpeed : 0;
-
+        // if (save_balle_velocity_x == this.ball.velocity.x)
+        //     return true
         if (this.paddles.speed < 20)
             this.paddles.speed += 0.001;
     }

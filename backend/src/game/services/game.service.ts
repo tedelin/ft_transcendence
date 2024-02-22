@@ -5,7 +5,7 @@ import { UpdateMatchDto } from "../dto/update-match.dto";
 
 @Injectable()
 export class GameService {
-    constructor (private readonly databaseService : DatabaseService) {}
+    constructor(private readonly databaseService: DatabaseService) { }
 
     // async getStats(id_user : number) {
     //     const stats = this.databaseService.stats.findUnique({
@@ -52,7 +52,7 @@ export class GameService {
                     },
                 },
             });
-          }
+        }
         return this.databaseService.match.findMany({
             orderBy: {
                 createdAt: 'asc', // Trier par date de création dans un ordre décroissant
@@ -70,7 +70,7 @@ export class GameService {
     async createMatch(createMatchDto: CreateMatchDto) {
         const match = await this.databaseService.match.create({
             data: {
-                status : createMatchDto.status,
+                status: createMatchDto.status,
                 players: {
                     createMany: {
                         data: createMatchDto.players.map(player => ({
@@ -92,10 +92,10 @@ export class GameService {
         return match;
     }
 
-    async findOne(id_match : number) {
+    async findOne(id_match: number) {
         return this.databaseService.match.findUnique({
-            where: { 
-                id: id_match 
+            where: {
+                id: id_match
             },
             include: {
                 players: {
@@ -107,12 +107,12 @@ export class GameService {
         });
     }
 
-    async updateMatch(id_match : number, updateMatchDto : UpdateMatchDto) {
+    async updateMatch(id_match: number, updateMatchDto: UpdateMatchDto) {
         await this.databaseService.match.update({
             where: { id: id_match },
             data: { status: "FINISHED" },
         });
-    
+
         // Ensuite, mettez à jour les détails de chaque joueur associé au match
         const updatePromises = updateMatchDto.players.map(player => {
             return this.databaseService.matchUser.updateMany({
@@ -134,7 +134,7 @@ export class GameService {
     async findUserById(id: number) {
         const stats = await this.databaseService.stats.findUnique({
             where: {
-                userId : id,
+                userId: id,
             },
             include: {
                 user: {
@@ -163,6 +163,25 @@ export class GameService {
         });
 
         return stats;
+    }
+
+    async createAchivement(id_user: number) {
+        const User = await this.findUserById(id_user);
+        if (User)
+            return;
+        const achivement = await this.databaseService.achievement.create({
+            data:
+            {
+                userId: id_user,
+                firstGame: false,
+                firstWin: false,
+                firstLoose: false,
+                masterWinner: false,
+                invincible_guardian: false,
+                Speed_Demon: false,
+            },
+        });
+        return achivement;
     }
 
     async updateStats(winner: any, looser: any) {
@@ -207,10 +226,61 @@ export class GameService {
     }
 
     async addMatchToStats(winner: number, looser: number) {
-        const win_stats = await this.findUserById(winner);
-        const loose_stats = await this.findUserById(looser);
-        if (!win_stats || !loose_stats)
+        const win = await this.findUserById(winner);
+        const loose = await this.findUserById(looser);
+        if (!win || !loose)
             return;
-        await this.updateStats(win_stats, loose_stats);
+        await this.updateStats(win, loose);
+    }
+
+    async updateAchievement(winner: number, looser: number, score_O: boolean) {
+        const win = await this.findUserById(winner);
+        const loose = await this.findUserById(looser);
+        if (!win || !loose)
+            return;
+        await this.databaseService.achievement.update({
+            where: {
+                userId: winner,
+            },
+            data: {
+                firstWin: true,
+                firstGame: true,
+                masterWinner: win.nbWin >= 10 ? true : false,
+                invincible_guardian: score_O ? true : false,
+            },
+        });
+        await this.databaseService.achievement.update({
+            where: {
+                userId: looser,
+            },
+            data: {
+                firstLoose: true,
+                firstGame: true,
+            },
+        });
+    }
+
+    async updateSpeedDemon(user_one: number, user_two: number) {
+        const userOne = await this.findUserById(user_one);
+        const userTwo = await this.findUserById(user_two);
+        if (!userOne || !userTwo)
+            return;
+        await this.databaseService.achievement.update({
+            where: {
+                userId: userOne.id,
+            },
+            data: {
+                Speed_Demon: true,
+            },
+        });
+
+        await this.databaseService.achievement.update({
+            where: {
+                userId: userTwo.id,
+            },
+            data: {
+                Speed_Demon: true,
+            },
+        });
     }
 }

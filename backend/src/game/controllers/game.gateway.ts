@@ -73,6 +73,7 @@ export class GameGateway implements OnGatewayInit
         this.roomService.playersData.set(client.id, new pData(user.id));
         console.log(user.username + " connected to game, id " + client.id);
         this.gameService.createStats(user.id);
+        this.gameService.createAchivement(user.id);
     }
 
     async handleDisconnect(client: Socket): Promise<void> {
@@ -93,7 +94,7 @@ export class GameGateway implements OnGatewayInit
                 this.roomService.matchmakingExit(client, 'disconnect', this.server);
             }
             else if (roomState.state === RoomStatus.INGAME || roomState.state === RoomStatus.LAUNCHING)
-                this.roomService.closingGame(gameId, this.roomService.findMyLifePartner(gameId, client).id);
+                this.roomService.closingGame(gameId, this.roomService.findMyLifePartner(gameId, client).id, false);
         }
         if (this.connectedUsers.get(client.id)) {
             console.log(this.connectedUsers.get(client.id).username + " disconnected from game");
@@ -136,7 +137,7 @@ export class GameGateway implements OnGatewayInit
             this.roomService.logRooms();
         }
         else if (roomPartner)
-            this.roomService.closingGame(roomId, roomPartner.id);
+            this.roomService.closingGame(roomId, roomPartner.id, false);
     }
 
     @SubscribeMessage('quitInGame')

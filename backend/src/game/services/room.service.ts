@@ -182,9 +182,11 @@ export class RoomService {
                 roomState.state != RoomStatus.LAUNCHING ||
                 (roomState.state === RoomStatus.INGAME && roomState.gameState.status !== GameStatus.FINISHED))
             {
-                // console.log("y");
                 this.server.to(roomId).emit('gameStateUpdate', { gameState: roomState.gameState });
                 this.pongService.updateGameState(roomId);
+                if (roomState.gameState && (roomState.gameState.ball.velocity.x >= 10 || roomState.gameState.ball.velocity.x <= -10)) {
+                    this.gameService.updateSpeedDemon(this.connectedUsers.get(roomState.players[0].id).id, this.connectedUsers.get(roomState.players[1].id).id);
+                }
             }
         }
     }
@@ -274,7 +276,7 @@ export class RoomService {
         return p1;
     }
 
-    async closingGame(roomId : string, winner : string) {
+    async closingGame(roomId : string, winner : string, score_O : boolean) {
         const roomState = this.rooms.get(roomId);
         if (!roomState) return;
 
@@ -288,6 +290,7 @@ export class RoomService {
         const playerOne = this.connectedUsers.get(roomState.players[0].id);
         const playerTwo = this.connectedUsers.get(roomState.players[1].id);
         await this.gameService.addMatchToStats(winnerUser.id, looserUser.id);
+        await this.gameService.updateAchievement(winnerUser.id, looserUser.id, score_O);
         let stats = await this.gameService.getPlayersStats(winnerUser.id, looserUser.id);
 
         if (!roomState.gameState || roomState.gameState.status === GameStatus.RUNNING) {

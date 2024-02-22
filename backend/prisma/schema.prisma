@@ -21,8 +21,10 @@ model User {
   friendshipsReceived  Friendship[]     @relation("Receiver")
   // sentMessages     PrivateMessage[] @relation("sentMessages")
   // receivedMessages PrivateMessage[] @relation("receivedMessages")
-  matchs         MatchUser[] // several games related to a user
-  stats          Stats?      // just one state related to each user
+  matchs               MatchUser[] // several games related to a user
+  stats                Stats? // just one state related to each user
+  Achievement          Achievement?
+
   @@map("users")
 }
 
@@ -85,34 +87,50 @@ model PrivateMessage {
 }
 
 model Stats {
-  id          Int      @id @default(autoincrement())
-  user        User     @relation(fields: [userId], references: [id])
-  userId      Int      @unique
-  nbGames     Int
-  nbWin       Int
-  nbLoose     Int
+  id      Int  @id @default(autoincrement())
+  user    User @relation(fields: [userId], references: [id])
+  userId  Int  @unique
+  nbGames Int
+  nbWin   Int
+  nbLoose Int
+
   @@map("stats")
 }
 
 model Match {
-  id              Int      @id @default(autoincrement())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  status          gameStatus
-  players         MatchUser[]
-  
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  status    gameStatus
+  players   MatchUser[]
+
   @@map("match")
 }
 
 model MatchUser {
-  player        User     @relation(fields:[playerId], references: [id])
-  playerId      Int
-  match         Match     @relation(fields:[matchId], references: [id])
-  matchId       Int
-  score         Int
-  role          playerRole
+  player   User       @relation(fields: [playerId], references: [id])
+  playerId Int
+  match    Match      @relation(fields: [matchId], references: [id])
+  matchId  Int
+  score    Int
+  role     playerRole
 
   @@id([playerId, matchId])
+}
+
+model Achievement {
+  id                  Int     @id @default(autoincrement())
+  user                User    @relation(fields: [userId], references: [id])
+  userId              Int     @unique
+  firstGame           Boolean
+  firstWin            Boolean
+  firstLoose          Boolean // a voir si on le garde
+  masterWinner        Boolean // 10 win ou plus 
+  invincible_guardian Boolean // win sans encaisser de but
+  Speed_Demon         Boolean // quand la balle atteint la vitessse max
+  // bcp d'arret de balle pendant un point 
+
+  @@map("achievement")
 }
 
 enum UserStatus {

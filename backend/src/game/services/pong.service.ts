@@ -3,11 +3,14 @@ import { Socket, Server } from 'socket.io';
 import { RoomService } from './room.service';
 import { GameState, Ball, KeyState, GameStatus } from '../classes/pong';
 import { GameSettings } from '../classes/room';
+import { GameService } from "./game.service";
 
 @Injectable()
 export class PongService {
     constructor(
-        @Inject(forwardRef(() => RoomService)) private readonly roomService: RoomService) { }
+        @Inject(forwardRef(() => RoomService)) private readonly roomService: RoomService,
+        private readonly gameService: GameService,
+        ) { }
 
     private initGameState(settings: GameSettings): GameState {
         let paddleWidth = 20;
@@ -57,8 +60,9 @@ export class PongService {
         return 0;
     }
 
-    public updateGameState(roomId: string) {
+    async updateGameState(roomId: string) {
         let winner = 0;
+        let score_O = false;
         const roomState = this.roomService.rooms.get(roomId);
         if (!roomState) return;
 
@@ -67,9 +71,11 @@ export class PongService {
 
         winner = this.calculateWinner(gameState);
         if (winner) {
+            if (gameState.score.player1 === 0 || gameState.score.player2 === 0)
+                score_O = true;
             console.log(winner);
             gameState.status = GameStatus.FINISHED;
-            this.roomService.closingGame(roomId, roomState.players[winner - 1].id);
+            this.roomService.closingGame(roomId, roomState.players[winner - 1].id, score_O);
             return;
         }
         gameState.point(roomState.settings.paddleHeight, roomState.settings.ballSpeed, roomState.settings.paddleSpeed)
