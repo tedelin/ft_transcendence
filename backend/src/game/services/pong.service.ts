@@ -74,7 +74,6 @@ export class PongService {
             await new Promise(resolve => setTimeout(resolve, 200));
             if (gameState.score.player1 === 0 || gameState.score.player2 === 0)
                 score_O = true;
-            console.log(winner);
             gameState.status = GameStatus.FINISHED;
             this.roomService.closingGame(roomId, roomState.players[winner - 1].id, score_O);
             return;

@@ -185,8 +185,6 @@ export class GameService {
     }
 
     async updateStats(winner: any, looser: any) {
-        // console.log(`before update winner : ${winner}`);
-        // console.log(`before update winner : ${looser}`);
         await this.databaseService.stats.update({
             where: {
                 id: winner.id,
@@ -207,21 +205,11 @@ export class GameService {
         });
         const player1Stats = await this.findUserById(winner.userId);
         const player2Stats = await this.findUserById(looser.userId);
-        // console.log("AFTER :::::: ")
-        // console.log(player1Stats);
-        // console.log("-----------------")
-        // console.log(player2Stats);
     }
 
     async getPlayersStats(winner: number, looser: number) {
-        // console.log(`winner id = ${winner}`);
-        // console.log(`looser id = ${looser}`);
         const player1Stats = await this.findUserById(winner);
         const player2Stats = await this.findUserById(looser);
-        // console.log("SENDING :::::: ")
-        // console.log(player1Stats);
-        // console.log("-----------------")
-        // console.log(player2Stats);
         return { player1: player1Stats, player2: player2Stats };
     }
 

@@ -161,7 +161,6 @@ export class RoomService {
     }
 
     public findMyLifePartner(roomId : string, otherClient : Socket) {
-        // console.log("roomId = " + roomId);
         const roomState = this.rooms.get(roomId);
         if (roomState) {
             let clients = this.rooms.get(roomId).players;
