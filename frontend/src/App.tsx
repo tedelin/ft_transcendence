@@ -13,6 +13,8 @@ import { Channels } from './chat/Channels'
 import { Friends } from './chat/Friends'
 import { ChatBox } from './chat/ChatBox'
 import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
+import ConversationsList from './chat/ConversationsList.tsx'
+import Conversation from './chat/Conversation.tsx'
 
 const router = createBrowserRouter([
 	{
@@ -43,6 +45,10 @@ const router = createBrowserRouter([
 					{
 						path: "private-messages",
 						element: <PrivateMessagesPage />,
+					},
+					{
+						path: "conversations",
+						element: <ConversationsList />,
 					}
 				]
 			},
@@ -57,6 +63,10 @@ const router = createBrowserRouter([
 			{
 				path: "game",
 				element: <RequireAuth><Game /></RequireAuth>
+			},
+			{
+				path: "/conversations/:conversationId", 
+				element: <Conversation />,
 			}
 		],
 	},
