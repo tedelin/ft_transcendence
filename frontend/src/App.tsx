@@ -13,6 +13,7 @@ import { Friends } from './chat/Friends';
 import { ChatBox } from './chat/ChatBox';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
 
 const router = createBrowserRouter([
 	{
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
 					{
 						path: 'friends',
 						element: <Friends />,
+					},
+					{
+						path: "private-messages",
+						element: <PrivateMessagesPage />,
 					}
 				]
 			},
@@ -50,10 +55,10 @@ const router = createBrowserRouter([
 				path: "settings",
 				element: <RequireAuth><Settings /></RequireAuth>
 			},
-			// {
-			// 	path: "game",
-			// 	element: <RequireAuth><Game /></RequireAuth>
-			// }
+			{
+				path: "game",
+				element: <RequireAuth><Game /></RequireAuth>
+			}
 		],
 	},
 ])

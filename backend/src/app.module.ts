@@ -9,6 +9,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { FriendModule } from './friends/friends.module';
 import { ModerationModule } from './moderation/moderation.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { PrivateMessageModule } from './privateMessage/privateMessage.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     UserModule, 
     GameModule, 
     FriendModule,
+    PrivateMessageModule,
 	ModerationModule,
     ScheduleModule.forRoot(),
 	EventEmitterModule.forRoot()
