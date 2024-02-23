@@ -3,7 +3,9 @@ import { GameState } from './pong';
 
 export enum RoomStatus {
     MATCHMAKING = 0,
-    INGAME = 1
+    INGAME = 1,
+    LAUNCHING = 2,
+    INTERRUPT = 3
 }
 
 export class pData {
@@ -29,8 +31,10 @@ export class GameSettings {
 export class RoomState {
     constructor (
         public players: Socket[] = [],
+        public spectators: Socket[] = [],
         public gameState: GameState | null = null,
         public settings: GameSettings = new GameSettings(0, 0, 0, 0, 0, false),
-        public state: number = 0
+        public state: number = 0,
+        public id: number = 0
     ) {}
 }

@@ -5,7 +5,7 @@ export enum KeyState {
 
 export enum GameStatus {
     RUNNING = 0,
-    FINISHED = 1
+    FINISHED = 1,
 }
 
 export interface PaddleKey {
@@ -118,6 +118,7 @@ export class GameState {
     }
 
     public speedChange() {
+        const save_balle_velocity_x = this.ball.velocity.x;
         this.ball.pos = {
             x: this.ball.pos.x + this.ball.velocity.x,
             y: this.ball.pos.y + this.ball.velocity.y,
@@ -127,7 +128,8 @@ export class GameState {
         this.ball.velocity.x -= (this.ball.velocity.x > -10 && this.ball.velocity.x < 0) ? this.ball.increaseBallSpeed : 0;
         this.ball.velocity.y += (this.ball.velocity.y < 10 && this.ball.velocity.y > 0) ? this.ball.increaseBallSpeed : 0;
         this.ball.velocity.y -= (this.ball.velocity.y > -10 && this.ball.velocity.y < 0) ? this.ball.increaseBallSpeed : 0;
-
+        // if (save_balle_velocity_x == this.ball.velocity.x)
+        //     return true
         if (this.paddles.speed < 20)
             this.paddles.speed += 0.001;
     }

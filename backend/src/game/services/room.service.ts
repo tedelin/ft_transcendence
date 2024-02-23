@@ -2,8 +2,24 @@ import { Injectable, Inject, forwardRef } from "@nestjs/common";
 import { Interval } from '@nestjs/schedule';
 import { Socket, Server } from 'socket.io';
 import { pData, GameSettings, RoomState, RoomStatus } from '../classes/room'
-import { GameStatus } from "../classes/pong";
+import { GameState, GameStatus, Score } from "../classes/pong";
 import { PongService } from "./pong.service";
+import { GameService } from "./game.service";
+import { CreateMatchDto, PlayerData } from "../dto/create-match.dto";
+import { AuthService } from "src/auth/auth.service";
+import { UserService } from "src/user/user.service";
+import { User } from "@prisma/client";
+import { UpdateMatchDto } from "../dto/update-match.dto";
+
+interface Matchs {
+    id: number,
+    date: any,
+    players : Array<{
+        username: string,
+        score: number,
+        role: string
+    }>
+}
 
 @Injectable()
 export class RoomService {
@@ -12,11 +28,18 @@ export class RoomService {
     public playersData: Map<string, pData> = new Map();
     public roomSize = 2;
     public server : Server;
+    public connectedUsers: Map<string, User>;
 
-    constructor(private readonly pongService: PongService) {}
-s
-    public setServer(server: Server) {
+    constructor(
+        private readonly pongService: PongService,
+        private readonly gameService: GameService,
+        private readonly authService: AuthService,
+        private readonly userService: UserService
+    ) {}
+
+    public setServer(server: Server, connectedUsers : Map<string, User>) {
         this.server = server;
+        this.connectedUsers = connectedUsers;
     }
 
     public matchmakingExit(client: Socket, action : string, server) {
@@ -48,15 +71,15 @@ s
         
         roomState.players = roomState.players.filter(c => c.id !== client.id);
         client.leave(gameId);
-        // console.log('Staying alone in the room '+ gameId);
         this.server.to(gameId).emit('matchmakingStats', {
-            playerOne: { id: roomState.players[0].id.substring(0, 5) },
-            playerTwo: null
+            playerOne: { id: this.connectedUsers.get(client.id).username },
+            playerTwo: null,
+            roomId: gameId
         })
     }
 
     private playerOneMatchmakingExit(gameId, client) {
-        const roomState = this.rooms.get(gameId);
+        const roomState = this.rooms.get(gameId); 
         if (!roomState) return ;
         let roomPartner : Socket | null = this.findMyLifePartner(gameId, client);
 
@@ -72,10 +95,17 @@ s
 
     public logRooms() {
         this.rooms.forEach((roomState, roomId) => {
-            console.log(`Room ID: ${roomId}, Number of Clients: ${roomState.players.length}`);
+            const playerUsernames = roomState.players.map(playerSocket => {
+                const user = this.connectedUsers.get(playerSocket.id);
+                return user ? user.username : "Unknown";
+            }).join(', ');
+            const spectatorUsernames = roomState.spectators.map(spectatorSocket => {
+                const user = this.connectedUsers.get(spectatorSocket.id);
+                return user ? user.username : "Unknown";
+            }).join(', ');
+            console.log(`Room ID: ${roomId}, Players: [${playerUsernames}], Spectators: [${spectatorUsernames}]`);
         });
     }
-
 
     public assignClientToRoom(client: Socket) : string {
         const roomId = this.findAvailableRoom() || this.createRoom(client);
@@ -84,8 +114,9 @@ s
         const roomState = this.rooms.get(roomId);
 
         this.server.to(roomId).emit('matchmakingStats', {
-            playerOne: { id: roomState.players[0].id.substring(0, 5) },
-            playerTwo: (roomState.players.length < this.roomSize ? null : { id: roomState.players[1].id.substring(0, 5) })
+            playerOne: { id: this.connectedUsers.get(roomState.players[0].id).username },
+            playerTwo: (roomState.players.length < this.roomSize ? null : { id: this.connectedUsers.get(client.id).username }),
+            roomId: roomId
         })
         if (roomState.players.length < this.roomSize || !roomState.settings.settingsSet) {
             client.emit('gameMatchmaking', { 
@@ -115,7 +146,7 @@ s
     }
     
     private createRoom(client: Socket): string {
-        const newRoomId = `game_${new Date().getTime()}`;
+        const newRoomId = `${new Date().getTime()}`;
         this.rooms.set(newRoomId, new RoomState([client]));
         return newRoomId;
     }
@@ -130,11 +161,13 @@ s
     }
 
     public findMyLifePartner(roomId : string, otherClient : Socket) {
-        console.log("roomId = " + roomId);
-        let clients = this.rooms.get(roomId).players;
-        for (const targetClient of clients) {
-            if (targetClient.id != otherClient.id)
-                return targetClient;
+        const roomState = this.rooms.get(roomId);
+        if (roomState) {
+            let clients = this.rooms.get(roomId).players;
+            for (const targetClient of clients) {
+                if (targetClient.id != otherClient.id)
+                    return targetClient;
+            }
         }
         return null;
     }
@@ -143,21 +176,36 @@ s
     @Interval(1000 / 200)
     loop(): void {
         for (const [roomId, roomState] of this.rooms.entries()) {
-            if (roomId && roomState.state === RoomStatus.INGAME)// && roomState.gameState.status !== GameStatus.FINISHED)
+            if (roomId && 
+                roomState.state != RoomStatus.LAUNCHING ||
+                (roomState.state === RoomStatus.INGAME && roomState.gameState.status !== GameStatus.FINISHED))
             {
                 this.server.to(roomId).emit('gameStateUpdate', { gameState: roomState.gameState });
                 this.pongService.updateGameState(roomId);
+                if (roomState.gameState && (roomState.gameState.ball.velocity.x >= 10 || roomState.gameState.ball.velocity.x <= -10)) {
+                    this.gameService.updateSpeedDemon(this.connectedUsers.get(roomState.players[0].id).id, this.connectedUsers.get(roomState.players[1].id).id);
+                }
             }
         }
     }
 
-    // TO HANDLE
     public startGame(roomId : string, firstPlayer : pData, secondPlayer : pData, settings: GameSettings) {
         firstPlayer.gamesPlayed++;  
         secondPlayer.gamesPlayed++;
-        this.rooms.get(roomId).state = RoomStatus.INGAME;
+        let roomState = this.rooms.get(roomId);
         this.server.to(roomId).emit('letsGO');
-        setTimeout(() => {
+        roomState.state = RoomStatus.LAUNCHING;
+        setTimeout(async () => {
+            if (roomState.state === RoomStatus.INTERRUPT) {
+                return ;
+            }
+            this.rooms.get(roomId).state = RoomStatus.INGAME;
+            const data : CreateMatchDto = this.formatCreateMatchData(roomState, this.connectedUsers.get(roomState.players[0].id), this.connectedUsers.get(roomState.players[1].id));
+            const match = await this.gameService.createMatch(data);
+            roomState.id = match.id;
+            console.log(`${match.id} just created`);
+            const allMatchs = await this.gameService.findAllGames();
+            this.server.emit('matchs', allMatchs);
             this.pongService.startGame(roomId, settings, this.server);
         }, 5200);
     }
@@ -168,7 +216,7 @@ s
             console.error(`Room with ID ${roomId} does not exist.`);
             return;
         }
-        const clients = roomState.players;
+        const clients = roomState.players.concat(roomState.spectators);
         if (clients) {
             clients.forEach(client => {
                 client.leave(roomId);
@@ -177,56 +225,109 @@ s
         this.rooms.delete(roomId);
     }
 
-    public closingGame(roomId : string, winner : string) {
+    private formatUpdateMatchData(roomState : RoomState, pOne : User, pTwo : User) : UpdateMatchDto {
+        const score : Score = roomState.gameState.score;
+        const userOne : User = pOne;
+        const userTwo : User = pTwo;
+        const playerOne : PlayerData = {
+            playerId: userOne.id,
+            score: score.player1,
+            role: "PLAYER_ONE"
+        };
+        const playerTwo : PlayerData = {
+            playerId: userTwo.id,
+            score: score.player2,
+            role: "PLAYER_TWO"
+        };
+        return { 
+            players: [playerOne, playerTwo],
+            status: "FINISHED",
+        };
+    }
+
+    private formatCreateMatchData(roomState : RoomState, pOne : User, pTwo : User) : CreateMatchDto {
+        const userOne : User = pOne;
+        const userTwo : User = pTwo;
+        const playerOne : PlayerData = {
+            playerId: userOne.id,
+            score: 0,
+            role: "PLAYER_ONE"
+        };
+        const playerTwo : PlayerData = {
+            playerId: userTwo.id,
+            score: 0,
+            role: "PLAYER_TWO"
+        };
+        return { 
+            players: [playerOne, playerTwo],
+            status: (roomState.state === RoomStatus.INTERRUPT ? "FINISHED" : "IN_GAME")
+        };
+    }
+
+    findLoser(roomState : RoomState, winner : string ){
+        const p1 = roomState.players[0].id;
+        const p2 = roomState.players[1].id;
+        if (p1 === winner)
+            return p2;
+        return p1;
+    }
+
+    async closingGame(roomId : string, winner : string, score_O : boolean) {
         const roomState = this.rooms.get(roomId);
         if (!roomState) return;
 
-        // Send last update for classGame to stop and manage game field
         this.server.to(roomId).emit('gameStateUpdate', { gameState: roomState.gameState });
+        this.cleanRoom(roomId);
 
-        // Update winner score, NEED TO CHANGE TO SEND IT TO DB LATER
-        this.playersData.get(winner).wins++;
+        const looser = this.findLoser(roomState, winner);
+        const winnerUser = this.connectedUsers.get(winner);
+        const looserUser = this.connectedUsers.get(looser);
+        const playerOne = this.connectedUsers.get(roomState.players[0].id);
+        const playerTwo = this.connectedUsers.get(roomState.players[1].id);
+        await this.gameService.addMatchToStats(winnerUser.id, looserUser.id);
+        await this.gameService.updateAchievement(winnerUser.id, looserUser.id, score_O);
+        let stats = await this.gameService.getPlayersStats(winnerUser.id, looserUser.id);
 
-        // Get stats of 2 players, NEED TO CHANGE TO GET IT FROM DB LATER
-        let stats = this.getPlayersStats(roomState.players);
-
-        // Emit end of game, winner, stats and isAbandon to front to display the stats screen above game field
-        // if gameStatus = RUNNING (so a player gave up) -> emit: only to winner front
-        if (roomState.gameState.status === GameStatus.RUNNING) {
+        if (!roomState.gameState || roomState.gameState.status === GameStatus.RUNNING) {
             this.server.to(winner).emit('gameFinishedShowStats', {
                 winner: true,
                 stats: stats,
-                isAbandon: true
+                isAbandon: true,
+                isSpectator : false
             })
         }
-        // if gameStatus = FINISHED -> emit: to 2 players fronts
         else {
-            roomState.players.forEach((player, index) => {
+            roomState.players.forEach((player) => {
                 this.server.to(player.id).emit('gameFinishedShowStats', {
                     winner: (player.id === winner), 
                     stats: stats,
-                    isAbandon: false
+                    isAbandon: false,
+                    isSpectator : false
                 });
             });
         }
 
-        // clean room
-        this.cleanRoom(roomId);
-    }
-
-    private getPlayersStats(players: Socket[]): { player1: any, player2: any } {
-        const player1Stats = {
-            id: players[0].id.substring(0, 5),
-            wins: this.playersData.get(players[0].id).wins,
-            gamesPlayed: this.playersData.get(players[0].id).gamesPlayed
-        };
-    
-        const player2Stats = {
-            id: players[1].id.substring(0, 5),
-            wins: this.playersData.get(players[1].id).wins,
-            gamesPlayed: this.playersData.get(players[1].id).gamesPlayed
-        };
-    
-        return { player1: player1Stats, player2: player2Stats };
+        if (roomState.spectators.length > 0)
+        {
+            roomState.spectators.forEach((spectator) => {
+                this.server.to(spectator.id).emit('gameFinishedShowStats', {
+                    winner: winnerUser.username, 
+                    stats: stats,
+                    isAbandon: (roomState.gameState.status === GameStatus.RUNNING ? true : false),
+                    isSpectator : true
+                });
+            })
+        }
+        if (!roomState.gameState) {
+            roomState.state = RoomStatus.INTERRUPT;
+            const data = this.formatCreateMatchData(roomState, playerOne, playerTwo);
+            await this.gameService.createMatch(data);
+        }
+        else {
+            const data = this.formatUpdateMatchData(roomState, playerOne, playerTwo);
+            await this.gameService.updateMatch(roomState.id, data);
+        }
+        const allMatchs = await this.gameService.findAllGames();
+        this.server.emit('matchs', allMatchs);
     }
 }

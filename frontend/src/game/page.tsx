@@ -1,27 +1,34 @@
 import { ClassGame } from './classGame';
 import { useEffect } from 'react';
 import { useState, useRef } from 'react';
-import socket from './socket';
+// import socket from './socket';
 import React from 'react';
 import './game.css';
 import { SettingsMenu } from './settingsMenu';
 import { EndGameMenu } from './endGameMenu';
 import { MatchmakingView } from './MatchmakingView';
+import { useAuth } from '../components/AuthProvider';
+import { MatchHistory } from './matchHistory';
+import { fetchUrl } from '../fetch';
+import { useNavigate, useLocation } from 'react-router-dom';
+// import { useError } from '../components/ErrorProvider';
 
 function StartGame({ gameInstance }) {
+    const auth = useAuth();
+    
+    const handleKeyDown = (event) => {
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            auth?.socket?.emit('keyAction', { key: event.key, action: 'pressed' });
+        }
+    };
+
+    const handleKeyUp = (event) => {
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            auth?.socket?.emit('keyAction', { key: event.key, action: 'released' });
+        }
+    };
+
     useEffect(() => {
-        const handleKeyDown = (event) => {
-            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-                socket.emit('keyAction', { key: event.key, action: 'pressed' });
-            }
-        };
-
-        const handleKeyUp = (event) => {
-            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-                socket.emit('keyAction', { key: event.key, action: 'released' });
-            }
-        };
-
         gameInstance.startGame();
 
         document.addEventListener('keydown', handleKeyDown);
@@ -43,7 +50,6 @@ function StartGame({ gameInstance }) {
 
 export function Game() {
     const [gameStarted, setGameStarted] = useState(false);
-    const [gameEnded, setGameEnded] = useState(false);
     const [showButton, setShowButton] = useState(true);
     const [settingsToDo, setSettingsToDo] = useState(false);
     const [firstPlayer, setFirstPlayer] = useState(false);
@@ -63,10 +69,14 @@ export function Game() {
     const [playerOne, setPlayerOne] = useState([]);
     const [playerTwo, setPlayerTwo] = useState([]);
 
+    const [historyAll, setHistoryAll] = useState([]);
+    const [isSpectator, setIsSpectator] = useState(false);
+
+    const auth = useAuth();
+
     function handleQuit() {
         setLetsGO(false);
         setGameStarted(false);
-        setGameEnded(true);
         setShowButton(true);
         setFirstPlayer(false);
         setSettingsToDo(false);
@@ -83,14 +93,13 @@ export function Game() {
     }
 
     function handletsart() {
-        socket.emit('clickPlay');
+        auth?.socket?.emit('clickPlay');
         setShowButton(false);
-        setGameEnded(false);
     }
 
     function handleSaveSettings() {
         console.log('ballSpeed : ' + ballSpeed);
-        socket.emit('clickSaveSettings', {
+        auth?.socket?.emit('clickSaveSettings', {
             ballSpeed: ballSpeed,
             paddleSpeed: paddleSpeed,
             paddleHeight: paddleHeight,
@@ -118,8 +127,38 @@ export function Game() {
     }
 
     useEffect(() => {
+        // Définition de la fonction asynchrone pour récupérer les matchs
+        const fetchMatchHistory = async () => {
+            try {
+                const data = await fetchUrl('/game/history', {
+                    method: "GET"
+                });
+                setHistoryAll(data);
+            } catch (error) {
+                console.error("Failed to fetch match history:", error);
+            }
+        };
+        console.log("fetMatchHistory")
+        fetchMatchHistory();
+    }, []);
 
-        socket.on('gameMatchmaking', (data) => {
+    function quitBack() {
+        console.log(`showButton : ${showButton}, game: ${gameStarted}`);
+        console.log(`${letsGO}, ${playerOne}`)
+        console.log(`gameCurrent: ${gameInstance.current}`);
+        if (!gameInstance.current)
+        {
+            auth?.socket?.emit('returnBack', { gameInstance: gameInstance.current });
+        }
+        else if (gameInstance.current)
+        {
+            auth?.socket?.emit('quitInGame');
+            handleQuit();
+        }
+    }
+
+    useEffect(() => {
+        auth?.socket?.on('gameMatchmaking', (data) => {
             if (data.firstPlayer) {
                 setFirstPlayer(true);
                 if (!data.settingDone)
@@ -127,28 +166,29 @@ export function Game() {
             }
         })
 
-        socket.on('matchmakingStats', (data) => {
+        auth?.socket?.on('matchmakingStats', (data) => {
             setPlayerOne(data.playerOne);
             setPlayerTwo(data.playerTwo);
         })
 
-        socket.on('gameLaunch', (data) => {
+        auth?.socket?.on('gameLaunch', (data) => {
             console.log('GameLaunch');
             if (!gameStarted) {
-                gameInstance.current = new ClassGame(React.createRef(), data.gameState);
+                gameInstance.current = new ClassGame(React.createRef(), data.gameState, auth?.socket);
                 setGameStarted(true);
                 setSettingsToDo(false);
             }
         })
 
-        socket.on('gameFinishedShowStats', (data) => {
+        auth?.socket?.on('gameFinishedShowStats', (data) => {
             setWinner(data.winner);
             setPlayerStats(data.stats);
             setIsAbandon(data.isAbandon);
+            setIsSpectator(data.isSpectator);
             setShowEndGameModal(true);
         })
 
-        socket.on('backToMenu', () => {
+        auth?.socket?.on('backToMenu', () => {
             setShowButton(true);
             setSettingsToDo(false);
             setFirstPlayer(false);
@@ -156,27 +196,42 @@ export function Game() {
             setPlayerTwo([]);
         })
 
-        socket.on('letsGO', () => {
+        auth?.socket?.on('letsGO', () => {
             setLetsGO(true);
         })
 
+        auth?.socket?.on('matchs', (data) => {
+            setHistoryAll(data);
+        })
+
         return () => {
-            socket.off('gameLaunch');
-            socket.off('gameMatchmaking');
-            socket.off('backToMenu');
-            socket.off('gameFinishedShowStats');
-            socket.off('letsGO');
+            auth?.socket?.off('gameLaunch');
+            auth?.socket?.off('gameMatchmaking');
+            auth?.socket?.off('backToMenu');
+            auth?.socket?.off('gameFinishedShowStats');
+            auth?.socket?.off('letsGO');
+            auth?.socket?.off('matchs');
+            auth?.socket?.off('matchmakingStats');
+            quitBack();
         }
-    }, [gameStarted]);
+    }, []);
+
+    // useDetectNavigation(showButton, gameStarted, auth, handleQuit, navigate);
 
     return (
         <div className="game">
-            {!gameStarted && showButton && (
-                <button className='StartButton' onClick={handletsart}>Start Game</button>
+            {!gameStarted && showButton && historyAll && (
+                <>
+                    <button className='StartButton' onClick={handletsart}>Start Game</button>
+                    <MatchHistory matchs={historyAll} />
+                </>
             )}
             {!gameStarted && !showButton && settingsToDo && (
                 <>
-                    <div className='CrossIcon' onClick={() => socket.emit('crossMatchmaking')}>&#10006;</div>
+                    <div className='CrossIcon' onClick={() => {
+                        auth?.socket?.emit('crossMatchmaking');
+                        // navigate('/game');
+                        }}>&#10006;</div>
                     <MatchmakingView
                         playerOne={playerOne}
                         playerTwo={playerTwo}
@@ -198,7 +253,9 @@ export function Game() {
             )}
             {!gameStarted && !showButton && !settingsToDo && (
                 <>
-                    <div className='CrossIcon' onClick={() => socket.emit('crossMatchmaking')}>&#10006;</div>
+                    {!letsGO && <div className='CrossIcon' onClick={() => {
+                        auth?.socket?.emit('crossMatchmaking');
+                        }}>&#10006;</div>}
                     <MatchmakingView
                         playerOne={playerOne}
                         playerTwo={playerTwo}
@@ -214,7 +271,7 @@ export function Game() {
                     {letsGO && (
                         <div className="matchmaking-container">
                             <span className="letsgo">Let's GO !</span>
-                            <Countdown/>
+                            <Countdown />
                         </div>
                     )}
                 </>
@@ -225,8 +282,9 @@ export function Game() {
             {gameStarted && !showEndGameModal && gameInstance.current && (
                 <>
                     <div className='CrossIcon' onClick={() => {
-                        socket.emit('quitInGame');
+                        auth?.socket?.emit('quitInGame');
                         handleQuit();
+                        // navigate('/game');
                     }} >&#10006;</div>
                 </>
             )}
@@ -235,6 +293,7 @@ export function Game() {
                     Winner={Winner}
                     isAbandon={isAbandon}
                     playerStats={playerStats}
+                    isSpect={isSpectator}
                     onQuit={handleQuit}
                 />
             )}
