@@ -43,7 +43,7 @@
 
 .bubble-left,
 .bubble-right {
-    word-wrap: break-word;
+    word-wrap: anywhere;
     line-height: 100%;
     padding: 15px;
     background: #373b44;
