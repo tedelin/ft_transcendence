@@ -3,11 +3,14 @@ import { useAuth } from '../components/AuthProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '../utils/hooks/useToast';
 import '../styles/login.css';
+import { validateInput } from '../utils/utils';
 
 
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+	const usernamePattern = /^[a-zA-Z0-9_]{2,32}$/;
+	const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{":?><,./;'[\]\\\-]).{8,128}$/;  
 
     const navigate = useNavigate();
     const auth = useAuth();
@@ -17,10 +20,14 @@ export default function Login() {
     const from = location.state?.from?.pathname || '/';
 
     async function handleSignIn() {
-        if (!username || !password) {
-            error('Please enter both username and password.');
-            return;
-        }
+		if (!validateInput(username ,usernamePattern)) {
+			error('Username must be between 2 and 32 characters and contain only letters, numbers, and underscores.');
+			return ;
+		}
+		if (!validateInput(password, passwordPattern)) {
+			error('Password must be between 8 and 128 characters and contain at least one digit, one lowercase letter, one uppercase letter, and one special character.');
+			return ;
+		}
         try {
             await auth?.signin(username, password);
             navigate(from, { replace: true });
@@ -30,10 +37,14 @@ export default function Login() {
     }
 
     async function handleSignUp() {
-        if (!username || !password) {
-            error('Please enter both username and password.');
-            return;
-        }
+		if (!validateInput(username ,usernamePattern)) {
+			error('Username must be between 2 and 32 characters and contain only letters, numbers, and underscores.');
+			return ;
+		}
+		if (!validateInput(password, passwordPattern)) {
+			error('Password must be between 8 and 128 characters and contain at least one digit, one lowercase letter, one uppercase letter, and one special character.');
+			return ;
+		}
         try {
             await auth?.signup(username, password);
             navigate(from, { replace: true });
