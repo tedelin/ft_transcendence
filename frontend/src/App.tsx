@@ -80,8 +80,8 @@ export default function ErrorPage() {
 function Layout() {
 	return (
 		<AuthProvider>
-			<NavBar />
 			<div className='container'>
+				<NavBar />
 				<Outlet />
 			</div>
 			<ToastContainer theme='dark' />
