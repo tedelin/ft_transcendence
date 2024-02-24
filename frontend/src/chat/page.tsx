@@ -8,17 +8,22 @@ import '../styles/chat.css';
 export default function ChatPage() {
 	const auth = useAuth();
 	const navigate = useNavigate();
+	const urlParams = new URLSearchParams(window.location.search);
 	const {error} = useToast();
 
 	useEffect(() => {
 		auth?.socket?.on('kicked', (channel: string) => {
 			error('You have been kicked from ' + channel);
-			navigate('/chat/channels');
+			if (urlParams.get('channel') === channel) {
+				navigate('/chat/channels');
+			}
 		});
 
 		auth?.socket?.on('banned', (channel: string) => {
 			error('You have been banned from ' + channel);
-			navigate('/chat/channels');
+			if (urlParams.get('channel') === channel) {
+				navigate('/chat/channels');
+			}
 		});
 	}, []);
 
