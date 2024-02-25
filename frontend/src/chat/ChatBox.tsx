@@ -5,7 +5,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { fetchUrl } from "../fetch";
 import { useToast } from "../utils/hooks/useToast";
 import { ChannelSettings } from "./ChannelSettings";
-import { Moderation } from "./Moderation";
 import '../styles/chat.css';
 
 function TopBar({ channel }) {
@@ -34,7 +33,6 @@ function TopBar({ channel }) {
 
 	return (
 		<div className="topBarChat">
-			<Moderation key={channel.id} enabled={moderation} channel={channel} setEnabled={setModeration} />
 			<ChannelSettings key={channel.id} enabled={settings} name={channel} setEnabled={setSettings} />
 			<div className="topChannel">
 				<img className="smallAvatar" src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
@@ -121,20 +119,6 @@ export function ChatBox() {
 					placeholder={'Send message to ' + name}
 					onChange={onTyping}
 				/>
-				<button className='inviteBtn'>
-					<span className="material-symbols-outlined">
-						stadia_controller
-					</span>
-				</button>
-				<button
-					className='sendMessageBtn'
-					disabled={message.length === 0}
-					onClick={sendChannelMessage}
-				>
-					<span className="material-symbols-outlined">
-						send
-					</span>
-				</button>
 			</div>
 		</>
 	);

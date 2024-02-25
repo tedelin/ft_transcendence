@@ -339,6 +339,41 @@ select {
     margin-left: 40px;
 }
 
+.context-menu {
+	z-index: 1000;
+	background-color: #36393f;
+	color: #ffffff;
+	/* border: 2px solid #72767d; */
+	border-radius: 6px;
+	padding: 4px 0;
+	font-size: 14px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .context-menu ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+  }
+  
+  .context-menu li {
+	padding: 8px 16px;
+	margin-left: 4px;
+	margin-right: 4px;
+	cursor: pointer;
+  }
+  
+  .context-menu li:hover {
+	border-radius: 4px;
+	margin-left: 4px;
+	margin-right: 4px;
+	background-color: #4f545c;
+  }
+  
+  .context-menu li:not(:last-child) {
+	/* border-bottom: 2px solid #72767d; */
+  }
+
 ::-webkit-scrollbar {
     width: 8px;
 }

@@ -14,6 +14,7 @@ import { ChatBox } from './chat/ChatBox';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
+import { Callback } from './components/Callback.tsx';
 
 const router = createBrowserRouter([
 	{
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
 			{
 				path: "game",
 				element: <RequireAuth><Game /></RequireAuth>
+			},
+			{
+				path: "/callback",
+				element: <Callback />
 			}
 		],
 	},
@@ -105,15 +110,15 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 }
 
 export function App() {
-	useEffect(() => {
-		const urlParams = new URLSearchParams(window.location.search);
-		const token = urlParams.get('token');
+	// useEffect(() => {
+	// 	const urlParams = new URLSearchParams(window.location.search);
+	// 	const token = urlParams.get('token');
 
-		if (token) {
-		  localStorage.setItem('jwtToken', token);
-		  document.location.search = '';
-		}
-	  }, []);
+	// 	if (token) {
+	// 	  localStorage.setItem('jwtToken', token);
+	// 	  document.location.search = '';
+	// 	}
+	//   }, []);
 
 	return (
 		<RouterProvider router={router} />

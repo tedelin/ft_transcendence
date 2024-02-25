@@ -14,14 +14,14 @@ export default function ChatPage() {
 	useEffect(() => {
 		auth?.socket?.on('kicked', (channel: string) => {
 			error('You have been kicked from ' + channel);
-			if (urlParams.get('channel') === channel) {
+			if (urlParams.get('channels') === channel) {
 				navigate('/chat/channels');
 			}
 		});
 
 		auth?.socket?.on('banned', (channel: string) => {
 			error('You have been banned from ' + channel);
-			if (urlParams.get('channel') === channel) {
+			if (urlParams.get('channels') === channel) {
 				navigate('/chat/channels');
 			}
 		});

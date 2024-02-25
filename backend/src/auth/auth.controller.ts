@@ -18,12 +18,7 @@ export class AuthController {
   }
 
   @Get('callback')
-  async callback(@Query('code') code: string, @Res() res: Response) {
-    const tokenData = await this.authService.callback(code);
-    if (tokenData) {
-        res.redirect(`${process.env.HOST}:3000/chat?token=${tokenData.access_token}`);
-        return;
-    }
-    console.log('no token');
+  async callback(@Query('code') code: string) {
+    return await this.authService.callback(code);
   }
 }
