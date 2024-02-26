@@ -14,6 +14,7 @@ import { ChatBox } from './chat/ChatBox';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
+import { twoFaRoutes } from './pages/two-facteur-auth/two-fa-routes';
 
 const router = createBrowserRouter([
 	{
@@ -61,6 +62,7 @@ const router = createBrowserRouter([
 			}
 		],
 	},
+	twoFaRoutes
 ])
 
 export default function ErrorPage() {
@@ -110,10 +112,10 @@ export function App() {
 		const token = urlParams.get('token');
 
 		if (token) {
-		  localStorage.setItem('jwtToken', token);
-		  document.location.search = '';
+			localStorage.setItem('jwtToken', token);
+			document.location.search = '';
 		}
-	  }, []);
+	}, []);
 
 	return (
 		<RouterProvider router={router} />
