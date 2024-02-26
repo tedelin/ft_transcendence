@@ -57,6 +57,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		}
 	}
 
+	async function getTwoFaStatus(username: string, password: string) {
+		try {
+			const response = await fetchUrl('/auth/twoFaStatus', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ username, password }),
+			});
+			const { status } = response;
+			return status;
+		} catch (error) {
+			throw error;
+		}
+	}
+
+
+	async function verifyTotp(username: string, password: string, totp: string): Promise<void> {
+		try {
+			const response = await fetchUrl('/auth/validate-2fa', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ username, password, totp }),
+			});
+			if (response.validated == true)
+				console.log("OK !")
+			else
+				throw "NO !"
+		} catch (error) {
+			throw error;
+		}
+	}
+
 	async function signup(username: string, password: string): Promise<void> {
 		try {
 			const response = await fetchUrl('/auth/signup', {
@@ -101,7 +136,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		};
 	}, []);
 
-	let value = { user, loading, socket, signin, signup, signout };
+	let value = { user, loading, socket, signin, signup, signout, getTwoFaStatus, verifyTotp, handleAuth};
 
 	return (
 		<AuthContext.Provider value={value}>

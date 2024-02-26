@@ -14,6 +14,7 @@ import { ChatBox } from './chat/ChatBox';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
+import { twoFaRoutes } from './pages/two-facteur-auth/two-fa-routes';
 import { Callback } from './components/Callback.tsx';
 
 const router = createBrowserRouter([
@@ -66,6 +67,7 @@ const router = createBrowserRouter([
 			}
 		],
 	},
+	twoFaRoutes
 ])
 
 export default function ErrorPage() {
