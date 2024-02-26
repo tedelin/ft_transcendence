@@ -2,9 +2,9 @@
     display: flex;
     flex-grow: 1;
 	align-items: center;
-	justify-content: center;
+	justify-content:space-between;
 	flex-direction: column;
-    background-color: black;
+    background-color: white;
 	overflow: auto;
 }
 
@@ -19,72 +19,6 @@
     z-index: 1;
 }
 
-.StartButton {
-    color: white;
-    padding: 15px 32px;
-    font-size: 16px;
-    border: none;
-    background-color: #1d1d1d;
-    border-radius: 6px;
-}
-
-.history-menu {
-    /* position: absolute; */
-    display: flex;
-	margin-top: 50px;
-    flex-direction: column;
-    background-color:#1d1d1d;
-    border-radius: 6px;
-    padding: 10px;
-    gap: 2px;
-}
-
-.matchs-menu {
-    color: white;
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: flex-end;
-    background-color:#46464633;
-    height: 290px;
-    width: 440px;
-    max-height: 290px;
-    overflow-y: auto;
-}
-
-.matchs-title {
-    font-size: 1.2rem;
-    color: white;
-    text-align: center;
-}
-
-.match-item {
-    display: grid;
-    color: white;
-    font-size: 0.85rem;
-    grid-template-columns: 200px 75px 75px 75px;
-    gap: 5px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    background-color: rgba(0, 0, 0, 0.3); /* Fond noir transparent pour chaque match item */
-    align-items: center; /* Centrer le contenu verticalement */
-    justify-items: center; /* Centrer le contenu horizontalement */
-}
-
-.view-match-button {
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.view-match-button img {
-    display: block; /* Assure une bonne mise en page de l'image */
-    width: 20px; /* Ajustez selon la taille souhaitée */
-    height: 20px; /* Ajustez selon la taille souhaitée */
-}
 
 .StartMessage {
     position: absolute;

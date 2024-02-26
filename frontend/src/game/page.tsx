@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 // import socket from './socket';
 import React from 'react';
 import './game.css';
+import './button.css';
 import { SettingsMenu } from './settingsMenu';
 import { EndGameMenu } from './endGameMenu';
 import { MatchmakingView } from './MatchmakingView';
@@ -222,7 +223,13 @@ export function Game() {
         <div className="game">
             {!gameStarted && showButton && historyAll && (
                 <>
-                    <button className='StartButton' onClick={handletsart}>Start Game</button>
+                    <div className="loading-animation">
+                        <div className="boxxx">
+                            <div className='div_start_game'>
+                                <div className='StartButton' onClick={handletsart}>Start Game</div>
+                            </div>
+                        </div>
+                    </div>
                     <MatchHistory matchs={historyAll} />
                 </>
             )}
@@ -230,7 +237,6 @@ export function Game() {
                 <>
                     <div className='CrossIcon' onClick={() => {
                         auth?.socket?.emit('crossMatchmaking');
-                        // navigate('/game');
                         }}>&#10006;</div>
                     <MatchmakingView
                         playerOne={playerOne}
@@ -284,7 +290,6 @@ export function Game() {
                     <div className='CrossIcon' onClick={() => {
                         auth?.socket?.emit('quitInGame');
                         handleQuit();
-                        // navigate('/game');
                     }} >&#10006;</div>
                 </>
             )}

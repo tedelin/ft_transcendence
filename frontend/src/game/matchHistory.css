@@ -1,0 +1,77 @@
+.history-menu {
+    display: flex;
+	margin-top: 50px;
+    flex-direction: column;
+    background-color:white;
+    border-radius: 6px;
+    padding: 10px;
+    gap: 2px;
+}
+
+.matchs-menu {
+    color: white;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 430px;
+    width: 900px;
+    max-height:430px;
+    overflow: auto;
+    margin-bottom: 40px;
+}
+
+.matchs-title {
+    margin-bottom: 25px;
+    font-size: 1.2rem;
+    color:black;
+    font-weight: bold;
+    text-align: center;
+}
+
+.match-item {
+    display: grid;
+    color: black;
+    font-size: 1.5rem;
+    grid-template-columns: 200px 50px 400px 50px 200px;
+    grid-template-rows: 60px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgb(202, 196, 196);
+    align-items: center; /* Centrer le contenu verticalement */
+    justify-items: center; /* Centrer le contenu horizontalement */
+}
+
+.match-item:first-child {
+    border-top: 1px solid rgb(202, 196, 196); /* Bordure en haut seulement pour le premier élément */
+}
+
+.view-match-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.view-match-button img {
+    display: block; /* Assure une bonne mise en page de l'image */
+    width: 20px; /* Ajustez selon la taille souhaitée */
+    height: 20px; /* Ajustez selon la taille souhaitée */
+}
+
+.match-item .score {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight:500;
+    font-size:35px;
+    color:  black;
+}
+
+.match-item .playerPhoto {
+    display: flex;
+    align-items: center; /* Centrage vertical */
+    justify-content: center; /* Centrage horizontal */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}

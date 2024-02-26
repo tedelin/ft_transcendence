@@ -55,7 +55,7 @@ export class GameService {
         }
         return this.databaseService.match.findMany({
             orderBy: {
-                createdAt: 'asc', // Trier par date de création dans un ordre décroissant
+                createdAt: 'desc', // Trier par date de création dans un ordre décroissant
             },
             include: {
                 players: {

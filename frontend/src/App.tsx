@@ -5,7 +5,6 @@ import Chat from './chat/page';
 import { NavBar } from './components/NavBar';
 import { Game } from './game/page';
 import { AuthProvider, useAuth } from './components/AuthProvider';
-import './App.css';
 import './styles/chat.css';
 import Settings from './pages/Settings';
 import { Channels } from './chat/Channels';
