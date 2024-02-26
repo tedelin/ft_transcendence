@@ -11,18 +11,21 @@ model User {
   id                   Int              @id @default(autoincrement())
   username             String           @unique
   password             String
-  avatar               String           @default("https://www.w3schools.com/howto/img_avatar.png")
+  avatar               String           @default("default-avatar.jpg")
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
   useTwoFA             Boolean          @default(false)
   secretTwoFA          String?
   ChannelMessage       ChannelMessage[]
   channels             ChannelUser[]
-  matchHistory         MatchHistory[]
   friendshipsInitiated Friendship[]     @relation("Initiator")
   friendshipsReceived  Friendship[]     @relation("Receiver")
-  // sentMessages     PrivateMessage[] @relation("sentMessages")
-  // receivedMessages PrivateMessage[] @relation("receivedMessages")
+  sentMessages         PrivateMessage[] @relation("PrivateMessageSender")
+  receivedMessages     PrivateMessage[] @relation("PrivateMessageReceiver")
+
+  matchs               MatchUser[] // several games related to a user
+  stats                Stats? // just one state related to each user
+  Achievement          Achievement?
 
   @@map("users")
 }
@@ -31,8 +34,7 @@ model Friendship {
   id          Int      @id @default(autoincrement())
   initiatorId Int
   receiverId  Int
-  status      String   @default("NONE")
-  createdAt   DateTime @default(now())
+  status      FriendshipStatus
 
   initiator User @relation("Initiator", fields: [initiatorId], references: [id])
   receiver  User @relation("Receiver", fields: [receiverId], references: [id])
@@ -45,22 +47,17 @@ model Channel {
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @default(now()) @updatedAt
   password   String?
-  visibility String           @default("public")
-  //   channelOwner   User             @relation(fields: [channelOwnerId], references: [id])
-  // channelOwnerId Int
+  visibility Visibility
   messages   ChannelMessage[]
   users      ChannelUser[]
 }
 
 model ChannelUser {
-  channel     Channel @relation(fields: [channelName], references: [name])
+  channel     Channel		  @relation(fields: [channelName], references: [name])
   channelName String
-
-  user   User @relation(fields: [userId], references: [id])
+  role   	  Role
+  user   User 				  @relation(fields: [userId], references: [id])
   userId Int
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
 
   @@id([channelName, userId])
 }
@@ -75,31 +72,98 @@ model ChannelMessage {
   sender    User     @relation(fields: [senderId], references: [id])
 }
 
-model PrivateMessage {
-  id         Int      @id @default(autoincrement())
-  timestamp  DateTime @default(now())
-  content    String
-  //   sender     User     @relation("sentMessages", fields: [senderId], references: [id])
-  //   receiver   User     @relation("receivedMessages", fields: [receiverId], references: [id])
-  senderId   String
-  receiverId String
+model Stats {
+  id      Int  @id @default(autoincrement())
+  user    User @relation(fields: [userId], references: [id])
+  userId  Int  @unique
+  nbGames Int
+  nbWin   Int
+  nbLoose Int
+
+  @@map("stats")
 }
 
-model MatchHistory {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  nbWin     Int
-  nbLoose   Int
-  nbGames   Int
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
+model Match {
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  status    gameStatus
+  players   MatchUser[]
 
-  @@map("match_history")
+  @@map("match")
+}
+
+model MatchUser {
+  player   User       @relation(fields: [playerId], references: [id])
+  playerId Int
+  match    Match      @relation(fields: [matchId], references: [id])
+  matchId  Int
+  score    Int
+  role     playerRole
+
+  @@id([playerId, matchId])
+}
+
+model Achievement {
+  id                  Int     @id @default(autoincrement())
+  user                User    @relation(fields: [userId], references: [id])
+  userId              Int     @unique
+  firstGame           Boolean
+  firstWin            Boolean
+  firstLoose          Boolean // a voir si on le garde
+  masterWinner        Boolean // 10 win ou plus 
+  invincible_guardian Boolean // win sans encaisser de but
+  Speed_Demon         Boolean // quand la balle atteint la vitessse max
+  // bcp d'arret de balle pendant un point 
+
+  @@map("achievement")
+}
+
+model PrivateMessage {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  senderId  Int
+  receiverId Int
+  sender    User     @relation("PrivateMessageSender", fields: [senderId], references: [id])
+  receiver  User     @relation("PrivateMessageReceiver", fields: [receiverId], references: [id])
+
+  @@map("private_messages")
 }
 
 enum UserStatus {
   ONLINE
   OFFLINE
   IN_GAME
+
+}
+
+enum playerRole {
+  PLAYER_ONE
+  PLAYER_TWO
+}
+
+enum gameStatus {
+  IN_GAME
+  FINISHED
+}
+
+enum FriendshipStatus {
+  ACCEPTED
+  PENDING
+  BLOCKED
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+  PROTECTED
+}
+
+enum Role {
+	MEMBER
+	BANNED
+	MUTED
+	ADMIN
+	OWNER
 }

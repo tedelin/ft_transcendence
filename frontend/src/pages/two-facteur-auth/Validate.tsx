@@ -47,6 +47,7 @@ function Validate() {
             <div>
                 <label htmlFor="totp">Code 2FA :</label>
                 <input
+					className="inputCode"
                     id="totp"
                     type="text"
                     value={totp}

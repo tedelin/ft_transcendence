@@ -1,41 +1,20 @@
 .container {
-  display: flex;
-  margin: 0;
-  padding: 0;
-  font-family: "Nunito", Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  height: 100vh;
-  flex-grow: 1;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    font-family: 'Nunito', Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    height: 100vh;
+    flex-grow: 1;
+	margin-left: 60px;
 }
 
 .chat {
-  display: flex;
-  flex-grow: 1;
-  margin: 0;
-  margin-top: 45px;
-  padding: 0;
-  font-family: "Nunito", Arial, Helvetica, sans-serif;
-}
-
-.sideMenu {
-  max-width: 275px;
-  min-width: 200px;
-  width: 20%;
-  background-color: #36393f;
-  color: #fff;
-  overflow-y: hidden;
-}
-
-.sideMenu:hover {
-  overflow-y: auto;
-}
-
-.sideMenuItem {
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-  text-decoration: none;
-  color: #fff;
+    display: flex;
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
+    font-family: 'Nunito', Arial, Helvetica, sans-serif;
 }
 
 .chatArea {
@@ -117,16 +96,16 @@
 
 .messageInput textarea,
 .messageInput textarea:focus {
-  box-sizing: border-box;
-  font-size: 16px;
-  flex-grow: 1;
-  border-radius: 10px;
-  background-color: #40444b;
-  padding: 15px;
-  color: #fff;
-  resize: none;
-  border: none;
-  outline: none;
+    box-sizing: border-box;
+    font-size: 13px;
+    flex-grow: 1;
+    border-radius: 10px;
+    background-color: #40444b;
+    padding: 15px;
+    color: #fff;
+    resize: none;
+    border: none;
+    outline: none;
 }
 
 .sendMessageBtn,
@@ -174,26 +153,15 @@
 
 input,
 select {
-  box-sizing: border-box;
-  padding: 10px;
-  margin: 15px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  outline: none;
-  background-color: #40444b;
-  color: #fff;
-}
-
-.notification {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  background-color: #e41414;
-  color: #fff;
-  padding: 15px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    padding: 10px;
+    margin: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    background-color: #40444b;
+    color: #fff;
 }
 
 .sideMenuTitle span,
@@ -264,13 +232,12 @@ select {
 }
 
 @media only screen and (min-width: 768px) {
-  .friendsTopBar {
-    display: flex;
-    height: 72px;
-    align-items: center;
-    border-bottom: 3px solid #40444b;
-    overflow-y: hidden;
-  }
+    .friendsTopBar {
+        display: flex;
+        align-items: center;
+        border-bottom: 3px solid #40444b;
+        overflow-y: hidden;
+    }
 }
 
 .friendsTopBar span {
@@ -278,11 +245,11 @@ select {
   margin-left: 15px;
 }
 
-.spanMargin {
-  padding-right: 15px;
-  margin-right: 15px;
-  border-right: 3px solid #40444b;
-}
+/* .spanMargin {
+    padding-right: 15px;
+    margin-right: 15px;
+    border-right: 3px solid #40444b;
+} */
 
 .topBarAction,
 .topBarAction span,
@@ -300,9 +267,8 @@ select {
 }
 
 .createChannelContainer {
-  display: flex;
-  height: 72px;
-  border-bottom: 3px solid #40444b;
+    display: flex;
+    /* height: 72px; */
 }
 
 .createChannelContainer input,
@@ -312,10 +278,24 @@ select {
 }
 
 .topBarChat {
-  display: flex;
-  height: 72px;
-  align-items: center;
-  border-bottom: 3px solid #40444b;
+    display: flex;
+	padding: 5px;
+    align-items: center;
+	justify-content: space-between;
+    border-bottom: 3px solid #40444b;
+}
+
+.topChannel {
+	display: flex;
+	padding: 5px;
+	align-items: center;
+}
+
+.topSettings {
+	display: flex;
+	padding: 5px;
+    align-items: center;
+	justify-content: space-between;
 }
 
 .friendListItem span {

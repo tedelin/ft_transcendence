@@ -1,32 +1,24 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 import { fetchUrl } from '../fetch';
 import { io } from 'socket.io-client';
+import { User } from '../utils/types';
 
 
-type UserType = {
-	id: string;
-	username: string;
-	avatar: string;
-	useTwoFA: boolean;
-};
 
 interface AuthContextType {
-	user: UserType | null;
+	user: User | null;
 	loading: boolean;
 	socket: any;
 	signin: (username: string, password: string) => Promise<void>;
 	signup: (username: string, password: string) => Promise<void>;
-	signout: (callback: VoidFunction) => void;
-	verifyTotp: (username: string, password: string, totp: string) => void;
-	getTwoFaStatus: (username: string, password: string) => void;
-	handleAuth : (token : string) => Promise<void>;
+	signout: () => void;
 }
 
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-	const [user, setUser] = useState<UserType | null>(null);
+	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [socket, setSocket] = useState<any>(null);
 

@@ -95,7 +95,7 @@ button {
   cursor: pointer;
 }
 
-input {
+.inputCode {
   background: none;
   border: solid rgba(111, 111, 111, 0.363) 0.1px;
   border-radius: 6px;

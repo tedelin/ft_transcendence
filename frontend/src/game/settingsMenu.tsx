@@ -10,7 +10,7 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                     <label htmlFor="ballSpeed">Ball Speed :</label>
                 </div>
                 <input
-                    className='input'
+                    className='settingsSlider'
                     type="range"
                     id="ballSpeed"
                     min="1"
@@ -32,7 +32,7 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                     <label htmlFor="BallSize">Ball Size :</label>
                 </div>
                 <input
-                    className='input'
+                    className='settingsSlider'
                     type="range"
                     id='ballSize'
                     min='5'
@@ -51,7 +51,7 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                     <label htmlFor="increasedBallSpeed">Increased Ball Speed/s :</label>
                 </div>
                 <input
-                    className='input'
+                    className='settingsSlider'
                     type="range"
                     id="increasedBallSpeed"
                     min="0.001"
@@ -70,7 +70,7 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                     <label htmlFor="paddleHeight">Paddle Height :</label>
                 </div>
                 <input
-                    className='input'
+                    className='settingsSlider'
                     type="range"
                     id="paddleHeight"
                     min="100"
@@ -89,7 +89,7 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                     <label htmlFor="paddleSpeed">Paddle Speed :</label>
                 </div>
                 <input
-                    className='input'
+                    className='settingsSlider'
                     type="range"
                     id="paddleSpeed"
                     min="1"

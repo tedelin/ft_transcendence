@@ -4,7 +4,7 @@ import Validate from './Validate'
 import Congrats from './Congrats'
 import LayoutTwoFaSetup from './LayoutTwoFaSetup'
 
-const twoFaRoutes = {
+export const twoFaRoutes = {
 	path: "/two-factor-auth",
 	children: [
 		{
@@ -31,5 +31,3 @@ const twoFaRoutes = {
 		},
 	]
 }
-
-export default twoFaRoutes
