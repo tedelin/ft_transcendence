@@ -12,11 +12,11 @@ import {
 import { AuthService } from './auth.service';
 import { TwoFAService } from './2FA/twoFA.service';
 import { AuthDto, twoFaDto, totpDto, TokenTotpDto} from './dto';
-import { Response } from 'express';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { User } from 'src/common/decorators/user.decorator';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { OAuthGuard } from './guard/oauth.guard';
+import { SignUpDto, twoFaCodeDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -25,12 +25,9 @@ export class AuthController {
 		private twoFAService: TwoFAService,
 	) {}
 
-	@UseGuards(OAuthGuard)
 	@Get('callback')
-	async callback(@Req() req: Request) {
-		console.log(req.user);
-		// return this.authService.callback(code);
-		return {requireTwoFa: true};
+	async callback(@Query('code') code: string) {
+		return this.authService.callback(code);
 	}
 
     @Post('signin')
@@ -38,9 +35,16 @@ export class AuthController {
         return this.authService.login(dto);
     }
 
+	@UseGuards(OAuthGuard)
+	@Post('42signup')
+	async signUp(@Req() req: Request, @Body() dto: SignUpDto) {
+		return this.authService.signup42(req.user, dto);
+	}
+	
+	@UseGuards(OAuthGuard)
     @Post('validate-2fa')
-    async validate2fa(@Body() dto: totpDto) {
-        return this.twoFAService.validate2fa(dto);
+    async validate2fa(@Req() req: Request, @Body() dto: twoFaCodeDto) {
+        return this.twoFAService.validate2fa(req.user, dto.code);
     }    
 	
     @Post('validate-2fa-token')

@@ -4,12 +4,12 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { TwoFAService } from './2FA/twoFA.service';
 import { DatabaseModule } from 'src/database/database.module';
-import { JwtStrategy, OAuthStrategy } from './strategy';
+import { JwtStrategy } from './strategy';
 
 @Module({
     imports: [DatabaseModule, JwtModule.register({})],
     controllers: [AuthController],
-    providers: [AuthService, JwtStrategy, TwoFAService, OAuthStrategy],
+    providers: [AuthService, JwtStrategy, TwoFAService],
     exports: [AuthService],
 })
 export class AuthModule {}

@@ -10,6 +10,18 @@ export class AuthDto {
     password: string;
 }
 
+export class SignUpDto {
+	@IsString()
+	@IsNotEmpty()
+	username: string;
+}
+
+export class twoFaCodeDto {
+	@IsString()
+	@IsNotEmpty()
+	code: string;
+}
+
 export class twoFaDto {
     readonly token: string;
 }

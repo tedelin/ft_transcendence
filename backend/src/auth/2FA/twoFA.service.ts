@@ -11,8 +11,8 @@ import { AuthDto } from '../dto';
 @Injectable()
 export class TwoFAService {
     constructor(private databaseService: DatabaseService, 
-		private JwtService : JwtService,
-		private AuthService : AuthService
+		private jwtService : JwtService,
+		private authService : AuthService
 	) {}
     async register2fa(userObj: any) {
         const temp_secret = authenticator.generateSecret();
@@ -65,24 +65,22 @@ export class TwoFAService {
         return { verified: true };
     }
 
-    async validate2fa(dto: totpDto) {
-        const userName = dto.username;
-        const user = await this.databaseService.user.findUnique({
-            where: { username: userName },
+    async validate2fa(user: any, code: string) {
+        const userdb = await this.databaseService.user.findUnique({
+            where: { id42: user.id },
         });
-
+		if (!userdb) throw new ForbiddenException('User doesn\'t exist');
         const isVerified = authenticator.verify({
-            token: dto.totp,
-            secret: user.secretTwoFA,
+            token: code,
+            secret: userdb.secretTwoFA,
         });
-
-        if (!isVerified) return { validated: false };
-        return { validated: true };
+        if (!isVerified) throw new ForbiddenException('Invalid 2FA code');
+        return this.authService.signToken(userdb.id, userdb.username);
     }
 
 	async validate2faToken(token: string, totpCode: string) {
 		// Décoder le token pour obtenir les infos de l'utilisateur
-		const userInfo = this.JwtService.decode(token);
+		const userInfo = this.jwtService.decode(token);
 		console.log("userInfo : ", userInfo);
 		// Récupérer l'utilisateur depuis la base de données
 		const user = await this.databaseService.user.findUnique({
@@ -95,7 +93,7 @@ export class TwoFAService {
 		});
 	
 		if (!isVerified) return { validated: false };
-		const finaltoken = await this.AuthService.signToken(user.id, user.username);
+		const finaltoken = await this.authService.signToken(user.id, user.username);
 		console.log("finaltoken : ", finaltoken);
 		return {
 			finaltoken, 

@@ -5,6 +5,7 @@ import { DatabaseService } from '../database/database.service';
 import { Prisma } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { SignUpDto } from './dto/auth.dto';
 
 @Injectable({})
 export class AuthService {
@@ -51,6 +52,24 @@ export class AuthService {
         return this.signToken(user.id, user.username);
     }
 
+
+	async signup42(user: any, signUpDto: SignUpDto) {
+		const userExist = await this.databaseService.user.findUnique({
+			where: {
+				id42: user.id
+			}
+		});
+		if (userExist) throw new ForbiddenException('User already exist');
+		const newUser = await this.databaseService.user.create({
+			data: {
+				username: signUpDto.username,
+				password: '',
+				id42: user.id
+			}
+		});
+		return this.signToken(newUser.id, newUser.username);
+	}
+
 	async getAccessTokenFromCode(code: string) {
 		const formData = new FormData();
 		formData.append('grant_type', 'authorization_code');
@@ -73,24 +92,26 @@ export class AuthService {
 	async callback(code: string) {
 		const data = await this.getAccessTokenFromCode(code);
 		const user = await this.getInfoFromToken(data.access_token);
-		return this.validateUser(user);
+		return this.validateUser(user, data.access_token);
 	}
 
-	async validateUser(user: any) {
+	async validateUser(user: any, token: string) {
 		const userExist = await this.databaseService.user.findUnique({
 			where: {
-				username: user.id42
+				id42: user.id
 			}
 		});
-		if (userExist.useTwoFA) {
-			return {requireTwoFa: true};
+		if (!userExist) {
+			return {requireUsername: true, token42: token};
+		} 
+		else if (userExist.useTwoFA) {
+			return {requireTwoFa: true, token42: token};
 		} else if (userExist) {
 			return this.signToken(userExist.id, userExist.username);
 		}
-		return {requireUsername: true};
+		return this.signToken(userExist.id, userExist.username);
 	}
 
-	// This function will be used to get the user's information from the token
 	async getInfoFromToken(token: string) {
 		try {
 			const response = await fetch('https://api.intra.42.fr/v2/me', {
