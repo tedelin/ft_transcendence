@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { twoFaDto, totpDto } from '../dto';
 import { authenticator } from 'otplib';
 import * as QRCode from 'qrcode';
 import { JwtService } from '@nestjs/jwt';
 import {AuthService} from '../auth.service'
+import * as argon from 'argon2';
+import { AuthDto } from '../dto';
 
 @Injectable()
 export class TwoFAService {
@@ -18,7 +20,7 @@ export class TwoFAService {
 
         const otpauthUrl = authenticator.keyuri(
             userId.toString(),
-            'YourApp',
+            'ft_transcendence',
             temp_secret,
         );
         try {
@@ -31,7 +33,6 @@ export class TwoFAService {
 
             return { qrcode: qrCodeImage, secret: temp_secret };
         } catch (error) {
-            console.error('Error generating QR code', error);
             throw new Error('Could not generate QR code');
         }
     }
@@ -100,6 +101,18 @@ export class TwoFAService {
 			finaltoken, 
 			validated: true };
 	}
+
+	async twoFaStatus(dto: AuthDto) {
+        const user = await this.databaseService.user.findUnique({
+            where: {
+                username: dto.username,
+            },
+        });
+        if (!user) throw new ForbiddenException('Invalid credentials');
+        const isPasswordValid = await argon.verify(user.password, dto.password);
+        if (!isPasswordValid) throw new ForbiddenException('Invalid credentials');
+        return { status: user.useTwoFA };
+    }
 	
 
     async turnoff2FA(userObj: any) {
@@ -114,7 +127,6 @@ export class TwoFAService {
                 },
             });
         } catch (error) {
-            console.error('Error turning off 2FA :', error);
             throw new Error('Could not turn off 2FA');
         }
     }

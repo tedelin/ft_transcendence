@@ -3,12 +3,24 @@ import { fetchUrl } from '../fetch';
 import { Modal } from './Modal';
 import { useToast } from '../utils/hooks/useToast';
 import { useNavigate } from 'react-router-dom';
+import { verify } from 'jsonwebtoken';
 
 export function Callback() {
 	const code = new URLSearchParams(window.location.search).get('code');
 	const [requireTwoFa, setRequireTwoFa] = useState(false);
+	const [userCode, setUserCode] = useState('');
 	const navigate = useNavigate();
 	const {error} = useToast();
+
+	async function verify2fa() {
+		try {
+			// await fetchUrl('/auth/verify-2fa', {
+			// }
+
+		} catch (err: any) {
+			error(err.message);
+		}
+	}
 
 	async function getToken() {
 		try {
@@ -41,9 +53,14 @@ export function Callback() {
 			>
 				<div>
 					<label htmlFor="code">Enter the code from your authenticator app</label>
-					<input type="text" id="code" />
+					<input 
+						type="text"
+						id="code"
+						value={userCode}
+						onChange={(e) => setUserCode(e.target.value)}
+					/>
 					<button
-						onClick={getToken}
+						onClick={verify2fa}
 					>
 						Submit
 					</button>

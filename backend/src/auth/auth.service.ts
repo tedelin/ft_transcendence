@@ -13,6 +13,7 @@ export class AuthService {
         private jwtService: JwtService,
         private configService: ConfigService,
     ) {}
+
     async signUp(authDto: AuthDto) {
         try {
             authDto.password = await argon.hash(authDto.password);
@@ -50,27 +51,7 @@ export class AuthService {
         return this.signToken(user.id, user.username);
     }
 
-    async twoFaStatus(dto: AuthDto) {
-        const user = await this.databaseService.user.findUnique({
-            where: {
-                username: dto.username,
-            },
-        });
-        if (!user) {
-            throw new ForbiddenException('Invalid credentials');
-        }
-        const isPasswordValid = await argon.verify(user.password, dto.password);
-        if (!isPasswordValid) {
-            throw new ForbiddenException('Invalid credentials');
-        }
-
-        const isTwoFa = user.useTwoFA;
-
-        return { status: isTwoFa };
-    }
-    // This function will be used to authenticate the user with the 42 API
-
-	async callback(code: string) {
+	async getAccessTokenFromCode(code: string) {
 		const formData = new FormData();
 		formData.append('grant_type', 'authorization_code');
 		formData.append('client_id', `${this.configService.get<string>('CLIENT_ID')}`);
@@ -83,19 +64,22 @@ export class AuthService {
 				method: 'POST',
 				body: formData
 			});
-			const data = await response.json();
-			const user = await this.getInfoFromToken(data.access_token);
-			return this.validateUser(user);
+			return await response.json();
 		} catch (error) {
-			console.log("faile here ");
 			throw new UnauthorizedException('Invalid code');
 		}
+	}
+
+	async callback(code: string) {
+		const data = await this.getAccessTokenFromCode(code);
+		const user = await this.getInfoFromToken(data.access_token);
+		return this.validateUser(user);
 	}
 
 	async validateUser(user: any) {
 		const userExist = await this.databaseService.user.findUnique({
 			where: {
-				username: user.login
+				username: user.id42
 			}
 		});
 		if (userExist.useTwoFA) {

@@ -9,6 +9,7 @@ datasource db {
 
 model User {
   id                   Int              @id @default(autoincrement())
+  id42				   Int?          	@unique
   username             String           @unique
   password             String
   avatar               String           @default("default-avatar.jpg")
