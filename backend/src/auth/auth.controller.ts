@@ -37,6 +37,11 @@ export class AuthController {
         return this.authService.login(dto);
     }
 
+	@Post('signup')
+	async signUpLocal(@Body() dto: AuthDto) {
+		return this.authService.signUp(dto);
+	}
+
 	@UseGuards(OAuthGuard)
 	@Post('42signup')
 	async signUp(@Req() req: Request, @Body() dto: SignUpDto) {
