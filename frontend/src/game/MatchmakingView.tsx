@@ -51,20 +51,24 @@ export function MatchmakingView({ playerOne, playerTwo }) {
     const classNameTwo = (playerTwo ? 'rightPlayer back' : 'rightPlayer');
 
     return (
-        <div className="mmConteneur">
-            <div className={backOne} style={backgroundStyleOne}>
-                <div className={classNameOne}>
-                    {renderPlayer(playerOne, true)}
-                </div>
-            </div>
-            <div className="vertical-stuff">
-                <div className="line high"></div>
+        <div> 
+            <div className="mmConteneur2">
                 <img src={projectLogo} alt="Logo" className="logo" />
-                <div className="line low"></div>
             </div>
-            <div className={backTwo} style={backgroundStyleTwo}>
-                <div className={classNameTwo}>
-                    {renderPlayer(playerTwo, false)}
+            <div className="mmConteneur">
+                <div className={backOne} style={backgroundStyleOne}>
+                    <div className={classNameOne}>
+                        {renderPlayer(playerOne, true)}
+                    </div>
+                </div>
+                {/* <div className="vertical-stuff">
+                    <div className="line high"></div>
+                    <div className="line low"></div>
+                </div> */}
+                <div className={backTwo} style={backgroundStyleTwo}>
+                    <div className={classNameTwo}>
+                        {renderPlayer(playerTwo, false)}
+                    </div>
                 </div>
             </div>
         </div>
