@@ -8,6 +8,7 @@ import {
     Query,
     Res,
     UseGuards,
+	BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { TwoFAService } from './2FA/twoFA.service';
@@ -27,6 +28,7 @@ export class AuthController {
 
 	@Get('callback')
 	async callback(@Query('code') code: string) {
+		if (!code) throw new BadRequestException('No code provided');
 		return this.authService.callback(code);
 	}
 

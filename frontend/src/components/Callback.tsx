@@ -3,6 +3,7 @@ import { fetchUrl } from '../fetch';
 import { Modal } from './Modal';
 import { useToast } from '../utils/hooks/useToast';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthProvider';
 
 export function Callback() {
 	const code = new URLSearchParams(window.location.search).get('code');
@@ -13,6 +14,7 @@ export function Callback() {
 	const [token42, setToken42] = useState('');
 	const navigate = useNavigate();
 	const {error} = useToast();
+	const auth = useAuth();
 
 	async function registerUser() {
 		try {
@@ -27,7 +29,7 @@ export function Callback() {
 				}),
 			});
 			if (response.access_token) {
-				localStorage.setItem('jwtToken', response.access_token);
+				auth?.fetchUser(response.access_token);
 				navigate('/');
 			}
 		} catch (err: any) {
@@ -49,8 +51,8 @@ export function Callback() {
 			});
 		
 			if (response.access_token) {
-				localStorage.setItem('jwtToken', response.access_token);
-				navigate('/chat/channels');
+				auth?.fetchUser(response.access_token);
+				navigate('/');
 			}
 		} catch (err: any) {
 			error(err.message);
@@ -67,7 +69,7 @@ export function Callback() {
 			} else if (response.requireUsername) {
 				setRequireUsername(true);
 			} else if (response.access_token) {
-				localStorage.setItem('jwtToken', response.access_token);
+				auth?.fetchUser(response.access_token);
 				navigate('/');
 			}
 			setToken42(response.token42);
@@ -82,7 +84,7 @@ export function Callback() {
 	}, [code]);
 
 	return (
-		<>
+		<div className='chatArea'>
 			<Modal
 				title="Two Factor Authentication"
 				isOpen={requireTwoFa}
@@ -93,10 +95,12 @@ export function Callback() {
 					<input 
 						type="text"
 						id="code"
+						className='twoFaInput'
 						value={userCode}
 						onChange={(e) => setUserCode(e.target.value)}
 					/>
 					<button
+						className='validateTwoFaButton'
 						onClick={verify2fa}
 					>
 						Submit
@@ -110,6 +114,7 @@ export function Callback() {
 			>
 				<input 
 					type="text"
+					placeholder='Enter your username'
 					value={username}
 					onChange={(e) => setUsername(e.target.value)}
 				/>
@@ -119,6 +124,6 @@ export function Callback() {
 					Submit
 				</button>
 			</Modal>
-		</>
+		</div>
 	);
 }

@@ -1,6 +1,5 @@
 import Verify from './Verify'
 import Register from './Register'
-import Validate from './Validate'
 import Congrats from './Congrats'
 import LayoutTwoFaSetup from './LayoutTwoFaSetup'
 
@@ -24,10 +23,6 @@ export const twoFaRoutes = {
 					element: <Congrats />,
 				}
 			]
-		},
-		{
-			path: "validate",
-			element: <Validate />,
 		},
 	]
 }
