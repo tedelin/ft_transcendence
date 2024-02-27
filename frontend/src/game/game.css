@@ -53,6 +53,7 @@
     top: 10px;
     color: white;
     cursor: pointer;
+    z-index:5;
 }
 
 .settingsMenu {

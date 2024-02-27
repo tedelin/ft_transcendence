@@ -33,22 +33,22 @@
 }
 
 
-/* .matchmaking-animation {
+.matchmaking-animation {
     width: 50px;
     height: 50px;
     border: 8px solid #748896;
     border-radius: 50%;
     border-top: 8px solid transparent;
     animation: matchmaking-spin 1s linear infinite;
-} */
+}
 
-/* .matchmaking-text {
+.matchmaking-text {
     color: black;
     margin-top: 10px;
     font-weight: bold;
-} */
+}
 
-/* @keyframes matchmaking-spin {
+@keyframes matchmaking-spin {
     0% {
         transform: rotate(0deg);
     }
@@ -56,15 +56,17 @@
     100% {
         transform: rotate(360deg);
     }
-} */
+}
 
 .leftPlayer img,
 .rightPlayer img{
-    padding: 10px;
+    padding: 2px;
     width: 300px;
     height: 300px;
-    border: 2px solid black;
+    border: 2px solid white;
     border-radius: 50%;
+    z-index: 3;
+    background-color: white;
 }
 
 .leftPlayer span, 
@@ -73,33 +75,52 @@
     font-size:1.5rem;
 }
 
+.backOne, .backTwo {
+    z-index: 1;
+}
+
 .leftPlayer,
 .rightPlayer
 {
     display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.back {
+    backdrop-filter:blur(10px);
+    background-color: rgba(214, 212, 212, 0.76);
 }
 
 .playerInfo {
     display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    z-index: 3;
 }
 
-/* .letsgo {
+.suspension {
+    font-size:xx-large;
+    font-weight: bold;
+}
+
+.letsgo {
     font-weight: bold;
     font-size: 75px;
     animation: fadeIn 4.8s ease-out;
+    z-index:5;
 }
 
 .countDown {
-    color: #fff;
+    color: black;
     font-size: 60px;
     animation: countDownAnimation 4.5s linear forwards;
+    z-index: 5;
 }
 
 @keyframes fadeIn {
@@ -135,7 +156,7 @@
     100% {
         opacity: 0;
     }
-} */
+}
 
 
 

@@ -263,11 +263,11 @@ export function Game() {
                         playerOne={playerOne}
                         playerTwo={playerTwo}
                     />
-                    {/* {!letsGO && (
+                    {!letsGO && (
                         <div className="matchmaking-container">
                             <div className="matchmaking-animation"></div>
                             <div className="matchmaking-text">
-                                {firstPlayer ? 'Waiting for another player...' : 'Waiting for the other player to set the game...'}
+                                {firstPlayer ? '' : 'Waiting for the other player to set the game...'}
                             </div>
                         </div>
                     )}
@@ -276,7 +276,7 @@ export function Game() {
                             <span className="letsgo">Let's GO !</span>
                             <Countdown />
                         </div>
-                    )} */}
+                    )}
                 </div>
             )}
             {gameStarted && gameInstance.current && (
