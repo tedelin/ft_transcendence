@@ -1,0 +1,143 @@
+
+.logo {
+    position: absolute;
+    left: 49.86%;
+    right: 43.47%;
+    top: 45.02%;
+    bottom: 45.61%;
+
+    background: #000000;
+}
+
+.matchmaking-container {
+    color: white;
+    position: relative;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.matchmaking-animation {
+    width: 50px;
+    height: 50px;
+    border: 8px solid #748896;
+    border-radius: 50%;
+    border-top: 8px solid transparent;
+    animation: matchmaking-spin 1s linear infinite;
+}
+
+.matchmaking-text {
+    color: #fff;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+@keyframes matchmaking-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.leftPlayer img,
+.rightPlayer img{
+    padding: 15px;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+}
+
+.leftPlayer span, 
+.rightPlayer span{
+    text-align: center;
+    font-weight: bold;
+
+}
+
+.playerInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color : white;
+}
+
+.leftPlayer,
+.rightPlayer
+{
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgb(54, 54, 54);
+    border-radius: 10px;
+    /* box-shadow: 5px 10px 2px rgba(64, 91, 209, 0.589); */
+}
+
+.rightPlayer
+{
+    right: 12%;
+}
+
+.leftPlayer
+{
+    left: 12%;
+}
+
+
+.letsgo {
+    font-weight: bold;
+    font-size: 75px;
+    animation: fadeIn 4.8s ease-out;
+}
+
+.countDown {
+    color: #fff;
+    font-size: 60px;
+    animation: countDownAnimation 4.5s linear forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    95% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes countDownAnimation {
+    16.65% {
+        opacity: 1;
+    }
+    33.33% {
+        opacity: 0;
+    }
+    49.99% {
+        opacity: 1;
+    }
+    66.66% {
+        opacity: 0;
+    }
+    83.32% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+
+

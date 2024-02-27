@@ -1,7 +1,6 @@
 import { ClassGame } from './classGame';
 import { useEffect } from 'react';
 import { useState, useRef } from 'react';
-// import socket from './socket';
 import React from 'react';
 import './game.css';
 import './button.css';
@@ -11,8 +10,6 @@ import { MatchmakingView } from './MatchmakingView';
 import { useAuth } from '../components/AuthProvider';
 import { MatchHistory } from './matchHistory';
 import { fetchUrl } from '../fetch';
-import { useNavigate, useLocation } from 'react-router-dom';
-// import { useError } from '../components/ErrorProvider';
 
 function StartGame({ gameInstance }) {
     const auth = useAuth();

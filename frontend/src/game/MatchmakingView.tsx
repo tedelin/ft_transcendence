@@ -1,5 +1,6 @@
 import React from 'react';
 import './game.css';
+import './matchmaking.css';
 
 export function MatchmakingView({ playerOne, playerTwo }) {
 
