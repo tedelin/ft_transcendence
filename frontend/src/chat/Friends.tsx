@@ -7,46 +7,47 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/chat.css';
 
 
-function AddFriend({ selected } : { selected: string }) {
+function AddFriend({ selected }: { selected: string }) {
 	const [username, setUsername] = useState('');
 	const [user, setUser] = useState<User | null>(null);
-	const {error, success} = useToast();
-	const token = localStorage.getItem('jwtToken');
+	const { error, success } = useToast();
 
 	async function getUser() {
 		try {
 			const response = await fetchUrl(`/users/username/${username}`, {
 				method: "GET",
 				headers: {
-					Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
 				},
 			});
 			setUser(response);
-            await sendRequest();
 		} catch (err: any) {
 			error(err.message);
 		}
 	}
 
 	async function sendRequest() {
-        try {
-			if (user) {
-				await fetchUrl(`/friends/${user.id}`, {
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-				success('Friend request sent');
-			}
+		try {
+			await fetchUrl(`/friends/${user?.id}`, {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+				},
+			});
+			success('Friend request sent');
 		} catch (err: any) {
 			error(err.message);
 		}
 	}
 
+	useEffect(() => {
+		if (user)
+			sendRequest();
+	}, [user]);
+
 	return ((selected === "AddFriend" &&
 		<div className='createChannelContainer'>
-			<input 
+			<input
 				value={username}
 				onChange={(e) => setUsername(e.target.value)}
 				type="text"
@@ -59,7 +60,7 @@ function AddFriend({ selected } : { selected: string }) {
 	));
 }
 
-function FriendsTopBar({ setSelected, selected } : { setSelected: Function, selected: string }) {
+function FriendsTopBar({ setSelected, selected }: { setSelected: Function, selected: string }) {
 	const options = ["Online", "All", "Pending", "Blocked"];
 
 	const handleOptionClick = (option: string) => {
@@ -91,7 +92,7 @@ function FriendsTopBar({ setSelected, selected } : { setSelected: Function, sele
 }
 
 
-function SearchFriends({ selected } : { selected: string }) {
+function SearchFriends({ selected }: { selected: string }) {
 	return (
 		(selected !== "AddFriend" && <>
 			<input type="text" placeholder="Search friends" />
@@ -99,10 +100,10 @@ function SearchFriends({ selected } : { selected: string }) {
 	);
 }
 
-function FriendsList({ selected } : { selected: string }) {
+function FriendsList({ selected }: { selected: string }) {
 	const [friends, setFriends] = useState<Friendship[] | []>([]);
 	const token = localStorage.getItem('jwtToken');
-	const {error, success} = useToast();
+	const { error, success } = useToast();
 	const navigate = useNavigate();
 	const auth = useAuth();
 
@@ -154,7 +155,7 @@ function FriendsList({ selected } : { selected: string }) {
 		} catch (err: any) {
 			error(err.message);
 		}
-	
+
 	}
 
 	async function getFriends() {
@@ -176,7 +177,7 @@ function FriendsList({ selected } : { selected: string }) {
 		getFriends();
 	}, [selected]);
 
-	const filteredFriends = friends.filter((friend : Friendship) => {
+	const filteredFriends = friends.filter((friend: Friendship) => {
 		if (selected === "Pending") {
 			return (
 				friend.status === "PENDING" &&
@@ -222,7 +223,7 @@ function FriendsList({ selected } : { selected: string }) {
 									>
 										Remove
 									</button>
-									<button 
+									<button
 										className='declineFriend'
 										onClick={() => blockFriend(friend)}
 									>
