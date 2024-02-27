@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { fetchUrl } from '../fetch';
-import { Channel } from './types/channel';
+import { Channel } from '../utils/types';
 import { useAuth } from '../components/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import { useError } from '../components/ErrorProvider';
+import { useToast } from '../utils/hooks/useToast';
 
-export function SearchChannel({ setChannels }) {
+export function SearchChannel({ setChannels } : { setChannels: Function }) {
 	const [input, setInput] = useState('');
 
 	async function fetchChannels(value: string) {
@@ -32,9 +32,9 @@ export function SearchChannel({ setChannels }) {
 }
 
 
-export function ChannelList({ channels, setChannels }) {
+export function ChannelList({ channels, setChannels } : { channels: Channel[], setChannels: Function }) {
 	const auth = useAuth();
-	const err = useError();
+	const {error} = useToast();
 	const navigate = useNavigate();
 
 	async function joinChannel(channel: Channel) {
@@ -51,23 +51,23 @@ export function ChannelList({ channels, setChannels }) {
 				}),
 			})
 			navigate(channel.name);
-		} catch (error: any) {
-			err.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
-	// function leaveChannel() {
-	// 	auth?.socket.emit('leave-channel', name);
-	// }
-
 	useEffect(() => {
-		auth?.socket?.on('new-channel', (channel) => {
-			const updatedChannels = [...channels, channel];
-			setChannels(updatedChannels);
+		auth?.socket?.on('new-channel', (channel : Channel) => {
+			setChannels([...channels, channel]);
+		});
+
+		auth?.socket?.on('delete-channel', (channel: string) => {
+			setChannels(channels.filter((c: Channel) => c.name !== channel));
 		});
 
 		return (() => {
 			auth?.socket?.off('new-channel');
+			auth?.socket?.off('delete-channel');
 		});
 	}, [channels]);
 

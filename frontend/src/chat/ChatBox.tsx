@@ -1,162 +1,64 @@
 import { useEffect, useState } from "react";
 import { MessageDisplay } from './MessageDisplay';
 import { useAuth } from "../components/AuthProvider";
-import { useParams } from "react-router-dom";
-import { useError } from "../components/ErrorProvider";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchUrl } from "../fetch";
+import { useToast } from "../utils/hooks/useToast";
+import { ChannelSettings } from "./ChannelSettings";
 import '../styles/chat.css';
 
-function Settings({enabled, channel}) {
-	const [channelUsers, setChannelUsers] = useState([]);
-	const token = localStorage.getItem('jwtToken');
-	const err = useError();
-
-	async function fetchChannelUsers() {
-		try {
-			const response = await fetchUrl(`/chat/channels/users/${channel}`, {
-				method: 'GET',
-			});
-			setChannelUsers(response);
-		} catch (error) {
-			err.setError(error.message);
-		}
-	}
-
-	async function banUser(userId: number, roomId: string) {
-		try {
-			await fetchUrl(`/moderation/ban/${roomId}/${userId}`, {
-				method: 'PATCH',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			})
-		} catch (error) {
-			err.setError(error.message)
-		}
-	}
-
-	async function kickUser(userId: number, roomId: string) {
-		try {
-			await fetchUrl(`/moderation/kick/${roomId}/${userId}`, {
-				method: 'DELETE',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			})
-		} catch (error) {
-			err.setError(error.message)
-		}
-	}
-
-	async function muteUser(userId: number, roomId: string) {
-		try {
-			await fetchUrl(`/moderation/mute/${roomId}/${userId}/10`, {
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-		} catch (error) {
-			err.setError(error.message)
-		}
-	}
-
-	async function promoteUser(userId: number, roomId: string) {
-		try {
-			await fetchUrl(`/moderation/promote/${roomId}/${userId}`, {
-				method: 'PATCH',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-		} catch (error) {
-			err.setError(error.message)
-		}
-	}
-
-	async function demoteUser(userId: number, roomId: string) {
-		try {
-			await fetchUrl(`/moderation/demote/${roomId}/${userId}`, {
-				method: 'PATCH',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-		} catch (error) {
-			err.setError(error.message)
-		}
-	}
-
-	useEffect(() => {
-		if (enabled)
-			fetchChannelUsers();
-	}, [enabled]);
-
-	return (
-		enabled && (
-			<div className="userList">
-				{channelUsers.map((channel) => (
-					<div key={channel.user.id} className="user">
-						{/* <img src={channel.user.avatar} alt="User Avatar"></img> */}
-						<span>{channel.user.username}</span>
-						<button 
-							className="declineFriend"
-							onClick={() => {kickUser(channel.user.id, channel.channelName)}}
-						>
-							Kick
-						</button>
-						<button 
-							className="declineFriend"
-							onClick={() => {banUser(channel.user.id, channel.channelName)}}
-						>
-							Ban
-						</button>
-						<button 
-							className="declineFriend"
-							onClick={() => {muteUser(channel.user.id, channel.channelName)}}
-						>
-							Mute
-						</button>
-						<button 
-							className="declineFriend"
-							onClick={() => {promoteUser(channel.user.id, channel.channelName)}}
-						>
-							Promote
-						</button>
-						<button 
-							className="declineFriend"
-							onClick={() => {demoteUser(channel.user.id, channel.channelName)}}
-						>
-							Demote
-						</button>
-					</div>
-				))}
-			</div>
-		)
-	)
-}
-
-function TopBar({channel}) {
+function TopBar({ channel }) {
+	const [moderation, setModeration] = useState(false);
 	const [settings, setSettings] = useState(false);
+	const { error } = useToast();
+	const navigate = useNavigate();
+
+	async function leaveChannel() {
+		try {
+			await fetchUrl("/chat/channels/leave", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+				},
+				body: JSON.stringify({
+					roomId: channel,
+				}),
+			});
+			navigate('/chat/channels');	
+		} catch (err: any) {
+			error(err.message);
+		}
+	}
 
 	return (
 		<div className="topBarChat">
-			<Settings key={channel.id} enabled={settings} channel={channel} />
-			<img className="smallAvatar" src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
-			<span onClick={() => {setSettings(!settings);}} className='spanMargin'>
-				{channel}
-			</span>
+			<ChannelSettings key={channel.id} enabled={settings} name={channel} setEnabled={setSettings} />
+			<div className="topChannel">
+				<img className="smallAvatar" src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
+				<span onClick={() => { setModeration(!moderation); }} className='spanMargin'>
+					{channel}
+				</span>
+			</div>
+			<div className="topSettings">
+				<span 
+					className="material-symbols-outlined"
+					onClick={leaveChannel}
+				>
+					logout
+				</span>
+				<span onClick={() => { setSettings(!settings); }} className='material-symbols-outlined' >settings</span>
+			</div>
 		</div>
 	);
 }
-
 
 export function ChatBox() {
 	const [message, setMessage] = useState('');
 	const [typing, setTyping] = useState('');
 	const { name } = useParams();
+	const { error } = useToast();
 	const auth = useAuth();
-	const err = useError();
 
 	function onTyping(e: any) {
 		auth?.socket?.emit("typing", { username: auth?.user?.username, roomId: name });
@@ -172,13 +74,13 @@ export function ChatBox() {
 				},
 				body: JSON.stringify({
 					channelId: name,
-					senderId: auth?.user?.id, 
-					content: message 
+					senderId: auth?.user?.id,
+					content: message
 				}),
 			});
 			setMessage('');
-		} catch (error: any) {
-			err.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
@@ -189,21 +91,25 @@ export function ChatBox() {
 			sendChannelMessage();
 		}
 	};
-
+	
 	useEffect(() => {
 		auth?.socket?.on("typing", (username: string) => {
 			if (username === auth?.user?.username)
-				return;
+			return;
 			setTyping(`${username} is typing ...`);
 			setTimeout(() => {
 				setTyping('');
 			}, 3000);
 		});
+	
+		return () => {
+			auth?.socket?.off("typing");
+		}
 	}, [])
 
 	return (
 		<>
-			<TopBar channel={name}/>
+			<TopBar channel={name} />
 			<MessageDisplay key={name} channel={name} />
 			<div className="typingIndicator">{typing}</div>
 			<div className='messageInput'>
@@ -213,20 +119,6 @@ export function ChatBox() {
 					placeholder={'Send message to ' + name}
 					onChange={onTyping}
 				/>
-				<button className='inviteBtn'>
-					<span className="material-symbols-outlined">
-						stadia_controller
-					</span>
-				</button>
-				<button
-					className='sendMessageBtn'
-					disabled={message.length === 0}
-					onClick={sendChannelMessage}
-				>
-					<span className="material-symbols-outlined">
-						send
-					</span>
-				</button>
 			</div>
 		</>
 	);

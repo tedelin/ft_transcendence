@@ -68,10 +68,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.server.emit('new-channel', channelDto);
 	}
 
+	@OnEvent('delete.channel') 
+	async onDeleteChannel(channelName: string) {
+		this.server.emit('delete-channel', channelName);
+	}
+
 	@SubscribeMessage('leave.channel')
 	async onChannelLeave(userId, roomId: string) {
 		const client = this.getClientByUserId(userId);
 		client.leave(roomId);
+		this.server.to(client).emit('leave-channel', roomId);
 	}
 
 

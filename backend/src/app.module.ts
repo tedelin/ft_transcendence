@@ -29,4 +29,3 @@ import { PrivateMessageModule } from './privateMessage/privateMessage.module';
   ],
 })
 export class AppModule {}
-

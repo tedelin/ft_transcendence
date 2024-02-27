@@ -1,12 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { fetchUrl } from '../fetch';
 import { useAuth } from "../components/AuthProvider";
+import { ChannelMessage } from '../utils/types';
+import { Moderation } from './Moderation';
 import '../styles/chat.css';
+import { getAvatar } from '../utils/utils';
 
-export function MessageDisplay({channel}) {
-	const [receivedMessages, setReceivedMessages] = useState([]);
-	const messageContainer = useRef(null);
-	const auth = useAuth();
+export function MessageDisplay({ channel }: { channel: string }) {
+    const [receivedMessages, setReceivedMessages] = useState<ChannelMessage[]>([]);
+    const [contextMenuUser, setContextMenuUser] = useState<number | null>(null);
+    const messageContainer = useRef<HTMLDivElement>(null);
+    const auth = useAuth();
 
 	async function fetchChannelsMessages() {
 		try {
@@ -23,15 +27,23 @@ export function MessageDisplay({channel}) {
 		}
 	};
 
+    function handleContextMenu(userId: number, event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        event.preventDefault();
+        setContextMenuUser(userId);
+    }
+
+    function closeContextMenu() {
+        setContextMenuUser(null);
+    }
 
 	function scrollToBottom() {
 		if (messageContainer.current) {
-			messageContainer.current.scrollTop = messageContainer.current.scrollHeight + 1000;
+			(messageContainer.current as HTMLElement).scrollTop = (messageContainer.current as HTMLElement).scrollHeight + 1000;
 		}
 	}
 
-	useEffect(() => {
-		auth?.socket?.on('channel-message', (message) => {
+    useEffect(() => {
+		auth?.socket?.on('channel-message', (message: ChannelMessage) => {
 			if (message.channelId !== channel) {
 				return ;
 			}
@@ -51,20 +63,33 @@ export function MessageDisplay({channel}) {
 		scrollToBottom();
 	}, [receivedMessages]);
 
-	return (
-		<div ref={messageContainer} className='messageContainer'>
+    return (
+        <div ref={messageContainer} className='messageContainer'>
             {receivedMessages.map((msg) => (
-               <div className={msg.senderId === auth?.user?.id ? 'bubble-right' : 'bubble-left'} key={msg.id}>
-                   <div className="sender">
-              			<img src={msg.sender?.avatar} alt="User Avatar"></img>
-						<div className="senderName">
+                <div
+                    key={msg.id}
+                    className={msg.sender.id === auth?.user?.id ? 'bubble-right' : 'bubble-left'}
+					>
+                    <div className="sender"
+						onContextMenu={(e) => handleContextMenu(msg.sender.id, e)}
+					>
+                        <img src={getAvatar(msg.sender.avatar)} alt="User Avatar"></img>
+                        <div className="senderName">
                             {msg.sender?.username}
-				        </div>
+                        </div>
                     </div>
-                   <div className="message">{msg.content}</div>
-				   <div className="timestamp">{new Date(msg.timestamp).toLocaleString()}</div>
-           </div>
+                    <div className="message">{msg.content}</div>
+                    <div className="timestamp">{new Date(msg.timestamp).toLocaleString()}</div>
+                </div>
             ))}
-		</div>
-	);
+            {contextMenuUser !== null && (
+                <Moderation
+                    enabled={true}
+					channel={channel}
+                    userId={contextMenuUser}
+                    setEnabled={closeContextMenu}
+                />
+            )}
+        </div>
+    );
 }

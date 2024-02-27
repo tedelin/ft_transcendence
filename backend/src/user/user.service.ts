@@ -1,5 +1,5 @@
-import { DatabaseService } from "src/database/database.service";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { DatabaseService } from 'src/database/database.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class UserService {
@@ -9,13 +9,13 @@ export class UserService {
 		return await this.databaseService.user.findMany();
 	}
 
-	async getUserById(id: number) {
-		return await this.databaseService.user.findUnique({
-			where: {
-				id,
-			},
-		});
-	}
+    async getUserById(id: number) {
+        return await this.databaseService.user.findUnique({
+            where: {
+                id,
+            },
+        });
+    }
 
 	async getUserChannels(id: number) {
 		return await this.databaseService.user.findUnique({

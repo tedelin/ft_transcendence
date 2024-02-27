@@ -9,12 +9,14 @@ datasource db {
 
 model User {
   id                   Int              @id @default(autoincrement())
+  id42				   Int?          	@unique
   username             String           @unique
   password             String
-  avatar               String           @default("https://www.w3schools.com/howto/img_avatar.png")
+  avatar               String           @default("default-avatar.jpg")
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
   useTwoFA             Boolean          @default(false)
+  secretTwoFA          String?
   ChannelMessage       ChannelMessage[]
   channels             ChannelUser[]
   friendshipsInitiated Friendship[]     @relation("Initiator")
@@ -148,8 +150,8 @@ enum gameStatus {
 }
 
 enum FriendshipStatus {
-  PENDING
   ACCEPTED
+  PENDING
   BLOCKED
 }
 
@@ -160,9 +162,9 @@ enum Visibility {
 }
 
 enum Role {
-	OWNER
-	ADMIN
 	MEMBER
-	MUTED
 	BANNED
+	MUTED
+	ADMIN
+	OWNER
 }

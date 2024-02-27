@@ -15,9 +15,9 @@ export class ChannelService {
 		private readonly friendService: FriendService,
 		private eventEmitter: EventEmitter2,
 		private readonly moderationService: ModerationService,
-	) {}
+	) { }
 
-    async create(userId, createChannelDto: CreateChannelDto) {
+	async create(userId, createChannelDto: CreateChannelDto) {
 		const exist = await this.findByName(createChannelDto.name);
 		if (exist) throw new ConflictException('Channel name already exists');
 		if (createChannelDto.password) {
@@ -37,7 +37,7 @@ export class ChannelService {
 		});
 		this.eventEmitter.emit("join.channel", userId, createChannelDto.name);
 		return channel;
-    }
+	}
 
 	async joinChannel(userId: number, joinChannelDto: JoinChannelDto) {
 		const channel = await this.findByName(joinChannelDto.roomId);
@@ -62,6 +62,42 @@ export class ChannelService {
 				userId: userId,
 				channelName: joinChannelDto.roomId,
 				role: Role.MEMBER,
+			}
+		})
+	}
+
+	async leaveChannel(userId: number, joinChannelDto: JoinChannelDto) {
+		const channel = await this.findByName(joinChannelDto.roomId);
+		if (!channel) throw new NotFoundException("Channel doesn't exist");
+		const user = await this.databaseService.channelUser.findUnique({
+			where: {
+				channelName_userId: {
+					channelName: joinChannelDto.roomId,
+					userId: userId,
+				},
+			}
+		})
+		if (!user) throw new NotFoundException("You are not in this channel");
+		this.eventEmitter.emit('leave.channel', userId, joinChannelDto.roomId);
+		if (user.role === Role.OWNER) {
+			const newOwner = await this.databaseService.channelUser.findFirst({
+				where: {
+					channelName: joinChannelDto.roomId,
+					role: Role.MEMBER || Role.ADMIN,
+				},
+				select: {
+					userId: true,
+				}
+			});
+			if (!newOwner) return this.remove(joinChannelDto.roomId);
+			else this.moderationService.setOwnership(newOwner.userId, joinChannelDto.roomId);
+		}
+		return await this.databaseService.channelUser.delete({
+			where: {
+				channelName_userId: {
+					channelName: joinChannelDto.roomId,
+					userId: userId,
+				}
 			}
 		})
 	}
@@ -105,22 +141,35 @@ export class ChannelService {
 		});
 	}
 
-    async update(name: string, updateChannelDto: Prisma.ChannelUpdateInput) {
-        return await this.databaseService.channel.update({
-            where: {
-                name,
-            },
-            data: updateChannelDto,
-        })
-    }
+	async update(name: string, updateChannelDto: Prisma.ChannelUpdateInput) {
+		console.log(updateChannelDto);
+		if (updateChannelDto.password) {
+			console.log('hashing password');
+			const password = updateChannelDto.password as string;
+			const hash = await argon.hash(password);
+			updateChannelDto.password = hash;
+		}
+		return await this.databaseService.channel.update({
+			where: {
+				name,
+			},
+			data: updateChannelDto,
+		})
+	}
 
-    async remove(name: string) {
-        return await this.databaseService.channel.delete({
-            where: {
-                name,
-            }
-        })
-    }
+	async remove(name: string) {
+		await this.databaseService.channelUser.deleteMany({
+			where: {
+				channelName: name,
+			}
+		});
+		this.eventEmitter.emit('delete.channel', name);
+		return await this.databaseService.channel.delete({
+			where: {
+				name,
+			}
+		})
+	}
 
 	async createMessage(channelMessage: ChannelMessageDto) {
 		const userMuted = await this.moderationService.getRole(channelMessage.senderId, channelMessage.channelId);
@@ -130,6 +179,7 @@ export class ChannelService {
 			include: {
 				sender: {
 					select: {
+						id: true,
 						username: true,
 						avatar: true,
 					}
@@ -152,6 +202,7 @@ export class ChannelService {
 			include: {
 				sender: {
 					select: {
+						id: true,
 						username: true,
 						avatar: true,
 					}

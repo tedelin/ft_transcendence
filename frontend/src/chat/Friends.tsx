@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { fetchUrl } from '../fetch';
 import { useAuth } from '../components/AuthProvider';
-import { useError } from '../components/ErrorProvider';
+import { useToast } from '../utils/hooks/useToast';
 import '../styles/chat.css';
+import { Friendship, User } from '../utils/types';
 
 
-function AddFriend({ selected }) {
+function AddFriend({ selected } : { selected: string }) {
 	const [username, setUsername] = useState('');
-	const [user, setUser] = useState(null);
-	const er = useError();
+	const [user, setUser] = useState<User | null>(null);
+	const {error, success} = useToast();
 	const token = localStorage.getItem('jwtToken');
 
 	async function getUser() {
@@ -21,8 +22,8 @@ function AddFriend({ selected }) {
 			});
 			setUser(response);
             await sendRequest();
-		} catch (error: any) {
-			er.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
@@ -35,9 +36,10 @@ function AddFriend({ selected }) {
 						Authorization: `Bearer ${token}`,
 					},
 				});
+				success('Friend request sent');
 			}
-		} catch (error: any) {
-			er.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
@@ -46,7 +48,6 @@ function AddFriend({ selected }) {
 			<input 
 				value={username}
 				onChange={(e) => setUsername(e.target.value)}
-				className="searchBar" 
 				type="text"
 				placeholder="You can add friends by typing their username"
 			/>
@@ -57,7 +58,7 @@ function AddFriend({ selected }) {
 	));
 }
 
-function FriendsTopBar({ setSelected, selected }) {
+function FriendsTopBar({ setSelected, selected } : { setSelected: Function, selected: string }) {
 	const options = ["Online", "All", "Pending", "Blocked"];
 
 	const handleOptionClick = (option: string) => {
@@ -89,21 +90,21 @@ function FriendsTopBar({ setSelected, selected }) {
 }
 
 
-function SearchFriends({ selected }) {
+function SearchFriends({ selected } : { selected: string }) {
 	return (
 		(selected !== "AddFriend" && <>
-			<input className="searchBar" type="text" placeholder="Search friends" />
+			<input type="text" placeholder="Search friends" />
 		</>)
 	);
 }
 
-function FriendsList({ selected }) {
-	const [friends, setFriends] = useState([]);
+function FriendsList({ selected } : { selected: string }) {
+	const [friends, setFriends] = useState<Friendship[] | []>([]);
 	const token = localStorage.getItem('jwtToken');
-	const er = useError();
+	const {error, success} = useToast();
 	const auth = useAuth();
 
-	async function acceptFriendRequest(requestId: string) {
+	async function acceptFriendRequest(requestId: number) {
 		try {
 			await fetchUrl(`/friends/accept/${requestId}`, {
 				method: "POST",
@@ -114,13 +115,13 @@ function FriendsList({ selected }) {
 			setFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== requestId)
 			);
-		} catch (error: any) {
-			er.setError(error.message);
-			alert(error);
+			success('Friend request accepted');
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
-	async function deleteFriend(requestId: string) {
+	async function deleteFriend(requestId: number) {
 		try {
 			await fetchUrl(`/friends/delete/${requestId}`, {
 				method: "DELETE",
@@ -131,12 +132,12 @@ function FriendsList({ selected }) {
 			setFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== requestId)
 			);
-		} catch (error) {
-			er.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
-	async function blockFriend(friendRequest: any) {
+	async function blockFriend(friendRequest: Friendship) {
 		const userId = auth?.user?.id === friendRequest.initiatorId ? friendRequest.receiverId : friendRequest.initiatorId;
 		try {
 			await fetchUrl(`/friends/block/${userId}`, {
@@ -148,8 +149,8 @@ function FriendsList({ selected }) {
 			setFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== friendRequest.id)
 			);
-		} catch (error) {
-			er.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	
 	}
@@ -164,8 +165,8 @@ function FriendsList({ selected }) {
 				},
 			});
 			setFriends(response);
-		} catch (error) {
-			er.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
@@ -173,7 +174,7 @@ function FriendsList({ selected }) {
 		getFriends();
 	}, [selected]);
 
-	const filteredFriends = friends.filter((friend) => {
+	const filteredFriends = friends.filter((friend : Friendship) => {
 		if (selected === "Pending") {
 			return (
 				friend.status === "PENDING" &&
@@ -184,7 +185,7 @@ function FriendsList({ selected }) {
 		} else if (selected === "Blocked") {
 			return (friend.status === "BLOCKED" && friend.initiatorId == auth?.user?.id);
 		} else {
-			return friend.status === "Accepted";
+			return friend.status === "ACCEPTED";
 		}
 	});
 
@@ -195,9 +196,6 @@ function FriendsList({ selected }) {
 					filteredFriends.map((friend: any) => (
 						<div className='friendListItem' key={friend.id}>
 							<span className='sideBarChatName'>{friend.initiatorId == auth?.user?.id ? friend.receiver.username : friend.initiator.username}</span>
-							{/* <div className='friendStatus'>
-								{friend.status}
-							</div> */}
 							{friend.status === "PENDING" && (
 								<div className='friendActions'>
 									<button

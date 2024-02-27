@@ -1,1 +1,1 @@
-export { AuthDto } from './auth.dto.js';
+export { AuthDto, twoFaDto, totpDto, TokenTotpDto } from './auth.dto.js';

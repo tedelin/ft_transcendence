@@ -12,7 +12,7 @@ import { Roles } from 'src/moderation/decorators/roles.decorator';
 export class ChatController {
 	constructor(
 		private readonly channelService: ChannelService
-	) {}
+	) { }
 
 	@Get('channels')
 	getPublicChannels() {
@@ -24,17 +24,19 @@ export class ChatController {
 	create(@UserRequest() user: User, @Body() createChannelDto: Prisma.ChannelCreateInput) {
 		return this.channelService.create(user.id, createChannelDto);
 	}
-	
+
 	@Get('channels/:name')
 	getChannel(@Param('name') name: string) {
 		return this.channelService.findByName(name);
 	}
-	
+
+	@UseGuards(JwtGuard, RolesGuard)
+	@Roles(['OWNER'])
 	@Patch('channels/:name')
 	update(@Param('name') name: string, @Body() updateChannelDto: Prisma.ChannelUpdateInput) {
 		return this.channelService.update(name, updateChannelDto);
 	}
-	
+
 	@Delete('channels/:name')
 	remove(@Param('name') name: string) {
 		return this.channelService.remove(name);
@@ -44,6 +46,12 @@ export class ChatController {
 	@Post('channels/join')
 	joinChannel(@UserRequest() user: User, @Body() joinChannelDto: JoinChannelDto) {
 		return this.channelService.joinChannel(user.id, joinChannelDto);
+	}
+
+	@UseGuards(JwtGuard)
+	@Post('channels/leave')
+	leaveChannel(@UserRequest() user: User, @Body() joinChannelDto: JoinChannelDto) {
+		return this.channelService.leaveChannel(user.id, joinChannelDto);
 	}
 
 	@Post('channels/message')

@@ -1,10 +1,22 @@
-import { Controller, Get, Param, ParseIntPipe, Req, UseGuards, Post, UploadedFile, UseInterceptors, Res, NotFoundException, StreamableFile} from '@nestjs/common';
-import { Request} from 'express';
+import {
+    Controller,
+    Get,
+    Param,
+    ParseIntPipe,
+    Req,
+    UseGuards,
+    Post,
+    UploadedFile,
+    UseInterceptors,
+    NotFoundException,
+    StreamableFile,
+} from '@nestjs/common';
+import { Request } from 'express';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { UserService } from './user.service';
-import { FileInterceptor } from '@nestjs/platform-express'
+import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname, join} from 'path'
+import { extname, join } from 'path';
 import { createReadStream, existsSync } from 'fs';
 
 @Controller('users')
@@ -23,20 +35,20 @@ export class UserController {
     getMe(@Req() req: Request) {
         return req.user;
     }
-	
-	@Get('username/:username')
-	getUserByName(@Param('username') username: string) {
-		return this.userService.getUserByUsername(username);
-	}
 
-	@Get('id/:id')
-	findOne(@Param('id', ParseIntPipe) id: number) {
-		return this.userService.getUserById(id)
-	}
+    @Get('username/:username')
+    getUserByName(@Param('username') username: string) {
+        return this.userService.getUserByUsername(username);
+    }
+
+    @Get('id/:id')
+    findOne(@Param('id', ParseIntPipe) id: number) {
+        return this.userService.getUserById(id);
+    }
 
     @Get(':id/channels')
     findUserChannels(@Param('id', ParseIntPipe) id: number) {
-        return this.userService.getUserChannels(id)
+        return this.userService.getUserChannels(id);
     }
 
 	@Post('upload-avatar')
@@ -59,7 +71,7 @@ export class UserController {
 	@UseGuards(JwtGuard)
 	async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Req() req) {
 	  const userId = req.user.id;
-	  const avatarUrl = `/uploads/avatars/${file.filename}`;
+	  const avatarUrl = `${file.filename}`;
   
 	  await this.userService.saveAvatarPath(avatarUrl, userId);
   
@@ -72,7 +84,6 @@ export class UserController {
 	  if (!existsSync(path)) {
 		throw new NotFoundException('Image not found.');
 	  }
-  
 	  const file = createReadStream(path);
 	  return new StreamableFile(file);
 	}

@@ -11,7 +11,6 @@ export function NavBar() {
 	const fileName = filePath?.split('/').pop();
 	const avatarUrl = API_BASE_URL + "/users/avatars/" + fileName;
 
-	console.log()
     function logout() {
         auth?.signout();
     }
@@ -21,16 +20,18 @@ export function NavBar() {
 		<>
 			<div className="navBar">
 				<div className="navItems">
-					<NavLink className="navBarItem" to="/">Home</NavLink>
-					<NavLink className="navBarItem" to="/chat">Chat</NavLink>
-					<NavLink className="navBarItem" to="/game">Game</NavLink>
-					<NavLink className="navBarItem" to="/login">Login</NavLink>
+					<NavLink className="material-symbols-outlined" to="/">home</NavLink>
+					<NavLink className="material-symbols-outlined" to="/chat/friends">group</NavLink>
+					<NavLink className="material-symbols-outlined" to="/chat/channels">forum</NavLink>
+					<NavLink className="material-symbols-outlined" to="/game">sports_volleyball</NavLink>
+					{/* <NavLink className="material-symbols-outlined" to="/login">Login</NavLink> */}
 				</div>
-				{auth?.user?.username && <div className="navUser">
-					<img src={avatarUrl} alt="User Avatar" />
-					<NavLink className="navBarItem" to="/Settings">{auth ? auth.user.username : "undefined"}</NavLink>
-					<button onClick={logout}>Logout</button>
-				</div>}
+				<div className="navUser">
+					<NavLink className="material-symbols-outlined" to="/Settings">settings</NavLink>
+					<span onClick={logout} className="material-symbols-outlined">
+						logout
+					</span>
+				</div>
 			</div>
 		</>
     )

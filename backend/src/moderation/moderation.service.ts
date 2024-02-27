@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DatabaseService } from "src/database/database.service";
 import { Role } from '@prisma/client';
@@ -9,7 +9,7 @@ export class ModerationService {
 	constructor(
 		private readonly databaseService: DatabaseService,
 		private eventEmitter: EventEmitter2,
-	) {}
+	) { }
 
 	async banUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
@@ -25,7 +25,7 @@ export class ModerationService {
 				role: Role.BANNED,
 			}
 		});
-		this.eventEmitter.emit("ban.user", {userId, roomId});
+		this.eventEmitter.emit("ban.user", { userId, roomId });
 		return banUser;
 	}
 
@@ -40,7 +40,7 @@ export class ModerationService {
 				}
 			}
 		});
-		this.eventEmitter.emit("kick.user", {userId, roomId});
+		this.eventEmitter.emit("kick.user", { userId, roomId });
 		return kickUser;
 	}
 
@@ -92,6 +92,9 @@ export class ModerationService {
 	}
 
 	async muteUser(userId: number, roomId: string, duration: number) {
+		const userRole = await this.getRole(userId, roomId);
+		console.log(userRole);
+		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot mute the owner');
 		const muted = await this.databaseService.channelUser.update({
 			where: {
 				channelName_userId: {
@@ -123,6 +126,20 @@ export class ModerationService {
 		});
 	}
 
+	async setOwnership(userId: number, roomId: string) {
+		return await this.databaseService.channelUser.update({
+			where: {
+				channelName_userId: {
+					channelName: roomId,
+					userId: userId,
+				},
+			},
+			data: {
+				role: Role.OWNER,
+			}
+		});
+	}
+
 	async getRole(userId: number, roomId: string) {
 		const channel = await this.databaseService.channelUser.findUnique({
 			where: {
@@ -132,6 +149,7 @@ export class ModerationService {
 				},
 			}
 		})
+		if (!channel) throw new NotFoundException('User is not in the channel');
 		return (channel.role);
 	}
 }

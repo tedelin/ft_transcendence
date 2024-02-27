@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
 import { fetchUrl } from '../fetch';
-import { useAuth } from '../components/AuthProvider';
-import { useError } from '../components/ErrorProvider';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../utils/hooks/useToast';
 import '../styles/chat.css';
 
 export function ChannelActions() {
-	const auth = useAuth();
 	const [channelName, setChannelName] = useState('');
 	const [channelPassword, setChannelPassword] = useState('');
 	const [channelVisibility, setChannelVisibility] = useState('PUBLIC');
 	const navigate = useNavigate();
-	const err = useError();
+	const { error, success } = useToast();
 
 	async function create() {
 		if (channelName.length < 2 || channelName.length > 13) {
-			err.setError('Channel name must be between 2 and 13 characters');
+			error('Channel name must be between 2 and 13 characters');
 			return;
 		}
 		try {
@@ -33,10 +31,9 @@ export function ChannelActions() {
 				}),
 			});
 			navigate(channelName);
-			// setChannelName('');
-			// setChannelPassword('');
-		} catch (error: any) {
-			err.setError(error.message);
+			success('Channel created');
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
@@ -46,15 +43,16 @@ export function ChannelActions() {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
 				},
-				body: JSON.stringify({ 
-					roomId: channelName, 
-					password: channelPassword, 
+				body: JSON.stringify({
+					roomId: channelName,
+					password: channelPassword,
 				}),
 			})
 			navigate(channelName);
-		} catch (error: any) {
-			err.setError(error.message);
+		} catch (err: any) {
+			error(err.message);
 		}
 	}
 
@@ -65,12 +63,14 @@ export function ChannelActions() {
 	return (
 		<div className='createChannelContainer'>
 			<input
+			className='input'
 				type="text"
 				placeholder="Enter Channel Name"
 				value={channelName}
 				onChange={(e) => setChannelName(e.target.value)}
 			/>
-			{channelVisibility === "protected" && <input
+			{channelVisibility === "PROTECTED" && 
+			<input
 				type="password"
 				placeholder="Enter Channel Password"
 				value={channelPassword}
