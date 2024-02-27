@@ -1,13 +1,25 @@
 .matchmaking {
     position:relative;
-    /* background-color: blue; */
 }
 
+.matchmaking-container {
+    position:absolute;
+    width:100%;
+    height:50vh;
+    top:40%;
+    left:0;
+    z-index:1000;
+    display:flex;
+    flex-direction: column;
+    justify-content:flex-start;
+    align-items: center;
+}
 
 .mmConteneur {
+    position:relative;
     height: 100vh;
     display:grid;
-    grid-template-columns: 49.9% 0.05% 49.9%;
+    grid-template-columns: 49.925% 0.15% 49.925%;
     grid-template-rows: 100%;
 }
 
@@ -83,57 +95,24 @@
     z-index: 3;
 }
 
-.matchmaking-container {
-    position:absolute;
-    background-color: aqua;
-}
-
-.matchmaking-animation {
-    background-color: aqua;
-    width: 50px;
-    height: 50px;
-    border: 8px solid #748896;
-    border-radius: 50%;
-    border-top: 8px solid transparent;
-    animation: matchmaking-spin 1s linear infinite;
-    z-index:10000;
-}
-
-.matchmaking-text {
-    background-color: aqua;
-    color: black;
-    margin-top: 10px;
-    font-weight: bold;
-    z-index:10000;
-}
-
-@keyframes matchmaking-spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
 
 .letsgo {
-    background-color: aqua;
+    color: white;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: rgba(0, 0, 0, 0.774);
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-weight: bold;
-    font-size: 75px;
+    font-size: 150px;
     animation: fadeIn 4.8s ease-out;
     z-index:10000;
 }
 
-.matchmaking-container {
-    background-color: aqua;
-    z-index:10000;
-}
-
 .countDown {
-    background-color: aqua;
-    color: black;
-    font-size: 60px;
+    color: white;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: rgba(0, 0, 0, 0.774);
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 150px;
     animation: countDownAnimation 4.5s linear forwards;
     z-index: 10000;
 }

@@ -261,20 +261,6 @@ export function Game() {
                         auth?.socket?.emit('crossMatchmaking');
                         }}>&#10006;</div>}
                     <MatchmakingView playerOne={playerOne} playerTwo={playerTwo} />
-                    <div className="matchmaking-container">
-                            <div className="matchmaking-animation"></div>
-                            <div className="matchmaking-text">
-                                {firstPlayer ? 'yoyoyo' : 'Waiting for the other player to set the game...'}
-                            </div>
-                    </div>
-                    {/* {!letsGO && (
-                        <div className="matchmaking-container">
-                            <div className="matchmaking-animation"></div>
-                            <div className="matchmaking-text">
-                                {firstPlayer ? 'yoyoyo' : 'Waiting for the other player to set the game...'}
-                            </div>
-                        </div>
-                    )} */}
                     {letsGO && (
                         <div className="matchmaking-container">
                             <span className="letsgo">Let's GO !</span>
