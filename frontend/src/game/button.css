@@ -27,6 +27,7 @@
 }
 
 .boxxx {
+    margin:auto;
     margin-top:10vh;
     position:relative;
     width: 200px;
@@ -74,9 +75,9 @@
     color: white;
     background-color: #0046af;
     border-radius: 50%;
-    display: flex; /* Ajouter pour centrer le contenu */
-    justify-content: center; /* Ajouter pour centrer le contenu */
-    align-items: center; /* Ajouter pour centrer le contenu */
+    display: flex;  
+    justify-content: center; 
+    align-items: center; 
     animation: Change_color 3s infinite;
     z-index:3;
 }

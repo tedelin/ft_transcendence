@@ -1,6 +1,7 @@
 import React from 'react';
 import './game.css';
 import './matchmaking.css';
+import projectLogo from './logo.png';
 
 export function MatchmakingView({ playerOne, playerTwo }) {
 
@@ -10,7 +11,7 @@ export function MatchmakingView({ playerOne, playerTwo }) {
 
         const photoUrl = player ? playerPhotoUrl : defaultPhotoUrl;
         const playerName = player ? player.id : 'Waiting for player...';
-        const playerClass = player ? (isPlayerOne ? 'playerBlue' : 'playerRed') : 'player';
+        // const playerClass = player ? (isPlayerOne ? 'playerBlue' : 'playerRed') : 'player';
 
         return (
             <div className="playerInfo">
@@ -25,21 +26,18 @@ export function MatchmakingView({ playerOne, playerTwo }) {
 
 
     return (
-        <>
+        <div className="mmConteneur">
             <div className="leftPlayer">
                 {renderPlayer(playerOne, true)}
+            </div>
+            <div className="vertical-stuff">
+                <div className="line high"></div>
+                <img src={projectLogo} alt="Logo" className="logo" />
+                <div className="line low"></div>
             </div>
             <div className="rightPlayer">
                 {renderPlayer(playerTwo, false)}
             </div>
-        </>
-        // <div className="MatchmakingView">
-        //     <div className='playerOne'>
-        //         {renderPlayer(playerOne, true)}
-        //     </div>
-        //     <div className='playerTwo'>
-        //         {renderPlayer(playerTwo, false)}
-        //     </div>
-        // </div>
+        </div>
     );
 }

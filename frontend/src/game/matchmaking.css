@@ -1,41 +1,47 @@
 
-.logo {
-    position: absolute;
-    left: 49.86%;
-    right: 43.47%;
-    top: 45.02%;
-    bottom: 45.61%;
-
-    background: #000000;
+.mmConteneur {
+    display:flex;
+    flex-direction:row;
+    justify-content: space-around;
 }
 
-.matchmaking-container {
-    color: white;
-    position: relative;
-    text-align: center;
+.vertical-stuff {
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    margin-top: 50px;
+    align-items: center;
+    height: 100vh;
 }
 
-.matchmaking-animation {
+.line {
+    height: 100%;
+    width: 2px;
+    background-color: black; 
+}
+
+
+.logo {
+    width:48px;
+    height: 48px;
+}
+
+
+/* .matchmaking-animation {
     width: 50px;
     height: 50px;
     border: 8px solid #748896;
     border-radius: 50%;
     border-top: 8px solid transparent;
     animation: matchmaking-spin 1s linear infinite;
-}
+} */
 
-.matchmaking-text {
-    color: #fff;
+/* .matchmaking-text {
+    color: black;
     margin-top: 10px;
     font-weight: bold;
-}
+} */
 
-@keyframes matchmaking-spin {
+/* @keyframes matchmaking-spin {
     0% {
         transform: rotate(0deg);
     }
@@ -43,29 +49,21 @@
     100% {
         transform: rotate(360deg);
     }
-}
+} */
 
 .leftPlayer img,
 .rightPlayer img{
-    padding: 15px;
-    width: 250px;
-    height: 250px;
+    padding: 10px;
+    width: 300px;
+    height: 300px;
+    border: 2px solid black;
     border-radius: 50%;
 }
 
 .leftPlayer span, 
 .rightPlayer span{
     text-align: center;
-    font-weight: bold;
-
-}
-
-.playerInfo {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color : white;
+    font-size:1.5rem;
 }
 
 .leftPlayer,
@@ -73,26 +71,20 @@
 {
     display: flex;
     flex-direction: column;
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgb(54, 54, 54);
-    border-radius: 10px;
-    /* box-shadow: 5px 10px 2px rgba(64, 91, 209, 0.589); */
+    justify-content: center;
+    align-items: center;
+    top: 32%;
 }
 
-.rightPlayer
-{
-    right: 12%;
+.playerInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color : black;
+    gap:20px;
 }
 
-.leftPlayer
-{
-    left: 12%;
-}
-
-
-.letsgo {
+/* .letsgo {
     font-weight: bold;
     font-size: 75px;
     animation: fadeIn 4.8s ease-out;
@@ -137,7 +129,7 @@
     100% {
         opacity: 0;
     }
-}
+} */
 
 
 

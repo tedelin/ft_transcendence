@@ -2,6 +2,8 @@
     display: flex;
 	margin-top: 50px;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     background-color:white;
     border-radius: 6px;
     padding: 10px;
@@ -36,8 +38,8 @@
     padding-top: 5px;
     padding-bottom: 5px;
     border-bottom: 1px solid rgb(202, 196, 196);
-    align-items: center; /* Centrer le contenu verticalement */
-    justify-items: center; /* Centrer le contenu horizontalement */
+    align-items: center;
+    justify-items: center;
 }
 
 .match-item:first-child {
