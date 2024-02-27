@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import React from 'react';
 import './game.css';
 import './button.css';
+import './matchmaking.css'
 import { SettingsMenu } from './settingsMenu';
 import { EndGameMenu } from './endGameMenu';
 import { MatchmakingView } from './MatchmakingView';
@@ -259,18 +260,21 @@ export function Game() {
                     {!letsGO && <div className='CrossIcon' onClick={() => {
                         auth?.socket?.emit('crossMatchmaking');
                         }}>&#10006;</div>}
-                    <MatchmakingView
-                        playerOne={playerOne}
-                        playerTwo={playerTwo}
-                    />
-                    {!letsGO && (
+                    <MatchmakingView playerOne={playerOne} playerTwo={playerTwo} />
+                    <div className="matchmaking-container">
+                            <div className="matchmaking-animation"></div>
+                            <div className="matchmaking-text">
+                                {firstPlayer ? 'yoyoyo' : 'Waiting for the other player to set the game...'}
+                            </div>
+                    </div>
+                    {/* {!letsGO && (
                         <div className="matchmaking-container">
                             <div className="matchmaking-animation"></div>
                             <div className="matchmaking-text">
-                                {firstPlayer ? '' : 'Waiting for the other player to set the game...'}
+                                {firstPlayer ? 'yoyoyo' : 'Waiting for the other player to set the game...'}
                             </div>
                         </div>
-                    )}
+                    )} */}
                     {letsGO && (
                         <div className="matchmaking-container">
                             <span className="letsgo">Let's GO !</span>

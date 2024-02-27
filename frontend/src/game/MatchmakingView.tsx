@@ -19,7 +19,11 @@ export function MatchmakingView({ playerOne, playerTwo }) {
         }
         return (
             <div className="playerInfo">
-                <span className="suspension">. . .</span>
+                <div class="loader">
+                    <span class="loader__element"></span>
+                    <span class="loader__element"></span>
+                    <span class="loader__element"></span>
+                </div>
             </div>
         );
     };

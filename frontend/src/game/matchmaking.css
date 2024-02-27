@@ -1,3 +1,8 @@
+.matchmaking {
+    position:relative;
+    /* background-color: blue; */
+}
+
 
 .mmConteneur {
     height: 100vh;
@@ -30,32 +35,6 @@
     z-index:3;
     background-color: white;
     border-radius: 50%;
-}
-
-
-.matchmaking-animation {
-    width: 50px;
-    height: 50px;
-    border: 8px solid #748896;
-    border-radius: 50%;
-    border-top: 8px solid transparent;
-    animation: matchmaking-spin 1s linear infinite;
-}
-
-.matchmaking-text {
-    color: black;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-@keyframes matchmaking-spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
 }
 
 .leftPlayer img,
@@ -104,23 +83,59 @@
     z-index: 3;
 }
 
-.suspension {
-    font-size:xx-large;
+.matchmaking-container {
+    position:absolute;
+    background-color: aqua;
+}
+
+.matchmaking-animation {
+    background-color: aqua;
+    width: 50px;
+    height: 50px;
+    border: 8px solid #748896;
+    border-radius: 50%;
+    border-top: 8px solid transparent;
+    animation: matchmaking-spin 1s linear infinite;
+    z-index:10000;
+}
+
+.matchmaking-text {
+    background-color: aqua;
+    color: black;
+    margin-top: 10px;
     font-weight: bold;
+    z-index:10000;
+}
+
+@keyframes matchmaking-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .letsgo {
+    background-color: aqua;
     font-weight: bold;
     font-size: 75px;
     animation: fadeIn 4.8s ease-out;
-    z-index:5;
+    z-index:10000;
+}
+
+.matchmaking-container {
+    background-color: aqua;
+    z-index:10000;
 }
 
 .countDown {
+    background-color: aqua;
     color: black;
     font-size: 60px;
     animation: countDownAnimation 4.5s linear forwards;
-    z-index: 5;
+    z-index: 10000;
 }
 
 @keyframes fadeIn {
@@ -157,6 +172,42 @@
         opacity: 0;
     }
 }
+
+:root {
+    --main-color:white;
+    --point-color: rgba(0, 0, 0, 0.76);
+    --size: 5px;
+  }
+
+.loader {
+    background-color: var(--main-color);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;  
+    height:auto;
+  }
+  
+  .loader__element {
+    border-radius: 100%;
+    border: var(--size) solid var(--point-color);
+    margin: calc(var(--size)*2);
+  }
+  
+  .loader__element:nth-child(1) {
+    animation: preloader .6s ease-in-out alternate infinite;
+  }
+  .loader__element:nth-child(2) {
+    animation: preloader .6s ease-in-out alternate .2s infinite;
+  }
+  
+  .loader__element:nth-child(3) {
+    animation: preloader .6s ease-in-out alternate .4s infinite;
+  }
+  
+  @keyframes preloader {
+    100% { transform: scale(2); }
+  }
 
 
 

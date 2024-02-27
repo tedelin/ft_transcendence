@@ -31,7 +31,7 @@
     position: absolute;
     right: 20px;
     top: 20px;
-    color: white;
+    color: rgba(5, 5, 5, 0.753);
     font-size: 25px;
     cursor: pointer;
     z-index: 3;
@@ -70,7 +70,7 @@
     padding: 10px;
     display: inline-block;
     border-radius: 5px;
-    z-index: 1;
+    z-index: 100000;
 }
 
 .settingRow {
