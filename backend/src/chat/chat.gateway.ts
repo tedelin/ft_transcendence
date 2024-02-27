@@ -3,7 +3,6 @@ import { Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { UserService } from 'src/user/user.service';
 import { Prisma } from '@prisma/client';
-import { JoinChannelDto } from './dto/chat.dto';
 import { ChannelMessageDto } from './dto/chat.dto';
 import { FriendService } from 'src/friends/friends.service';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -43,6 +42,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async handleDisconnect(client: Socket) {
 		this.connectedUsers.delete(client.id);
 		this.sendConnectedUsers();
+	}
+
+	@OnEvent('private.message')
+	async onPrivateMessage(sender: number, receiver: number, storedMessage: Prisma.PrivateMessageCreateInput) {
+		const receiverSocketId = this.getKeyByValue(receiver);
+		const senderSocketId = this.getKeyByValue(sender);
+		const blockedUsers = await this.friendService.findBlockedByUsers(sender);
+		const blockedUsersIds = blockedUsers.map((blockedUser) => blockedUser.initiatorId);
+		if (blockedUsersIds.includes(sender)) {
+			return;
+		}
+		this.server.to(receiverSocketId).emit('private-message', storedMessage);
+		this.server.to(senderSocketId).emit('private-message', storedMessage);
 	}
 
 

@@ -1,85 +1,100 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
+import { PrivateMessageDto } from './dto/sendMessage.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { FriendService } from 'src/friends/friends.service';
+
 @Injectable()
 export class PrivateMessageService {
-  constructor(private databaseService: DatabaseService) {}
+	constructor(
+		private databaseService: DatabaseService,
+		private eventEmitter: EventEmitter2,
+		private friendService: FriendService,
+	) {}
 
-  async sendMessage(senderId: number, receiverId: number, content: string) {
-    return this.databaseService.privateMessage.create({
-      data: {
-        senderId,
-        receiverId,
-        content,
-      },
-    });
-  }
+	async sendMessage(senderId, message: PrivateMessageDto) {
+		const storedMessage = await this.databaseService.privateMessage.create({
+			data: {
+				senderId: senderId,
+				receiverId: message.receiverId,
+				content: message.content,
+			},
+			include: {
+				sender: {
+					select: {
+						id: true,
+						username: true,
+						avatar: true,
+					},
+				},
+				receiver: {
+					select: {
+						id: true,
+						username: true,
+						avatar: true,
+					},
+				},
+			},
+		});
+		this.eventEmitter.emit('private.message', senderId, message.receiverId, storedMessage);
+		return storedMessage;
+	}
+	async getConversation(userId: number, otherUserId: number) {
+		const blockedUser = await this.friendService.findBlockedUsers(userId);
+		return await this.databaseService.privateMessage.findMany({
+			where: {
+				OR: [
+					{
+						senderId: userId,
+						receiverId: otherUserId,
+					},
+					{
+						senderId: otherUserId,
+						receiverId: userId,
+					},
+				],
+				senderId: {
+					notIn: blockedUser.map(friendship => friendship.receiverId),
+				},
+			},
+			include: {
+				sender: {
+					select: {
+						id: true,
+						username: true,
+						avatar: true,
+					},
+				},
+				receiver: {
+					select: {
+						id: true,
+						username: true,
+						avatar: true,
+					},
+				},
+			},
+			orderBy: {
+				timestamp: 'asc',
+			},
+		});
+	}
 
-  // async getMessagesBetweenUsers(userId1: number, userId2: number) {
-  //   return this.databaseService.privateMessage.findMany({
-  //     where: {
-  //       OR: [
-  //         { senderId: userId1, receiverId: userId2 },
-  //         { senderId: userId2, receiverId: userId1 },
-  //       ],
-  //     },
-  //     orderBy: {
-  //       createdAt: 'asc',
-  //     },
-  //   });
-  // }
+	async getAllConversations(userId: number): Promise<any[]> {
+		const sentMessages = await this.databaseService.privateMessage.findMany({
+			where: { senderId: userId },
+			select: { receiver: true },
+		});
+		const receivedMessages = await this.databaseService.privateMessage.findMany({
+			where: { receiverId: userId },
+			select: { sender: true },
+		});
 
-  // async getMessagesBetweenUsers(userId: number, otherUserId: string) {
-  //   const otherUserIdInt = parseInt(otherUserId, 10); // Convertit otherUserId en entier
-  //   if (isNaN(otherUserIdInt)) {
-  //     throw new Error('otherUserId doit être un nombre');
-  //   }
-    
-  //   return await this.databaseService.privateMessage.findMany({
-  //     where: {
-  //       OR: [
-  //         { senderId: userId, receiverId: otherUserIdInt },
-  //         { senderId: otherUserIdInt, receiverId: userId },
-  //       ],
-  //     },
-  //     orderBy: {
-  //       createdAt: 'asc',
-  //     },
-  //   });
-  // }
+		const allConversations = [...sentMessages.map(msg => msg.receiver), ...receivedMessages.map(msg => msg.sender)];
+		const uniqueConversations = Array.from(new Set(allConversations.map(user => user.id)))
+			.map(id => {
+				return allConversations.find(user => user.id === id);
+			});
 
-  async getMessagesBetweenUsers(userId: number, otherUserId: number) {
-    // Assurez-vous que both userId et otherUserId sont des nombres.
-    // Aucune conversion n'est nécessaire ici si vous vous assurez déjà que
-    // les valeurs sont correctes avant d'appeler cette méthode.
-    return await this.databaseService.privateMessage.findMany({
-      where: {
-        OR: [
-          { senderId: userId, receiverId: otherUserId },
-          { senderId: otherUserId, receiverId: userId },
-        ],
-      },
-      orderBy: {
-        createdAt: 'asc',
-      },
-    });
-  }
-
-  async getAllConversations(userId: number): Promise<any[]> {
-    const sentMessages = await this.databaseService.privateMessage.findMany({
-      where: { senderId: userId },
-      select: { receiver: true },
-    });
-    const receivedMessages = await this.databaseService.privateMessage.findMany({
-      where: { receiverId: userId },
-      select: { sender: true },
-    });
-  
-    const allConversations = [...sentMessages.map(msg => msg.receiver), ...receivedMessages.map(msg => msg.sender)];
-    const uniqueConversations = Array.from(new Set(allConversations.map(user => user.id)))
-      .map(id => {
-        return allConversations.find(user => user.id === id);
-      });
-  
-    return uniqueConversations;
-  }
+		return uniqueConversations;
+	}
 }
