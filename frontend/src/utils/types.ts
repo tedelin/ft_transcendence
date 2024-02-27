@@ -3,6 +3,14 @@ export interface Channel {
 	visibility: 'PUBLIC' | 'PRIVATE' | 'PROTECTED';
 }
 
+export interface PrivateMessage {
+	id: number;
+	receiver: User;
+	sender: User;
+	content: string;
+	timestamp: string;
+}
+
 export interface Friendship {
 	id: number;
 	initiatorId: number;

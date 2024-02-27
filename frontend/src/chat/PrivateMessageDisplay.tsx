@@ -1,45 +1,28 @@
 import { useState, useEffect, useRef } from 'react';
 import { fetchUrl } from '../fetch';
 import { useAuth } from "../components/AuthProvider";
+import { useToast } from '../utils/hooks/useToast';
+import { PrivateMessage } from '../utils/types';
+import { getAvatar } from '../utils/utils';
 import '../styles/chat.css';
 
-export function PrivateMessagesDisplay({ conversationId }) {
-    const [receivedMessages, setReceivedMessages] = useState([]);
+export function PrivateMessagesDisplay({ conversationId }: { conversationId: number }) {
+    const [receivedMessages, setReceivedMessages] = useState<PrivateMessage[]>([]);
     const messageContainer = useRef(null);
+	const {error} = useToast();
     const auth = useAuth();
-
-
-	async function fetchUserInfo(userId) {
-		try {
-			const token = localStorage.getItem('jwtToken');
-			const response = await fetchUrl(`/users/${userId}`, {
-				method: 'GET',
-				headers: {
-					'Authorization': `Bearer ${token}`,
-				},
-			});
-			return response; // Supposons que cela renvoie { id: userId, username: "Nom d'utilisateur", avatar: "URL de l'avatar" }
-		} catch (error) {
-			console.error('Error fetching user info:', error);
-			return null;
-		}
-	}
 
     async function fetchPrivateMessages() {
         try {
-            const token = localStorage.getItem('jwtToken');
-			console.log(conversationId)
-			console.log(token)
-            const response = await fetchUrl(`/private-messages?otherUserId=${conversationId}`, {
+            const response = await fetchUrl(`/private-messages/${conversationId}`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
                 },
             });
-			console.log(response)
             setReceivedMessages(response);
-        } catch (error) {
-            console.error('Error fetching private messages:', error);
+        } catch (err:any) {
+            error(err.message);
         }
     };
 
@@ -50,23 +33,22 @@ export function PrivateMessagesDisplay({ conversationId }) {
     }
 
     useEffect(() => {
-        auth?.socket?.on('private-message', (message) => {
-            // Assurez-vous que le message appartient à la conversation actuelle
-            if (message.conversationId !== conversationId) {
-                return;
-            }
+        auth?.socket?.on('private-message', (message: PrivateMessage) => {
+            // if (message.sender.id !== conversationId) {
+            //     return;
+            // }
+			// console.log(message);
             setReceivedMessages(prevMessages => [...prevMessages, message]);
         });
         
-        // Fetch initial messages
-        fetchPrivateMessages();
+		if (conversationId)
+        	fetchPrivateMessages();
 
         return () => {
             setReceivedMessages([]);
             auth?.socket?.off('private-message');
         };
-    // Assurez-vous d'inclure `conversationId` dans le tableau des dépendances pour recharger les messages lorsqu'il change.
-    }, [conversationId, auth?.socket]);
+    }, []);
 
     useEffect(() => {
         scrollToBottom();
@@ -74,20 +56,26 @@ export function PrivateMessagesDisplay({ conversationId }) {
 
     return (
         <div ref={messageContainer} className='messageContainer'>
-            {receivedMessages.map((msg, index) => (
-                <div className={msg.senderId === auth?.user?.id ? 'bubble-right' : 'bubble-left'} key={index}>
-                    <div className="sender">
-                        <img src={msg.sender?.avatar || "https://www.w3schools.com/howto/img_avatar.png"} alt="User Avatar" />
-                        <div className="senderName">
-                            {msg.sender?.username || "Unknown"}
-                        </div>
-                    </div>
-                    <div className="message">{msg.content}</div>
-                    <div className="timestamp">{new Date(msg.timestamp).toLocaleString()}</div>
-                </div>
+            {receivedMessages.map((msg: PrivateMessage) => (
+				<div
+					key={msg.id}
+					className={msg.sender.id === auth?.user?.id ? 'bubble-right' : 'bubble-left'}
+				>
+					<div className="sender"
+					>
+						<img src={getAvatar(msg.sender.avatar)} alt="User Avatar"></img>
+						<div className="senderName">
+							{msg.sender?.username}
+						</div>
+					</div>
+					<div className="message">
+						{msg.content}
+					</div>
+					<div className="timestamp">
+						{new Date(msg.timestamp).toLocaleString()}
+					</div>
+			 </div>
             ))}
         </div>
     );
 }
-
-export default PrivateMessagesDisplay;

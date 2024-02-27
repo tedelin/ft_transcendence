@@ -1,23 +1,20 @@
 import { useLocation, Outlet, Navigate, createBrowserRouter, RouterProvider, useRouteError } from 'react-router-dom';
-import { useEffect } from 'react';
 import Login from './pages/Login';
 import Chat from './chat/page';
 import { NavBar } from './components/NavBar';
 import { Game } from './game/page';
 import { AuthProvider, useAuth } from './components/AuthProvider';
-import './App.css';
-import './styles/chat.css';
 import Settings from './pages/Settings';
 import { Channels } from './chat/Channels';
 import { Friends } from './chat/Friends';
 import { ChatBox } from './chat/ChatBox';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
 import { twoFaRoutes } from './pages/two-facteur-auth/two-fa-routes';
 import { Callback } from './components/Callback.tsx';
-import ConversationsList from './chat/ConversationsList.tsx'
-import Conversation from './chat/Conversation.tsx'
+import {PrivateMessagePage} from './chat/PrivateMessagePage.tsx'
+import './App.css';
+import './styles/chat.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 const router = createBrowserRouter([
 	{
@@ -46,13 +43,9 @@ const router = createBrowserRouter([
 						element: <Friends />,
 					},
 					{
-						path: "private-messages",
-						element: <PrivateMessagesPage />,
+						path: "private-messages/:receiverId", 
+						element: <PrivateMessagePage />,
 					},
-					{
-						path: "conversations",
-						element: <ConversationsList />,
-					}
 				]
 			},
 			{
@@ -66,10 +59,6 @@ const router = createBrowserRouter([
 			{
 				path: "game",
 				element: <RequireAuth><Game /></RequireAuth>
-			},
-			{
-				path: "/conversations/:conversationId", 
-				element: <Conversation />,
 			},
 			{
 				path: "/callback",
@@ -122,16 +111,6 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 }
 
 export function App() {
-	// useEffect(() => {
-	// 	const urlParams = new URLSearchParams(window.location.search);
-	// 	const token = urlParams.get('token');
-
-	// 	if (token) {
-	// 	  localStorage.setItem('jwtToken', token);
-	// 	  document.location.search = '';
-	// 	}
-	//   }, []);
-
 	return (
 		<RouterProvider router={router} />
 	);

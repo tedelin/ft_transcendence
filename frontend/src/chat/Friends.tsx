@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { fetchUrl } from '../fetch';
 import { useAuth } from '../components/AuthProvider';
 import { useToast } from '../utils/hooks/useToast';
-import '../styles/chat.css';
 import { Friendship, User } from '../utils/types';
+import { useNavigate } from 'react-router-dom';
+import '../styles/chat.css';
 
 
 function AddFriend({ selected } : { selected: string }) {
@@ -102,6 +103,7 @@ function FriendsList({ selected } : { selected: string }) {
 	const [friends, setFriends] = useState<Friendship[] | []>([]);
 	const token = localStorage.getItem('jwtToken');
 	const {error, success} = useToast();
+	const navigate = useNavigate();
 	const auth = useAuth();
 
 	async function acceptFriendRequest(requestId: number) {
@@ -226,6 +228,12 @@ function FriendsList({ selected } : { selected: string }) {
 									>
 										Block
 									</button>
+									<span
+										onClick={() => navigate(`/chat/private-messages/${friend.initiatorId == auth?.user?.id ? friend.receiverId : friend.initiatorId}`)}
+										className='material-symbols-outlined'
+									>
+										chat
+									</span>
 								</div>
 							)}
 						</div>
