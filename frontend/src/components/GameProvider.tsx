@@ -39,6 +39,7 @@ interface GameContextType {
     setHistoryAll: React.Dispatch<React.SetStateAction<any[]>>;
     isSpectator: boolean;
     setIsSpectator: React.Dispatch<React.SetStateAction<boolean>>;
+    startClicked: boolean;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -62,6 +63,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const [playerOne, setPlayerOne] = useState<any[]>([]);
     const [playerTwo, setPlayerTwo] = useState<any[]>([]);
     const [historyAll, setHistoryAll] = useState<any[]>([]);
+    const startClicked = false;
 
     const [isSpectator, setIsSpectator] = useState(false);
 

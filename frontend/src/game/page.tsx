@@ -129,6 +129,12 @@ export function Game() {
     }
 
     useEffect(() => {
+        console.log("settingToDo du front : " + game?.settingsToDo);
+        if (game?.settingsToDo)
+        else
+    }, [game?.settingsToDo]);
+
+    useEffect(() => {
         // Définition de la fonction asynchrone pour récupérer les matchs
         const fetchMatchHistory = async () => {
             try {
