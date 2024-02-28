@@ -19,10 +19,10 @@ export function MatchmakingView({ playerOne, playerTwo }) {
         }
         return (
             <div className="playerInfo">
-                <div class="loader">
-                    <span class="loader__element"></span>
-                    <span class="loader__element"></span>
-                    <span class="loader__element"></span>
+                <div className="loader">
+                    <span className="loader__element"></span>
+                    <span className="loader__element"></span>
+                    <span className="loader__element"></span>
                 </div>
             </div>
         );
@@ -61,10 +61,6 @@ export function MatchmakingView({ playerOne, playerTwo }) {
                         {renderPlayer(playerOne, true)}
                     </div>
                 </div>
-                {/* <div className="vertical-stuff">
-                    <div className="line high"></div>
-                    <div className="line low"></div>
-                </div> */}
                 <div className={backTwo} style={backgroundStyleTwo}>
                     <div className={classNameTwo}>
                         {renderPlayer(playerTwo, false)}

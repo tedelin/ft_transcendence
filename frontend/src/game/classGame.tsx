@@ -44,15 +44,23 @@ export class ClassGame {
     canvasHeight: number;
     localState: GameState | null;
     win: boolean;
+    logoImage : HTMLImageElement = new Image();
 
     constructor(canvasRef: React.RefObject<HTMLCanvasElement>, gameState, socket: any) {
         this.canvasRef = canvasRef;
-        this.canvasHeight = 800;
-        this.canvasWidth = 1200;
+        this.canvasHeight = 600;
+        this.canvasWidth = 800;
         this.socket = socket;
         this.updateCanvas = this.updateCanvas.bind(this);
         this.localState = this.copyState(gameState);
         this.win = false;
+        this.logoImage.onload = () => {
+            this.updateCanvas(); // Dessiner ou redessiner le canvas une fois l'image chargée
+        };
+        this.logoImage.onerror = (error) => {
+            console.error("Erreur lors du chargement de l'image :", error);
+        };
+        this.logoImage.src = './logo.png'; // Assurez-vous que le chemin est correct
     }
 
     copyState(gameState): GameState | null {
@@ -74,32 +82,60 @@ export class ClassGame {
         };
     }
 
-    draw(context) {
-        // paddles
-        context.fillStyle = 'white';
-        context.fillRect(15, this.localState.paddles.leftPos.y, this.localState.paddles.width, this.localState.paddles.height);
-        context.fillRect(this.canvasWidth - this.localState.paddles.width - 15, this.localState.paddles.rightPos.y, this.localState.paddles.width, this.localState.paddles.height);
+    drawRoundedRect(context, x, y, width, height, radius) {
+        context.beginPath();
+        context.moveTo(x + radius, y);
+        context.lineTo(x + width - radius, y);
+        context.quadraticCurveTo(x + width, y, x + width, y + radius);
+        context.lineTo(x + width, y + height - radius);
+        context.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        context.lineTo(x + radius, y + height);
+        context.quadraticCurveTo(x, y + height, x, y + height - radius);
+        context.lineTo(x, y + radius);
+        context.quadraticCurveTo(x, y, x + radius, y);
+        context.closePath();
+        context.fill();
+    }
 
-        // line
-        context.fillStyle = 'grey';
-        context.fillRect(this.canvasWidth / 2 - 2.5, 0, 5, this.canvasHeight);
-        context.strokeStyle = 'grey';
+    draw(context) {
+        // playfield
+        context.fillStyle = 'white';
+        context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+        // paddles
+        context.fillStyle = 'black';
+        this.drawRoundedRect(context, 15, this.localState.paddles.leftPos.y, this.localState.paddles.width, this.localState.paddles.height, 10); // 10 est le rayon des coins arrondis
+
+// Dessiner le paddle droit avec des coins arrondis
+        this.drawRoundedRect(context, this.canvasWidth - this.localState.paddles.width - 15, this.localState.paddles.rightPos.y, this.localState.paddles.width, this.localState.paddles.height, 10); // Utilisez le même rayon ou un différent selon vos besoins
+
+        //line
+        context.fillStyle = 'black';
+        context.fillRect(this.canvasWidth / 2, 0, 2, this.canvasHeight);
+        
+        // center circle
+        context.strokeStyle = 'black';
         context.lineWidth = 2;
         context.beginPath();
         context.arc(this.canvasWidth / 2, this.canvasHeight / 2, 150, 0, 2 * Math.PI);
         context.stroke();
+        
+        // center logo
+        if (this.logoImage.complete) {
+            const logoX = this.canvasWidth / 2 - 48 / 2; // Centrer horizontalement
+            const logoY = this.canvasHeight / 2 - 48 / 2; // Centrer verticalement
+            context.fillStyle = 'white';
+            context.beginPath();
+            context.arc(logoX + 48 / 2, logoY + 48 / 2, 48 / 2, 0, Math.PI * 2);
+            context.fill();
+            context.drawImage(this.logoImage, logoX + 1, logoY, 48, 48); // Dessiner le logo avec la taille spécifiée
+        }
 
         // ball
         context.beginPath();
         context.arc(this.localState.ball.pos.x, this.localState.ball.pos.y, this.localState.ball.radius, 0, 2 * Math.PI);
-        context.fillStyle = 'white';
+        context.fillStyle = 'black';
         context.fill();
-
-        // score
-        context.font = '100px Arial';
-        context.fillStyle = 'white';
-        context.fillText(`${this.localState.score.player1}`, this.canvasWidth / 4, this.canvasHeight / 6);
-        context.fillText(`${this.localState.score.player2}`, this.canvasWidth - this.canvasWidth / 4, this.canvasHeight / 6);
     }
 
 
@@ -113,11 +149,7 @@ export class ClassGame {
         // context!.clearRect(0, 0, canvas.width, canvas.height);
         this.draw(context);
 
-        if (this.localState.status === ENDED) {
-            context.fillStyle = 'rgba(0, 0, 0, 0.7)'; // Fond semi-transparent
-            context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-        }
-        else
+        if (this.localState.status != ENDED)
             requestAnimationFrame(this.updateCanvas);
     }
 

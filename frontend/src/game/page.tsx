@@ -7,12 +7,15 @@ import './button.css';
 import './matchmaking.css'
 import { SettingsMenu } from './settingsMenu';
 import { EndGameMenu } from './endGameMenu';
-import { MatchmakingView } from './MatchmakingView';
+import { Matchmaking } from './Matchmaking';
 import { useAuth } from '../components/AuthProvider';
 import { MatchHistory } from './matchHistory';
 import { fetchUrl } from '../fetch';
 
 function StartGame({ gameInstance }) {
+    const [score, setScore] = useState({ player1: 0, player2: 0});
+    const [spectators, setSpectators] = useState([]);
+
     const auth = useAuth();
     
     const handleKeyDown = (event) => {
@@ -33,16 +36,50 @@ function StartGame({ gameInstance }) {
         document.addEventListener('keydown', handleKeyDown);
         document.addEventListener('keyup', handleKeyUp);
 
+        auth?.socket?.on('gameStateUpdate', (data) => {
+            if (data) {
+                console.log(data);
+                setScore({ 
+                    player1: data.gameState.score.player1, 
+                    player2: data.gameState.score.player2
+                });
+                // console.log(`score p1 : ${score.player1}, score p2: ${score.player2}`);
+            }
+            else
+                console.log("no data in start game");
+        });
+
+        auth?.socket?.on('spectator', (data) => {
+            console.log(data.spectator);
+            if (Array.isArray(data.spectator)) {
+                setSpectators(data.spectator);
+            } else {
+                console.error("Received data is not an array:", data.spectator);
+                // Gérer l'erreur ou initialiser spectators avec un tableau vide ou une valeur par défaut
+                setSpectators([]);
+            }
+            // setSpectators(data.spectator);
+        });
+
         return () => {
             document.removeEventListener("keydown", gameInstance.handleKeyDown);
             document.removeEventListener("keyup", gameInstance.handleKeyUp);
         };
-    }, [gameInstance]);
-
+    }, [gameInstance, auth?.socket]);
 
     return (
         <div className="canva">
+            <div className="scores">
+                <div className="score player1">{score.player1}</div>
+                <div className="score -">-</div>
+                <div className="score player2">{score.player2}</div>
+            </div>
             <canvas ref={gameInstance.canvasRef} width={gameInstance.canvasWidth} height={gameInstance.canvasHeight}></canvas>
+            <div className="spectatorsList">
+                {spectators.map((spectator, index) => (
+                    <div key={index} className="spectator">{spectator}</div>
+                ))}
+            </div>
         </div>
     );
 }
@@ -106,23 +143,6 @@ export function Game() {
             increasedBallSpeed: increasedBallSpeed
         });
         setSettingsToDo(false);
-    }
-
-    function Countdown() {
-        const [count, setCount] = useState(3);
-
-        useEffect(() => {
-            const countdownInterval = setInterval(() => {
-                setCount((prevCount) => prevCount - 1);
-            }, 1500);
-
-            if (count === 0)
-                clearInterval(countdownInterval);
-
-            return () => clearInterval(countdownInterval);
-        }, [count]);
-
-        return <div className='countDown'>{count}</div>;
     }
 
     useEffect(() => {
@@ -215,8 +235,6 @@ export function Game() {
         }
     }, []);
 
-    // useDetectNavigation(showButton, gameStarted, auth, handleQuit, navigate);
-
     return (
         <div className="game">
             {!gameStarted && showButton && historyAll && (
@@ -236,10 +254,6 @@ export function Game() {
                     <div className='CrossIcon' onClick={() => {
                         auth?.socket?.emit('crossMatchmaking');
                         }}>&#10006;</div>
-                    <MatchmakingView
-                        playerOne={playerOne}
-                        playerTwo={playerTwo}
-                    />
                     <SettingsMenu
                         ballSpeed={ballSpeed}
                         setBallSpeed={setBallSpeed}
@@ -256,18 +270,11 @@ export function Game() {
                 </>
             )}
             {!gameStarted && !showButton && !settingsToDo && (
-                <div className="matchmaking">
-                    {!letsGO && <div className='CrossIcon' onClick={() => {
-                        auth?.socket?.emit('crossMatchmaking');
-                        }}>&#10006;</div>}
-                    <MatchmakingView playerOne={playerOne} playerTwo={playerTwo} />
-                    {letsGO && (
-                        <div className="matchmaking-container">
-                            <span className="letsgo">Let's GO !</span>
-                            <Countdown />
-                        </div>
-                    )}
-                </div>
+                <Matchmaking
+                    playerOne={playerOne} 
+                    playerTwo={playerTwo} 
+                    letsgo={letsGO}
+                />
             )}
             {gameStarted && gameInstance.current && (
                 <StartGame gameInstance={gameInstance.current} />
