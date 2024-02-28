@@ -1,9 +1,31 @@
-import React from 'react';
 import '../styles/chat.css';
+import { useGame } from '../components/GameProvider';
+import { useAuth } from '../components/AuthProvider';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, increasedBallSpeed, setIncreasedBallSpeed, paddleHeight, setPaddleHeight, paddleSpeed, setPaddleSpeed, onSaveSettings }) {
+export function Settings_game() {
+    const auth = useAuth();
+    const game = useGame();
+    const nav = useNavigate();
+    
+    const handleSaveSettings = () => {
+        console.log('ballSpeed : ' + game?.ballSpeed);
+        auth?.socket?.emit('clickSaveSettings', {
+            ballSpeed: game?.ballSpeed,
+            paddleSpeed: game?.paddleSpeed,
+            paddleHeight: game?.paddleHeight,
+            ballSize: game?.ballSize,
+            increasedBallSpeed: game?.increasedBallSpeed
+        });
+        game?.setSettingsToDo(false);
+    }
     return (
         <div className='settingsMenu'>
+            <div className='CrossIcon' onClick={() => {
+                nav(-1);
+                auth?.socket?.emit('crossMatchmaking');
+            }}>&#10006;</div>
             <p style={{ margin: '20px', textAlign: 'center', textDecoration: 'underline', fontSize: '25px' }}>Settings</p>
             <div className="settingRow">
                 <div className='label'>
@@ -16,14 +38,14 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                     min="1"
                     max="10"
                     step="1"
-                    value={ballSpeed}
+                    value={game?.ballSpeed}
                     onChange={(e) => {
-                        setBallSpeed(() => parseInt(e.target.value));
-                        console.log('set ball : ' + ballSpeed)
+                        game?.setBallSpeed(() => parseInt(e.target.value));
+                        console.log('set ball : ' + game?.ballSpeed)
                     }}
                 />
                 <div className='number'>
-                    <span>{ballSpeed}</span>
+                    <span>{game?.ballSpeed}</span>
                 </div>
             </div>
 
@@ -38,11 +60,11 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                     min='5'
                     max='30'
                     step='1'
-                    value={ballSize}
-                    onChange={(e) => setBallSize(parseInt(e.target.value))}
+                    value={game?.ballSize}
+                    onChange={(e) => game?.setBallSize(parseInt(e.target.value))}
                 />
                 <div className='number'>
-                    <span>{ballSize}</span>
+                    <span>{game?.ballSize}</span>
                 </div>
             </div>
 
@@ -57,11 +79,11 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                     min="0.001"
                     max="0.010"
                     step="0.001"
-                    value={increasedBallSpeed}
-                    onChange={(e) => setIncreasedBallSpeed(parseFloat(e.target.value))}
+                    value={game?.ballSpeed}
+                    onChange={(e) => game?.setIncreasedBallSpeed(parseFloat(e.target.value))}
                 />
                 <div className='number'>
-                    <span>{increasedBallSpeed}</span>
+                    <span>{game?.ballSpeed}</span>
                 </div>
             </div>
 
@@ -76,11 +98,11 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                     min="100"
                     max="300"
                     step="1"
-                    value={paddleHeight}
-                    onChange={(e) => setPaddleHeight(parseInt(e.target.value))}
+                    value={game?.paddleHeight}
+                    onChange={(e) => game?.setPaddleHeight(parseInt(e.target.value))}
                 />
                 <div className='number'>
-                    <span>{paddleHeight}</span>
+                    <span>{game?.paddleHeight}</span>
                 </div>
             </div>
 
@@ -95,15 +117,15 @@ export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, i
                     min="1"
                     max="10"
                     step="1"
-                    value={paddleSpeed}
-                    onChange={(e) => setPaddleSpeed(parseInt(e.target.value))}
+                    value={game?.paddleSpeed}
+                    onChange={(e) => game?.setPaddleSpeed(parseInt(e.target.value))}
                 />
                 <div className='number'>
-                    <span>{paddleSpeed}</span>
+                    <span>{game?.paddleSpeed}</span>
                 </div>
             </div>
             <div className='buttonContainer'>
-                <button className='SettingsButton' onClick={onSaveSettings}>Save</button>
+                <Link to="/game/matchmaking" className='SettingsButton' onClick={handleSaveSettings}>next</Link>
             </div>
         </div>
     );

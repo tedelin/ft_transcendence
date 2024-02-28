@@ -14,6 +14,12 @@ import { ChatBox } from './chat/ChatBox';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
+import { Settings_game } from './game/Settings_game.tsx';
+// import { Ball } from './game/settings_ball';
+// import { Paddle } from './game/settings_paddle';
+import { MatchmakingView } from './game/MatchmakingView';
+import { GameProvider } from './components/GameProvider.tsx';
+import { InGame } from './game/InGame';
 
 const router = createBrowserRouter([
 	{
@@ -57,8 +63,47 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "game",
-				element: <RequireAuth><Game /></RequireAuth>
+				element: <RequireAuth><GameProvider><Game /></GameProvider></RequireAuth>,
+				children: [
+					{
+						path: "settings",
+						element: <Settings_game />,
+					},
+					{
+						path: "matchmaking",
+						element: <MatchmakingView />,
+					},
+					{
+						path: "in_game",
+						element: <InGame />,
+					},
+					{
+						path: "finish_game",
+						// element: <FinishGame />,
+					}
+						// children: [
+						// 	{
+						// 		path: "matchmaking",
+						// 		element: <MatchmakingView />,
+						// 		children: [
+						// 			{
+						// 				path: "in_game",
+						// 				element: <InGame />,
+						// 				children: [
+						// 					{
+						// 						path: "finish_game",
+						// 						// element: <FinishGame />,
+						// 					}
+						// 				]
+						// 			}
+						// 		]
+						// 	}
+						// ]
+					// }
+				]
 			}
+
+
 		],
 	},
 ])
@@ -110,10 +155,10 @@ export function App() {
 		const token = urlParams.get('token');
 
 		if (token) {
-		  localStorage.setItem('jwtToken', token);
-		  document.location.search = '';
+			localStorage.setItem('jwtToken', token);
+			document.location.search = '';
 		}
-	  }, []);
+	}, []);
 
 	return (
 		<RouterProvider router={router} />

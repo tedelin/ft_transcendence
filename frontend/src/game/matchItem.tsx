@@ -1,5 +1,5 @@
 import React from 'react';
-import './game.css';
+import '../styles/chat.css';
 import eyeIcon from './oeil.jpg';
 import { useAuth } from '../components/AuthProvider';
 

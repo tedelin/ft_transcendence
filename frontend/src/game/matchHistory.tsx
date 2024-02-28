@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { MatchItem } from './matchItem';
-import './game.css';
+import '../styles/chat.css';
 
 export function MatchHistory( { matchs }) {
     // matchs.forEach(match => {
