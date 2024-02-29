@@ -52,18 +52,6 @@
     align-items: center; /* Centre verticalement */
   }
 
-/* .vertical-stuff {
-    flex-direction: column;
-    align-items: center; 
-}
-
-.line {
-    height: 50%; 
-    width: 2px;
-    background-color: black; 
-} */
-
-
 
 .leftPlayer img,
 .rightPlayer img{

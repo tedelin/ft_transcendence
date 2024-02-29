@@ -1,0 +1,114 @@
+.endGameMenu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(12px);
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menuContent {
+    background-color: white;
+    width: 35%;
+    height:55%;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 10% 75% 15%;
+}
+
+.end-scores {
+    /* background-color: #67d6be; */
+    color:black;
+    height:100%;
+    margin-top:1rem;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    font-weight: 800;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.images-conteneur {
+    margin-top:1rem;
+    height:100%;
+    display:flex;
+    justify-content: center;
+    align-items:center;
+}
+
+.img {
+    position:relative;
+    top:0;
+    left:0;
+    height:100%;
+    width:60%;
+    z-index: 1000; /* Assurez-vous qu'elle est au-dessus de l'image du gagnant */
+}
+
+.laurier {
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    background-image: url("./lauriers.png");
+    background-size: 90% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.chapeau {
+    display:flex;
+    margin-left: 3rem;
+    justify-content: center;
+    align-items:center;
+    background-image: url("./chapeau.png");
+    background-size: 50% 50%;
+    background-repeat: no-repeat;
+    background-position: center top;
+}
+
+.img-winner {
+    height:50%;
+    width:50%;
+    border-radius: 50%;
+}
+
+.wlaurier {
+    margin-bottom:4rem;
+}
+
+.wchapeau {
+    margin-right: 3rem;
+    margin-top:3rem;
+}
+
+.sentence {
+    margin:auto;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.menu-footer {
+    position:relative;
+    height:100%;
+    color:black;
+    font-family: Arial, Helvetica, sans-serif;
+    /* background-color: rgb(59, 143, 143); */
+    display:flex;
+    align-items: center;
+}
+
+.menuButton {
+    font-size:1.8rem;
+    position:absolute;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    right:1.5rem;
+    cursor:pointer;
+}

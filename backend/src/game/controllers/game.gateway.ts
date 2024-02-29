@@ -46,7 +46,7 @@ export class GameGateway implements OnGatewayInit
                 roomState.spectators.splice(spectIndex, 1); // Nettoyage des spectateurs
                 client.leave(room); // Le client quitte la room
                 console.log(`Spectator ${client.id} has left room ${room}`);
-                console.log(`LENGTH OF SPECTATORS VECTOR AFTER HE LEFT ROOM : ${roomState.spectators.length}`);
+                console.log(`SPECTATORS VECTOR AFTER HE LEFT ROOM : ${roomState.spectators}`);
                 break;
             }
         }
@@ -78,8 +78,10 @@ export class GameGateway implements OnGatewayInit
 
     public getArraySpectator(roomId : string) {
         const spectatorSockets = this.roomService.rooms.get(roomId).spectators;
-        const usernames = spectatorSockets.map(socket => this.connectedUsers.get(socket).username);
+        const usernames = spectatorSockets.map(socket => this.connectedUsers.get(socket.id).username);
         console.log(`array of total of spectator : ${usernames}`);
+        if (usernames === undefined || !usernames)
+            return [];
         return usernames;
     }
 
@@ -94,12 +96,12 @@ export class GameGateway implements OnGatewayInit
         }
         if (roomState)
         {
-            console.log("in roomstate");
+            // console.log("in roomstate");
             if (this.isASpectator(client)) {
                 const spectator = this.connectedUsers.get(client.id);
                 console.log(`roomId : ${gameId}, spectator ${spectator.username} removed` );
                 this.cleanUpSpectator(client);
-                this.server.to(gameId).emit('spectator', { spectators: this.getArraySpectator(gameId) });
+                this.server.to(gameId).emit('spectators', { spectators: this.getArraySpectator(gameId) });
                 this.roomService.logRooms();
             }
             else if (roomState.state == RoomStatus.MATCHMAKING) {
@@ -148,7 +150,7 @@ export class GameGateway implements OnGatewayInit
             const spectator = this.connectedUsers.get(client.id);
             console.log(`roomId : ${roomId}, spectator ${spectator.username} removed` );
             this.cleanUpSpectator(client);
-            this.server.to(roomId).emit('spectator', { spectators: this.getArraySpectator(roomId) });
+            this.server.to(roomId).emit('spectators', { spectators: this.getArraySpectator(roomId) });
             this.roomService.logRooms();
         }
         else if (roomPartner)
@@ -209,10 +211,10 @@ export class GameGateway implements OnGatewayInit
         }
         else
             console.log("no roomState");
-        const spectator : User = this.connectedUsers.get(client.id);
-        console.log(`roomId : ${roomId}, spectator ${userSocketId} added` );
-        this.server.to(roomId).emit('spectator', { spectator: spectator.username });
         client.emit('gameLaunch', { gameState: roomState.gameState });
+        const spectator : User = this.connectedUsers.get(client.id);
+        console.log(`roomId : ${roomId}, spectator ${client.id} added` );
+        this.server.to(roomId).emit('spectators', { spectators: this.getArraySpectator(roomId) });
         this.roomService.logRooms();
     }
 

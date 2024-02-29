@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useState, useRef } from 'react';
 import React from 'react';
 import './game.css';
+import './page.css';
 import './button.css';
 import './matchmaking.css'
 import { SettingsMenu } from './settingsMenu';
@@ -11,78 +12,9 @@ import { Matchmaking } from './Matchmaking';
 import { useAuth } from '../components/AuthProvider';
 import { MatchHistory } from './matchHistory';
 import { fetchUrl } from '../fetch';
-
-function StartGame({ gameInstance }) {
-    const [score, setScore] = useState({ player1: 0, player2: 0});
-    const [spectators, setSpectators] = useState([]);
-
-    const auth = useAuth();
-    
-    const handleKeyDown = (event) => {
-        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            auth?.socket?.emit('keyAction', { key: event.key, action: 'pressed' });
-        }
-    };
-
-    const handleKeyUp = (event) => {
-        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            auth?.socket?.emit('keyAction', { key: event.key, action: 'released' });
-        }
-    };
-
-    useEffect(() => {
-        gameInstance.startGame();
-
-        document.addEventListener('keydown', handleKeyDown);
-        document.addEventListener('keyup', handleKeyUp);
-
-        auth?.socket?.on('gameStateUpdate', (data) => {
-            if (data) {
-                console.log(data);
-                setScore({ 
-                    player1: data.gameState.score.player1, 
-                    player2: data.gameState.score.player2
-                });
-                // console.log(`score p1 : ${score.player1}, score p2: ${score.player2}`);
-            }
-            else
-                console.log("no data in start game");
-        });
-
-        auth?.socket?.on('spectator', (data) => {
-            console.log(data.spectator);
-            if (Array.isArray(data.spectator)) {
-                setSpectators(data.spectator);
-            } else {
-                console.error("Received data is not an array:", data.spectator);
-                // Gérer l'erreur ou initialiser spectators avec un tableau vide ou une valeur par défaut
-                setSpectators([]);
-            }
-            // setSpectators(data.spectator);
-        });
-
-        return () => {
-            document.removeEventListener("keydown", gameInstance.handleKeyDown);
-            document.removeEventListener("keyup", gameInstance.handleKeyUp);
-        };
-    }, [gameInstance, auth?.socket]);
-
-    return (
-        <div className="canva">
-            <div className="scores">
-                <div className="score player1">{score.player1}</div>
-                <div className="score -">-</div>
-                <div className="score player2">{score.player2}</div>
-            </div>
-            <canvas ref={gameInstance.canvasRef} width={gameInstance.canvasWidth} height={gameInstance.canvasHeight}></canvas>
-            <div className="spectatorsList">
-                {spectators.map((spectator, index) => (
-                    <div key={index} className="spectator">{spectator}</div>
-                ))}
-            </div>
-        </div>
-    );
-}
+import { StartGame } from './game';
+import BoobaImg from './booba.jpeg';
+import profil from './profil.jpeg';
 
 export function Game() {
     const [gameStarted, setGameStarted] = useState(false);
@@ -236,7 +168,7 @@ export function Game() {
     }, []);
 
     return (
-        <div className="game">
+        <div className="page">
             {!gameStarted && showButton && historyAll && (
                 <>
                     <div className="loading-animation">
