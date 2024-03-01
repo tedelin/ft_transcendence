@@ -1,3 +1,11 @@
+.loading-animation {
+    height:100%;
+    /* background-color: pink; */
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
 @keyframes growAndShrink {
     0% {
         transform: scale(1);
@@ -27,8 +35,6 @@
 }
 
 .boxxx {
-    margin:auto;
-    margin-top:10vh;
     position:relative;
     width: 200px;
     height: 200px;
@@ -39,6 +45,7 @@
 }
 
 .boxxx::before {
+
     content:'';
     position:absolute;
     inset: -10px 60px;
@@ -97,12 +104,3 @@
 .div_start_game:hover {
     animation-play-state: paused;
 }
-
-/* .border_start {
-    margin-top:60px;
-    border: 4px solid #0064c2;
-    padding: 20px;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-} */

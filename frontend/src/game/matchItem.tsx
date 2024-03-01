@@ -18,15 +18,17 @@ export function MatchItem({ match }) {
     return (
         <div className="match-item">
             <div className="name">{truncateUsername(match.players[0].player.username)}</div>
-            <div><img src={playerPhotoUrl} alt="Player" className="playerPhoto" /></div>
-            {match.status === "FINISHED" ? (
-                <span className="score">{match.players[0].score} - {match.players[1].score}</span>
-            ) : (
-                <button className="view-match-button"  onClick={viewMatch}>
-                   <img src={eyeIcon} alt="View Match" style={{width: '50px', height: '50px'}}/>
-                </button>
-            )}
-            <div><img src={playerPhotoUrl} alt="Player" className="playerPhoto" /></div>
+            <img src={playerPhotoUrl} alt="Player" className="playerPhoto"/>
+            <div className="middle-history-menu">
+                {match.status === "FINISHED" ? (
+                    <span className="score">{match.players[0].score} - {match.players[1].score}</span>
+                    ) : (
+                        <button className="view-match-button"  onClick={viewMatch}>
+                    <img src={eyeIcon} alt="View Match" style={{width: '50px', height: '50px'}}/>
+                    </button>
+                )}
+            </div>
+            <img src={playerPhotoUrl} alt="Player" className="playerPhoto"/>
             <div className="name">{truncateUsername(match.players[1].player.username)}</div>
         </div>
     );

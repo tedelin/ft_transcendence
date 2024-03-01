@@ -173,7 +173,7 @@ export function Game() {
     return (
         <div className="page">
             {!gameStarted && showButton && historyAll && (
-                <>
+                <div className="menu">
                     <div className="loading-animation">
                         <div className="boxxx">
                             <div className='div_start_game'>
@@ -182,7 +182,7 @@ export function Game() {
                         </div>
                     </div>
                     <MatchHistory matchs={historyAll} />
-                </>
+                </div>
             )}
             {!gameStarted && !showButton && settingsToDo && (
                 <>
