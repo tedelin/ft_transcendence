@@ -32,7 +32,7 @@
     display:flex;
     justify-content: center;
     align-items: center;
-    font-size: 3rem;
+    font-size: 3vw;
     font-weight: 800;
     font-family: Arial, Helvetica, sans-serif;
 }
@@ -82,7 +82,7 @@
 }
 
 .wlaurier {
-    margin-bottom:4rem;
+    margin-bottom:4vw;
 }
 
 .wchapeau {
@@ -92,7 +92,7 @@
 
 .sentence {
     margin:auto;
-    font-size: 2.5rem;
+    font-size: 2.5vw;
     font-weight: 700;
 }
 
@@ -107,7 +107,7 @@
 }
 
 .menuButton {
-    font-size:1.8rem;
+    font-size:1.8vw;
     position:absolute;
     font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     right:1.5rem;

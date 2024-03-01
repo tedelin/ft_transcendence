@@ -27,20 +27,20 @@ export function Game() {
     const [increasedBallSpeed, setIncreasedBallSpeed] = useState(0.003);
     const [ballSize, setBallSize] = useState(15);
     const [Winner, setWinner] = useState(false);
-    const gameInstance = useRef<ClassGame | null>(null);
-
+    
     const [showEndGameModal, setShowEndGameModal] = useState(false);
     const [playerStats, setPlayerStats] = useState([]);
     const [isAbandon, setIsAbandon] = useState(false);
     const [letsGO, setLetsGO] = useState(false);
-
+    
     const [playerOne, setPlayerOne] = useState([]);
     const [playerTwo, setPlayerTwo] = useState([]);
-
+    
     const [historyAll, setHistoryAll] = useState([]);
     const [isSpectator, setIsSpectator] = useState(false);
     const [spectatorsBase, setSpectatorsBase] = useState([]);
-
+    
+    const gameInstance = useRef<ClassGame | null>(null);
     const auth = useAuth();
 
     function handleQuit() {
@@ -126,7 +126,7 @@ export function Game() {
         auth?.socket?.on('gameLaunch', (data) => {
             console.log('GameLaunch');
             if (!gameStarted) {
-                gameInstance.current = new ClassGame(React.createRef(), data.gameState, auth?.socket);
+                gameInstance.current = new ClassGame(React.createRef(), data.gameState, auth?.socket, { width:800, height:600 });
                 setGameStarted(true);
                 setSettingsToDo(false);
                 if (data.spectators)

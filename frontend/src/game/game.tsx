@@ -34,7 +34,7 @@ export function StartGame({ gameInstance, spectatorBase }) {
 
         auth?.socket?.on('gameStateUpdate', (data) => {
             if (data) {
-                setScore({ 
+                setScore({
                     player1: data.gameState.score.player1, 
                     player2: data.gameState.score.player2
                 });
@@ -54,6 +54,27 @@ export function StartGame({ gameInstance, spectatorBase }) {
             }
         });
         console.log("spectators on listening now");
+
+        const updateCanvasSize = () => {
+            console.log('updateCanvasSize();');
+            const canvas = gameInstance.canvasRef.current;
+            if (canvas) {
+                // const width = window.innerWidth;
+                // const height = window.innerHeight;
+                // canvas.width = width;
+                // canvas.height = height * (9 / 16); // Ajuster selon le ratio d'aspect désiré
+                const width = canvas.offsetWidth;
+                const height = canvas.offsetHeight;
+                console.log(`canvasSize({ ${width}, ${height} });`);
+                if (gameInstance.current) {
+                    console.log(`gameInstance.current.updateDimensions(${width}, ${height});`);
+                    gameInstance.current.updateDimensions(width, height);
+                }
+            }
+        }
+
+        window.addEventListener('resize', updateCanvasSize);
+        updateCanvasSize();
 
         return () => {
             document.removeEventListener("keydown", gameInstance.handleKeyDown);

@@ -19,35 +19,37 @@
     border-bottom: 2px solid black;
     border-left: 2px solid black;
     border-right: 2px solid black;
-    width:400px;
+    width: 20%;
     height:100%;
     border-bottom-left-radius:10px;
     border-bottom-right-radius:10px;
 }
 
 .score {
-    font-size:5rem;
+    font-size:4vw;
     font-weight: 900;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 .game-area {
-    display:flex;
-    flex-direction:row;
-    justify-content: center;
-    align-items:center;
+    display:grid;
+    grid-template-columns: 17.5% 65% 17.5%;
+    grid-template-rows: 100%;
     /* background-color: pink; */
 }
 
 .player {
     margin:auto;
-    height:40%;
+    height:30%;
+    width:80%;
     border-radius: 50%;
     border: 3px solid black;
 }
 
 canvas {
     margin:auto;
+    height:90%;
+    width:90%;
     border: 3px solid black;
 }
 

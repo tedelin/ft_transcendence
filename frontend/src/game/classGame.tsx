@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 
-const RUNNING = 0;
 const ENDED = 1;
-const ballTrail = [];
 
 interface Pos {
     x: number;
@@ -46,10 +44,10 @@ export class ClassGame {
     win: boolean;
     logoImage : HTMLImageElement = new Image();
 
-    constructor(canvasRef: React.RefObject<HTMLCanvasElement>, gameState, socket: any) {
+    constructor(canvasRef: React.RefObject<HTMLCanvasElement>, gameState, socket, dimensions: {width: number, height: number}) {
         this.canvasRef = canvasRef;
-        this.canvasHeight = 600;
-        this.canvasWidth = 800;
+        this.canvasHeight = dimensions.height;
+        this.canvasWidth = dimensions.width;
         this.socket = socket;
         this.updateCanvas = this.updateCanvas.bind(this);
         this.localState = this.copyState(gameState);
@@ -61,6 +59,14 @@ export class ClassGame {
             console.error("Erreur lors du chargement de l'image :", error);
         };
         this.logoImage.src = './logo.png'; // Assurez-vous que le chemin est correct
+    }
+
+    updateDimensions(width: number, height: number) {
+        console.log('updateDimensions();');
+        this.canvasWidth = width;
+        this.canvasHeight = height;
+        console.log(`updateDimension this.canvasWidth = ${width}, this.canvasHeight=${height}`)
+        this.updateCanvas(); // Mettez à jour le canvas immédiatement pour refléter les nouvelles dimensions
     }
 
     copyState(gameState): GameState | null {
@@ -137,6 +143,9 @@ export class ClassGame {
         const canvas = this.canvasRef.current;
         if (!canvas) return;
         const context = canvas.getContext('2d');
+
+        // canvas.width = this.canvasWidth; 
+        // canvas.height = this.canvasHeight; 
 
         context.fillStyle = "rgba(255, 255, 255, 0.20)";
         context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
