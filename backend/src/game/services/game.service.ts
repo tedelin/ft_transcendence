@@ -221,32 +221,32 @@ export class GameService {
         await this.updateStats(win, loose);
     }
 
-    async updateAchievement(winner: number, looser: number, score_O: boolean) {
-        const win = await this.findUserById(winner);
-        const loose = await this.findUserById(looser);
-        if (!win || !loose)
-            return;
-        await this.databaseService.achievement.update({
-            where: {
-                userId: winner,
-            },
-            data: {
-                firstWin: true,
-                firstGame: true,
-                masterWinner: win.nbWin >= 10 ? true : false,
-                invincible_guardian: score_O ? true : false,
-            },
-        });
-        await this.databaseService.achievement.update({
-            where: {
-                userId: looser,
-            },
-            data: {
-                firstLoose: true,
-                firstGame: true,
-            },
-        });
-    }
+    // async updateAchievement(winner: number, looser: number, score_O: boolean) {
+    //     const win = await this.findUserById(winner);
+    //     const loose = await this.findUserById(looser);
+    //     if (!win || !loose)
+    //         return;
+    //     await this.databaseService.achievement.update({
+    //         where: {
+    //             userId: winner,
+    //         },
+    //         data: {
+    //             firstWin: true,
+    //             firstGame: true,
+    //             masterWinner: win.nbWin >= 10 ? true : false,
+    //             invincible_guardian: score_O ? true : false,
+    //         },
+    //     });
+    //     await this.databaseService.achievement.update({
+    //         where: {
+    //             userId: looser,
+    //         },
+    //         data: {
+    //             firstLoose: true,
+    //             firstGame: true,
+    //         },
+    //     });
+    // }
 
     async updateSpeedDemon(user_one: number, user_two: number) {
         const userOne = await this.findUserById(user_one);

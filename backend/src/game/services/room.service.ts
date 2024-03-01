@@ -197,6 +197,7 @@ export class RoomService {
         roomState.state = RoomStatus.LAUNCHING;
         setTimeout(async () => {
             if (roomState.state === RoomStatus.INTERRUPT) {
+                console.log("interrupt!!!!");
                 return ;
             }
             this.rooms.get(roomId).state = RoomStatus.INGAME;
@@ -272,7 +273,7 @@ export class RoomService {
         return p1;
     }
 
-    async closingGame(roomId : string, winner : string, score_O : boolean) {
+    async closingGame(roomId : string, winner : string) {
         const roomState = this.rooms.get(roomId);
         if (!roomState) return;
 
@@ -285,7 +286,7 @@ export class RoomService {
         const playerOne = this.connectedUsers.get(roomState.players[0].id);
         const playerTwo = this.connectedUsers.get(roomState.players[1].id);
         await this.gameService.addMatchToStats(winnerUser.id, looserUser.id);
-        await this.gameService.updateAchievement(winnerUser.id, looserUser.id, score_O);
+        // await this.gameService.updateAchievement(winnerUser.id, looserUser.id, score_O);
         let stats = await this.gameService.getPlayersStats(winnerUser.id, looserUser.id);
 
         if (!roomState.gameState || roomState.gameState.status === GameStatus.RUNNING) {

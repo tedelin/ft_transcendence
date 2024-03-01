@@ -98,15 +98,9 @@ export class ClassGame {
     }
 
     draw(context) {
-        // playfield
-        context.fillStyle = 'white';
-        context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-
         // paddles
         context.fillStyle = 'black';
-        this.drawRoundedRect(context, 15, this.localState.paddles.leftPos.y, this.localState.paddles.width, this.localState.paddles.height, 10); // 10 est le rayon des coins arrondis
-
-// Dessiner le paddle droit avec des coins arrondis
+        this.drawRoundedRect(context, 15, this.localState.paddles.leftPos.y, this.localState.paddles.width, this.localState.paddles.height, 10);
         this.drawRoundedRect(context, this.canvasWidth - this.localState.paddles.width - 15, this.localState.paddles.rightPos.y, this.localState.paddles.width, this.localState.paddles.height, 10); // Utilisez le même rayon ou un différent selon vos besoins
 
         //line
@@ -133,8 +127,8 @@ export class ClassGame {
 
         // ball
         context.beginPath();
-        context.arc(this.localState.ball.pos.x, this.localState.ball.pos.y, this.localState.ball.radius, 0, 2 * Math.PI);
         context.fillStyle = 'black';
+        context.arc(this.localState.ball.pos.x, this.localState.ball.pos.y, this.localState.ball.radius, 0, 2 * Math.PI);
         context.fill();
     }
 
@@ -144,7 +138,7 @@ export class ClassGame {
         if (!canvas) return;
         const context = canvas.getContext('2d');
 
-        context.fillStyle = "rgba(0, 0, 0, 0.15)";
+        context.fillStyle = "rgba(255, 255, 255, 0.20)";
         context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
         // context!.clearRect(0, 0, canvas.width, canvas.height);
         this.draw(context);

@@ -53,8 +53,8 @@ export class PongService {
     }
 
     private calculateWinner(gameState: GameState) {
-        if (gameState.score.player1 === 3 || gameState.score.player2 === 3) {
-            let winner = gameState.score.player1 === 3 ? 1 : 2;
+        if (gameState.score.player1 === 1000 || gameState.score.player2 === 1000) {
+            let winner = gameState.score.player1 === 1000 ? 1 : 2;
             return (winner);
         }
         return 0;
@@ -71,11 +71,11 @@ export class PongService {
 
         winner = this.calculateWinner(gameState);
         if (winner) {
-            await new Promise(resolve => setTimeout(resolve, 200));
+            // await new Promise(resolve => setTimeout(resolve, 200));
             if (gameState.score.player1 === 0 || gameState.score.player2 === 0)
                 score_O = true;
             gameState.status = GameStatus.FINISHED;
-            this.roomService.closingGame(roomId, roomState.players[winner - 1].id, score_O);
+            this.roomService.closingGame(roomId, roomState.players[winner - 1].id);
             return;
         }
         gameState.point(roomState.settings.paddleHeight, roomState.settings.ballSpeed, roomState.settings.paddleSpeed)

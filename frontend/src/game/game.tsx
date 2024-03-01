@@ -9,9 +9,9 @@ import BoobaImg from './booba.jpeg';
 import profil from './profil.jpeg';
 const ENDED = 1;
 
-export function StartGame({ gameInstance }) {
+export function StartGame({ gameInstance, spectatorBase }) {
     const [score, setScore] = useState({ player1: 0, player2: 0});
-    const [spectators, setSpectators] = useState([]);
+    const [spectators, setSpectators] = useState(spectatorBase);
 
     const auth = useAuth();
     const handleKeyDown = (event) => {
@@ -53,6 +53,7 @@ export function StartGame({ gameInstance }) {
                 setSpectators([]);
             }
         });
+        console.log("spectators on listening now");
 
         return () => {
             document.removeEventListener("keydown", gameInstance.handleKeyDown);

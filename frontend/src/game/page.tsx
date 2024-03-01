@@ -39,6 +39,7 @@ export function Game() {
 
     const [historyAll, setHistoryAll] = useState([]);
     const [isSpectator, setIsSpectator] = useState(false);
+    const [spectatorsBase, setSpectatorsBase] = useState([]);
 
     const auth = useAuth();
 
@@ -128,6 +129,8 @@ export function Game() {
                 gameInstance.current = new ClassGame(React.createRef(), data.gameState, auth?.socket);
                 setGameStarted(true);
                 setSettingsToDo(false);
+                if (data.spectators)
+                    setSpectatorsBase(data.spectators);
             }
         })
 
@@ -209,7 +212,7 @@ export function Game() {
                 />
             )}
             {gameStarted && gameInstance.current && (
-                <StartGame gameInstance={gameInstance.current} />
+                <StartGame gameInstance={gameInstance.current} spectatorBase={spectatorsBase}/>
             )}
             {gameStarted && !showEndGameModal && gameInstance.current && (
                 <>
