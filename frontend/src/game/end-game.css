@@ -14,8 +14,8 @@
 
 .menuContent {
     background-color: white;
-    width: 35%;
-    height:55%;
+    width: 35vw;
+    height: 55vh;
     border-radius: 10px;
     text-align: center;
     z-index: 3;
@@ -66,7 +66,7 @@
 
 .chapeau {
     display:flex;
-    margin-left: 3rem;
+    margin-left: 3vw;
     justify-content: center;
     align-items:center;
     background-image: url("./chapeau.png");
@@ -86,8 +86,8 @@
 }
 
 .wchapeau {
-    margin-right: 3rem;
-    margin-top:3rem;
+    margin-right: 3vw;
+    margin-top:5vh;
 }
 
 .sentence {
