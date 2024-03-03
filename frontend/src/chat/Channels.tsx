@@ -21,12 +21,12 @@ export function Channels() {
 	}, []);
 
 	return (
-		<>
+		<div className='flexColumn'>
 			<ChannelActions />
 			<SearchChannel setChannels={setChannels} />
 			<div className="channelList">
 				<ChannelList channels={channels} setChannels={setChannels} />
 			</div>
-		</>
+		</div>
 	);
 }

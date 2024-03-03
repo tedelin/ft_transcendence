@@ -20,8 +20,6 @@
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  background-color: #2f3136;
-  color: #fff;
 }
 
 .flexRow {
@@ -30,11 +28,18 @@
   flex: 1;
 }
 
-.rightBar {
-  width: 300px;
-  background-color: red;
+.flexColumn {
   display: flex;
   flex-direction: column;
+  flex: 1;
+}
+
+.rightBar {
+  width: 35%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  border-left: 3px solid var(--bg-secondary);
 }
 
 .rightBarTitle {
@@ -61,7 +66,7 @@
   word-wrap: anywhere;
   line-height: 100%;
   padding: 15px;
-  background: #373b44;
+  background: var(--bg-secondary);
   border: none;
   border-radius: 12px;
   margin-bottom: 2em;
@@ -91,7 +96,7 @@
 
 .timestamp {
   font-size: 12px;
-  color: #72767d;
+  color: var(--text-secondary);
 }
 
 .message {
@@ -117,32 +122,15 @@
   font-size: 13px;
   flex-grow: 1;
   border-radius: 10px;
-  background-color: #40444b;
   padding: 15px;
-  color: #fff;
   resize: none;
   border: none;
   outline: none;
-}
-
-.sendMessageBtn,
-.inviteBtn {
-  width: 10%;
-  text-align: center;
-  box-sizing: border-box;
-  height: 100%;
-  margin-left: 10px;
-  margin-right: 0px;
-  background-color: #7289da;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  background-color: var(--bg-secondary);
 }
 
 .inviteBtn {
-  background-color: #267f49;
+  background-color: var(--primary-green);
 }
 
 .sendMessageBtn:hover {
@@ -157,7 +145,7 @@
   padding: 10px;
   margin: 15px;
   border-radius: 8px;
-  background-color: #267f49;
+  background-color: var(--primary-green);
   color: #ffffff;
   border: none;
   cursor: pointer;
@@ -165,7 +153,7 @@
 }
 
 .joinButton {
-  background-color: #7289da;
+  background-color: var(--primary-blue);
 }
 
 input,
@@ -177,8 +165,8 @@ select {
   border-radius: 8px;
   font-size: 16px;
   outline: none;
-  background-color: #40444b;
-  color: #fff;
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
 }
 
 .sideMenuTitle span,
@@ -204,7 +192,7 @@ select {
 .friendListItem:hover,
 .topBarAction:hover,
 .topBarActionSelected {
-  background-color: #40444b;
+  background-color: var(--bg-secondary);
 }
 
 .sideBarChatName {
@@ -243,7 +231,7 @@ select {
 }
 
 .toggleSideBar {
-  background-color: #36393f;
+  /* background-color: #36393f; */
   color: #fff;
   cursor: pointer;
 }
@@ -252,7 +240,7 @@ select {
   .friendsTopBar {
     display: flex;
     align-items: center;
-    border-bottom: 3px solid #40444b;
+    border-bottom: 3px solid var(--bg-secondary);
     overflow-y: hidden;
   }
 }
@@ -262,11 +250,6 @@ select {
   margin-left: 15px;
 }
 
-/* .spanMargin {
-    padding-right: 15px;
-    margin-right: 15px;
-    border-right: 3px solid #40444b;
-} */
 
 .topBarAction,
 .topBarAction span,
@@ -277,15 +260,17 @@ select {
   margin: 10px;
   padding: 10px;
   border-radius: 10px;
+  text-align: center;
 }
 
-.addFriendAction span {
-  background-color: #267f49;
+.addFriendAction {
+  text-align: center;
+  background-color: var(--primary-green);
+  color: var(--text-primary-dark);
 }
 
 .createChannelContainer {
   display: flex;
-  /* height: 72px; */
 }
 
 .createChannelContainer input,
@@ -296,10 +281,25 @@ select {
 
 .topBarChat {
   display: flex;
+  height: 70px;
   padding: 5px;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 3px solid #40444b;
+  border-bottom: 3px solid var(--bg-secondary);
+}
+
+.topSide {
+  display: flex;
+  height: 70px;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-bottom: 3px solid var(--bg-secondary);
+}
+
+.topSide h2 {
+  text-align: center;
 }
 
 .topChannel {
@@ -352,8 +352,8 @@ select {
 
 .context-menu {
   z-index: 1000;
-  background-color: #36393f;
-  color: #ffffff;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   /* border: 2px solid #72767d; */
   border-radius: 6px;
   padding: 4px 0;
@@ -378,7 +378,7 @@ select {
   border-radius: 4px;
   margin-left: 4px;
   margin-right: 4px;
-  background-color: #4f545c;
+  /* background-color: ; */
 }
 
 .context-menu li:not(:last-child) {
@@ -416,10 +416,6 @@ select {
     margin: 15px;
     border-radius: 8px;
     border: none;
-  }
-
-  .addFriendAction span {
-    margin: 0;
   }
 
   .sendMessageBtn,

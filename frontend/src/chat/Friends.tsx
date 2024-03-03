@@ -81,11 +81,11 @@ function FriendsTopBar({ setSelected, selected }: { setSelected: Function, selec
 					className={`topBarAction${selected === option ? "Selected" : ""}`}
 					onClick={() => handleOptionClick(option)}
 				>
-					<div>{option}</div>
+					{option}
 				</div>
 			))}
 			<div className='addFriendAction' onClick={() => setSelected("AddFriend")}>
-				<span>Add Friend</span>
+				Add Friend
 			</div>
 		</div>
 	);
@@ -249,11 +249,11 @@ export function Friends() {
 	const [selected, setSelected] = useState("Online");
 
 	return (
-		<>
+		<div className='flexColumn'>
 			<FriendsTopBar selected={selected} setSelected={setSelected} />
 			<AddFriend selected={selected} />
 			<SearchFriends selected={selected} />
 			<FriendsList selected={selected} />
-		</>
+		</div>
 	);
 }

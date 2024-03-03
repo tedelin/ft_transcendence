@@ -11,10 +11,12 @@ import { ChatBox } from './chat/ChatBox';
 import { ToastContainer } from 'react-toastify';
 import { twoFaRoutes } from './pages/two-facteur-auth/two-fa-routes';
 import { Callback } from './components/Callback.tsx';
-import {PrivateMessagePage} from './chat/PrivateMessagePage.tsx'
-import './App.css';
+import { PrivateMessagePage } from './chat/PrivateMessagePage.tsx'
+import './styles/App.css';
 import './styles/chat.css';
 import 'react-toastify/dist/ReactToastify.css';
+import { useContext } from 'react';
+import { ThemeContext } from './utils/providers/ThemeProvider.tsx';
 
 const router = createBrowserRouter([
 	{
@@ -43,7 +45,7 @@ const router = createBrowserRouter([
 						element: <Friends />,
 					},
 					{
-						path: "private-messages/:receiverId", 
+						path: "private-messages/:receiverId",
 						element: <PrivateMessagePage />,
 					},
 				]
@@ -84,14 +86,18 @@ export default function ErrorPage() {
 }
 
 function Layout() {
+	const { theme } = useContext(ThemeContext);
+
 	return (
-		<AuthProvider>
-			<div className='container'>
-				<NavBar />
-				<Outlet />
-			</div>
-			<ToastContainer theme='dark' />
-		</AuthProvider>
+		<div className={`App ${theme}`}>
+			<AuthProvider>
+				<div className='container'>
+					<NavBar />
+					<Outlet />
+				</div>
+				<ToastContainer theme={theme} />
+			</AuthProvider>
+		</div>
 	)
 }
 

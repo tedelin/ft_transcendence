@@ -1,7 +1,9 @@
 export function RightBar() {
     return (
         <div className="rightBar">
-            <h2 className="rightBarTitle">Messages</h2>
+            <div className="topSide">
+                <h2 className="rightBarTitle">Messages</h2>
+            </div>
         </div>
     );
 }

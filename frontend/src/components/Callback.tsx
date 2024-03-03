@@ -13,7 +13,7 @@ export function Callback() {
 	const [userCode, setUserCode] = useState('');
 	const [token42, setToken42] = useState('');
 	const navigate = useNavigate();
-	const {error} = useToast();
+	const { error } = useToast();
 	const auth = useAuth();
 
 	async function registerUser() {
@@ -25,7 +25,7 @@ export function Callback() {
 					'Authorization': `Bearer ${token42}`,
 				},
 				body: JSON.stringify({
-					username : username,
+					username: username,
 				}),
 			});
 			if (response.access_token) {
@@ -49,7 +49,7 @@ export function Callback() {
 					code: userCode,
 				}),
 			});
-		
+
 			if (response.access_token) {
 				auth?.fetchUser(response.access_token);
 				navigate('/');
@@ -92,7 +92,7 @@ export function Callback() {
 			>
 				<div>
 					<label htmlFor="code">Enter the code from your authenticator app</label>
-					<input 
+					<input
 						type="text"
 						id="code"
 						className='twoFaInput'
@@ -112,7 +112,7 @@ export function Callback() {
 				isOpen={requireUsername}
 				onClose={() => setRequireUsername(false)}
 			>
-				<input 
+				<input
 					type="text"
 					placeholder='Enter your username'
 					value={username}
