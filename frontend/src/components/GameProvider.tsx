@@ -39,7 +39,7 @@ interface GameContextType {
     setHistoryAll: React.Dispatch<React.SetStateAction<any[]>>;
     isSpectator: boolean;
     setIsSpectator: React.Dispatch<React.SetStateAction<boolean>>;
-    startClicked: boolean;
+    saveClicked: boolean;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -63,13 +63,15 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const [playerOne, setPlayerOne] = useState<any[]>([]);
     const [playerTwo, setPlayerTwo] = useState<any[]>([]);
     const [historyAll, setHistoryAll] = useState<any[]>([]);
-    const startClicked = false;
+    const saveClicked = false;
 
     const [isSpectator, setIsSpectator] = useState(false);
 
-    let value = { gameStarted, setGameStarted, showButton, setShowButton, settingsToDo, setSettingsToDo, firstPlayer, setFirstPlayer, ballSpeed, setBallSpeed, paddleHeight, setPaddleHeight, paddleSpeed, setPaddleSpeed, increasedBallSpeed, setIncreasedBallSpeed, ballSize, setBallSize, Winner, setWinner, gameInstance, showEndGameModal, setShowEndGameModal, playerStats, setPlayerStats, isAbandon, setIsAbandon, letsGO, setLetsGO, playerOne, setPlayerOne, playerTwo, setPlayerTwo, historyAll, setHistoryAll, isSpectator, setIsSpectator };
-    
-    console.log('settingToDo du provider : ' + settingsToDo);
+    let value = { gameStarted, setGameStarted, showButton, setShowButton, settingsToDo, setSettingsToDo, firstPlayer, setFirstPlayer, 
+        ballSpeed, setBallSpeed, paddleHeight, setPaddleHeight, paddleSpeed, setPaddleSpeed, increasedBallSpeed, setIncreasedBallSpeed, 
+        ballSize, setBallSize, Winner, setWinner, gameInstance, showEndGameModal, setShowEndGameModal, playerStats, setPlayerStats, 
+        isAbandon, setIsAbandon, letsGO, setLetsGO, playerOne, setPlayerOne, playerTwo, setPlayerTwo, historyAll, setHistoryAll, 
+        isSpectator, setIsSpectator, saveClicked };
 
     return (
         <GameContext.Provider value={value}>

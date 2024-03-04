@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useState, useRef } from 'react';
 // import socket from './socket';
 import React from 'react';
-import '../styles/game.css';    
+import '../styles/game.css';
 import { SettingsMenu } from './settingsMenu';
 import { EndGameMenu } from './endGameMenu';
 import { MatchmakingView } from './MatchmakingView';
@@ -16,7 +16,7 @@ import { useGame } from '../components/GameProvider';
 
 function StartGame({ gameInstance }) {
     const auth = useAuth();
-    
+
     const handleKeyDown = (event) => {
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             auth?.socket?.emit('keyAction', { key: event.key, action: 'pressed' });
@@ -75,6 +75,8 @@ export function Game() {
     // const [isSpectator, setIsSpectator] = useState(false);
 
     const auth = useAuth();
+    const nav = useNavigate();
+
 
     function handleQuit() {
         game?.setLetsGO(false);
@@ -128,11 +130,9 @@ export function Game() {
         return <div className='countDown'>{count}</div>;
     }
 
-    useEffect(() => {
-        console.log("settingToDo du front : " + game?.settingsToDo);
-        if (game?.settingsToDo)
-        else
-    }, [game?.settingsToDo]);
+    // useEffect(() => {
+    //     console.log("settingToDo du front : " + game?.settingsToDo);
+    // }, [game?.settingsToDo]);
 
     useEffect(() => {
         // Définition de la fonction asynchrone pour récupérer les matchs
@@ -154,12 +154,10 @@ export function Game() {
         console.log(`showButton : ${game?.showButton}, game: ${game?.gameStarted}`);
         console.log(`${game?.letsGO}, ${game?.playerOne}`)
         console.log(`gameCurrent: ${game?.gameInstance.current}`);
-        if (!game?.gameInstance.current)
-        {
+        if (!game?.gameInstance.current) {
             auth?.socket?.emit('returnBack', { gameInstance: game?.gameInstance.current });
         }
-        else if (game?.gameInstance.current)
-        {
+        else if (game?.gameInstance.current) {
             auth?.socket?.emit('quitInGame');
             handleQuit();
         }
@@ -169,9 +167,13 @@ export function Game() {
         auth?.socket?.on('gameMatchmaking', (data) => {
             if (data.firstPlayer) {
                 game?.setFirstPlayer(true);
-                if (!data.settingDone)
-                game?.setSettingsToDo(true);
+                if (!data.settingDone) {
+                    game?.setSettingsToDo(true);
+                    nav('/game/settings');
+                }
             }
+            else
+                nav('/game/matchmaking');
         })
 
         auth?.socket?.on('matchmakingStats', (data) => {
@@ -205,6 +207,7 @@ export function Game() {
         })
 
         auth?.socket?.on('letsGO', () => {
+            nav('/game/matchmaking');
             game?.setLetsGO(true);
         })
 
@@ -228,11 +231,8 @@ export function Game() {
         <div>
             {!game?.gameStarted && game?.showButton && game?.historyAll && (
                 <>
-                    {/* <button className='StartButton' onClick={handletsart}>Start Game</button> */}
-                    <Link to="/game/settings" className='StartButton' onClick={handletsart}>Start Game</Link>
+                    <button className='StartButton' onClick={handletsart}>Start Game</button>
                     <MatchHistory matchs={game?.historyAll} />
-                    <Link to="/game/matchmaking" className='StartButton' onClick={handletsart}>Start Game match</Link>
-
                 </>
             )}
             <Outlet />

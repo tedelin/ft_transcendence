@@ -5,7 +5,7 @@ import { useAuth } from '../components/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 
 export function MatchmakingView() {
-    // console.log('MatchmakingView');
+    console.log('MatchmakingView');
     const game = useGame();
     const auth = useAuth();
     const nav = useNavigate();
@@ -19,6 +19,7 @@ export function MatchmakingView() {
 
         return (
             <div className="playerInfo">
+                {/* <p>salut c'est moi tchoupi</p> */}
                 <img src={photoUrl} alt="Player" className="playerPhoto" />
                 <span>
                     {playerName}

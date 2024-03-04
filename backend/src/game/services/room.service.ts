@@ -14,7 +14,7 @@ import { UpdateMatchDto } from "../dto/update-match.dto";
 interface Matchs {
     id: number,
     date: any,
-    players : Array<{
+    players: Array<{
         username: string,
         score: number,
         role: string
@@ -27,7 +27,7 @@ export class RoomService {
     public rooms: Map<string, RoomState> = new Map();
     public playersData: Map<string, pData> = new Map();
     public roomSize = 2;
-    public server : Server;
+    public server: Server;
     public connectedUsers: Map<string, User>;
 
     constructor(
@@ -35,15 +35,15 @@ export class RoomService {
         private readonly gameService: GameService,
         private readonly authService: AuthService,
         private readonly userService: UserService
-    ) {}
+    ) { }
 
-    public setServer(server: Server, connectedUsers : Map<string, User>) {
+    public setServer(server: Server, connectedUsers: Map<string, User>) {
         this.server = server;
         this.connectedUsers = connectedUsers;
     }
 
-    public matchmakingExit(client: Socket, action : string, server) {
-        let gameId : string, roomState : RoomState;
+    public matchmakingExit(client: Socket, action: string, server) {
+        let gameId: string, roomState: RoomState;
         for (const [room, roomstate] of this.rooms) {
             if (roomstate.players.includes(client)) {
                 gameId = room;
@@ -52,7 +52,7 @@ export class RoomService {
             }
         }
         if (!roomState)
-            return ;
+            return;
 
         const isPlayerOne = (client.id === roomState.players[0].id);
         if (isPlayerOne)
@@ -67,8 +67,8 @@ export class RoomService {
     private playerTwoMatchmakingExit(gameId, client) {
         const roomState = this.rooms.get(gameId);
         if (!roomState)
-            return ;
-        
+            return;
+
         roomState.players = roomState.players.filter(c => c.id !== client.id);
         client.leave(gameId);
         this.server.to(gameId).emit('matchmakingStats', {
@@ -79,15 +79,14 @@ export class RoomService {
     }
 
     private playerOneMatchmakingExit(gameId, client) {
-        const roomState = this.rooms.get(gameId); 
-        if (!roomState) return ;
-        let roomPartner : Socket | null = this.findMyLifePartner(gameId, client);
+        const roomState = this.rooms.get(gameId);
+        if (!roomState) return;
+        let roomPartner: Socket | null = this.findMyLifePartner(gameId, client);
 
         this.cleanRoom(gameId);
         console.log('Room ' + gameId + ' destroyed');
 
-        if (roomPartner)
-        {
+        if (roomPartner) {
             console.log(roomPartner.id + ' reattributed to new room');
             this.assignClientToRoom(roomPartner);
         }
@@ -107,10 +106,10 @@ export class RoomService {
         });
     }
 
-    public assignClientToRoom(client: Socket) : string {
+    public assignClientToRoom(client: Socket): string {
         const roomId = this.findAvailableRoom() || this.createRoom(client);
         this.addClientToRoom(client, roomId);
-    
+
         const roomState = this.rooms.get(roomId);
 
         this.server.to(roomId).emit('matchmakingStats', {
@@ -119,23 +118,23 @@ export class RoomService {
             roomId: roomId
         })
         if (roomState.players.length < this.roomSize || !roomState.settings.settingsSet) {
-            client.emit('gameMatchmaking', { 
+            client.emit('gameMatchmaking', {
                 settingDone: false,
                 firstPlayer: roomState.players.length === 1,
-             });
+            });
         }
         else {
             this.startGame(
-                roomId, 
-                this.playersData.get(roomState.players[0].id), 
-                this.playersData.get(roomState.players[1].id), 
+                roomId,
+                this.playersData.get(roomState.players[0].id),
+                this.playersData.get(roomState.players[1].id),
                 roomState.settings
             );
         }
-    
+
         return roomId;
     }
-    
+
     private findAvailableRoom(): string | undefined {
         for (let [room, roomState] of this.rooms) {
             if (roomState.players.length < this.roomSize) {
@@ -144,13 +143,13 @@ export class RoomService {
         }
         return undefined;
     }
-    
+
     private createRoom(client: Socket): string {
         const newRoomId = `${new Date().getTime()}`;
         this.rooms.set(newRoomId, new RoomState([client]));
         return newRoomId;
     }
-    
+
     private addClientToRoom(client: Socket, roomId: string): void {
         const roomState = this.rooms.get(roomId);
         if (roomState) {
@@ -160,7 +159,7 @@ export class RoomService {
         }
     }
 
-    public findMyLifePartner(roomId : string, otherClient : Socket) {
+    public findMyLifePartner(roomId: string, otherClient: Socket) {
         const roomState = this.rooms.get(roomId);
         if (roomState) {
             let clients = this.rooms.get(roomId).players;
@@ -176,10 +175,9 @@ export class RoomService {
     @Interval(1000 / 200)
     loop(): void {
         for (const [roomId, roomState] of this.rooms.entries()) {
-            if (roomId && 
+            if (roomId &&
                 roomState.state != RoomStatus.LAUNCHING ||
-                (roomState.state === RoomStatus.INGAME && roomState.gameState.status !== GameStatus.FINISHED))
-            {
+                (roomState.state === RoomStatus.INGAME && roomState.gameState.status !== GameStatus.FINISHED)) {
                 this.server.to(roomId).emit('gameStateUpdate', { gameState: roomState.gameState });
                 this.pongService.updateGameState(roomId);
                 if (roomState.gameState && (roomState.gameState.ball.velocity.x >= 10 || roomState.gameState.ball.velocity.x <= -10)) {
@@ -189,18 +187,18 @@ export class RoomService {
         }
     }
 
-    public startGame(roomId : string, firstPlayer : pData, secondPlayer : pData, settings: GameSettings) {
-        firstPlayer.gamesPlayed++;  
+    public startGame(roomId: string, firstPlayer: pData, secondPlayer: pData, settings: GameSettings) {
+        firstPlayer.gamesPlayed++;
         secondPlayer.gamesPlayed++;
         let roomState = this.rooms.get(roomId);
         this.server.to(roomId).emit('letsGO');
         roomState.state = RoomStatus.LAUNCHING;
         setTimeout(async () => {
             if (roomState.state === RoomStatus.INTERRUPT) {
-                return ;
+                return;
             }
             this.rooms.get(roomId).state = RoomStatus.INGAME;
-            const data : CreateMatchDto = this.formatCreateMatchData(roomState, this.connectedUsers.get(roomState.players[0].id), this.connectedUsers.get(roomState.players[1].id));
+            const data: CreateMatchDto = this.formatCreateMatchData(roomState, this.connectedUsers.get(roomState.players[0].id), this.connectedUsers.get(roomState.players[1].id));
             const match = await this.gameService.createMatch(data);
             roomState.id = match.id;
             console.log(`${match.id} just created`);
@@ -225,46 +223,46 @@ export class RoomService {
         this.rooms.delete(roomId);
     }
 
-    private formatUpdateMatchData(roomState : RoomState, pOne : User, pTwo : User) : UpdateMatchDto {
-        const score : Score = roomState.gameState.score;
-        const userOne : User = pOne;
-        const userTwo : User = pTwo;
-        const playerOne : PlayerData = {
+    private formatUpdateMatchData(roomState: RoomState, pOne: User, pTwo: User): UpdateMatchDto {
+        const score: Score = roomState.gameState.score;
+        const userOne: User = pOne;
+        const userTwo: User = pTwo;
+        const playerOne: PlayerData = {
             playerId: userOne.id,
             score: score.player1,
             role: "PLAYER_ONE"
         };
-        const playerTwo : PlayerData = {
+        const playerTwo: PlayerData = {
             playerId: userTwo.id,
             score: score.player2,
             role: "PLAYER_TWO"
         };
-        return { 
+        return {
             players: [playerOne, playerTwo],
             status: "FINISHED",
         };
     }
 
-    private formatCreateMatchData(roomState : RoomState, pOne : User, pTwo : User) : CreateMatchDto {
-        const userOne : User = pOne;
-        const userTwo : User = pTwo;
-        const playerOne : PlayerData = {
+    private formatCreateMatchData(roomState: RoomState, pOne: User, pTwo: User): CreateMatchDto {
+        const userOne: User = pOne;
+        const userTwo: User = pTwo;
+        const playerOne: PlayerData = {
             playerId: userOne.id,
             score: 0,
             role: "PLAYER_ONE"
         };
-        const playerTwo : PlayerData = {
+        const playerTwo: PlayerData = {
             playerId: userTwo.id,
             score: 0,
             role: "PLAYER_TWO"
         };
-        return { 
+        return {
             players: [playerOne, playerTwo],
             status: (roomState.state === RoomStatus.INTERRUPT ? "FINISHED" : "IN_GAME")
         };
     }
 
-    findLoser(roomState : RoomState, winner : string ){
+    findLoser(roomState: RoomState, winner: string) {
         const p1 = roomState.players[0].id;
         const p2 = roomState.players[1].id;
         if (p1 === winner)
@@ -272,7 +270,7 @@ export class RoomService {
         return p1;
     }
 
-    async closingGame(roomId : string, winner : string, score_O : boolean) {
+    async closingGame(roomId: string, winner: string, score_O: boolean) {
         const roomState = this.rooms.get(roomId);
         if (!roomState) return;
 
@@ -293,28 +291,27 @@ export class RoomService {
                 winner: true,
                 stats: stats,
                 isAbandon: true,
-                isSpectator : false
+                isSpectator: false
             })
         }
         else {
             roomState.players.forEach((player) => {
                 this.server.to(player.id).emit('gameFinishedShowStats', {
-                    winner: (player.id === winner), 
+                    winner: (player.id === winner),
                     stats: stats,
                     isAbandon: false,
-                    isSpectator : false
+                    isSpectator: false
                 });
             });
         }
 
-        if (roomState.spectators.length > 0)
-        {
+        if (roomState.spectators.length > 0) {
             roomState.spectators.forEach((spectator) => {
                 this.server.to(spectator.id).emit('gameFinishedShowStats', {
-                    winner: winnerUser.username, 
+                    winner: winnerUser.username,
                     stats: stats,
                     isAbandon: (roomState.gameState.status === GameStatus.RUNNING ? true : false),
-                    isSpectator : true
+                    isSpectator: true
                 });
             })
         }
