@@ -67,9 +67,10 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
         <Modal
             isOpen={enabled}
             onClose={closeSettings}
-            title='Channel Settings'
+            // title='Channel Settings'
         >
 			<div className="channelSettings">
+				<div className='fieldInfo'>Channel Name</div>
 				<input 
 					className='edit'
 					type="text" 
@@ -84,7 +85,7 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
 				>
 					Add Password
 				</button> :
-				(<div>
+				(<div className='row'>
 					<input
 						className='edit'
 						onChange={(e) => setChannelPassword(e.target.value)}
@@ -93,25 +94,27 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
 						placeholder="Channel Password" 
 					/>
 					<button 
-						className='cancelButton'
+						className='modalButton'
 						onClick={() => changeVisibility('PUBLIC')}
 					>
 						Remove Password
 					</button>
-					<button className='saveButton'>Change Password</button>
+					<button className='modalButton'>Change Password</button>
 				</div>)}
-				<button
-					onClick={closeSettings}
-					className='cancelButton'
-				>
-						Cancel
-				</button>
-				<button
-					onClick={saveChanges}
-					className='saveButton'
-				>
-					Save Changes
-				</button>
+				<div className='modalActions'>
+					<button
+						onClick={closeSettings}
+						className='cancelButton'
+					>
+							Cancel
+					</button>
+					<button
+						onClick={saveChanges}
+						className='saveButton'
+					>
+						Save
+					</button>
+				</div>
 			</div>
         </Modal>
     )

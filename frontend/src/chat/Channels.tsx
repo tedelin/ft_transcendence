@@ -24,7 +24,7 @@ export function Channels() {
 		<div className='flexColumn'>
 			<ChannelActions />
 			<SearchChannel setChannels={setChannels} />
-			<div className="channelList">
+			<div className="list">
 				<ChannelList channels={channels} setChannels={setChannels} />
 			</div>
 		</div>

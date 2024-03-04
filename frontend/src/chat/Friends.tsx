@@ -4,7 +4,8 @@ import { useAuth } from '../components/AuthProvider';
 import { useToast } from '../utils/hooks/useToast';
 import { Friendship, User } from '../utils/types';
 import { useNavigate } from 'react-router-dom';
-import '../styles/chat.css';
+import '../styles/friends.css';
+import { getAvatar } from '../utils/utils';
 
 
 function AddFriend({ selected }: { selected: string }) {
@@ -68,34 +69,31 @@ function FriendsTopBar({ setSelected, selected }: { setSelected: Function, selec
 	};
 
 	return (
-		<div className='friendsTopBar'>
-			<span className='material-symbols-outlined'>
-				group
-			</span>
-			<span className='spanMargin'>
-				Friends
-			</span>
-			{options.map((option) => (
-				<div
-					key={option}
-					className={`topBarAction${selected === option ? "Selected" : ""}`}
-					onClick={() => handleOptionClick(option)}
-				>
-					{option}
-				</div>
-			))}
+		<>
+			<div className='list'>
+				{options.map((option) => (
+					<div
+						key={option}
+						className={`listItem${selected === option ? "Selected" : ""}`}
+						onClick={() => handleOptionClick(option)}
+					>
+						{option}
+					</div>
+				))}
+			</div>
 			<div className='addFriendAction' onClick={() => setSelected("AddFriend")}>
 				Add Friend
 			</div>
-		</div>
+		</>
 	);
 }
 
 
 function SearchFriends({ selected }: { selected: string }) {
 	return (
-		(selected !== "AddFriend" && <>
-			<input type="text" placeholder="Search friends" />
+		(selected !== "AddFriend" &&
+		<>
+			<input className="searchFriends" type="text" placeholder="Search friends" />
 		</>)
 	);
 }
@@ -194,11 +192,12 @@ function FriendsList({ selected }: { selected: string }) {
 
 	return (
 		selected !== "AddFriend" && (
-			<div className='friendsList'>
+			<div className='list'>
 				{filteredFriends.length > 0 &&
 					filteredFriends.map((friend: any) => (
-						<div className='friendListItem' key={friend.id}>
-							<span className='sideBarChatName'>{friend.initiatorId == auth?.user?.id ? friend.receiver.username : friend.initiator.username}</span>
+						<div className='listItem' key={friend.id}>
+							<img src={friend.initiatorId == auth?.user?.id ? getAvatar(friend.receiver.avatar) : getAvatar(friend.initiator.avatar)} alt="profile-picture" />
+							<span>{friend.initiatorId == auth?.user?.id ? friend.receiver.username : friend.initiator.username}</span>
 							{friend.status === "PENDING" && (
 								<div className='friendActions'>
 									<button
@@ -259,11 +258,15 @@ export function Friends() {
 	const [selected, setSelected] = useState("Online");
 
 	return (
-		<div className='flexColumn'>
-			<FriendsTopBar selected={selected} setSelected={setSelected} />
-			<AddFriend selected={selected} />
-			<SearchFriends selected={selected} />
-			<FriendsList selected={selected} />
-		</div>
+		<>
+			<div className='flexColumn'>
+				<AddFriend selected={selected} />
+				<SearchFriends selected={selected} />
+				<FriendsList selected={selected} />
+			</div>
+			<div className='sideBar'>
+				<FriendsTopBar selected={selected} setSelected={setSelected} />
+			</div>
+		</>
 	);
 }

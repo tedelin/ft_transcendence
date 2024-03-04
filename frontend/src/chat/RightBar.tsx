@@ -3,6 +3,7 @@ import { fetchUrl } from '../fetch';
 import { useAuth } from '../components/AuthProvider';
 import { getAvatar } from '../utils/utils';
 import { useNavigate } from 'react-router-dom';
+import "../styles/sideBar.css";
 
 function PrivateMessageList({}) {
 	const [privateMessage, setPrivateMessage] = useState([]);
@@ -17,7 +18,6 @@ function PrivateMessageList({}) {
 					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
 				},
 			});
-			console.log(response);
 			setPrivateMessage(response);
 		} catch (err: any) {
 			console.error(err.message);
@@ -63,7 +63,6 @@ function ChannelList() {
 					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
 				},
 			});
-			console.log(response);
 			setChannels(response.channels);
 		} catch (err: any) {
 			console.error(err.message);
@@ -95,15 +94,12 @@ function ChannelList() {
 export function RightBar() {
 	const [selected, setSelected] = useState('channels');
     return (
-        <div className="rightBar">
-            {/* <div className="topSide">
-                <h2 className="rightBarTitle">Messages</h2>
-            </div> */}
-			<select className="rightBarSelect" onChange={(e) => setSelected(e.target.value)}>
+        <div className="sideBar">
+			<select className="sideBarSelect" onChange={(e) => setSelected(e.target.value)}>
 				<option value="channels">Channels</option>
 				<option value="privateMessages">Private Messages</option>
 			</select>
-			<div className='rightBarList'>
+			<div className='list'>
 				{selected === 'channels' ? <ChannelList /> : <PrivateMessageList />}
 			</div>
         </div>

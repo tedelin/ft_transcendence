@@ -1,0 +1,83 @@
+.friendListItem span {
+	margin-left: 10px;
+}
+
+.friendActions {
+	display: flex;
+	align-items: center;
+	margin-left: auto;
+	/* margin: 15px; */
+}
+
+.acceptFriend,
+.declineFriend {
+	text-align: center;
+	box-sizing: border-box;
+	margin-left: 10px;
+	margin-right: 0px;
+	background-color: var(--primary-green);
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	padding: 8px;
+	margin: 8px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.searchFriends {
+	font-size: large;
+}
+
+.searchContainer {
+	height: 72px;
+}
+
+
+.declineFriend {
+	background-color: var(--primary-red);
+}
+
+.typingIndicator {
+	margin-left: 40px;
+}
+
+.friendSideBar span {
+	font-weight: bold;
+	margin-left: 15px;
+}
+
+.topBarAction,
+.topBarAction span,
+.topBarActionSelected,
+.topBarActionSelected span {
+	margin: 10px;
+	padding: 10px;
+	border-radius: 10px;
+	text-align: center;
+}
+
+.addFriendAction {
+	background-color: var(--primary-blue);
+	color: var(--text-primary-dark);
+	padding: 15px;
+	border-radius: 10px;
+	margin: 15px;
+	margin-bottom: 25px;
+	font-weight: bold;
+	text-align: center;
+
+}
+
+@media only screen and (min-width: 768px) {
+	.friendSideBar {
+		display: flex;
+		max-width: 300px;
+		width: 35%;
+		flex-direction: column;
+		padding: 15px;
+		align-items: center;
+		border-left: 3px solid var(--bg-secondary);
+		overflow-y: hidden;
+	}
+}
