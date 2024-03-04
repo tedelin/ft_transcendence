@@ -45,8 +45,7 @@
 .listItem,
 .listItemSelected,
 .listItemCenter,
-.listItemCenterSelected
-{
+.listItemCenterSelected {
 	display: flex;
 	align-items: center;
 	width: 100%;
@@ -55,12 +54,14 @@
 	margin-bottom: 5px;
 }
 
-.listItemCenter, .listItemCenterSelected {
+.listItemCenter,
+.listItemCenterSelected {
 	justify-content: center;
 	text-align: center;
 }
 
-.listItem img, .listItemCenter img {
+.listItem img,
+.listItemCenter img {
 	width: 30px;
 	height: 30px;
 	border-radius: 50%;
@@ -70,8 +71,7 @@
 .listItem:hover,
 .listItemSelected,
 .listItemCenter:hover,
-.listItemCenterSelected
-{
+.listItemCenterSelected {
 	border-radius: 10px;
 	background-color: var(--bg-secondary);
 }
@@ -95,8 +95,8 @@
 	word-wrap: anywhere;
 	line-height: 100%;
 	padding: 15px;
-	background: var(--bg-secondary);
-	border: none;
+	background: var(--bg-primary);
+	border: 1px solid var(--bg-secondary);
 	border-radius: 12px;
 	margin-bottom: 2em;
 	clear: both;
@@ -150,12 +150,12 @@
 	box-sizing: border-box;
 	font-size: 13px;
 	flex-grow: 1;
-	border-radius: 10px;
+	border-radius: 20px;
 	padding: 15px;
 	resize: none;
-	border: none;
+	border: 1px solid var(--bg-secondary);
 	outline: none;
-	background-color: var(--bg-secondary);
+	background-color: var(--bg-primary);
 	color: var(--text-primary);
 }
 
@@ -183,12 +183,13 @@ select {
 	box-sizing: border-box;
 	padding: 10px;
 	margin: 15px;
-	border: none;
 	border-radius: 8px;
 	font-size: 16px;
 	outline: none;
 	color: var(--text-primary);
-	background-color: var(--bg-secondary);
+	border: 1px solid var(--bg-secondary);
+
+	background-color: var(--bg-primary);
 }
 
 

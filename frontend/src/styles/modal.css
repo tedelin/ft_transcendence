@@ -44,8 +44,7 @@
     margin: 0px;
     padding: 10px;
     border-radius: 8px;
-    border: none;
-    background-color: var(--bg-secondary);
+    border: 1px solid var(--bg-secondary);
     color: var(--text-primary);
 }
 
@@ -53,46 +52,46 @@
 .modalButton,
 .cancelButton,
 .saveButton {
-	margin: 0px 0px 0px 15px;
+    margin: 0px 0px 0px 15px;
     box-sizing: border-box;
     border-radius: 8px;
-    border: none;
-    background-color: var(--bg-secondary);
+    border: 1px solid var(--bg-secondary);
+    background-color: var(--bg-primary);
     color: var(--text-primary);
 }
 
 .addPassword {
-	margin: 10px 0px 10px 0px;
+    margin: 10px 0px 10px 0px;
     box-sizing: border-box;
     border-radius: 8px;
-    border: none;
-    background-color: var(--bg-secondary);
+    border: 1px solid var(--bg-secondary);
+    background-color: var(--bg-primary);
     color: var(--text-primary);
 }
 
 .cancelButton,
 .saveButton {
-	margin: 0;
-	margin-top: 15px;
+    margin: 0;
+    margin-top: 15px;
 }
 
 .saveButton {
-	background-color: var(--primary-blue);
-	color: #fff;
+    background-color: var(--primary-blue);
+    color: #fff;
 }
 
 .fieldInfo {
-	display: flex;
-	flex-direction: column;
-	text-align: left;
-	margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-bottom: 5px;
 }
 
 .modalActions {
-	display: flex;
-	justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 }
 
 .row {
-	margin-top: 15px;
+    margin-top: 15px;
 }
