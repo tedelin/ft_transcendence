@@ -127,6 +127,7 @@
   border: none;
   outline: none;
   background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .inviteBtn {
@@ -332,7 +333,7 @@ select {
   box-sizing: border-box;
   margin-left: 10px;
   margin-right: 0px;
-  background-color: #267f49;
+  background-color: var(--primary-green);
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -390,12 +391,12 @@ select {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #7289da;
+  background-color: var(--bg-secondary);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #2c2f33;
+  background-color: var(--bg-primary);
 }
 
 @media only screen and (max-width: 768px) {
@@ -405,7 +406,7 @@ select {
     justify-content: center;
     height: auto;
     width: auto;
-    border-bottom: 3px solid #40444b;
+    /* border-bottom: 3px solid #40444b; */
   }
 
   .createButton,

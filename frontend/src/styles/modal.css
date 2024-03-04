@@ -24,7 +24,7 @@
 }
 
 .close {
-    color: var(--bg-secondary);
+    color: var(--text-primary);
     float: right;
     font-size: 28px;
     font-weight: bold;
