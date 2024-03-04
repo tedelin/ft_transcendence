@@ -217,6 +217,12 @@ function FriendsList({ selected }: { selected: string }) {
 							)}
 							{friend.status === "ACCEPTED" && (
 								<div className='friendActions'>
+									<span
+										onClick={() => navigate(`/chat/private-messages/${friend.initiatorId == auth?.user?.id ? friend.receiverId : friend.initiatorId}`)}
+										className='material-symbols-outlined'
+									>
+										chat
+									</span>
 									<button
 										className='declineFriend'
 										onClick={() => deleteFriend(friend.id)}
@@ -229,12 +235,16 @@ function FriendsList({ selected }: { selected: string }) {
 									>
 										Block
 									</button>
-									<span
-										onClick={() => navigate(`/chat/private-messages/${friend.initiatorId == auth?.user?.id ? friend.receiverId : friend.initiatorId}`)}
-										className='material-symbols-outlined'
+								</div>
+							)}
+							{friend.status === "BLOCKED" && (
+								<div className='friendActions'>
+									<button
+										className='declineFriend'
+										onClick={() => deleteFriend(friend.id)}
 									>
-										chat
-									</span>
+										Unblock
+									</button>
 								</div>
 							)}
 						</div>

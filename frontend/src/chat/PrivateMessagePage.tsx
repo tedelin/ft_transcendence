@@ -4,6 +4,7 @@ import { useAuth } from '../components/AuthProvider';
 import { useToast } from '../utils/hooks/useToast';
 import { fetchUrl } from '../fetch';
 import {PrivateMessagesDisplay} from './PrivateMessageDisplay';
+import { RightBar } from './RightBar';
 
 export function PrivateMessagePage() {
 	const [message, setMessage] = useState('');
@@ -61,16 +62,19 @@ export function PrivateMessagePage() {
 
 	return (
 		<>
-			<PrivateMessagesDisplay key={receiverId} conversationId={parseInt(receiverId)}/>
-			<div className="typingIndicator">{typing}</div>
-			<div className='messageInput'>
-				<textarea
-					value={message}
-					onKeyDown={handleKeyDown}
-					placeholder={'Send message'}
-					onChange={onTyping}
-				/>
+			<div className='flexRow'>
+				<PrivateMessagesDisplay key={receiverId} conversationId={parseInt(receiverId)}/>
+				<div className="typingIndicator">{typing}</div>
+				<div className='messageInput'>
+					<textarea
+						value={message}
+						onKeyDown={handleKeyDown}
+						placeholder={'Send message'}
+						onChange={onTyping}
+					/>
+				</div>
 			</div>
+			<RightBar />
 		</>
 	);
 }

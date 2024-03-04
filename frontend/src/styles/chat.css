@@ -47,6 +47,40 @@
   margin: 30px;
 }
 
+.rightBarSelect {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.rightBarList {
+	display: flex;
+	flex: 1;
+	overflow: auto;
+	flex-direction: column;
+	align-items: center;
+}
+
+.listItem {
+	/* background-color: green; */
+	display: flex;
+	align-items: center;
+	width: 100%;
+	padding: 15px;
+}
+
+.listItem img {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	margin-right: 15px;
+
+}
+
+.listItem:hover {
+	background-color: var(--bg-secondary);
+}
+
 .messageContainer {
   flex-grow: 1;
   overflow-y: auto;

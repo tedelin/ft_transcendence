@@ -15,6 +15,12 @@ export class PrivateMessageController {
 	async sendMessage(@UserRequest() user: User, @Body() message: PrivateMessageDto) {
 		return this.privateMessageService.sendMessage(user.id, message);
 	}
+	
+	@UseGuards(JwtGuard)
+	@Get('conversations')
+	async getAllUserConversations(@UserRequest() user: User) {
+		return this.privateMessageService.getAllConversations(user.id);
+	}
 
 	@UseGuards(JwtGuard)
 	@Get(':userId')
@@ -22,9 +28,4 @@ export class PrivateMessageController {
 		return this.privateMessageService.getConversation(user.id, userId);
 	}
 
-	@UseGuards(JwtGuard)
-	@Get('conversations')
-	async getAllUserConversations(@UserRequest() user: User) {
-		return this.privateMessageService.getAllConversations(user.id);
-	}
 }
