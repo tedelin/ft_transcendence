@@ -74,7 +74,7 @@ function FriendsTopBar({ setSelected, selected }: { setSelected: Function, selec
 				{options.map((option) => (
 					<div
 						key={option}
-						className={`listItem${selected === option ? "Selected" : ""}`}
+						className={`listItemCenter${selected === option ? "Selected" : ""}`}
 						onClick={() => handleOptionClick(option)}
 					>
 						{option}
@@ -92,9 +92,9 @@ function FriendsTopBar({ setSelected, selected }: { setSelected: Function, selec
 function SearchFriends({ selected }: { selected: string }) {
 	return (
 		(selected !== "AddFriend" &&
-		<>
-			<input className="searchFriends" type="text" placeholder="Search friends" />
-		</>)
+			<div className='searchContainer'>
+				<input className="searchFriends" type="text" placeholder="Search friends" />
+			</div>)
 	);
 }
 

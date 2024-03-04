@@ -80,7 +80,7 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
 				/>
 				{channel?.visibility === 'PUBLIC' ? 
 				<button
-					className='modalButton'
+					className='addPassword'
 					onClick={() => changeVisibility('PROTECTED')}
 				>
 					Add Password

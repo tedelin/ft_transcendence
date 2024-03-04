@@ -49,9 +49,19 @@
     color: var(--text-primary);
 }
 
+
 .modalButton,
 .cancelButton,
 .saveButton {
+	margin: 0px 0px 0px 15px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    border: none;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.addPassword {
 	margin: 10px 0px 10px 0px;
     box-sizing: border-box;
     border-radius: 8px;

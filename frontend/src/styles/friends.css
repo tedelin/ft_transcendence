@@ -27,9 +27,12 @@
 
 .searchFriends {
 	font-size: large;
+	width: 100%;
 }
 
 .searchContainer {
+	display: flex;
+	border-bottom: 3px solid var(--bg-secondary);
 	height: 72px;
 }
 

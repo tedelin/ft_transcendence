@@ -43,7 +43,9 @@
 }
 
 .listItem,
-.listItemSelected
+.listItemSelected,
+.listItemCenter,
+.listItemCenterSelected
 {
 	display: flex;
 	align-items: center;
@@ -53,7 +55,12 @@
 	margin-bottom: 5px;
 }
 
-.listItem img {
+.listItemCenter, .listItemCenterSelected {
+	justify-content: center;
+	text-align: center;
+}
+
+.listItem img, .listItemCenter img {
 	width: 30px;
 	height: 30px;
 	border-radius: 50%;
@@ -61,7 +68,9 @@
 }
 
 .listItem:hover,
-.listItemSelected 
+.listItemSelected,
+.listItemCenter:hover,
+.listItemCenterSelected
 {
 	border-radius: 10px;
 	background-color: var(--bg-secondary);
