@@ -1,53 +1,58 @@
 import { ClassGame } from './classGame';
 import { useEffect } from 'react';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 // import socket from './socket';
 import React from 'react';
 import '../styles/game.css';
-import { SettingsMenu } from './settingsMenu';
-import { EndGameMenu } from './endGameMenu';
-import { MatchmakingView } from './MatchmakingView';
+import '../styles/page.css';
+import '../styles/button.css';
+import '../styles/matchmaking.css'
+// import { SettingsMenu } from './settingsMenu';
+// import { EndGameMenu } from './endGameMenu';
+// import { MatchmakingView } from './MatchmakingView';
 import { useAuth } from '../components/AuthProvider';
 import { MatchHistory } from './matchHistory';
 import { fetchUrl } from '../fetch';
-import { useNavigate, useLocation, Link, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 import { useGame } from '../components/GameProvider';
+// import { Settings_game } from './Settings_game';
 // import { useError } from '../components/ErrorProvider';
 
-function StartGame({ gameInstance }) {
-    const auth = useAuth();
+// function StartGame({ gameInstance }) {
+//     const auth = useAuth();
+//     const game = useGame();
 
-    const handleKeyDown = (event) => {
-        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            auth?.socket?.emit('keyAction', { key: event.key, action: 'pressed' });
-        }
-    };
+//     const handleKeyDown = (event) => {
+//         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+//             auth?.socket?.emit('keyAction', { key: event.key, action: 'pressed' });
+//         }
+//     };
 
-    const handleKeyUp = (event) => {
-        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            auth?.socket?.emit('keyAction', { key: event.key, action: 'released' });
-        }
-    };
+//     const handleKeyUp = (event) => {
+//         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+//             auth?.socket?.emit('keyAction', { key: event.key, action: 'released' });
+//         }
+//     };
 
-    useEffect(() => {
-        gameInstance.startGame();
+//     useEffect(() => {
+//         game?.gameInstance?.current?.startGame();
 
-        document.addEventListener('keydown', handleKeyDown);
-        document.addEventListener('keyup', handleKeyUp);
+//         document.addEventListener('keydown', handleKeyDown);
+//         document.addEventListener('keyup', handleKeyUp);
 
-        return () => {
-            document.removeEventListener("keydown", gameInstance.handleKeyDown);
-            document.removeEventListener("keyup", gameInstance.handleKeyUp);
-        };
-    }, [gameInstance]);
+//         return () => {
+//             document.removeEventListener("keydown", game?.gameInstance.handleKeyDown);
+//             document.removeEventListener("keyup", game?.gameInstance.handleKeyUp);
+//         };
+//     }, [game?.gameInstance]);
 
 
-    return (
-        <div className="canva">
-            <canvas ref={gameInstance.canvasRef} width={gameInstance.canvasWidth} height={gameInstance.canvasHeight}></canvas>
-        </div>
-    );
-}
+//     return (
+//         <div className="canva">
+//             <canvas ref={game?.gameInstance.canvasRef} width={game?.gameInstance.canvasWidth} height={game?.gameInstance.canvasHeight}></canvas>
+//         </div>
+//     );
+// }
 
 export function Game() {
     const game = useGame();
@@ -187,6 +192,7 @@ export function Game() {
                 game.gameInstance.current = new ClassGame(React.createRef(), data.gameState, auth?.socket);
                 game.setGameStarted(true);
                 game.setSettingsToDo(false);
+                nav('/game/inGame');
             }
         });
 
@@ -228,69 +234,64 @@ export function Game() {
     }, []);
 
     return (
-        <div>
-            {!game?.gameStarted && game?.showButton && game?.historyAll && (
-                <>
-                    <button className='StartButton' onClick={handletsart}>Start Game</button>
-                    <MatchHistory matchs={game?.historyAll} />
-                </>
-            )}
-            <Outlet />
-        </div>
+        <>
+            <div className='page'>
+                {!game?.gameStarted && game?.showButton && game?.historyAll && (
+                    <div className="menu">
+                        <div className="loading-animation">
+                            <div className="boxxx">
+                                <div className='div_start_game'>
+                                    <div className='StartButton' onClick={handletsart}>Start Game</div>
+                                </div>
+                            </div>
+                        </div>
+                        <MatchHistory matchs={game?.historyAll} />
+                    </div>
+                )}
+                <Outlet />
+            </div>
+        </>
     )
+
+
     // useDetectNavigation(showButton, gameStarted, auth, handleQuit, navigate);
 
     // return (
     //     <div className="game">
-    //         {!gameStarted && showButton && historyAll && (
+    //         {!game?.gameStarted && game?.showButton && game?.historyAll && (
     //             <>
     //                 <button className='StartButton' onClick={handletsart}>Start Game</button>
-    //                 <MatchHistory matchs={historyAll} />
+    //                 <MatchHistory matchs={game?.historyAll} />
     //             </>
     //         )}
-    //         {!gameStarted && !showButton && settingsToDo && (
+    //         {!game?.gameStarted && !game?.showButton && game?.settingsToDo && (
     //             <>
     //                 <div className='CrossIcon' onClick={() => {
     //                     auth?.socket?.emit('crossMatchmaking');
     //                     // navigate('/game');
     //                     }}>&#10006;</div>
     //                 <MatchmakingView
-    //                     playerOne={playerOne}
-    //                     playerTwo={playerTwo}
     //                 />
-    //                 <SettingsMenu
-    //                     ballSpeed={ballSpeed}
-    //                     setBallSpeed={setBallSpeed}
-    //                     ballSize={ballSize}
-    //                     setBallSize={setBallSize}
-    //                     paddleHeight={paddleHeight}
-    //                     setPaddleHeight={setPaddleHeight}
-    //                     paddleSpeed={paddleSpeed}
-    //                     setPaddleSpeed={setPaddleSpeed}
-    //                     increasedBallSpeed={increasedBallSpeed}
-    //                     setIncreasedBallSpeed={setIncreasedBallSpeed}
-    //                     onSaveSettings={handleSaveSettings}
+    //                 <Settings_game
     //                 />
     //             </>
     //         )}
-    //         {!gameStarted && !showButton && !settingsToDo && (
+    //         {!game?.gameStarted && !game?.showButton && !game?.settingsToDo && (
     //             <>
-    //                 {!letsGO && <div className='CrossIcon' onClick={() => {
+    //                 {!game?.letsGO && <div className='CrossIcon' onClick={() => {
     //                     auth?.socket?.emit('crossMatchmaking');
     //                     }}>&#10006;</div>}
     //                 <MatchmakingView
-    //                     playerOne={playerOne}
-    //                     playerTwo={playerTwo}
     //                 />
-    //                 {!letsGO && (
+    //                 {!game?.letsGO && (
     //                     <div className="matchmaking-container">
     //                         <div className="matchmaking-animation"></div>
     //                         <div className="matchmaking-text">
-    //                             {firstPlayer ? 'Waiting for another player...' : 'Waiting for the other player to set the game...'}
+    //                             {game?.firstPlayer ? 'Waiting for another player...' : 'Waiting for the other player to set the game...'}
     //                         </div>
     //                     </div>
     //                 )}
-    //                 {letsGO && (
+    //                 {game?.letsGO && (
     //                     <div className="matchmaking-container">
     //                         <span className="letsgo">Let's GO !</span>
     //                         <Countdown />
@@ -298,10 +299,10 @@ export function Game() {
     //                 )}
     //             </>
     //         )}
-    //         {gameStarted && gameInstance.current && (
-    //             <StartGame gameInstance={gameInstance.current} />
+    //         {game?.gameStarted && game?.gameInstance.current && (
+    //             <StartGame gameInstance={game?.gameInstance.current} />
     //         )}
-    //         {gameStarted && !showEndGameModal && gameInstance.current && (
+    //         {game?.gameStarted && !game?.showEndGameModal && game?.gameInstance.current && (
     //             <>
     //                 <div className='CrossIcon' onClick={() => {
     //                     auth?.socket?.emit('quitInGame');
@@ -310,12 +311,12 @@ export function Game() {
     //                 }} >&#10006;</div>
     //             </>
     //         )}
-    //         {showEndGameModal && (
+    //         {game?.showEndGameModal && (
     //             <EndGameMenu
-    //                 Winner={Winner}
-    //                 isAbandon={isAbandon}
-    //                 playerStats={playerStats}
-    //                 isSpect={isSpectator}
+    //                 Winner={game?.Winner}
+    //                 isAbandon={game?.isAbandon}
+    //                 playerStats={game?.playerStats}
+    //                 isSpect={game?.isSpectator}
     //                 onQuit={handleQuit}
     //             />
     //         )}

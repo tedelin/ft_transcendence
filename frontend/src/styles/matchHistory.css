@@ -1,0 +1,79 @@
+.history-menu {
+    height:83%;
+    width:50%;
+    margin:auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* background-color:rgb(250, 253, 208); */
+}
+
+.matchs-menu {
+    /* background-color: rgb(138, 202, 125); */
+    flex-direction: column;
+    justify-content: flex-start;
+    height:100%;
+    width: 100%;
+    max-height:100%;
+    overflow: auto;
+}
+
+.matchs-title {
+    padding:1.5%;
+    font-size: 1.8vw;
+    color:black;
+    font-weight: bold;
+    text-align: center;
+}
+
+.match-item {
+    width:100%;
+    display: grid;
+    color: black;
+    font-size: 1.5vw;
+    grid-template-columns: 20% 10% 40% 10% 20%;
+    grid-template-rows: 100%;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+    border-bottom: 1px solid rgb(202, 196, 196);
+    /* background-color: rgb(160, 113, 204); */
+    align-items: center;
+    justify-items: center;
+}
+
+.match-item:first-child {
+    border-top: 1px solid rgb(202, 196, 196); /* Bordure en haut seulement pour le premier élément */
+}
+
+.view-match-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.view-match-button img {
+    display: block; /* Assure une bonne mise en page de l'image */
+    width: 20px; /* Ajustez selon la taille souhaitée */
+    height: 20px; /* Ajustez selon la taille souhaitée */
+}
+
+.match-item .score {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight:500;
+    font-size:1.8vw;
+    color:  black;
+}
+
+.match-item .playerPhoto {
+    display: flex;
+    align-items: center; /* Centrage vertical */
+    justify-content: center; /* Centrage horizontal */
+    width: 75%;
+    height: 100%;
+    border-radius: 50%;
+}

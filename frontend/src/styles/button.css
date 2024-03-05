@@ -1,0 +1,106 @@
+.loading-animation {
+    height:100%;
+    /* background-color: pink; */
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes growAndShrink {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes Change_color {
+    0% {
+        background-color: #0046af;
+    }
+
+    50% {
+        background-color: #3c7cfc;
+    }
+
+    100% {
+        background-color: #0046af;
+    }
+}
+
+.boxxx {
+    position:relative;
+    width: 200px;
+    height: 200px;
+    background: rgba(0,0,0,0);
+    border-radius: 50%;
+    overflow: hidden;
+    z-index:0;
+}
+
+.boxxx::before {
+
+    content:'';
+    position:absolute;
+    inset: -10px 60px;
+    background: linear-gradient(315deg, #00ccff, #d400d4);
+    transition: 0.5s;
+    animation: animate 4s linear infinite;
+}
+
+.boxxx:hover::before {
+    inset: 0px -30px;
+}
+
+.boxxx::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    background: white;
+    border-radius: 50%;
+}
+
+@keyframes animate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.StartButton {
+    width: 150px;
+    height: 150px;
+    text-decoration: none;
+    color: white;
+    background-color: #0046af;
+    border-radius: 50%;
+    display: flex;  
+    justify-content: center; 
+    align-items: center; 
+    animation: Change_color 3s infinite;
+    z-index:3;
+}
+
+.StartButton:hover {
+    animation-play-state: paused;
+}
+
+
+.div_start_game {
+    position:absolute;
+    inset: 25px 25px;
+    animation: growAndShrink 3s infinite;
+    z-index:3;
+}
+
+.div_start_game:hover {
+    animation-play-state: paused;
+}

@@ -17,7 +17,7 @@ import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
 import { Settings_game } from './game/Settings_game.tsx';
 // import { Ball } from './game/settings_ball';
 // import { Paddle } from './game/settings_paddle';
-import { MatchmakingView } from './game/MatchmakingView';
+import { Matchmaking } from './game/Matchmaking';
 import { GameProvider } from './components/GameProvider.tsx';
 import { InGame } from './game/InGame';
 
@@ -71,10 +71,10 @@ const router = createBrowserRouter([
 					},
 					{
 						path: "matchmaking",
-						element: <MatchmakingView />,
+						element: <Matchmaking />,
 					},
 					{
-						path: "in_game",
+						path: "inGame",
 						element: <InGame />,
 					},
 					{

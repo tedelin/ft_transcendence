@@ -1,468 +1,74 @@
-.game {
-    display: flex;
-    flex-grow: 1;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    background-color: rgb(255, 255, 255);
-    overflow: auto;
-}
-
-.canva {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    border: 1px solid #ccc;
-    display: inline-block;
-    border-radius: 5px;
-    z-index: 1;
-}
-
-@keyframes growAndShrink {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.1);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-@keyframes Change_color {
-    0% {
-        background-color: #0046af;
-    }
-
-    50% {
-        background-color: #3c7cfc;
-    }
-
-    100% {
-        background-color: #0046af;
-    }
-}
-
-.StartButton {
-    width: 100px;
-    height: 100px;
-    text-decoration: none;
-    color: white;
-    background-color: #0046af;
-    border-radius: 50%;
-    display: flex; /* Ajouter pour centrer le contenu */
-    justify-content: center; /* Ajouter pour centrer le contenu */
-    align-items: center; /* Ajouter pour centrer le contenu */
-    animation: Change_color 3s infinite;
-}
-
-.StartButton:hover {
-    animation-play-state: paused;
-}
-
-
-.div_start_game {
-    animation: growAndShrink 3s infinite;
-}
-
-.div_start_game:hover {
-    animation-play-state: paused;
-}
-
-.border_start {
-    border: 4px solid #0064c2;
-    padding: 10px;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-}
-
-.history-menu {
-    /* position: absolute; */
-    display: flex;
-    margin-top: 50px;
-    flex-direction: column;
-    background-color: #1d1d1d;
-    border-radius: 6px;
-    padding: 10px;
-    gap: 2px;
-}
-
-.matchs-menu {
-    color: white;
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: flex-end;
-    background-color: #46464633;
-    height: 290px;
-    width: 440px;
-    max-height: 290px;
-    overflow-y: auto;
-}
-
-.matchs-title {
-    font-size: 1.2rem;
-    color: white;
-    text-align: center;
-}
-
-.match-item {
-    display: grid;
-    color: white;
-    font-size: 0.85rem;
-    grid-template-columns: 200px 75px 75px 75px;
-    gap: 5px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    background-color: rgba(0, 0, 0, 0.3);
-    /* Fond noir transparent pour chaque match item */
-    align-items: center;
-    /* Centrer le contenu verticalement */
-    justify-items: center;
-    /* Centrer le contenu horizontalement */
-}
-
-.view-match-button {
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.view-match-button img {
-    display: block;
-    /* Assure une bonne mise en page de l'image */
-    width: 20px;
-    /* Ajustez selon la taille souhaitée */
-    height: 20px;
-    /* Ajustez selon la taille souhaitée */
-}
-
-.StartMessage {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    padding: 15px 32px;
-    display: inline-block;
-    font-size: 16px;
-}
-
-.CrossIcon {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    color: rgb(0, 0, 0);
-    font-size: 25px;
-    cursor: pointer;
-    z-index: 3;
-}
-
-.winner {
-    position: absolute;
-    left: 50%;
-    top: 60%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 16px;
-}
-
-.settings {
-    position: absolute;
-    font-size: 45px;
-    right: 15px;
-    top: 10px;
-    color: white;
-    cursor: pointer;
-}
-
-.settingsMenu {
-
-    position: absolute;
-    width: 700px;
-    /* height: 200px; */
-    padding: 10px;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
-    background-color: #1d1d1d;
-    color: #fff;
-    padding: 10px;
-    display: inline-block;
-    border-radius: 5px;
-    z-index: 1;
-}
-
-.settingRow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.buttonContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.SettingsButton {
-    background-color: #5f5f5f;
-    color: white;
-    padding: 5px 10px;
-    margin-top: 10px;
-    display: inline-block;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-
-.settingsSlider {
-    width: 80%;
-    height: 6px;
-    margin: 0;
-    padding: 0;
-    appearance: none;
-    background: linear-gradient(90deg, #af656500, #40444b, #7289da);
-    border-radius: 5px;
-}
-
-.settingsSlider::-webkit-slider-thumb {
-    appearance: none;
-    width: 5px;
-    height: 20px;
-    background: #ffffff;
-    border-radius: 3px;
-    cursor: ew-resize;
-}
-
-.settingsSlider::-moz-range-thumb {
-    appearance: none;
-    width: 5px;
-    height: 20px;
-    background: #ffffff;
-    border-radius: 3px;
-    cursor: ew-resize;
-}
-
-.label,
-.settingsSlider,
-.number {
-    flex: 1;
-}
-
-.label {
-    margin-left: 10px;
-}
-
-.number {
-    text-align: right;
-    margin-right: 10px;
-}
-
-.input {
-    text-align: center;
-}
-
-.matchmaking-container {
-    color: white;
-    position: relative;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 50px;
-}
-
-.matchmaking-animation {
-    width: 50px;
-    height: 50px;
-    border: 8px solid #748896;
-    border-radius: 50%;
-    border-top: 8px solid transparent;
-    animation: matchmaking-spin 1s linear infinite;
-}
-
-.matchmaking-text {
-    color: #fff;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-@keyframes matchmaking-spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* fond flou */
-.endGameMenu {
-    position: absolute;
-    top: 0;
-    left: 0;
+.play {
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* Fond flouté */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* FENETRE END GAME */
-.menuContent {
-    background: linear-gradient(90deg, #010150c2, rgba(0, 0, 0, 0.733), #410000);
-    /* border: 2px solid #c3073f; */
-    color: #fff;
-    width: 80%;
-    max-width: 600px;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    z-index: 3;
-}
-
-.menuHeader {
-    font-size: 50px;
-    margin-bottom: 40px;
-    margin-top: 10px;
-}
-
-.menuButton {
-    background-color: #e6a919;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    margin-top: 20px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.statsLine {
-    background-color: rgba(0, 0, 0, 0.255);
+    background-color: rgb(230, 229, 229);
     display: grid;
-    grid-template-columns: 0.5fr 0.5fr 0.5fr;
-    grid-template-rows: 50px 50px 50px;
-    gap: 10px;
-    margin-top: 10px;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    grid-template-columns: 100%;
+    grid-template-rows: 10% 80% 10%;
 }
 
-.box {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
 
-.leftPlayer img,
-.rightPlayer img {
-    padding: 15px;
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-}
-
-.leftPlayer span,
-.rightPlayer span {
-    text-align: center;
-    font-weight: bold;
-
-}
-
-.playerInfo {
-    display: flex;
-    flex-direction: column;
+.scores {
+    display:flex;
+    background-color: white;
+    flex-direction:row;
     justify-content: center;
     align-items: center;
-    color: white;
+    gap: 6%;
+    margin:auto;
+    border-bottom: 2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    width: 20%;
+    height:100%;
+    border-bottom-left-radius:10px;
+    border-bottom-right-radius:10px;
 }
 
-.leftPlayer,
-.rightPlayer {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgb(54, 54, 54);
-    border-radius: 10px;
-    /* box-shadow: 5px 10px 2px rgba(64, 91, 209, 0.589); */
+.score {
+    font-size:4vw;
+    font-weight: 900;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.rightPlayer {
-    right: 12%;
+.game-area {
+    display:grid;
+    grid-template-columns: 20% 60% 20%;
+    grid-template-rows: 100%;
+    /* background-color: pink; */
 }
 
-.leftPlayer {
-    left: 12%;
+.player {
+    margin:auto;
+    height:15vw;
+    width:15vw;
+    border-radius: 50%;
+    border: 3px solid black;
 }
 
-
-.letsgo {
-    font-weight: bold;
-    font-size: 75px;
-    animation: fadeIn 4.8s ease-out;
+canvas {
+    margin:auto;
+    height:90%;
+    width:100%;
+    border: 3px solid black;
 }
 
-.countDown {
-    color: #fff;
-    font-size: 60px;
-    animation: countDownAnimation 4.5s linear forwards;
+.spectatorsList {
+    border-top: 1px solid rgba(0, 0, 0, 0.26);
+    width:50%;
+    height:100%;
+    margin:auto;
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    overflow:auto;
 }
 
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-
-    95% {
-        opacity: 0;
-        transform: scale(0.5);
-    }
-
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
+.spectator {
+    padding:5px;
+    width: 9%; 
+    height: 85%;
+    border-radius: 50%; 
 }
 
-@keyframes countDownAnimation {
-    16.65% {
-        opacity: 1;
-    }
-
-    33.33% {
-        opacity: 0;
-    }
-
-    49.99% {
-        opacity: 1;
-    }
-
-    66.66% {
-        opacity: 0;
-    }
-
-    83.32% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}

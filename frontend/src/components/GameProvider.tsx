@@ -40,6 +40,8 @@ interface GameContextType {
     isSpectator: boolean;
     setIsSpectator: React.Dispatch<React.SetStateAction<boolean>>;
     saveClicked: boolean;
+    spectatorsBase: any[];
+    setSpectatorsBase: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -64,14 +66,16 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const [playerTwo, setPlayerTwo] = useState<any[]>([]);
     const [historyAll, setHistoryAll] = useState<any[]>([]);
     const saveClicked = false;
-
+    const [spectatorsBase, setSpectatorsBase] = useState([]);
     const [isSpectator, setIsSpectator] = useState(false);
 
-    let value = { gameStarted, setGameStarted, showButton, setShowButton, settingsToDo, setSettingsToDo, firstPlayer, setFirstPlayer, 
-        ballSpeed, setBallSpeed, paddleHeight, setPaddleHeight, paddleSpeed, setPaddleSpeed, increasedBallSpeed, setIncreasedBallSpeed, 
-        ballSize, setBallSize, Winner, setWinner, gameInstance, showEndGameModal, setShowEndGameModal, playerStats, setPlayerStats, 
-        isAbandon, setIsAbandon, letsGO, setLetsGO, playerOne, setPlayerOne, playerTwo, setPlayerTwo, historyAll, setHistoryAll, 
-        isSpectator, setIsSpectator, saveClicked };
+    let value = {
+        gameStarted, setGameStarted, showButton, setShowButton, settingsToDo, setSettingsToDo, firstPlayer, setFirstPlayer,
+        ballSpeed, setBallSpeed, paddleHeight, setPaddleHeight, paddleSpeed, setPaddleSpeed, increasedBallSpeed, setIncreasedBallSpeed,
+        ballSize, setBallSize, Winner, setWinner, gameInstance, showEndGameModal, setShowEndGameModal, playerStats, setPlayerStats,
+        isAbandon, setIsAbandon, letsGO, setLetsGO, playerOne, setPlayerOne, playerTwo, setPlayerTwo, historyAll, setHistoryAll,
+        isSpectator, setIsSpectator, saveClicked, spectatorsBase, setSpectatorsBase
+    };
 
     return (
         <GameContext.Provider value={value}>
@@ -81,5 +85,5 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useGame() {
-	return useContext(GameContext);
+    return useContext(GameContext);
 }

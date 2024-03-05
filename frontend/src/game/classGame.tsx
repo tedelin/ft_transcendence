@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useAuth } from '../components/AuthProvider';
 
 const RUNNING = 0;
 const ENDED = 1;
@@ -90,6 +91,7 @@ export class ClassGame {
         context.stroke();
 
         // ball
+        // console.log(this.localState.ball.pos.x, this.localState.ball.pos.y), "oueeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
         context.beginPath();
         context.arc(this.localState.ball.pos.x, this.localState.ball.pos.y, this.localState.ball.radius, 0, 2 * Math.PI);
         context.fillStyle = 'white';
@@ -102,8 +104,18 @@ export class ClassGame {
         context.fillText(`${this.localState.score.player2}`, this.canvasWidth - this.canvasWidth / 4, this.canvasHeight / 6);
     }
 
+    updateDimensions(width: number, height: number) {
+        console.log('updateDimensions();');
+        this.canvasWidth = width;
+        this.canvasHeight = height;
+        console.log(`updateDimension this.canvasWidth = ${width}, this.canvasHeight=${height}`)
+        this.updateCanvas(); // Mettez à jour le canvas immédiatement pour refléter les nouvelles dimensions
+    }
+
 
     updateCanvas() {
+        console.log("Game starteddddd");
+
         const canvas = this.canvasRef.current;
         if (!canvas) return;
         const context = canvas.getContext('2d');
