@@ -170,7 +170,7 @@ export function Game() {
         auth?.socket?.on('gameLaunch', (data) => {
             console.log('GameLaunch');
             if (game != null && !game.gameStarted) {
-                game.gameInstance.current = new ClassGame(React.createRef(), data.gameState, auth?.socket);
+                game.gameInstance.current = new ClassGame(React.createRef(), data.gameState, auth?.socket, { width: 800, height: 600 });
                 game.setGameStarted(true);
                 game.setSettingsToDo(false);
                 nav('/game/inGame');
@@ -182,7 +182,7 @@ export function Game() {
             game?.setPlayerStats(data.stats);
             game?.setIsAbandon(data.isAbandon);
             game?.setIsSpectator(data.isSpectator);
-            // game?.setShowEndGameModal(true);
+            game?.setShowEndGameModal(true);
             nav('/game/endGame');
         })
 
