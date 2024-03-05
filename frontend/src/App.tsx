@@ -17,6 +17,7 @@ import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
 import { twoFaRoutes } from './pages/two-facteur-auth/two-fa-routes';
 import { Callback } from './components/Callback.tsx';
 import Profil from './pages/Profil'
+import NewLogin from './pages/new-login'
 
 const router = createBrowserRouter([
 	{
@@ -77,7 +78,12 @@ const router = createBrowserRouter([
 			}
 		],
 	},
-	twoFaRoutes
+	twoFaRoutes,
+	{
+		path : '/NewLogin',
+		element : <NewLogin />
+
+	}
 ])
 
 export default function ErrorPage() {

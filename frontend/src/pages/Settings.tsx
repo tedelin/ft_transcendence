@@ -14,7 +14,7 @@ function Settings() {
       </div>
       <div className='right-side'>
         <AvatarUpload />
-        <button className='save'>Save</button>
+        <button className='save'>SAVE</button>
       </div>
     </div>
   );

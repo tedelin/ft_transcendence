@@ -150,8 +150,8 @@
   background-color: #7289da;
 }
 
-input,
-select {
+.chat > input, 
+.chat >select {
     box-sizing: border-box;
     padding: 10px;
     margin: 15px;

@@ -1,10 +1,13 @@
 .settingsPage {
   display: flex;
   /* flex-direction: row; */
-  width: 70%;
-  border: solid red 3px;
+  /* border: solid red 3px; */
+  width: 90%;
   box-sizing: border-box;
-  margin: 5vh auto 0;
+  margin: 0 auto;
+  padding-left: 10%;
+  min-height: 800px;
+  min-width: 800px;
 }
 
 .info-settings {
@@ -12,10 +15,10 @@
   height: 80%;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   box-sizing: border-box;
-  border: solid blue 3px;
   margin: 10% 0;
+  padding: 0 0% 10% 0%;
 }
 
 .right-side {
@@ -25,15 +28,35 @@
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
-  border: solid pink 3px;
   margin: 10% 0;
 }
 
 .edit-button {
-  background-color: grey;
-  /* border-radius: 1em; */
+  background-color: #d9d9d9;
+  border-radius: 10px;
   width: 80px;
   height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-100%, -100%);
+}
+
+.edit {
+  background-color: #d9d9d9 !important;
+  box-sizing: border-box;
+  color: black !important;
+  width: 100%;
+  height: 40px;
+  margin: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-button:hover,
+.edit:hover {
+  cursor: pointer;
 }
 
 .save {
@@ -41,11 +64,52 @@
   border: none;
   border-radius: 10px;
   color: white;
-  width: 100px;
+  width: 150px;
   height: 50px;
+  margin: 0 auto;
+  font-size: 1.2em;
 }
 
 .save:hover {
   background-color: #2832c2c5;
   cursor: pointer;
+}
+
+.BioSettings {
+  flex-grow: 4;
+}
+
+.UsernameSettings {
+  flex-grow: 2;
+}
+
+.UsernameSettings > input {
+  width: 100%;
+  height: 40%;
+  border: solid 0.1px rgba(0, 0, 0, 0.318);
+  border-radius: 10px;
+  font-size: 1.2em;
+  box-sizing: border-box;
+}
+.UsernameSettings > h2,
+.BioSettings > h2,
+.two-fa-settings > h2 {
+  font-weight: 100;
+}
+.BioSettings > textarea {
+  width: 100%;
+  height: 70%;
+  border: solid 0.1px rgba(0, 0, 0, 0.318);
+  border-radius: 10px;
+  font-size: 1.2em;
+  box-sizing: border-box;
+}
+
+.two-fa-settings {
+  flex-grow: 0.2;
+  border: solid 0.1px rgba(0, 0, 0, 0.3);
+  display: flex; /* Active Flexbox pour ce conteneur */
+  align-items: center; /* Alignement vertical des éléments enfants au centre */
+  justify-content: space-between;
+  border-radius: 10px;
 }
