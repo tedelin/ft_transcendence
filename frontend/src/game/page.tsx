@@ -82,25 +82,6 @@ export function Game() {
     const auth = useAuth();
     const nav = useNavigate();
 
-
-    function handleQuit() {
-        game?.setLetsGO(false);
-        game?.setGameStarted(false);
-        game?.setShowButton(true);
-        game?.setFirstPlayer(false);
-        game?.setSettingsToDo(false);
-        game?.setBallSpeed(5);
-        game?.setPaddleHeight(200);
-        game?.setPaddleSpeed(5);
-        game?.setIncreasedBallSpeed(0.003);
-        game?.setBallSize(15);
-        game?.setShowEndGameModal(false);
-        game?.setPlayerStats([]);
-        game?.setWinner(false);
-        game?.setPlayerOne([]);
-        game?.setPlayerTwo([]);
-    }
-
     function handletsart() {
         auth?.socket?.emit('clickPlay');
         game?.setShowButton(false);
@@ -164,7 +145,7 @@ export function Game() {
         }
         else if (game?.gameInstance.current) {
             auth?.socket?.emit('quitInGame');
-            handleQuit();
+            game?.handleQuit();
         }
     }
 
@@ -201,7 +182,8 @@ export function Game() {
             game?.setPlayerStats(data.stats);
             game?.setIsAbandon(data.isAbandon);
             game?.setIsSpectator(data.isSpectator);
-            game?.setShowEndGameModal(true);
+            // game?.setShowEndGameModal(true);
+            nav('/game/endGame');
         })
 
         auth?.socket?.on('backToMenu', () => {

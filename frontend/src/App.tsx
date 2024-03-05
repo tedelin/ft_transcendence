@@ -18,8 +18,9 @@ import { Settings_game } from './game/Settings_game.tsx';
 // import { Ball } from './game/settings_ball';
 // import { Paddle } from './game/settings_paddle';
 import { Matchmaking } from './game/Matchmaking';
-import { GameProvider } from './components/GameProvider.tsx';
+import { GameProvider } from './components/GameProvider';
 import { InGame } from './game/InGame';
+import { EndGame } from './game/endGame';
 
 const router = createBrowserRouter([
 	{
@@ -78,8 +79,8 @@ const router = createBrowserRouter([
 						element: <InGame />,
 					},
 					{
-						path: "finish_game",
-						// element: <FinishGame />,
+						path: "endGame",
+						element: <EndGame />,
 					}
 						// children: [
 						// 	{

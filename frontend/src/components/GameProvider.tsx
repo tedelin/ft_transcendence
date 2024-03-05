@@ -42,6 +42,7 @@ interface GameContextType {
     saveClicked: boolean;
     spectatorsBase: any[];
     setSpectatorsBase: React.Dispatch<React.SetStateAction<any[]>>;
+    handleQuit: () => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -69,12 +70,30 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const [spectatorsBase, setSpectatorsBase] = useState([]);
     const [isSpectator, setIsSpectator] = useState(false);
 
+    const handleQuit = () => {
+        setLetsGO(false);
+        setGameStarted(false);
+        setShowButton(true);
+        setFirstPlayer(false);
+        setSettingsToDo(false);
+        setBallSpeed(5);
+        setPaddleHeight(200);
+        setPaddleSpeed(5);
+        setIncreasedBallSpeed(0.003);
+        setBallSize(15);
+        setShowEndGameModal(false);
+        setPlayerStats([]);
+        setWinner(false);
+        setPlayerOne([]);
+        setPlayerTwo([]);
+    };
+
     let value = {
         gameStarted, setGameStarted, showButton, setShowButton, settingsToDo, setSettingsToDo, firstPlayer, setFirstPlayer,
         ballSpeed, setBallSpeed, paddleHeight, setPaddleHeight, paddleSpeed, setPaddleSpeed, increasedBallSpeed, setIncreasedBallSpeed,
         ballSize, setBallSize, Winner, setWinner, gameInstance, showEndGameModal, setShowEndGameModal, playerStats, setPlayerStats,
         isAbandon, setIsAbandon, letsGO, setLetsGO, playerOne, setPlayerOne, playerTwo, setPlayerTwo, historyAll, setHistoryAll,
-        isSpectator, setIsSpectator, saveClicked, spectatorsBase, setSpectatorsBase
+        isSpectator, setIsSpectator, saveClicked, spectatorsBase, setSpectatorsBase, handleQuit
     };
 
     return (

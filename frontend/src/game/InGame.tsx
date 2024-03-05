@@ -167,11 +167,11 @@ export function InGame() {
                 <canvas ref={game?.gameInstance.current?.canvasRef} width={game?.gameInstance?.current?.canvasWidth} height={game?.gameInstance?.current?.canvasHeight} />
                 <img className="player two" src={profil} alt='playerTwo'/>
             </div>
-            {/* <div className="spectatorsList">
-                {game?.current?.spectators.map((spectator, index) => (
-                    <img key={index} src={BoobaImg} alt={`Spectator ${spectator}`} className="spectator" />
+            <div className="spectatorsList">
+                {spectators?.map((spectator, index) => (
+                    <img key={index} src={"booba.jpeg"} alt={`Spectator ${spectator}`} className="spectator" />
                     ))}
-            </div> */}
+            </div>
         </div>
     );
 }
