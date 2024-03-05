@@ -26,7 +26,16 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "",
-				element: <Profil id='1'/>
+				element: <RequireAuth>
+					<div>
+						<h1>Home</h1>
+						<p>Welcome to the home page!</p>
+					</div>
+				</RequireAuth>
+			},
+			{
+				path: "profil/:id",
+				element: <RequireAuth><Profil/></RequireAuth>
 			},
 			{
 				path: "chat",
@@ -108,7 +117,6 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 	if (!auth?.user) {
 		return <Navigate to="/login" state={{ from: location }} replace />
 	}
-
 	return children;
 }
 

@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   id                   Int              @id @default(autoincrement())
-  id42				   Int?          	@unique
+  id42                 Int?             @unique
   username             String           @unique
   password             String
   avatar               String           @default("default-avatar.jpg")
@@ -24,15 +24,15 @@ model User {
   sentMessages         PrivateMessage[] @relation("PrivateMessageSender")
   receivedMessages     PrivateMessage[] @relation("PrivateMessageReceiver")
 
-  matchs               MatchUser[] // several games related to a user
-  stats                Stats? // just one state related to each user
-  Achievement          Achievement?
+  matchs      MatchUser[] // several games related to a user
+  stats       Stats? // just one state related to each user
+  Achievement Achievement?
 
   @@map("users")
-}
+} 
 
 model Friendship {
-  id          Int      @id @default(autoincrement())
+  id          Int              @id @default(autoincrement())
   initiatorId Int
   receiverId  Int
   status      FriendshipStatus
@@ -54,11 +54,11 @@ model Channel {
 }
 
 model ChannelUser {
-  channel     Channel		  @relation(fields: [channelName], references: [name])
+  channel     Channel @relation(fields: [channelName], references: [name])
   channelName String
-  role   	  Role
-  user   User 				  @relation(fields: [userId], references: [id])
-  userId Int
+  role        Role
+  user        User    @relation(fields: [userId], references: [id])
+  userId      Int
 
   @@id([channelName, userId])
 }
@@ -121,13 +121,13 @@ model Achievement {
 }
 
 model PrivateMessage {
-  id        Int      @id @default(autoincrement())
-  content   String
-  createdAt DateTime @default(now())
-  senderId  Int
+  id         Int      @id @default(autoincrement())
+  content    String
+  createdAt  DateTime @default(now())
+  senderId   Int
   receiverId Int
-  sender    User     @relation("PrivateMessageSender", fields: [senderId], references: [id])
-  receiver  User     @relation("PrivateMessageReceiver", fields: [receiverId], references: [id])
+  sender     User     @relation("PrivateMessageSender", fields: [senderId], references: [id])
+  receiver   User     @relation("PrivateMessageReceiver", fields: [receiverId], references: [id])
 
   @@map("private_messages")
 }
@@ -136,7 +136,6 @@ enum UserStatus {
   ONLINE
   OFFLINE
   IN_GAME
-
 }
 
 enum playerRole {
@@ -162,9 +161,9 @@ enum Visibility {
 }
 
 enum Role {
-	MEMBER
-	BANNED
-	MUTED
-	ADMIN
-	OWNER
+  MEMBER
+  BANNED
+  MUTED
+  ADMIN
+  OWNER
 }

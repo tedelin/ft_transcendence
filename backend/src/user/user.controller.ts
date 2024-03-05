@@ -51,6 +51,11 @@ export class UserController {
         return this.userService.getUserChannels(id);
     }
 
+    @Get('profilData/:id')
+    getProfilData(@Param('id', ParseIntPipe) id: number){
+        return this.userService.getProfilData(id);
+    }
+
 	@Post('upload-avatar')
 	@UseInterceptors(FileInterceptor('avatar', {
 		storage: diskStorage({

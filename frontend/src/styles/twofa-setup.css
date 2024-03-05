@@ -1,4 +1,4 @@
-header {
+.two-fa-settings header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -38,7 +38,7 @@ header {
 }
 
 .circle.active {
-  background-color: #4caf50;
+  background-color: #2832c2;
 }
 
 .line {
@@ -88,7 +88,7 @@ footer {
   width: 100%;
 }
 
-button {
+.two-fa-settings button {
   margin: 0 10px;
   padding: 10px 20px;
   border: none;
@@ -104,7 +104,7 @@ button {
 
 /* Styles pour le bouton Next */
 .button-next {
-  background-color: #4caf50;
+  background-color: #2832c2;
   margin: 0 10px;
   padding: 10px 20px;
   cursor: pointer;
@@ -129,7 +129,7 @@ button {
 
 /* Styles pour le bouton Done lorsque auth est true */
 .button-done-auth-true {
-  background-color: #4caf50;
+  background-color: #2832c2;
   margin: 0 10px;
   padding: 10px 20px;
   cursor: pointer;
@@ -175,7 +175,7 @@ form button {
   box-sizing: border-box;
   width: 50%;
   border-radius: 5px;
-  background-color: #4caf50;
+  background-color: #2832c2;
   margin: 0 10px;
   padding: 10px 10px;
   cursor: pointer;
@@ -186,7 +186,7 @@ form button {
 
 form button:hover {
   cursor: pointer;
-  background-color: #73be75;
+  background-color: #2832c2;
 }
 
 @keyframes popIn {
@@ -214,7 +214,7 @@ form button:hover {
 .congrats-message {
   animation: popIn 1s ease-out;
   font-size: 2rem;
-  color: #4caf50; /* Couleur verte pour le succès */
+  color: #2832c2; /* Couleur verte pour le succès */
 }
 
 .two-fa-settings {
@@ -224,26 +224,24 @@ form button:hover {
   border-top: solid rgba(131, 131, 131, 0.585) 0.1px;
   padding: 20px;
   width: 100%;
-  margin-top : 20px;
+  margin-top: 20px;
 }
 
-
 .twoFaInput {
-	background-color: white;
-	color: black;
-	
+  background-color: white;
+  color: black;
 }
 
 .validateTwoFaButton {
-	/* width: 15%; */
-	font-size: 16px;
-	box-sizing: border-box;
-	padding: 10px;
-	margin: 15px;
-	border-radius: 8px;
-	background-color: #267f49;
-	color: #ffffff;
-	border: none;
-	cursor: pointer;
-	transition: background-color 0.3s ease;
+  /* width: 15%; */
+  font-size: 16px;
+  box-sizing: border-box;
+  padding: 10px;
+  margin: 15px;
+  border-radius: 8px;
+  background-color: #2832c2;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }

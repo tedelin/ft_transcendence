@@ -15,11 +15,31 @@ function createAchievementBoxes(achievements) {
 	));
 }
 
-function Achievements() {
+function getAchievements(Achievements: any) {
+	console.log("Achievements.firstGame : ", Achievements.firstGame);
+	const achievements: { title: string; description: string; }[] = []; 
+	if (Achievements.firstGame)
+		achievements.push({ title: 'firstGame', description: 'description' } as { title: string; description: string; });
+	if (Achievements.firstWin)
+		achievements.push({ title: 'firstWin', description: 'description' } as { title: string; description: string; });
+	if (Achievements.firstLoose)
+		achievements.push({ title: 'firstLoose', description: 'description' } as { title: string; description: string; });
+	if (Achievements.masterWinner)
+		achievements.push({ title: 'masterWinner', description: 'description' } as { title: string; description: string; });
+	if (Achievements.invincible_guardian)
+		achievements.push({ title: 'invincible_guardian', description: 'description' } as { title: string; description: string; });
+	if (Achievements.Speed_Demon)
+		achievements.push({ title: 'Speed_Demon', description: 'description' } as { title: string; description: string; }); // Add the type assertion here
+	console.log("achievements : ", achievements);
+	return achievements;
+}
+
+function Achievements(Achievements: any) {
 	const [scrollPosition, setScrollPosition] = useState(0);
 	const sliderRef = useRef(null);
-
-	const achievements = [
+	console.log("Achievements : ", Achievements);
+	const achievements_list = getAchievements(Achievements.Achievement);
+	const placeholder = [
 		{ title: 'Premier pas', description: 'Complété votre première tâche' },
 		{ title: 'Rapidité', description: 'Complété une tâche en moins d\'une heure' },
 		{ title: 'Perfectionniste', description: 'Atteint un score parfait sur une tâche' },
@@ -31,7 +51,7 @@ function Achievements() {
 		// Ajoute d'autres achievements selon le besoin
 	];
 
-	const toRender = createAchievementBoxes(achievements);
+	const toRender = createAchievementBoxes(achievements_list);
 
 	const scrollLeft = () => {
 		if (sliderRef.current) {

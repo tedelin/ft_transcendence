@@ -37,14 +37,15 @@ function MatchBox({ match, playerId }) {
 	);
 }
 
-function createMatchBoxes(matches, playerId) {
-	return matches.map((match, index) => (
+function createMatchBoxes(matchs, playerId) {
+	return matchs.map((match, index) => (
 		<MatchBox key={index} match={match} playerId={playerId} />
 	));
 }
 
-function History({ playerId }) {
-	const matches = [
+function History(matchs : any, playerId: any) {
+	console.log("matchs : ", matchs);
+	const placeholder = [
 		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 3, name: 'Joueur C', picture: pictureB }, score: '2 - 1', winner: 1, loser: 3 },
 		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 4, name: 'Joueur D', picture: pictureB }, score: '1 - 2', winner: 4, loser: 1 },
 		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 5, name: 'Joueur E', picture: pictureB }, score: '2 - 0', winner: 1, loser: 5 },
@@ -54,7 +55,7 @@ function History({ playerId }) {
 		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 9, name: 'Joueur I', picture: pictureB }, score: '2 - 0', winner: 1, loser: 9 },
 		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 10, name: 'Joueur J', picture: pictureB }, score: '0 - 2', winner: 10, loser: 1 },
 	];
-	const toRender = createMatchBoxes(matches, playerId);
+	const toRender = createMatchBoxes(placeholder, playerId);
 
 	return (
 		<div className="History">

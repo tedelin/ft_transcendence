@@ -14,13 +14,14 @@ export function NavBar() {
     function logout() {
         auth?.signout();
     }
-
+	const userID = auth?.user?.id;
+	const profilUrl = "/profil/" + userID;
 	useEffect(() => {}, [auth?.user])
     return (
 		<>
 			<div className="navBar">
 				<div className="navItems">
-					<NavLink className="material-symbols-outlined" to="/">home</NavLink>
+					<NavLink className="material-symbols-outlined" to={profilUrl}>home</NavLink>
 					<NavLink className="material-symbols-outlined" to="/chat/friends">group</NavLink>
 					<NavLink className="material-symbols-outlined" to="/chat/channels">forum</NavLink>
 					<NavLink className="material-symbols-outlined" to="/game">sports_volleyball</NavLink>

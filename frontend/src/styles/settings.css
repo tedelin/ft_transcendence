@@ -1,0 +1,51 @@
+.settingsPage {
+  display: flex;
+  /* flex-direction: row; */
+  width: 70%;
+  border: solid red 3px;
+  box-sizing: border-box;
+  margin: 5vh auto 0;
+}
+
+.info-settings {
+  width: 50%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  box-sizing: border-box;
+  border: solid blue 3px;
+  margin: 10% 0;
+}
+
+.right-side {
+  width: 50%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  border: solid pink 3px;
+  margin: 10% 0;
+}
+
+.edit-button {
+  background-color: grey;
+  /* border-radius: 1em; */
+  width: 80px;
+  height: 40px;
+}
+
+.save {
+  background-color: #2832c2;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  width: 100px;
+  height: 50px;
+}
+
+.save:hover {
+  background-color: #2832c2c5;
+  cursor: pointer;
+}

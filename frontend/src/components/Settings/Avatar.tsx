@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
-import { useAuth } from './AuthProvider';
-import { getAvatar } from '../utils/utils';
+import { useAuth } from '../AuthProvider';
+import { getAvatar } from '../../utils/utils';
 
 
 function AvatarUpload() {
-	const [selectedFile, setSelectedFile] = useState(null);
-	const auth = useAuth();
-	const [preview, setPreview] = useState(getAvatar(auth?.user?.avatar));
-	const token = localStorage.getItem('jwtToken');
-
-
-  // Gère la sélection du fichier et met à jour l'aperçu
-  const handleFileChange = (event : any) => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const auth = useAuth();
+  const [preview, setPreview] = useState(getAvatar(auth?.user?.avatar));
+  const token = localStorage.getItem('jwtToken');
+  const handleFileChange = (event: any) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
@@ -20,7 +17,7 @@ function AvatarUpload() {
   };
 
   // Gère la soumission du formulaire
-  const handleUpload = async (event : any) => {
+  const handleUpload = async (event: any) => {
     event.preventDefault();
 
     if (!selectedFile) {
@@ -41,7 +38,6 @@ function AvatarUpload() {
 
       if (response.ok) {
         alert("Avatar uploadé avec succès !");
-        // Traite la réponse ici, par exemple en mettant à jour l'état du composant ou l'URL de l'aperçu
       } else {
         alert("Échec de l'upload de l'avatar.");
       }
@@ -53,10 +49,20 @@ function AvatarUpload() {
 
   return (
     <div>
-      <h2>Changer d'avatar</h2>
       <form onSubmit={handleUpload}>
-        {preview && <img src={preview} alt="Aperçu de l'avatar" style={{ width: 100, height: 100, borderRadius: '50%' }} />}
-        <input type="file" accept="image/*" onChange={handleFileChange} />
+        {preview && <img src={preview} alt="Aperçu de l'avatar" style={{ width: 300, height: 300, borderRadius: '50%' }} />}
+        <div className="edit">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            id="fileInput"
+            style={{ display: 'none' }}
+          />
+          <label htmlFor="fileInput" className="edit-button">
+            Edit
+          </label>
+        </div>
         <button type="submit">Changer d'avatar</button>
       </form>
     </div>
