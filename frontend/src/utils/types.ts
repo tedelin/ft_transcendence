@@ -15,6 +15,8 @@ export interface Friendship {
 	id: number;
 	initiatorId: number;
 	receiverId: number;
+	receiver: User;
+	initiator: User;
 	status: 'ACCEPTED' | 'PENDING' | 'BLOCKED';
 }
 
@@ -23,6 +25,7 @@ export interface User {
 	username: string;
 	avatar: string;
 	useTwoFa: boolean;
+	status: 'ONLINE' | 'OFFLINE' | 'IN_GAME';
 };
 
 export interface ChannelMessage {

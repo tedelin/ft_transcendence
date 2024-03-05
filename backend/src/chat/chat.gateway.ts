@@ -2,7 +2,7 @@ import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGa
 import { Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { UserService } from 'src/user/user.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, UserStatus } from '@prisma/client';
 import { ChannelMessageDto } from './dto/chat.dto';
 import { FriendService } from 'src/friends/friends.service';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -32,6 +32,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			return;
 		}
 		this.connectedUsers.set(client.id, user.id);
+		this.updateUserState(user.id, UserStatus.ONLINE);
 		const joinedChannels = await this.userService.getUserChannels(user.id);
 		joinedChannels.channels.forEach((channel) => {
 			if (channel.role === "BANNED") return ;
@@ -40,8 +41,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	async handleDisconnect(client: Socket) {
+		this.updateUserState(this.connectedUsers.get(client.id), UserStatus.OFFLINE);
 		this.connectedUsers.delete(client.id);
-		this.sendConnectedUsers();
 	}
 
 	@OnEvent('private.message')
@@ -112,14 +113,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		bannedClient.emit('banned', roomId);
 	}
 
-
-	@SubscribeMessage('get-connected-users')
-	async onGetConnectedUsers() {
-		this.sendConnectedUsers();
-	}
-
-	private sendConnectedUsers() {
-		this.server.emit('connected-users', Array.from(this.connectedUsers.values()));
+	@OnEvent('user.state')
+	async updateUserState(userId: number, state: UserStatus) {
+		const userFriends = await this.friendService.getFriendships(userId);
+		const friendsIds = userFriends.map((friend) => {
+			if (friend.initiatorId === userId) {
+				return friend.receiverId;
+			}
+			return friend.initiatorId;
+		});
+		const friendsSockets = [];
+		friendsIds.forEach((id) => {
+			const socketId = this.getKeyByValue(id);
+			if (socketId) {
+				friendsSockets.push(socketId);
+			}
+		});
+		this.userService.updateUserState(userId, state);
+		this.server.to(friendsSockets).emit('user-state', {userId, state});
 	}
 
 	private getClientByUserId(userId: number): Socket | null {

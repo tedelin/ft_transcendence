@@ -44,8 +44,10 @@ export class FriendService {
 			include: {
 				initiator: {
 					select: {
+						id: true,
 						username: true,
 						avatar: true,
+						status: true,
 					}
 				},
 				receiver: {
@@ -53,6 +55,7 @@ export class FriendService {
 						id: true,
 						username: true,
 						avatar: true,
+						status: true,
 					}
 				}
 

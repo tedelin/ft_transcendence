@@ -1,5 +1,6 @@
 import { DatabaseService } from 'src/database/database.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { UserStatus } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -49,5 +50,12 @@ export class UserService {
 			where: { id: userId },
 			data: { avatar },
 	  });
+	}
+
+	async updateUserState(userId: number, status: UserStatus) {
+		return await this.databaseService.user.update({
+			where: { id: userId },
+			data: { status },
+		});
 	}
 }

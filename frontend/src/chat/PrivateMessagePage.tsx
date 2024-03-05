@@ -5,6 +5,41 @@ import { useToast } from '../utils/hooks/useToast';
 import { fetchUrl } from '../fetch';
 import {PrivateMessagesDisplay} from './PrivateMessageDisplay';
 import { RightBar } from './RightBar';
+import { User } from '../utils/types';
+import { getAvatar } from '../utils/utils';
+
+function TopBar({ userId }: { userId: number }) {
+	const [user, setUser] = useState<User>();
+
+	async function fetchUser() {
+		try {
+			const response = await fetchUrl(`/users/id/${userId}`, {
+				method: "GET",
+				headers	: {
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+				},
+			});
+			setUser(response);
+		} catch {
+			console.log('error');
+		}
+	}
+
+	useEffect(() => {
+		fetchUser();
+	}, [userId]);
+
+	return (
+		<div className="topBarChat">
+			<div className="topChannel">
+				<img className="smallAvatar" src={getAvatar(user?.avatar)} alt="avatar" />
+				<span className='spanMargin'>
+					{user?.username}
+				</span>
+			</div>
+		</div>
+	);
+}
 
 export function PrivateMessagePage() {
 	const [message, setMessage] = useState('');
@@ -63,6 +98,7 @@ export function PrivateMessagePage() {
 	return (
 		<>
 			<div className='flexRow'>
+				<TopBar userId={parseInt(receiverId)} />
 				<PrivateMessagesDisplay key={receiverId} conversationId={parseInt(receiverId)}/>
 				<div className="typingIndicator">{typing}</div>
 				<div className='messageInput'>

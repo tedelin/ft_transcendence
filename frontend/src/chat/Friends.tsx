@@ -175,6 +175,26 @@ function FriendsList({ selected }: { selected: string }) {
 		getFriends();
 	}, [selected]);
 
+	useEffect(() => {
+		auth?.socket?.on('user-state', (data) => {
+			const updatedFriends = friends.map((friend) => {
+				if (friend.initiator.id === data.userId) {
+					return { ...friend, initiator: { ...friend.initiator, status: data.state } };
+				}
+				else if (friend.receiver.id === data.userId) {
+					return { ...friend, receiver: { ...friend.receiver, status: data.state } };
+				}
+				return friend;
+			});
+			setFriends(updatedFriends);
+		});
+
+		return () => {
+			auth?.socket?.off('user-state');
+		};
+	}, [friends]);
+	
+
 	const filteredFriends = friends.filter((friend: Friendship) => {
 		if (selected === "Pending") {
 			return (
@@ -191,66 +211,77 @@ function FriendsList({ selected }: { selected: string }) {
 	});
 
 	return (
-		selected !== "AddFriend" && (
-			<div className='list'>
-				{filteredFriends.length > 0 &&
-					filteredFriends.map((friend: any) => (
+		<>
+			{filteredFriends.length > 0 &&
+				filteredFriends.map((friendship: Friendship) => {
+					const friend = friendship.initiator.id === auth?.user?.id ? friendship.receiver : friendship.initiator;
+					return (
 						<div className='listItem' key={friend.id}>
-							<img src={friend.initiatorId == auth?.user?.id ? getAvatar(friend.receiver.avatar) : getAvatar(friend.initiator.avatar)} alt="profile-picture" />
-							<span>{friend.initiatorId == auth?.user?.id ? friend.receiver.username : friend.initiator.username}</span>
-							{friend.status === "PENDING" && (
+							<div className='statusContainer'>
+								<img
+									className='smallAvatar'
+									src={getAvatar(friend.avatar)}
+									alt='avatar'
+								/>
+								<span className={`status ${friend.status === "ONLINE" ? "online" : "offline"}`}>
+								</span>
+							</div>
+							<span className='spanMargin'>
+								{friend.username}
+							</span>
+							{friendship.status === "PENDING" && (
 								<div className='friendActions'>
 									<button
 										className='acceptFriend'
-										onClick={() => acceptFriendRequest(friend.id)}
+										onClick={() => acceptFriendRequest(friendship.id)}
 									>
 										Accept
 									</button>
 									<button
 										className='declineFriend'
-										onClick={() => deleteFriend(friend.id)}
+										onClick={() => deleteFriend(friendship.id)}
 									>
 										Decline
 									</button>
 								</div>
 							)}
-							{friend.status === "ACCEPTED" && (
+							{friendship.status === "ACCEPTED" && (
 								<div className='friendActions'>
 									<span
-										onClick={() => navigate(`/chat/private-messages/${friend.initiatorId == auth?.user?.id ? friend.receiverId : friend.initiatorId}`)}
+										onClick={() => navigate(`/chat/private-messages/${friend.id}`)}
 										className='material-symbols-outlined'
 									>
 										chat
 									</span>
 									<button
 										className='declineFriend'
-										onClick={() => deleteFriend(friend.id)}
+										onClick={() => deleteFriend(friendship.id)}
 									>
 										Remove
 									</button>
 									<button
 										className='declineFriend'
-										onClick={() => blockFriend(friend)}
+										onClick={() => blockFriend(friendship)}
 									>
 										Block
 									</button>
 								</div>
 							)}
-							{friend.status === "BLOCKED" && (
+							{friendship.status === "BLOCKED" && (
 								<div className='friendActions'>
 									<button
 										className='declineFriend'
-										onClick={() => deleteFriend(friend.id)}
+										onClick={() => deleteFriend(friendship.id)}
 									>
 										Unblock
 									</button>
 								</div>
 							)}
 						</div>
-					))}
-			</div>
-		)
-	);
+					);
+				})}
+		</>
+	)
 }
 
 

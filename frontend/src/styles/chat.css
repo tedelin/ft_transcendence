@@ -2,11 +2,29 @@
 	display: flex;
 	margin: 0;
 	padding: 0;
-	font-family: 'Nunito', Arial, Helvetica, sans-serif;
+	font-family: 'Play', Arial, Helvetica, sans-serif;
 	font-size: 16px;
 	height: 100vh;
 	flex-grow: 1;
 }
+
+.statusContainer {
+	position: relative;
+	display: inline-block;
+}
+
+.status {
+	width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: absolute;
+    top: 30px;
+    right: 15px;
+}
+
+.online { background-color: #43b581; }
+.offline { background-color: #747f8d; }
+.inGame { background-color: #f04747; }
 
 .smallAvatar {
 	width: 25px;

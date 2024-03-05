@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/c
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import { DatabaseService } from '../database/database.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, UserStatus } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './dto/auth.dto';
@@ -19,11 +19,14 @@ export class AuthService {
         try {
             authDto.password = await argon.hash(authDto.password);
             const user = await this.databaseService.user.create({
-                data: authDto,
+                data: {
+					username: authDto.username,
+					password: authDto.password,
+					status: UserStatus.ONLINE,
+				}
             });
             return this.signToken(user.id, user.username);
         } catch (error) {
-            console.log(error);
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
                     throw new ForbiddenException('Credential taken');
@@ -64,6 +67,7 @@ export class AuthService {
 			data: {
 				username: signUpDto.username,
 				password: '',
+				status: UserStatus.ONLINE,
 				id42: user.id
 			}
 		});
