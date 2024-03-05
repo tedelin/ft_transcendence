@@ -73,7 +73,7 @@
 .listItemCenter:hover,
 .listItemCenterSelected {
 	border-radius: 10px;
-	background-color: var(--bg-secondary);
+	background-color: var(--hover);
 }
 
 .messageContainer {

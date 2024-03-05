@@ -16,8 +16,11 @@
     --bg-primary-light: white;
     --bg-primary-dark: #0A0A0A;
 
-    --bg-secondary-light: #EBEBEB;
+    --bg-secondary-light: #D6D6D6;
     --bg-secondary-dark: #333333;
+
+	--hover-light: #F5F5F5;
+	--hover-dark: #141414;
 
     --bg-modal-light: rgba(0, 0, 0, 0.4);
     --bg-modal-dark: rgba(255, 255, 255, 0.05);
@@ -30,6 +33,7 @@
     --bg-secondary: var(--bg-secondary-light);
     --bg-navbar: var(--bg-navbar-light);
     --bg-modal: var(--bg-modal-light);
+	--hover: var(--hover-light);
 }
 
 .dark {
@@ -39,6 +43,7 @@
     --bg-secondary: var(--bg-secondary-dark);
     --bg-navbar: var(--bg-navbar-dark);
     --bg-modal: var(--bg-modal-dark);
+	--hover: var(--hover-dark);
 }
 
 * {
