@@ -6,62 +6,10 @@ import { Friendship, User } from '../utils/types';
 import { useNavigate } from 'react-router-dom';
 import '../styles/friends.css';
 import { getAvatar } from '../utils/utils';
+import { AddFriendModal } from './AddFriendModal';
 
 
-function AddFriend({ selected }: { selected: string }) {
-	const [username, setUsername] = useState('');
-	const [user, setUser] = useState<User | null>(null);
-	const { error, success } = useToast();
-
-	async function getUser() {
-		try {
-			const response = await fetchUrl(`/users/username/${username}`, {
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
-				},
-			});
-			setUser(response);
-		} catch (err: any) {
-			error(err.message);
-		}
-	}
-
-	async function sendRequest() {
-		try {
-			await fetchUrl(`/friends/${user?.id}`, {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
-				},
-			});
-			success('Friend request sent');
-		} catch (err: any) {
-			error(err.message);
-		}
-	}
-
-	useEffect(() => {
-		if (user)
-			sendRequest();
-	}, [user]);
-
-	return ((selected === "AddFriend" &&
-		<div className='createChannelContainer'>
-			<input
-				value={username}
-				onChange={(e) => setUsername(e.target.value)}
-				type="text"
-				placeholder="You can add friends by typing their username"
-			/>
-			<button className='createButton' onClick={getUser}>
-				Send Friend Request
-			</button>
-		</div>
-	));
-}
-
-function FriendsTopBar({ setSelected, selected }: { setSelected: Function, selected: string }) {
+function FriendsTopBar({ setSelected, selected, setFriendModal }: { setSelected: Function, selected: string, setFriendModal: Function }) {
 	const options = ["All", "Online","Pending", "Blocked"];
 
 	const handleOptionClick = (option: string) => {
@@ -81,7 +29,7 @@ function FriendsTopBar({ setSelected, selected }: { setSelected: Function, selec
 					</div>
 				))}
 			</div>
-			<div className='addFriendAction' onClick={() => setSelected("AddFriend")}>
+			<div className='addFriendAction' onClick={() => setFriendModal(true)}>
 				Add Friend
 			</div>
 		</>
@@ -290,16 +238,17 @@ function FriendsList({ selected }: { selected: string }) {
 
 export function Friends() {
 	const [selected, setSelected] = useState("All");
+	const [friendModal, setFriendModal] = useState(false);
 
 	return (
 		<>
 			<div className='flexColumn'>
-				<AddFriend selected={selected} />
+				<AddFriendModal enabled={friendModal} setEnabled={() => setFriendModal(false)} />
 				<SearchFriends selected={selected} />
 				<FriendsList selected={selected} />
 			</div>
 			<div className='sideBar'>
-				<FriendsTopBar selected={selected} setSelected={setSelected} />
+				<FriendsTopBar selected={selected} setSelected={setSelected} setFriendModal={setFriendModal}/>
 			</div>
 		</>
 	);

@@ -32,7 +32,7 @@ export function Modal({ isOpen, onClose, children, className = "modal-content", 
         <div className="modal" onClick={handleBackdropClick} onKeyDown={handleKeyDown}>
             <div className={className} onKeyDown={handleKeyDown}>
                 {/* <span className="close" onClick={onClose}>&times;</span> */}
-                <h2>{title}</h2>
+                <h2 className='modalTitle'>{title}</h2>
                 {children}
             </div>
         </div>

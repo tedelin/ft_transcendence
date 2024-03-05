@@ -86,26 +86,23 @@ export function Callback() {
 	return (
 		<div className='chatArea'>
 			<Modal
-				title="Two Factor Authentication"
 				isOpen={requireTwoFa}
 				onClose={() => setRequireTwoFa(false)}
 			>
-				<div>
-					<label htmlFor="code">Enter the code from your authenticator app</label>
+					<div className='fieldInfo'>Enter the code from your authenticator app</div>
 					<input
 						type="text"
+						className='edit'
 						id="code"
-						className='twoFaInput'
 						value={userCode}
 						onChange={(e) => setUserCode(e.target.value)}
 					/>
 					<button
-						className='validateTwoFaButton'
+						className='saveButton'
 						onClick={verify2fa}
 					>
 						Submit
 					</button>
-				</div>
 			</Modal>
 			<Modal
 				title="Complete User Profile"

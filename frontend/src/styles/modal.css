@@ -5,7 +5,6 @@
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
     background-color: var(--bg-modal);
     backdrop-filter: blur(2px);
 }
@@ -18,6 +17,16 @@
     padding: 20px 40px 20px 40px;
     border: none;
     width: fit-content;
+	max-height: 60%;
+	min-width: 50%;
+	display: flex;
+	flex-direction: column;
+	/* overflow-y: auto; */
+}
+
+.modalTitle {
+	text-align: center;
+	margin-bottom: 20px;
 }
 
 .close {
@@ -52,6 +61,7 @@
 .modalButton,
 .cancelButton,
 .saveButton {
+	width: 100%;
     margin: 0px 0px 0px 15px;
     box-sizing: border-box;
     border-radius: 8px;
@@ -71,12 +81,14 @@
 
 .cancelButton,
 .saveButton {
+	width: auto;
     margin: 0;
     margin-top: 15px;
 }
 
 .saveButton {
-    background-color: var(--primary-blue);
+	background-color: var(--primary-blue);
+	border: none;
     color: #fff;
 }
 
@@ -93,5 +105,29 @@
 }
 
 .row {
-    margin-top: 15px;
+	display: flex;
+	flex-direction: row;
+    margin: 15px 0px 15px 0px;
+}
+
+.searchFriends {
+	margin: 0px 0px 0px 0px;
+	box-sizing: border-box;
+	border-radius: 8px;
+	border: 1px solid var(--bg-secondary);
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+}
+
+.addFriendButton {
+	margin: 0px 0px 0px 15px;
+	box-sizing: border-box;
+	border-radius: 8px;
+	padding: 0px;
+	border: none;
+	background-color: var(--primary-blue);
+}
+
+.addFriendButton span {
+	color: #fff;
 }

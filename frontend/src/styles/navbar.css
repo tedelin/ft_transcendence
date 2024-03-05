@@ -13,6 +13,7 @@
     padding: 10px;
     width: 60px;
     border-right: 3px solid var(--bg-secondary);
+	overflow-x: hidden;
 }
 
 .navItems {
