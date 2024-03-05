@@ -4,9 +4,10 @@ import { useAuth } from '../components/AuthProvider';
 import { getAvatar } from '../utils/utils';
 import { useNavigate } from 'react-router-dom';
 import "../styles/sideBar.css";
+import { PrivateMessage } from '../utils/types';
 
 function PrivateMessageList({}) {
-	const [privateMessage, setPrivateMessage] = useState([]);
+	const [privateMessage, setPrivateMessage] = useState<PrivateMessage[] | []>([]);
 	const auth = useAuth();
 	const navigate = useNavigate();
 
@@ -30,7 +31,16 @@ function PrivateMessageList({}) {
 
 	useEffect(() => {
 		fetchPrivateMessages();
-	}, []);
+		auth?.socket?.on('user-state', (data) => {
+			const updateDM = privateMessage.map((dm: PrivateMessage) => {
+				if (dm.id === data.id) {
+					return { ...dm, status: data.status };
+				}
+				return dm;
+			});
+			setPrivateMessage(updateDM);
+		});
+	}, [privateMessage]);
 
 	return (
 		<>
@@ -40,7 +50,10 @@ function PrivateMessageList({}) {
 						<div key={dm.username} className='listItem'
 							onClick={() => goTo(dm.id)}
 						>
-							<img src={getAvatar(dm.avatar)} alt={dm.username} />
+							<div className='statusContainer'>
+								<img className='smallAvatar' src={getAvatar(dm.avatar)} alt={dm.username} />
+								<span className={`status ${dm.status === "ONLINE" ? "online" : "offline"}`}></span>
+							</div>
 							<span>{dm.username}</span>
 						</div>
 					);

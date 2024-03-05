@@ -62,7 +62,7 @@ function AddFriend({ selected }: { selected: string }) {
 }
 
 function FriendsTopBar({ setSelected, selected }: { setSelected: Function, selected: string }) {
-	const options = ["Online", "All", "Pending", "Blocked"];
+	const options = ["All", "Online","Pending", "Blocked"];
 
 	const handleOptionClick = (option: string) => {
 		setSelected(option);
@@ -195,23 +195,26 @@ function FriendsList({ selected }: { selected: string }) {
 	}, [friends]);
 	
 
-	const filteredFriends = friends.filter((friend: Friendship) => {
+	const filteredFriends = friends.filter((friendship: Friendship) => {
+		const friend = friendship.initiator.id === auth?.user?.id ? friendship.receiver : friendship.initiator;
 		if (selected === "Pending") {
 			return (
-				friend.status === "PENDING" &&
-				friend.initiatorId !== auth?.user?.id
+				friendship.status === "PENDING" &&
+				friendship.initiator.id !== auth?.user?.id
 			);
 		} else if (selected === "All") {
-			return friend.status === "ACCEPTED";
+			return friendship.status === "ACCEPTED";
 		} else if (selected === "Blocked") {
-			return (friend.status === "BLOCKED" && friend.initiatorId == auth?.user?.id);
+			return (friendship.status === "BLOCKED" && friendship.initiator.id == auth?.user?.id);
+		} else if (selected === "Online") {
+			return friendship.status === "ACCEPTED" && friend.status === "ONLINE";
 		} else {
-			return friend.status === "ACCEPTED";
+			return friendship.status === "ACCEPTED";
 		}
 	});
 
 	return (
-		<>
+		<div className='list'>
 			{filteredFriends.length > 0 &&
 				filteredFriends.map((friendship: Friendship) => {
 					const friend = friendship.initiator.id === auth?.user?.id ? friendship.receiver : friendship.initiator;
@@ -280,13 +283,13 @@ function FriendsList({ selected }: { selected: string }) {
 						</div>
 					);
 				})}
-		</>
+		</div>
 	)
 }
 
 
 export function Friends() {
-	const [selected, setSelected] = useState("Online");
+	const [selected, setSelected] = useState("All");
 
 	return (
 		<>
