@@ -56,4 +56,5 @@
     min-height: 100vh;
     background-color: var(--bg-primary);
     color: var(--text-primary);
+	transition: background-color 0.5s ease, color 0.5s ease;
 }
