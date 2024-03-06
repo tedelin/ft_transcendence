@@ -3,13 +3,20 @@ import '../styles/end-game.css';
 import profil from './profil.jpeg';
 import { useGame } from '../components/GameProvider';
 import { useNavigate } from 'react-router-dom';
-
+import BlockBackNavigation from "./BlockBackNavigation";
+import { useEffect } from 'react';
 
 
 export function EndGame() {
     const game = useGame();
     const nav = useNavigate();
     const winnerClass = game?.Winner ? "img-winner wlaurier" : "img-winner wchapeau";
+
+    useEffect(() => {
+        if (!game?.showEndGameModal) {
+            nav('/game/');
+        }
+    }, [game]);
 
     function handleQuit() {
         game?.setLetsGO(false);
@@ -31,21 +38,26 @@ export function EndGame() {
     };
 
     return (
-        <div className="endGameMenu">
-            <div className="menuContent">
-                <div className="end-scores">8 - 0</div>
-                <div className="images-conteneur">
-                    <div className={game?.Winner || game?.isSpectator ? 'img laurier' : 'img chapeau'}>
-                        <img src={profil} alt="profil" className={winnerClass} />
+        <>
+        {game?.showEndGameModal && (
+            <div className="endGameMenu">
+                <BlockBackNavigation />
+                <div className="menuContent">
+                    <div className="end-scores">8 - 0</div>
+                    <div className="images-conteneur">
+                        <div className={game?.Winner || game?.isSpectator ? 'img laurier' : 'img chapeau'}>
+                            <img src={profil} alt="profil" className={winnerClass} />
+                        </div>
                     </div>
-                </div>
-                <div className="menu-footer">
-                    <div className="sentence">
-                        {game?.isSpectator ? `${game?.Winner} won ! 🥳` : game?.Winner ? "You won ! 🥳" : "You lost...  🤡"}
+                    <div className="menu-footer">
+                        <div className="sentence">
+                            {game?.isSpectator ? `${game?.Winner} won ! 🥳` : game?.Winner ? "You won ! 🥳" : "You lost...  🤡"}
+                        </div>
+                        <div className="menuButton" onClick={handleQuit}>{">"}</div>
                     </div>
-                    <div className="menuButton" onClick={handleQuit}>{">"}</div>
                 </div>
             </div>
-        </div>
+        )}
+        </>
     );
 }

@@ -69,22 +69,18 @@ const router = createBrowserRouter([
 					{
 						path: "settings",
 						element: <Settings_game />,
-						onBack: () => <Navigate to="/game" />,
 					},
 					{
 						path: "matchmaking",
 						element: <Matchmaking />,
-						onBack: () => <Navigate to="/game" />,
 					},
 					{
 						path: "inGame",
 						element: <InGame />,
-						onBack: () => <Navigate to="/game" />,
 					},
 					{
 						path: "endGame",
 						element: <EndGame />,
-						onBack: () => <Navigate to="/game" />,
 					}
 				]
 			}
