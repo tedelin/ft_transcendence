@@ -63,7 +63,7 @@ export function AddFriendModal({ enabled, setEnabled } : { enabled: boolean, set
 		<Modal isOpen={enabled} onClose={closeSettings}>
 			<input type="text" placeholder="Search User" value={input} onChange={(e) => handleChange(e.target.value)} />
 			<div className='list'>
-				{users.map((user: User) => (
+				{users.length > 0 ? users.map((user: User) => (
 					<div key={user.id} className='listItem'>
 						<div className='statusContainer'>
 							<img
@@ -87,7 +87,7 @@ export function AddFriendModal({ enabled, setEnabled } : { enabled: boolean, set
 							</button>
 						</div>
 					</div>
-				))}
+				)) : <div>No users found</div>}
 			</div>
 		</Modal>
 	);

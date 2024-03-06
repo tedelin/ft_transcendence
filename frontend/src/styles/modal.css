@@ -110,15 +110,6 @@
     margin: 15px 0px 15px 0px;
 }
 
-.searchFriends {
-	margin: 0px 0px 0px 0px;
-	box-sizing: border-box;
-	border-radius: 8px;
-	border: 1px solid var(--bg-secondary);
-	background-color: var(--bg-primary);
-	color: var(--text-primary);
-}
-
 .addFriendButton {
 	margin: 0px 0px 0px 15px;
 	box-sizing: border-box;

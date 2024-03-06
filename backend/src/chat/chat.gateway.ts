@@ -51,11 +51,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const senderSocketId = this.getKeyByValue(sender);
 		const blockedUsers = await this.friendService.findBlockedByUsers(sender);
 		const blockedUsersIds = blockedUsers.map((blockedUser) => blockedUser.initiatorId);
-		if (blockedUsersIds.includes(sender)) {
+		this.server.to(senderSocketId).emit('private-message', storedMessage);
+		console.log(blockedUsersIds);
+		if (blockedUsersIds.includes(receiver)) {
 			return;
 		}
 		this.server.to(receiverSocketId).emit('private-message', storedMessage);
-		this.server.to(senderSocketId).emit('private-message', storedMessage);
 	}
 
 

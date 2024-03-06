@@ -116,6 +116,7 @@ export function Callback() {
 					onChange={(e) => setUsername(e.target.value)}
 				/>
 				<button
+					className='saveButton'
 					onClick={registerUser}
 				>
 					Submit

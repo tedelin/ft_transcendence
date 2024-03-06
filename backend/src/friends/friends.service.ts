@@ -11,12 +11,18 @@ export class FriendService {
         await this.checkUserExistence(initiatorId);
         await this.checkUserExistence(receiverId);
 
-        const existingFriendship = await this.databaseService.friendship.findUnique({
+        const existingFriendship = await this.databaseService.friendship.findFirst({
             where: {
-                initiatorId_receiverId: {
-                    initiatorId,
-                    receiverId,
-                },
+                OR: [
+					{
+						initiatorId: initiatorId,
+						receiverId: receiverId,
+					},
+					{
+						initiatorId: receiverId,
+						receiverId: initiatorId,
+					},
+				]
             },
         });
 
