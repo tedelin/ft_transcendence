@@ -1,13 +1,22 @@
-import React from 'react';
-import './game.css';
-import './matchmaking.css';
-import { useState, useEffect} from 'react'
+import '../styles/game.css';
+import '../styles/matchmaking.css';
+import { useState, useEffect } from 'react'
 import { MatchmakingView } from './MatchmakingView';
 import { useAuth } from '../components/AuthProvider';
+import { useGame } from '../components/GameProvider';
+import { useNavigate } from 'react-router-dom';
+import BlockBackNavigation from "./BlockBackNavigation";
 
-export function Matchmaking({ playerOne, playerTwo, letsgo }) {
-
+export function Matchmaking() {
+    const game = useGame();
     const auth = useAuth();
+    const nav = useNavigate();
+
+    useEffect(() => {
+        if (game?.gameStarted || game?.showButton || game?.settingsToDo) {
+            nav('/game/');
+        }
+    }, [game]);
 
     function Countdown() {
         const [count, setCount] = useState(3);
@@ -23,21 +32,27 @@ export function Matchmaking({ playerOne, playerTwo, letsgo }) {
             return () => clearInterval(countdownInterval);
         }, [count]);
 
-        return <div className='countDown'>{count}</div>;
+        return (<div className='countDown'>{count}</div>);
     }
 
     return (
-        <div className="matchmaking">
-            {!letsgo && <div className='CrossIcon' onClick={() => {
-                auth?.socket?.emit('crossMatchmaking');
-                }}>&#10006;</div>}
-            <MatchmakingView playerOne={playerOne} playerTwo={playerTwo} />
-            {letsgo && (
-                <div className="matchmaking-container">
-                    <span className="letsgo">Let's GO !</span>
-                    <Countdown />
+        <>
+            {!game?.gameStarted && !game?.showButton && !game?.settingsToDo && (
+                <div className="matchmaking">
+                    < BlockBackNavigation />
+                    {!game?.letsGO && <div className='CrossIcon' onClick={() => {
+                        auth?.socket?.emit('crossMatchmaking');
+                        nav('/game');
+                    }}>&#10006;</div>}
+                    <MatchmakingView />
+                    {game?.letsGO && (
+                        <div className="matchmaking-container">
+                            <span className="letsgo">Let's GO !</span>
+                            <Countdown />
+                        </div>
+                    )}
                 </div>
             )}
-        </div>
+        </>
     );
 }

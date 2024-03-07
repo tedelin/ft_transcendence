@@ -1,5 +1,3 @@
-import React, { useEffect } from 'react';
-
 const ENDED = 1;
 
 interface Pos {

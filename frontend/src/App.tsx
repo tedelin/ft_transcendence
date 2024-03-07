@@ -5,6 +5,7 @@ import Chat from './chat/page';
 import { NavBar } from './components/NavBar';
 import { Game } from './game/page';
 import { AuthProvider, useAuth } from './components/AuthProvider';
+import './App.css';
 import './styles/chat.css';
 import Settings from './pages/Settings';
 import { Channels } from './chat/Channels';
@@ -13,6 +14,13 @@ import { ChatBox } from './chat/ChatBox';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
+import { Settings_game } from './game/settings/settings_game.tsx';
+import { Ball } from './game/settings/settings_ball.tsx';
+import { Paddle } from './game/settings/settings_paddle.tsx';
+import { Matchmaking } from './game/Matchmaking';
+import { GameProvider } from './components/GameProvider';
+import { InGame } from './game/InGame';
+import { EndGame } from './game/endGame';
 
 const router = createBrowserRouter([
 	{
@@ -56,7 +64,35 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "game",
-				element: <RequireAuth><Game /></RequireAuth>
+				element: <RequireAuth><GameProvider><Game /></GameProvider></RequireAuth>,
+				children: [
+					{
+						path: "settings",
+						element: <Settings_game />,
+						children: [
+							{
+								path: "ball",
+								element: <Ball />,
+							},
+							{
+								path: "paddle",
+								element: <Paddle />,
+							}
+						],
+					},
+					{
+						path: "matchmaking",
+						element: <Matchmaking />,
+					},
+					{
+						path: "inGame",
+						element: <InGame />,
+					},
+					{
+						path: "endGame",
+						element: <EndGame />,
+					}
+				],
 			}
 		],
 	},
@@ -109,10 +145,10 @@ export function App() {
 		const token = urlParams.get('token');
 
 		if (token) {
-		  localStorage.setItem('jwtToken', token);
-		  document.location.search = '';
+			localStorage.setItem('jwtToken', token);
+			document.location.search = '';
 		}
-	  }, []);
+	}, []);
 
 	return (
 		<RouterProvider router={router} />

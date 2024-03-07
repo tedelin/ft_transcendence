@@ -1,7 +1,5 @@
-import React from 'react';
-import { useState } from 'react';
+import '../styles/matchHistory.css';
 import { MatchItem } from './matchItem';
-import './matchHistory.css';
 
 export function MatchHistory( { matchs }) {
     return (

@@ -58,7 +58,7 @@
     display:flex;
     justify-content: center;
     align-items:center;
-    background-image: url("./lauriers.png");
+    background-image: url("../game_img/lauriers.png");
     background-size: 90% 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -69,7 +69,7 @@
     margin-left: 3vw;
     justify-content: center;
     align-items:center;
-    background-image: url("./chapeau.png");
+    background-image: url("../game_img/chapeau.png");
     background-size: 50% 50%;
     background-repeat: no-repeat;
     background-position: center top;

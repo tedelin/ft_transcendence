@@ -113,7 +113,6 @@ model Achievement {
   masterWinner        Boolean // 10 win ou plus 
   invincible_guardian Boolean // win sans encaisser de but
   Speed_Demon         Boolean // quand la balle atteint la vitessse max
-  // bcp d'arret de balle pendant un point 
 
   @@map("achievement")
 }

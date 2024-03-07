@@ -1,18 +1,18 @@
 const API_URL = 'http://localhost:3000/private-messages'; // Ajustez selon votre configuration
 
 export async function createConversation(receiverId: number) {
-	const response = await fetch(`http://localhost:3000/private-messages/conversations`, {
-	  method: 'POST',
-	  headers: {
-		'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
-		'Content-Type': 'application/json',
-	  },
-	  body: JSON.stringify({ receiverId }),
-	});
-	if (!response.ok) {
-	  throw new Error('Failed to create conversation');
-	}
-	return response.json();
+  const response = await fetch(`http://localhost:3000/private-messages/conversations`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ receiverId }),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to create conversation');
+  }
+  return response.json();
 }
 
 export async function fetchConversations() {

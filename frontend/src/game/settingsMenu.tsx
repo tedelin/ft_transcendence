@@ -1,5 +1,5 @@
 import React from 'react';
-import './game.css';
+import '../styles/chat.css';
 
 export function SettingsMenu({ ballSpeed, setBallSpeed, ballSize, setBallSize, increasedBallSpeed, setIncreasedBallSpeed, paddleHeight, setPaddleHeight, paddleSpeed, setPaddleSpeed, onSaveSettings }) {
     return (

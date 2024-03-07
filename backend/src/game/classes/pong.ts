@@ -58,8 +58,8 @@ export class GameState {
                 'ArrowDown': KeyState.RELEASE
             }
         },
-        private canvasHeight = 600,
-        private canvasWidth = 800,
+        private canvasHeight = 800,
+        private canvasWidth = 1200,
     ) { }
 
     private resetSpeed(paddleHeight, ballSpeed, paddleSpeed, point_win) {
