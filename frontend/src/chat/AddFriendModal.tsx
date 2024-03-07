@@ -26,16 +26,13 @@ export function AddFriendModal({ enabled, setEnabled } : { enabled: boolean, set
 					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
 				},
 			});
-			let filtered = response;
-			if (value.trim() !== '') {
-				filtered = response.filter((user: User) => {
-					if (user.id === auth?.user?.id) return false;
-					const username = user.username || '';
-					const lowercaseUsername = username.toLowerCase();
-					const lowercaseValue = value.toLowerCase();
-					return lowercaseUsername.includes(lowercaseValue);
-				});
-			}
+			const filtered = response.filter((user: User) => {
+				if (user.id === auth?.user?.id) return false;
+				const username = user.username || '';
+				const lowercaseUsername = username.toLowerCase();
+				const lowercaseValue = value.toLowerCase();
+				return lowercaseUsername.includes(lowercaseValue);
+			});
 			setUsers(filtered);
 		} catch (err: any) {
 			error(err.message);

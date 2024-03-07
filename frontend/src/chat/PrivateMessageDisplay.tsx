@@ -34,10 +34,9 @@ export function PrivateMessagesDisplay({ conversationId }: { conversationId: num
 
     useEffect(() => {
         auth?.socket?.on('private-message', (message: PrivateMessage) => {
-            // if (message.sender.id !== conversationId) {
-            //     return;
-            // }
-			// console.log(message);
+            if (message.sender.id !== conversationId && message.sender.id !== auth?.user?.id) {
+                return;
+            }
             setReceivedMessages(prevMessages => [...prevMessages, message]);
         });
         

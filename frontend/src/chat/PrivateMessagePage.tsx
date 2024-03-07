@@ -108,6 +108,7 @@ export function PrivateMessagePage() {
 						placeholder={'Send message'}
 						onChange={onTyping}
 					/>
+					<button>Invite to game</button>
 				</div>
 			</div>
 			<RightBar />
