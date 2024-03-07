@@ -177,12 +177,7 @@ export function Settings_game() {
             < BlockBackNavigation />
             < TopBar />
             < RightBar />
-            <div className='buttonContainer'>
-                <Link to="/game/settings/ball" className='SettingsButton'>Ball</Link>
-                <Link to="/game/settings/paddle" className='SettingsButton'>Paddle</Link>
-            </div>
-            <p>la je suis dans setting</p>
-            <Outlet />
+            < Outlet />
             <div className='buttonContainer'>
                 <Link to="/game/matchmaking" className='SettingsButton' onClick={handleSaveSettings}>next</Link>
             </div>

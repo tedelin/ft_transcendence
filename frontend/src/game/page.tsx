@@ -155,7 +155,7 @@ export function Game() {
                 game?.setFirstPlayer(true);
                 if (!data.settingDone) {
                     game?.setSettingsToDo(true);
-                    nav('/game/settings');
+                    nav('/game/settings/ball');
                 }
             }
             else
