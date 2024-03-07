@@ -20,14 +20,22 @@ export function AddFriendModal({ enabled, setEnabled } : { enabled: boolean, set
 
 	async function fetchUser(value: string) {
 		try {
-			const response = await fetchUrl('/users/all');
-			const filtered = response.filter((user: User) => {
-				if (user.id === auth?.user?.id) return false;
-				const username = user.username || '';
-				const lowercaseUsername = username.toLowerCase();
-				const lowercaseValue = value.toLowerCase();
-				return lowercaseUsername.includes(lowercaseValue);
+			const response = await fetchUrl(`/users?search=${input}`, {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+				},
 			});
+			let filtered = response;
+			if (value.trim() !== '') {
+				filtered = response.filter((user: User) => {
+					if (user.id === auth?.user?.id) return false;
+					const username = user.username || '';
+					const lowercaseUsername = username.toLowerCase();
+					const lowercaseValue = value.toLowerCase();
+					return lowercaseUsername.includes(lowercaseValue);
+				});
+			}
 			setUsers(filtered);
 		} catch (err: any) {
 			error(err.message);
@@ -48,16 +56,15 @@ export function AddFriendModal({ enabled, setEnabled } : { enabled: boolean, set
 		}
 	}
 
-	function handleChange(value: string) {
+	async function handleChange(value: string) {
 		setInput(value);
-		fetchUser(value);
 	}
 
 	useEffect(() => {
 		if (enabled) {
 			fetchUser('');
 		}
-	}, [enabled]);
+	}, [enabled, input]);
 
 	return (
 		<Modal isOpen={enabled} onClose={closeSettings}>

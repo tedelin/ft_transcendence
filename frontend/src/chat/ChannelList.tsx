@@ -9,7 +9,13 @@ export function SearchChannel({ setChannels } : { setChannels: Function }) {
 	const [input, setInput] = useState('');
 
 	async function fetchChannels(value: string) {
-		const response = await fetchUrl('/chat/channels');
+		const response = await fetchUrl('/chat/channels/search?search=' + input, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
+			},
+		});
 		const filtered = response.filter((channel: Channel) => {
 			const channelName = channel.name || '';
 			const lowercaseChannelName = channelName.toLowerCase();
@@ -23,6 +29,10 @@ export function SearchChannel({ setChannels } : { setChannels: Function }) {
 		setInput(value);
 		fetchChannels(value);
 	}
+
+	useEffect(() => {
+		fetchChannels('');
+	}, [input]);
 
 	return (
 		<>

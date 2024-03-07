@@ -10,6 +10,7 @@ import {
     UseInterceptors,
     NotFoundException,
     StreamableFile,
+	Query,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtGuard } from '../auth/guard/jwt.guard';
@@ -35,6 +36,12 @@ export class UserController {
     getMe(@Req() req: Request) {
         return req.user;
     }
+
+	// @UseGuards(JwtGuard)
+	@Get('')
+	searchUser(@Query('search') query: string = '') {
+		return this.userService.searchUser(query);
+	}
 
     @Get('username/:username')
     getUserByName(@Param('username') username: string) {

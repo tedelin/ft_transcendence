@@ -1,4 +1,4 @@
-import { useLocation, Outlet, Navigate, createBrowserRouter, RouterProvider, useRouteError } from 'react-router-dom';
+import { useLocation, Outlet, Navigate, createBrowserRouter, RouterProvider, useRouteError, useParams } from 'react-router-dom';
 import Login from './pages/Login';
 import Chat from './chat/page';
 import { NavBar } from './components/NavBar';
@@ -15,8 +15,59 @@ import { PrivateMessagePage } from './chat/PrivateMessagePage.tsx'
 import './styles/App.css';
 import './styles/chat.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from './utils/providers/ThemeProvider.tsx';
+import { fetchUrl } from './fetch.tsx';
+
+function ChannelMember({children}: {children: JSX.Element}) {
+	const [loading, setLoading] = useState(true);
+	const [exist, setExist] = useState(false);
+	const [isMember, setIsMember] = useState(true);
+	const [isBanned, setIsBanned] = useState(false);
+	const { name } = useParams();
+
+	async function verifyMembership() {
+		try {
+			const response = await fetchUrl(`/chat/channels/membership/${name}`, {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+					'Content-Type': 'application/json',
+				},
+			});
+			setExist(response.exist);
+			setIsMember(response.member);
+			setIsBanned(response.banned);
+		} catch (err: any) {
+			console.error(err.message);
+		} finally {
+			setLoading(false);
+		}
+	}
+
+	useEffect(() => {
+		verifyMembership();
+	}, []);
+
+	if (loading) {
+		return <div>Loading...</div>
+	}
+
+	if (!exist) {
+		return <div className='accessError'>This channel does not exist</div>
+	
+	}
+
+	if (isBanned) {
+		return <div className='accessError'>Oops you are banned from this channel</div>
+	}
+
+	if (!isMember) {
+		return <div className='accessError'>You are not a member of this channel</div>
+	}
+
+	return children;
+}
 
 const router = createBrowserRouter([
 	{
@@ -38,7 +89,7 @@ const router = createBrowserRouter([
 					},
 					{
 						path: 'channels/:name',
-						element: <ChatBox />,
+						element: <ChannelMember><ChatBox /></ChannelMember>,
 					},
 					{
 						path: 'friends',

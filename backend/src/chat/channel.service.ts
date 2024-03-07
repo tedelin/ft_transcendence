@@ -225,4 +225,40 @@ export class ChannelService {
 			}
 		});
 	}
+
+	async searchPublicChannels(query: string) {
+		return await this.databaseService.channel.findMany({
+			take: 11,
+			where: {
+				visibility: Visibility.PUBLIC,
+				...(query 
+					? {
+						name: {
+							contains: query,
+						},
+					} 
+					: {}),
+			},
+			select: {
+				name: true,
+				visibility: true,
+				password: false,
+				messages: false,
+			}
+		});
+	
+	}
+
+	async verifyMembership(userId: number, name: string) {
+		const channel = await this.findByName(name);
+		if (!channel) return {exist: false};
+		const user = await this.databaseService.channelUser.findFirst({
+			where: {
+				userId,
+				channelName: name,
+			}
+		});
+		if (user?.role === Role.BANNED) return {exist: true, member: false, banned: true};
+		return {exist: true, member: !!user, banned: false};
+	}
 }

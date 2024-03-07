@@ -8,6 +8,15 @@
 	flex-grow: 1;
 }
 
+.accessError {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	flex: 1;
+}
+
 .statusContainer {
 	position: relative;
 	display: inline-block;

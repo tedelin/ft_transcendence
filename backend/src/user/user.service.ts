@@ -7,7 +7,33 @@ export class UserService {
 	constructor(private readonly databaseService: DatabaseService) {}
 
 	async findAll() {
-		return await this.databaseService.user.findMany();
+		return await this.databaseService.user.findMany({
+			select: {
+				id: true,
+				username: true,
+				avatar: true,
+				status: true,
+			},
+		});
+	}
+
+	async searchUser(query: string) {
+		return await this.databaseService.user.findMany({
+			take: 10,
+			where: query 
+				? {
+					username: {
+						contains: query,
+					},
+				} 
+				: {},
+			select: {
+				id: true,
+				username: true,
+				avatar: true,
+				status: true,
+			},
+		});
 	}
 
     async getUserById(id: number) {

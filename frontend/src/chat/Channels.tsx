@@ -9,7 +9,12 @@ export function Channels() {
 
 	async function fetchChannels() {
 		try {
-			const data = await fetchUrl('/chat/channels');
+			const data = await fetchUrl('/chat/channels/search?=', {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+				},
+			});
 			setChannels(data);
 		} catch (error) {
 			console.error('Error fetching channels:', error);
