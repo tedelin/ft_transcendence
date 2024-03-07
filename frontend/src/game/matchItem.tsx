@@ -1,6 +1,6 @@
 import React from 'react';
 import '../styles/game.css';
-import eyeIcon from './streaming.png';
+import eyeIcon from '../game_img/streaming.png';
 import { useAuth } from '../components/AuthProvider';
 
 export function MatchItem({ match }) {

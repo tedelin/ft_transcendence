@@ -14,9 +14,9 @@ import { ChatBox } from './chat/ChatBox';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
-import { Settings_game } from './game/Settings_game.tsx';
-// import { Ball } from './game/settings_ball';
-// import { Paddle } from './game/settings_paddle';
+import { Settings_game } from './game/settings/settings_game.tsx';
+import { Ball } from './game/settings/settings_ball.tsx';
+import { Paddle } from './game/settings/settings_paddle.tsx';
 import { Matchmaking } from './game/Matchmaking';
 import { GameProvider } from './components/GameProvider';
 import { InGame } from './game/InGame';
@@ -69,6 +69,16 @@ const router = createBrowserRouter([
 					{
 						path: "settings",
 						element: <Settings_game />,
+						children: [
+							{
+								path: "ball",
+								element: <Ball />,
+							},
+							{
+								path: "paddle",
+								element: <Paddle />,
+							}
+						],
 					},
 					{
 						path: "matchmaking",
@@ -82,7 +92,7 @@ const router = createBrowserRouter([
 						path: "endGame",
 						element: <EndGame />,
 					}
-				]
+				],
 			}
 		],
 	},

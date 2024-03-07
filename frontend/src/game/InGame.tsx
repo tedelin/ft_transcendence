@@ -77,7 +77,7 @@ import '../styles/matchmaking.css'
 import { useAuth } from '../components/AuthProvider';
 import { useGame } from '../components/GameProvider';
 import { useNavigate } from 'react-router-dom';
-import profil from './profil.jpeg';
+import profil from '../game_img/profil.jpeg';
 import BlockBackNavigation from "./BlockBackNavigation";
 
 
@@ -182,7 +182,7 @@ export function InGame() {
                     </div>
                     <div className="spectatorsList">
                         {spectators?.map((spectator, index) => (
-                            <img key={index} src={"booba.jpeg"} alt={`Spectator ${spectator}`} className="spectator" />
+                            <img key={index} src={"../game_img/booba.jpeg"} alt={`Spectator ${spectator}`} className="spectator" />
                         ))}
                     </div>
                 </div>

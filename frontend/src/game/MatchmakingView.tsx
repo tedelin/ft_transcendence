@@ -49,8 +49,8 @@
 import React from 'react';
 // import '../styles/game.css';
 import '../styles/matchmaking.css';
-import projectLogo from './logo.png';
-import profil from './profil.jpeg';
+import projectLogo from '../game_img/logo.png';
+import profil from '../game_img/profil.jpeg';
 import { useGame } from '../components/GameProvider';
 
 export function MatchmakingView() {
