@@ -1,7 +1,7 @@
 import { Injectable, ConflictException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Prisma, Visibility, Role } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
-import { ChannelMessageDto, CreateChannelDto } from './dto/chat.dto';
+import { ChannelMessageDto, CreateChannelDto, UpdateChannelDto } from './dto/chat.dto';
 import { JoinChannelDto } from './dto/chat.dto';
 import { FriendService } from 'src/friends/friends.service';
 import { ModerationService } from 'src/moderation/moderation.service';
@@ -141,10 +141,8 @@ export class ChannelService {
 		});
 	}
 
-	async update(name: string, updateChannelDto: Prisma.ChannelUpdateInput) {
-		console.log(updateChannelDto);
+	async update(name: string, updateChannelDto: UpdateChannelDto) {
 		if (updateChannelDto.password) {
-			console.log('hashing password');
 			const password = updateChannelDto.password as string;
 			const hash = await argon.hash(password);
 			updateChannelDto.password = hash;

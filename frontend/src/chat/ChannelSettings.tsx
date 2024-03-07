@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { fetchUrl } from '../fetch';
 import { useToast } from '../utils/hooks/useToast';
 import { Modal } from '../components/Modal';
-import '../styles/modal.css';
 import { Channel } from '../utils/types';
+import '../styles/modal.css';
 
 
 export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boolean, setEnabled: Function, name: string }) {
@@ -31,6 +31,7 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
 				}),
 			});
 			success('Channel settings updated !');
+			closeSettings();
 		} catch (err: any) {
 			error(err.message);
 		}
@@ -99,7 +100,6 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
 					>
 						Remove Password
 					</button>
-					<button className='modalButton'>Change Password</button>
 				</div>)}
 				<div className='modalActions'>
 					<button
