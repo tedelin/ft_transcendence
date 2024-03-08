@@ -23,9 +23,13 @@ export function RightBar() {
 
     return (
         <div className='RightBar'>
-            <div className="ballContainer" onClick={() => nav('/game/settings/ball')} style={{background : backgroundBall}}>
-                <img src={ball} alt="ball" />
-                <button>Ball</button>
+            <div className='list'>
+                <div className='listItem'>
+                    <img src={ball} alt="ball" />
+                    <span>Ball</span>
+                </div>
+            </div>
+            {/* <div className="ballContainer" onClick={() => nav('/game/settings/ball')} style={{background : backgroundBall}}>
             </div>
             <div className="paddleContainer" onClick={() => nav('/game/settings/paddle')} style={{background : backgroundPaddle}}>
                 <img src={paddle} alt="paddle" />
@@ -33,7 +37,7 @@ export function RightBar() {
             </div>
             <div className='saveContainer'>
                 <button className='save'>Save</button>
-            </div>
+            </div> */}
         </div>
     )
 }
