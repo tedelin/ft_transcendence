@@ -216,23 +216,21 @@ export function Game() {
     }, []);
 
     return (
-        <>
-            <div className='page'>
-                {!game?.gameStarted && game?.showButton && game?.historyAll && (
-                    <div className="menu">
-                        <div className="loading-animation">
-                            <div className="boxxx">
-                                <div className='div_start_game'>
-                                    <div className='StartButton' onClick={handletsart}>Start Game</div>
-                                </div>
+        <div className='page'>
+            {!game?.gameStarted && game?.showButton && game?.historyAll && (
+                <div className="menu">
+                    <div className="loading-animation">
+                        <div className="boxxx">
+                            <div className='div_start_game'>
+                                <div className='StartButton' onClick={handletsart}>Start Game</div>
                             </div>
                         </div>
-                        <MatchHistory matchs={game?.historyAll} />
                     </div>
-                )}
-                <Outlet />
-            </div>
-        </>
+                    <MatchHistory matchs={game?.historyAll} />
+                </div>
+            )}
+            <Outlet />
+        </div>
     )
 
 

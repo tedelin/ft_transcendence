@@ -173,14 +173,16 @@ export function Settings_game() {
     }
 
     return (
-        <div className='rien'>
+        <>
             < BlockBackNavigation />
             < TopBar />
-            < RightBar />
-            < Outlet />
-            <div className='buttonContainer'>
-                <Link to="/game/matchmaking" className='SettingsButton' onClick={handleSaveSettings}>next</Link>
+            <div className='rowDirection'>
+                < Outlet />
+                < RightBar />
             </div>
-        </div>
+            {/* <div className='buttonContainer'>
+                <Link to="/game/matchmaking" className='SettingsButton' onClick={handleSaveSettings}>next</Link>
+            </div> */}
+        </>
     );
 }
