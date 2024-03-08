@@ -35,7 +35,7 @@
     display:grid;
     grid-template-columns: 20% 60% 20%;
     grid-template-rows: 100%;
-    /* background-color: pink; */
+    background-color: pink;
 }
 
 .player {
@@ -51,10 +51,12 @@ canvas {
     height:90%;
     width:100%;
     border: 3px solid black;
+    background-color: aqua;
 }
 
 .spectatorsList {
     border-top: 1px solid rgba(0, 0, 0, 0.26);
+    background-color: brown;
     width:50%;
     height:100%;
     margin:auto;
@@ -70,5 +72,6 @@ canvas {
     width: 9%; 
     height: 85%;
     border-radius: 50%; 
+    z-index:1000;
 }
 

@@ -78,6 +78,7 @@ import { useAuth } from '../components/AuthProvider';
 import { useGame } from '../components/GameProvider';
 import { useNavigate } from 'react-router-dom';
 import profil from '../game_img/profil.jpeg';
+import boobaprofil from '../game_img/booba.jpeg';
 import BlockBackNavigation from "./BlockBackNavigation";
 
 
@@ -90,12 +91,14 @@ export function InGame() {
 
     const handleKeyDown = (event) => {
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            console.log("PRESSED");
             auth?.socket?.emit('keyAction', { key: event.key, action: 'pressed' });
         }
     };
 
     const handleKeyUp = (event) => {
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            console.log("RELEASED");
             auth?.socket?.emit('keyAction', { key: event.key, action: 'released' });
         }
     };
@@ -129,27 +132,27 @@ export function InGame() {
         });
         console.log("spectators on listening now");
 
-        const updateCanvasSize = () => {
-            console.log('updateCanvasSize();');
-            const canvas = game?.gameInstance?.current?.canvasRef;
-            if (canvas) {
-                // const width = window.innerWidth;
-                // const height = window.innerHeight;
-                // canvas.width = width;
-                // canvas.height = height * (9 / 16); // Ajuster selon le ratio d'aspect désiré
-                const width = canvas.current?.offsetWidth;
-                const height = canvas.current?.offsetHeight;
+        // const updateCanvasSize = () => {
+        //     console.log('updateCanvasSize();');
+        //     const canvas = game?.gameInstance?.current?.canvasRef.current;
+        //     if (canvas) {
+        //         // const width = window.innerWidth;
+        //         // const height = window.innerHeight;
+        //         // canvas.width = width;
+        //         // canvas.height = height * (9 / 16); // Ajuster selon le ratio d'aspect désiré
+        //         const width = canvas.offsetWidth;
+        //         const height = canvas.offsetHeight;
 
-                console.log(`canvasSize({ ${width}, ${height} });`);
-                if (game?.gameInstance.current && width && height) {
-                    console.log(`gameInstance.current.updateDimensions(${width}, ${height});`);
-                    game?.gameInstance.current.updateDimensions(width, height);
-                }
-            }
-        }
+        //         console.log(`canvasSize({ ${width}, ${height} });`);
+        //         if (game?.gameInstance.current && width && height) {
+        //             console.log(`gameInstance.current.updateDimensions(${width}, ${height});`);
+        //             game?.gameInstance.current.updateDimensions(width, height);
+        //         }
+        //     }
+        // }
 
-        window.addEventListener('resize', updateCanvasSize);
-        updateCanvasSize();
+        // window.addEventListener('resize', updateCanvasSize);
+        // updateCanvasSize();
 
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
@@ -182,7 +185,7 @@ export function InGame() {
                     </div>
                     <div className="spectatorsList">
                         {spectators?.map((spectator, index) => (
-                            <img key={index} src={"../game_img/booba.jpeg"} alt={`Spectator ${spectator}`} className="spectator" />
+                            <img key={index} src={boobaprofil} alt={`Spectator ${spectator}`} className="spectator" />
                         ))}
                     </div>
                 </div>

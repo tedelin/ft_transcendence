@@ -173,6 +173,8 @@ export function Game() {
                 game.gameInstance.current = new ClassGame(React.createRef(), data.gameState, auth?.socket, { width: 800, height: 600 });
                 game.setGameStarted(true);
                 game.setSettingsToDo(false);
+                if (data.spectators)
+                    game.setSpectatorsBase(data.spectators);
                 nav('/game/inGame');
             }
         });

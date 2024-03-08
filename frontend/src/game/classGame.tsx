@@ -1,3 +1,5 @@
+import logoImage from './logo.png';
+
 const ENDED = 1;
 
 interface Pos {
@@ -56,14 +58,14 @@ export class ClassGame {
         this.logoImage.onerror = (error) => {
             console.error("Erreur lors du chargement de l'image :", error);
         };
-        this.logoImage.src = './logo.png'; // Assurez-vous que le chemin est correct
+        this.logoImage.src = logoImage;
     }
 
     updateDimensions(width: number, height: number) {
-        console.log('updateDimensions();');
+        // console.log('updateDimensions();');
         this.canvasWidth = width;
         this.canvasHeight = height;
-        console.log(`updateDimension this.canvasWidth = ${width}, this.canvasHeight=${height}`)
+        // console.log(`updateDimension this.canvasWidth = ${width}, this.canvasHeight=${height}`)
         this.updateCanvas(); // Mettez à jour le canvas immédiatement pour refléter les nouvelles dimensions
     }
 
@@ -102,6 +104,8 @@ export class ClassGame {
     }
 
     draw(context) {
+        // console.log(`height : ${this.canvasHeight}, width: ${this.canvasWidth}`)
+        // console.log("draw");
         // paddles
         context.fillStyle = 'black';
         this.drawRoundedRect(context, 15, this.localState.paddles.leftPos.y, this.localState.paddles.width, this.localState.paddles.height, 10);

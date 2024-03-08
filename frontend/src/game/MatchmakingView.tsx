@@ -109,12 +109,12 @@ export function MatchmakingView() {
             <div className="mmConteneur">
                 <div className={backOne} style={backgroundStyleOne || {}}>
                     <div className={classNameOne}>
-                        {game?.playerOne && renderPlayer(game.playerOne)}
+                        {renderPlayer(game.playerOne)}
                     </div>
                 </div>
                 <div className={backTwo} style={backgroundStyleTwo || {}}>
                     <div className={classNameTwo}>
-                        {game?.playerTwo && renderPlayer(game.playerTwo)}
+                        {renderPlayer(game.playerTwo)}
                     </div>
                 </div>
             </div>
