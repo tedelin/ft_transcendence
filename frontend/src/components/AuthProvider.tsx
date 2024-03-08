@@ -3,14 +3,13 @@ import { fetchUrl } from '../fetch';
 import { io } from 'socket.io-client';
 import { User } from '../utils/types';
 
-
-
 interface AuthContextType {
 	user: User | null;
 	loading: boolean;
 	socket: any;
 	signin: (username: string, password: string) => Promise<void>;
 	signup: (username: string, password: string) => Promise<void>;
+	fetchUser: (token: string) => Promise<void>;
 	signout: () => void;
 }
 
@@ -22,7 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [loading, setLoading] = useState(true);
 	const [socket, setSocket] = useState<any>(null);
 
-	async function handleAuth(token: string): Promise<void> {
+	async function fetchUser(token: string): Promise<void> {
 		try {
 			const response = await fetchUrl('/users/me', {
 				method: 'GET',
@@ -34,6 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			setSocket(io(import.meta.env.VITE_BACKEND_URL, {
 				query: { token },
 			}));
+			localStorage.setItem('jwtToken', token);
 		} catch (error) {
 			setLoading(false);
 			throw error;
@@ -50,8 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				body: JSON.stringify({ username, password }),
 			});
 			const token = response.access_token;
-			localStorage.setItem('jwtToken', token);
-			await handleAuth(token);
+			await fetchUser(token);
 		} catch (error) {
 			throw error;
 		}
@@ -67,8 +66,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				body: JSON.stringify({ username, password }),
 			});
 			const token = response.access_token;
-			localStorage.setItem('jwtToken', token);
-			await handleAuth(token);
+			await fetchUser(token);
 		} catch (error) {
 			throw error;
 		}
@@ -83,10 +81,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		const token = localStorage.getItem('jwtToken');
 		if (token) {
 			try {
-				await handleAuth(token);
+				await fetchUser(token);
 				setLoading(false);
 			} catch (error) {
 				setLoading(false);
+				localStorage.removeItem('jwtToken');
 			}
 		} else {
 			setLoading(false);
@@ -101,7 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		};
 	}, []);
 
-	let value = { user, loading, socket, signin, signup, signout };
+	let value = { user, loading, socket, signin, signup, signout, fetchUser};
 
 	return (
 		<AuthContext.Provider value={value}>

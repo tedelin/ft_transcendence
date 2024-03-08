@@ -31,8 +31,8 @@ export function Modal({ isOpen, onClose, children, className = "modal-content", 
     return isVisible ? (
         <div className="modal" onClick={handleBackdropClick} onKeyDown={handleKeyDown}>
             <div className={className} onKeyDown={handleKeyDown}>
-                <span className="close" onClick={onClose}>&times;</span>
-                <h2>{title}</h2>
+                {/* <span className="close" onClick={onClose}>&times;</span> */}
+                <h2 className='modalTitle'>{title}</h2>
                 {children}
             </div>
         </div>

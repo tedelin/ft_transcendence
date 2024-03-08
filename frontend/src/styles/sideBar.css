@@ -1,0 +1,20 @@
+.sideBar {
+	width: 35%;
+	max-width: 300px;
+	display: flex;
+	flex-direction: column;
+	border-left: 3px solid var(--bg-secondary);
+}
+
+.sideBarTitle {
+	text-align: center;
+	margin: 30px;
+}
+
+.sideBarSelect {
+	font-weight: bold;
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+	text-align: center;
+	border: none;
+}

@@ -9,7 +9,12 @@ export function Channels() {
 
 	async function fetchChannels() {
 		try {
-			const data = await fetchUrl('/chat/channels');
+			const data = await fetchUrl('/chat/channels/search?=', {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+				},
+			});
 			setChannels(data);
 		} catch (error) {
 			console.error('Error fetching channels:', error);
@@ -21,12 +26,12 @@ export function Channels() {
 	}, []);
 
 	return (
-		<>
+		<div className='flexColumn'>
 			<ChannelActions />
 			<SearchChannel setChannels={setChannels} />
-			<div className="channelList">
+			<div className="list">
 				<ChannelList channels={channels} setChannels={setChannels} />
 			</div>
-		</>
+		</div>
 	);
 }

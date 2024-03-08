@@ -9,7 +9,13 @@ export function SearchChannel({ setChannels } : { setChannels: Function }) {
 	const [input, setInput] = useState('');
 
 	async function fetchChannels(value: string) {
-		const response = await fetchUrl('/chat/channels');
+		const response = await fetchUrl('/chat/channels/search?search=' + input, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
+			},
+		});
 		const filtered = response.filter((channel: Channel) => {
 			const channelName = channel.name || '';
 			const lowercaseChannelName = channelName.toLowerCase();
@@ -23,6 +29,10 @@ export function SearchChannel({ setChannels } : { setChannels: Function }) {
 		setInput(value);
 		fetchChannels(value);
 	}
+
+	useEffect(() => {
+		fetchChannels('');
+	}, [input]);
 
 	return (
 		<>
@@ -76,15 +86,13 @@ export function ChannelList({ channels, setChannels } : { channels: Channel[], s
 			{channels.map((channel: Channel) =>
 				<div
 					key={channel.name}
-					className="sideBarChatItem"
+					className="listItem"
 					onClick={() => { joinChannel(channel) }}
 				>
 					<img src="https://imgs.search.brave.com/MWlI8P3aJROiUDO9A-LqFyca9kSRIxOtCg_Vf1xd9BA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzE1Lzg0LzQz/LzM2MF9GXzIxNTg0/NDMyNV90dFg5WWlJ/SXllYVI3TmU2RWFM/TGpNQW15NEd2UEM2/OS5qcGc" alt="User Avatar"></img>
-					<div className='sideBarChatName'>
-						<span>
-							{channel.name}
-						</span>
-					</div>
+					<span>
+						{channel.name}
+					</span>
 				</div>
 			)}
 		</>

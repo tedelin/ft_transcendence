@@ -1,0 +1,249 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.layout {
+  text-align: center;
+}
+
+.progression-bar {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%); /* Centrage parfait */
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  width: 50vw;
+}
+
+.circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #ddd;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.circle.active {
+  background-color: #4caf50;
+}
+
+.line {
+  flex-grow: 1;
+  height: 2px;
+  background-color: #ddd; /* Couleur de fond par défaut, qui sera visible au début */
+  margin: 0 10px;
+  overflow: hidden; /* Cache le débordement du fond */
+  position: relative; /* Position relative pour le pseudo-élément */
+}
+
+.line::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    #4caf4f8c 50%,
+    #ddd 50%
+  ); /* Démarre avec la couleur verte à gauche et la couleur de fond par défaut à droite */
+  background-size: 200% 100%; /* Double la largeur de l'arrière-plan pour permettre l'animation */
+  background-position: 100% 0; /* Positionne l'arrière-plan pour que la partie verte soit initialement masquée */
+  transition: background-position 0.5s ease; /* Anime la position de l'arrière-plan */
+}
+
+.line.active::before {
+  background-position: 0 0; /* Déplace l'arrière-plan pour révéler la partie verte */
+}
+
+.circle.step-two {
+  background-color: #4caf4f4a;
+}
+
+footer {
+  background-color: rgba(192, 192, 192, 0.329);
+  box-sizing: border-box;
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  left: 0;
+  bottom: 0;
+  border-top: solid rgb(149, 149, 149) 0.1px;
+  padding: 30px;
+  width: 100%;
+}
+
+button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.inputCode {
+  background: none;
+  border: solid rgba(111, 111, 111, 0.363) 0.1px;
+  border-radius: 6px;
+  color: black;
+}
+
+/* Styles pour le bouton Next */
+.button-next {
+  background-color: #4caf50;
+  margin: 0 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: solid rgba(146, 146, 146, 0.329) 0.1px;
+  color: white;
+  border-radius: 2px;
+}
+
+.button-next:hover {
+  background-color: #73be75;
+}
+
+/* Styles pour le bouton Done */
+.button-done {
+  background-color: #b0b0b044;
+  margin: 0 10px;
+  padding: 10px 20px;
+  border: solid rgba(146, 146, 146, 0.329) 0.1px;
+  color: white;
+  border-radius: 2px;
+}
+
+/* Styles pour le bouton Done lorsque auth est true */
+.button-done-auth-true {
+  background-color: #4caf50;
+  margin: 0 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: solid rgba(146, 146, 146, 0.329) 0.1px;
+  color: white;
+  border-radius: 2px;
+}
+
+/* Styles pour le bouton Done lorsque auth est false */
+.button-done-auth-false {
+  background-color: #b0b0b044;
+  margin: 0 10px;
+  padding: 10px 20px;
+  cursor: auto;
+  border: solid rgba(146, 146, 146, 0.329) 0.1px;
+  color: white;
+  border-radius: 2px;
+}
+
+form {
+  display: flex;
+  flex-direction: column; /* Organise les éléments enfants verticalement */
+  align-items: center; /* Centre les éléments enfants horizontalement */
+  gap: 10px; /* Ajoute un espace entre chaque élément du formulaire */
+}
+
+form label,
+form input,
+form button {
+  max-width: 200px;
+  margin: 0px; /* Optionnel: limite la largeur maximale */
+}
+
+form input {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  padding: 10px; /* Ajoute un peu de padding pour un meilleur visuel */
+  border-radius: 5px; /* Arrondit les coins */
+}
+
+form button {
+  box-sizing: border-box;
+  width: 50%;
+  border-radius: 5px;
+  background-color: #4caf50;
+  margin: 0 10px;
+  padding: 10px 10px;
+  cursor: pointer;
+  border: solid rgba(146, 146, 146, 0.329) 0.1px;
+  color: white;
+  border-radius: 2px;
+}
+
+form button:hover {
+  cursor: pointer;
+  background-color: #73be75;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.congrats-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Utiliser toute la hauteur de la fenêtre */
+  text-align: center;
+}
+
+.congrats-message {
+  animation: popIn 1s ease-out;
+  font-size: 2rem;
+  color: #4caf50; /* Couleur verte pour le succès */
+}
+
+.two-fa-settings {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  border-top: solid rgba(131, 131, 131, 0.585) 0.1px;
+  padding: 20px;
+  width: 100%;
+  margin-top : 20px;
+}
+
+
+.twoFaInput {
+	background-color: white;
+	color: black;
+	
+}
+
+.validateTwoFaButton {
+	/* width: 15%; */
+	font-size: 16px;
+	box-sizing: border-box;
+	padding: 10px;
+	margin: 15px;
+	border-radius: 8px;
+	background-color: #267f49;
+	color: #ffffff;
+	border: none;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}

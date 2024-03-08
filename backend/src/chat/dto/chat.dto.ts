@@ -1,17 +1,38 @@
-import {IsString, IsOptional, IsNotEmpty, IsNumber } from 'class-validator';
+import {IsString, IsOptional, IsNotEmpty, IsNumber, Min, MinLength, Max, MaxLength } from 'class-validator';
 import { Visibility } from '@prisma/client';
 
 export class CreateChannelDto {
 	@IsString()
 	@IsNotEmpty()
+	@MinLength(4)
+	@MaxLength(20)
 	name: string;
 
 	@IsString()
 	@IsOptional()
 	@IsNotEmpty()
+	@MinLength(8)
+	@MaxLength(30)
 	password?: string;
 
 	visibility: Visibility;
+}
+
+export class UpdateChannelDto {
+	@IsString()
+	@IsNotEmpty()
+	@MinLength(4)
+	@MaxLength(20)
+	name: string;
+
+	visibility: Visibility;
+
+	@IsString()
+	@IsOptional()
+	@IsNotEmpty()
+	@MinLength(8)
+	@MaxLength(30)
+	password?: string;
 }
 
 export class JoinChannelDto {
