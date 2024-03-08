@@ -86,7 +86,7 @@ function FriendsList({ selected }: { selected: string }) {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			setFriends((prevFriends) =>
+			setFilteredFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== requestId)
 			);
 			success('Friend request accepted');
@@ -103,7 +103,7 @@ function FriendsList({ selected }: { selected: string }) {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			setFriends((prevFriends) =>
+			setFilteredFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== requestId)
 			);
 		} catch (err: any) {
@@ -120,7 +120,7 @@ function FriendsList({ selected }: { selected: string }) {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			setFriends((prevFriends) =>
+			setFilteredFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== friendRequest.id)
 			);
 		} catch (err: any) {
@@ -130,12 +130,11 @@ function FriendsList({ selected }: { selected: string }) {
 	}
 
 	async function getFriends() {
-		const token = localStorage.getItem('jwtToken');
 		try {
 			const response = await fetchUrl("/friends/all", {
 				method: "GET",
 				headers: {
-					Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
 				},
 			});
 			setFriends(response);
@@ -165,10 +164,9 @@ function FriendsList({ selected }: { selected: string }) {
 		setFilteredFriends(filteredFriends);
 		setSearchFriends(filteredFriends);
 	}
-
+	
 	useEffect(() => {
 		getFriends();
-		filterFriends();
 	}, [selected]);
 
 	useEffect(() => {
@@ -183,11 +181,16 @@ function FriendsList({ selected }: { selected: string }) {
 				return friend;
 			});
 			setFriends(updatedFriends);
+			console.log(updatedFriends);
 		});
 
 		return () => {
 			auth?.socket?.off('user-state');
 		};
+	}, []);
+
+	useEffect(() => {
+		filterFriends();
 	}, [friends]);
 	
 	return (
@@ -274,8 +277,8 @@ export function Friends() {
 
 	return (
 		<>
+			<AddFriendModal enabled={friendModal} setEnabled={() => setFriendModal(false)} />
 			<div className='flexColumn'>
-				<AddFriendModal enabled={friendModal} setEnabled={() => setFriendModal(false)} />
 				<FriendsList selected={selected} />
 			</div>
 			<div className='sideBar'>
