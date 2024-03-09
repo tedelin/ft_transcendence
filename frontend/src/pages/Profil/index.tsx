@@ -46,12 +46,15 @@ function Profil() {
   const userId = useAuth()?.user?.id;
   const me = id === userId;
   const [profilData, setProfilData] = useState(null); // Ajoute un état pour stocker les données du profil
+  const [profilMatchData, setProfilMatchData] = useState(null); // Ajoute un état pour stocker les données du profil
 
   useEffect(() => {
     async function fetchProfilData() {
       try {
-        const data = await fetchUrl('/users/profilData/' + id)
+        const data = await fetchUrl('/users/profilData/' + id);
+		const matchData = await fetchUrl('/game/history');
         setProfilData(data);
+		setProfilMatchData(matchData)
       } catch (error) {
         console.error("Erreur lors de la récupération des données du profil:", error);
       }
@@ -62,6 +65,9 @@ function Profil() {
   if (!profilData) {
     return <div>Chargement des données du profil...</div>;
   }
+  console.log("profilData :", profilData);
+  console.log("profilMatchData :", profilMatchData);
+
   const avatar = getAvatar(profilData.avatar);
   console.log("avatar : ", avatar);
   return (
@@ -69,7 +75,7 @@ function Profil() {
       <Infos username={profilData.username} avatar={avatar} me={me}/>
       <Stats stats={profilData.stats} />
       <Achievements Achievement={profilData.Achievement} />
-      <History matchs={profilData.matchs} id={id} />
+      <History match={profilMatchData} userId={id}/>
     </div>
   );
 }

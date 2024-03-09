@@ -1,14 +1,12 @@
-import pictureA from './pictureA.jpg';
-import pictureB from './pictureB.png';
+import { getAvatar } from '../../utils/utils';
 
 
 function MatchBox({ match, playerId }) {
-	const isWinner = match.winner == playerId.id;
+	const isWinner = match.winner == playerId;
+	console.log("match.winner : ", match.winner);
+	console.log("playerId.id : ", playerId);
 	const player = match.player1.id == playerId.id ? match.player1 : match.player2;
 	const opponent = match.player1.id == playerId.id ? match.player2 : match.player1;
-	console.log(isWinner)
-	console.log(player)
-	console.log(opponent)
 
 	return (
 		<div className="MatchBox">
@@ -43,19 +41,53 @@ function createMatchBoxes(matchs, playerId) {
 	));
 }
 
-function History(matchs : any, playerId: any) {
-	console.log("matchs : ", matchs);
-	const placeholder = [
-		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 3, name: 'Joueur C', picture: pictureB }, score: '2 - 1', winner: 1, loser: 3 },
-		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 4, name: 'Joueur D', picture: pictureB }, score: '1 - 2', winner: 4, loser: 1 },
-		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 5, name: 'Joueur E', picture: pictureB }, score: '2 - 0', winner: 1, loser: 5 },
-		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 6, name: 'Joueur F', picture: pictureB }, score: '0 - 2', winner: 6, loser: 1 },
-		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 7, name: 'Joueur G', picture: pictureB }, score: '2 - 1', winner: 1, loser: 7 },
-		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 8, name: 'Joueur H', picture: pictureB }, score: '1 - 2', winner: 8, loser: 1 },
-		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 9, name: 'Joueur I', picture: pictureB }, score: '2 - 0', winner: 1, loser: 9 },
-		{ player1: { id: 1, name: 'Joueur A', picture: pictureA }, player2: { id: 10, name: 'Joueur J', picture: pictureB }, score: '0 - 2', winner: 10, loser: 1 },
-	];
-	const toRender = createMatchBoxes(placeholder, playerId);
+function filterMatchesByPlayerId(matchs, id) {
+	console.log("matchs dans filterMatchesByPlayerId : ", matchs);
+	console.log("matchs[0].players[0].playerId dans filterMatchesByPlayerId : ", matchs[0].players[0].playerId);
+	console.log("matchs[0].players[1].playerId dans filterMatchesByPlayerId : ", matchs[0].players[1].playerId);
+	console.log("id dans filterMatchesByPlayerId : ", id);
+	return matchs.filter(match =>
+	  match.players.some(player => player.playerId == id)
+	);
+  }
+
+  function transformMatch(match) {
+	const pictureA = getAvatar(match.players[0].player.avatar);
+	const pictureB = getAvatar(match.players[1].player.avatar);
+  
+	const player1 = match.players[0].player;
+	const player2 = match.players[1].player;
+  
+	const score1 = match.players[0].score;
+	const score2 = match.players[1].score;
+  
+	const winner = score1 > score2 ? player1.id : player2.id;
+	const loser = score1 > score2 ? player2.id : player1.id;
+  
+	return {
+	  player1: { id: player1.id, name: player1.username, picture: pictureA },
+	  player2: { id: player2.id, name: player2.username, picture: pictureB },
+	  score: `${score1} - ${score2}`,
+	  winner: winner,
+	  loser: loser
+	};
+  }
+
+  function getFormattedMatches(matchs) {
+	return matchs.map(match => transformMatch(match));
+  }
+  
+  
+
+function History({ match, userId } : any) {
+	if(match[0] == undefined)
+		return (<div></div>)
+	console.log("match ", match);
+	console.log("userId : ", userId);
+	const myMatchs = filterMatchesByPlayerId(match, userId);
+	console.log("myMatchs : ", myMatchs);
+	//console.log("transformMatch(myMatchs[0]) : ", transformMatch(myMatchs[0]));
+	const toRender = createMatchBoxes(getFormattedMatches(myMatchs), userId);
 
 	return (
 		<div className="History">

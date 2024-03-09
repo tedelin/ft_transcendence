@@ -5,20 +5,20 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 export class UserService {
 	constructor(private readonly databaseService: DatabaseService) {}
 
-	async getProfilData(id: number) {
-		return await this.databaseService.user.findUnique({
-		  where: {
-			id,
-		  },
-		  select: {
-			username: true,
-			avatar: true,
-			matchs: true, // Ici, tu prends tous les champs des matchs
-			stats: true,
-			Achievement: true,
-		  },
-		});
-	  }	  
+async getProfilData(id: number) {
+  return await this.databaseService.user.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      username: true,
+      avatar: true,
+      stats: true,
+      Achievement: true,
+    },
+  });
+}
+	  
 
 	async findAll() {
 		return await this.databaseService.user.findMany();

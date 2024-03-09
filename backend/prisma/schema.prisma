@@ -26,7 +26,7 @@ model User {
 
   matchs      MatchUser[] // several games related to a user
   stats       Stats? // just one state related to each user
-  Achievement Achievement?
+  Achievement Achievement? 
 
   @@map("users")
 } 
