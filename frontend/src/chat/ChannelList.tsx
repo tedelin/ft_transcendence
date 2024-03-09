@@ -17,6 +17,7 @@ export function SearchChannel({ setChannels } : { setChannels: Function }) {
 			},
 		});
 		const filtered = response.filter((channel: Channel) => {
+			if (channel.visibility !== 'PUBLIC') return false;
 			const channelName = channel.name || '';
 			const lowercaseChannelName = channelName.toLowerCase();
 			const lowercaseValue = value.toLowerCase();
@@ -68,7 +69,8 @@ export function ChannelList({ channels, setChannels } : { channels: Channel[], s
 
 	useEffect(() => {
 		auth?.socket?.on('new-channel', (channel : Channel) => {
-			setChannels([...channels, channel]);
+			if (channel.visibility === 'PUBLIC')
+				setChannels([...channels, channel]);
 		});
 
 		auth?.socket?.on('delete-channel', (channel: string) => {

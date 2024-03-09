@@ -50,7 +50,8 @@ export class ChannelService {
 		});
 		if (alreadyJoined && alreadyJoined.role === Role.BANNED) throw new ConflictException('You are banned from this channel');
 		if (alreadyJoined) return alreadyJoined;
-		if (joinChannelDto.password) {
+		if (channel.visibility === Visibility.PROTECTED) {
+			if (!joinChannelDto.password) throw new ForbiddenException("Password required");
 			const pwMatches = await argon.verify(channel.password, joinChannelDto.password);
 			if (!pwMatches) {
 				throw new ForbiddenException("Wrong password");
