@@ -171,17 +171,18 @@ function FriendsList({ selected }: { selected: string }) {
 
 	useEffect(() => {
 		auth?.socket?.on('user-state', (data) => {
-			const updatedFriends = friends.map((friend) => {
+			setFriends((prevFriends) => {
+			  const updatedFriends = prevFriends.map((friend) => {
 				if (friend.initiator.id === data.userId) {
-					return { ...friend, initiator: { ...friend.initiator, status: data.state } };
+				  return { ...friend, initiator: { ...friend.initiator, status: data.state } };
 				}
 				else if (friend.receiver.id === data.userId) {
-					return { ...friend, receiver: { ...friend.receiver, status: data.state } };
+				  return { ...friend, receiver: { ...friend.receiver, status: data.state } };
 				}
 				return friend;
+			  });
+			  return updatedFriends;
 			});
-			setFriends(updatedFriends);
-			console.log(updatedFriends);
 		});
 
 		return () => {

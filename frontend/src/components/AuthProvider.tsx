@@ -75,6 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	function signout(): void {
 		localStorage.removeItem('jwtToken');
 		setUser(null);
+		socket?.disconnect();
 	}
 
 	async function initAuth() {
