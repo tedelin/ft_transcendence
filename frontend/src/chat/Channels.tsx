@@ -3,6 +3,7 @@ import { ChannelActions } from './ChannelActions';
 import { fetchUrl } from '../fetch';
 import { useEffect, useState } from 'react';
 import '../styles/chat.css';
+import { RightBar } from './RightBar';
 
 export function Channels() {
 	const [channels, setChannels] = useState([]);

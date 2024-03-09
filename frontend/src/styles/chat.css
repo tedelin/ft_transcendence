@@ -228,6 +228,8 @@ select {
 
 .createChannelContainer {
 	display: flex;
+	height: 72px;
+	border-bottom: 1px solid var(--bg-secondary);
 }
 
 .createChannelContainer input,

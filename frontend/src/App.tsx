@@ -103,14 +103,14 @@ const router = createBrowserRouter([
 						element: <ChannelMember><ChatBox /></ChannelMember>,
 					},
 					{
-						path: 'friends',
-						element: <Friends />,
-					},
-					{
 						path: "private-messages/:receiverId",
 						element: <PrivateMessagePage />,
 					},
 				]
+			},
+			{
+				path: 'friends',
+				element: <Friends />,
 			},
 			{
 				path: "login",

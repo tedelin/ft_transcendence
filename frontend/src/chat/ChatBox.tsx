@@ -110,7 +110,6 @@ export function ChatBox() {
 
 	return (
 		<>
-			<div className="flexRow">
 				<TopBar channel={name} />
 				<MessageDisplay key={name} channel={name} />
 				<div className="typingIndicator">{typing}</div>
@@ -122,8 +121,7 @@ export function ChatBox() {
 						onChange={onTyping}
 					/>
 				</div>
-			</div>
-			<RightBar />
+			{/* <RightBar /> */}
 		</>
 	);
 }
