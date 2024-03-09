@@ -16,6 +16,7 @@ model User {
     createdAt            DateTime         @default(now())
     updatedAt            DateTime         @updatedAt
     useTwoFA             Boolean          @default(false)
+    secretTwoFA          String?
     ChannelMessage       ChannelMessage[]
     channels             ChannelUser[]
     friendshipsInitiated Friendship[]     @relation("Initiator")

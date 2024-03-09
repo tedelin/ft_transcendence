@@ -79,7 +79,6 @@ export class TwoFAService {
 
 	async validate2faToken(token: string, totpCode: string) {
 		const userInfo = this.jwtService.decode(token);
-		console.log("userInfo : ", userInfo);
 		const user = await this.databaseService.user.findUnique({
 			where: { username: userInfo.userName }, 
 		});
@@ -90,7 +89,6 @@ export class TwoFAService {
 	
 		if (!isVerified) return { validated: false };
 		const finaltoken = await this.authService.signToken(user.id, user.username);
-		console.log("finaltoken : ", finaltoken);
 		return {
 			finaltoken, 
 			validated: true };
