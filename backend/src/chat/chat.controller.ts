@@ -26,8 +26,8 @@ export class ChatController {
 	}
 
 
-	@Post('channels')
 	@UseGuards(JwtGuard)
+	@Post('channels')
 	create(@UserRequest() user: User, @Body() createChannelDto: Prisma.ChannelCreateInput) {
 		return this.channelService.create(user.id, createChannelDto);
 	}
