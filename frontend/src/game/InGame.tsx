@@ -190,6 +190,14 @@ export function InGame() {
                     </div>
                 </div>
             )}
+            {game?.gameStarted && !game?.showEndGameModal && game?.gameInstance.current && (
+                <>
+                    <div className='CrossIcon' onClick={() => {
+                        auth?.socket?.emit('quitInGame');
+                        game?.handleQuit();
+                    }} >&#10006;</div>
+                </>
+            )}
         </>
     );
 }
