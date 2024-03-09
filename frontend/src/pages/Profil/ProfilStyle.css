@@ -4,6 +4,12 @@ button {
   font-family: "Open Sans", sans-serif;
 }
 
+.profilPage {
+	display: flex;
+	flex-grow: 1;
+	overflow: auto;
+}
+
 .Layout-profil {
   font-family: "Open Sans", sans-serif;
   display: flex;

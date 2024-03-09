@@ -22,8 +22,8 @@ function Infos(Infos : any) {
 					<button className="play" onClick={play}>Invite to play</button>
 				</div>
 				<div className="Bio">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed sem aliquam, pulvinar dui eget, interdum sapien.</div>
-			</div>
+					{Infos.bio}</div>
+				</div>
 		</div>
 	);
 }

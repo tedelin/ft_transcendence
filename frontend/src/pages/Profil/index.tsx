@@ -71,12 +71,14 @@ function Profil() {
   const avatar = getAvatar(profilData.avatar);
   console.log("avatar : ", avatar);
   return (
-    <div className='Layout-profil'>
-      <Infos username={profilData.username} avatar={avatar} me={me}/>
-      <Stats stats={profilData.stats} />
-      <Achievements Achievement={profilData.Achievement} />
-      <History match={profilMatchData} userId={id}/>
-    </div>
+	<div className='profilPage'>
+		<div className='Layout-profil'>
+		<Infos username={profilData.username} avatar={avatar} bio={profilData.bio} me={me}/>
+		<Stats stats={profilData.stats} />
+		<Achievements Achievement={profilData.Achievement} />
+		<History match={profilMatchData} userId={id}/>
+		</div>
+	</div>
   );
 }
 
