@@ -93,7 +93,6 @@ export class ModerationService {
 
 	async muteUser(userId: number, roomId: string, duration: number) {
 		const userRole = await this.getRole(userId, roomId);
-		console.log(userRole);
 		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot mute the owner');
 		const muted = await this.databaseService.channelUser.update({
 			where: {

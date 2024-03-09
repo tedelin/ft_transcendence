@@ -54,7 +54,6 @@ export class TwoFAService {
             };
         }
 
-        // Marque le 2FA comme activé et conserve le secret comme permanent
         await this.databaseService.user.update({
             where: { id: userId },
             data: {
@@ -79,14 +78,10 @@ export class TwoFAService {
     }
 
 	async validate2faToken(token: string, totpCode: string) {
-		// Décoder le token pour obtenir les infos de l'utilisateur
 		const userInfo = this.jwtService.decode(token);
-		console.log("userInfo : ", userInfo);
-		// Récupérer l'utilisateur depuis la base de données
 		const user = await this.databaseService.user.findUnique({
-			where: { username: userInfo.userName }, // ou username: userInfo.username, selon le contenu de ton token
+			where: { username: userInfo.userName }, 
 		});
-		// Vérifier le code TOTP
 		const isVerified = authenticator.verify({
 			token: totpCode,
 			secret: user.secretTwoFA,
@@ -94,7 +89,6 @@ export class TwoFAService {
 	
 		if (!isVerified) return { validated: false };
 		const finaltoken = await this.authService.signToken(user.id, user.username);
-		console.log("finaltoken : ", finaltoken);
 		return {
 			finaltoken, 
 			validated: true };

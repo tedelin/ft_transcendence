@@ -1,5 +1,6 @@
 import { useState, createContext, useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { ThemeContext } from "../../utils/providers/ThemeProvider";
 
 // Création d'un contexte pour passer la fonction setStep aux composants enfants
 const StepContext = createContext({});
@@ -21,6 +22,7 @@ function LayoutTwoFaSetup() {
 	const [step, setStep] = useState(1);
 	const [auth, setAuth] = useState(false)
 	const navigate = useNavigate();
+	const {theme} = useContext(ThemeContext);
 
 	// Gestion des clics sur le bouton Cancel
 	const handleCancel = () => {
@@ -39,7 +41,7 @@ function LayoutTwoFaSetup() {
 
 	return (
 		<StepContext.Provider value={{ setStep, setAuth }}>
-			<div className="layout">
+			<div className={`App ${theme} layout`}>
 				<header>
 					<p>Two-Factor Authentication</p>
 					<ProgressionBar step={step} />

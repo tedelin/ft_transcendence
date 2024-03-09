@@ -32,7 +32,7 @@
 }
 
 .edit-button {
-  background-color: #d9d9d9;
+  background-color: var(--bg-secondary);
   border-radius: 10px;
   width: 80px;
   height: 40px;
@@ -43,9 +43,10 @@
 }
 
 .edit {
-  background-color: #d9d9d9 !important;
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--bg-secondary);
   box-sizing: border-box;
-  color: black !important;
+  color: var(--text-primary) !important;
   width: 100%;
   height: 40px;
   margin: 0 !important;
@@ -60,7 +61,7 @@
 }
 
 .save {
-  background-color: #2832c2;
+  background-color: var(--primary-blue);
   border: none;
   border-radius: 10px;
   color: white;
@@ -71,7 +72,7 @@
 }
 
 .save:hover {
-  background-color: #2832c2c5;
+  background-color:  var(--primary-blue);
   cursor: pointer;
 }
 
@@ -86,7 +87,7 @@
 .UsernameSettings > input {
   width: 100%;
   height: 40%;
-  border: solid 0.1px rgba(0, 0, 0, 0.318);
+  border: 1px solid var(--bg-secondary);
   border-radius: 10px;
   font-size: 1.2em;
   box-sizing: border-box;
@@ -99,7 +100,8 @@
 .BioSettings > textarea {
   width: 100%;
   height: 70%;
-  border: solid 0.1px rgba(0, 0, 0, 0.318);
+  border: 1px solid var(--bg-secondary);
+  background-color: var(--bg-primary);
   border-radius: 10px;
   font-size: 1.2em;
   box-sizing: border-box;
@@ -107,7 +109,7 @@
 
 .two-fa-settings {
   flex-grow: 0.2;
-  border: solid 0.1px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--bg-secondary);
   display: flex; /* Active Flexbox pour ce conteneur */
   align-items: center; /* Alignement vertical des éléments enfants au centre */
   justify-content: space-between;

@@ -1,3 +1,4 @@
+
 .two-fa-settings header {
   display: flex;
   justify-content: space-between;
@@ -11,6 +12,8 @@
 
 .layout {
   text-align: center;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .progression-bar {
@@ -29,7 +32,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #ddd;
+  background-color: var(--bg-primary);
   color: #fff;
   display: flex;
   align-items: center;

@@ -1,169 +1,170 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model User {
-  id                   Int              @id @default(autoincrement())
-  id42                 Int?             @unique
-  username             String           @unique
-  password             String
-  avatar               String           @default("default-avatar.jpg")
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
-  useTwoFA             Boolean          @default(false)
-  secretTwoFA          String?
-  ChannelMessage       ChannelMessage[]
-  channels             ChannelUser[]
-  friendshipsInitiated Friendship[]     @relation("Initiator")
-  friendshipsReceived  Friendship[]     @relation("Receiver")
-  sentMessages         PrivateMessage[] @relation("PrivateMessageSender")
-  receivedMessages     PrivateMessage[] @relation("PrivateMessageReceiver")
+    id                   Int              @id @default(autoincrement())
+    id42                 Int?             @unique
+    username             String           @unique
+    password             String
+    avatar               String           @default("default-avatar.jpg")
+    createdAt            DateTime         @default(now())
+    updatedAt            DateTime         @updatedAt
+    useTwoFA             Boolean          @default(false)
+    secretTwoFA          String?
+    ChannelMessage       ChannelMessage[]
+    channels             ChannelUser[]
+    friendshipsInitiated Friendship[]     @relation("Initiator")
+    friendshipsReceived  Friendship[]     @relation("Receiver")
+    dmSent               PrivateMessage[] @relation("PrivateMessageSender")
+    dmReceived           PrivateMessage[] @relation("PrivateMessageReceiver")
 
-  matchs      MatchUser[] // several games related to a user
-  stats       Stats? // just one state related to each user
-  Achievement Achievement? 
+    matchs      MatchUser[] // several games related to a user
+    stats       Stats? // just one state related to each user
+    Achievement Achievement?
+	status      UserStatus
 
-  @@map("users")
-} 
+    @@map("users")
+}
 
 model Friendship {
-  id          Int              @id @default(autoincrement())
-  initiatorId Int
-  receiverId  Int
-  status      FriendshipStatus
+    id          Int              @id @default(autoincrement())
+    initiatorId Int
+    receiverId  Int
+    status      FriendshipStatus
 
-  initiator User @relation("Initiator", fields: [initiatorId], references: [id])
-  receiver  User @relation("Receiver", fields: [receiverId], references: [id])
+    initiator User @relation("Initiator", fields: [initiatorId], references: [id])
+    receiver  User @relation("Receiver", fields: [receiverId], references: [id])
 
-  @@unique([initiatorId, receiverId])
+    @@unique([initiatorId, receiverId])
 }
 
 model Channel {
-  name       String           @id @unique
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @default(now()) @updatedAt
-  password   String?
-  visibility Visibility
-  messages   ChannelMessage[]
-  users      ChannelUser[]
+    name       String           @id @unique
+    createdAt  DateTime         @default(now())
+    updatedAt  DateTime         @default(now()) @updatedAt
+    password   String?
+    visibility Visibility
+    messages   ChannelMessage[]
+    users      ChannelUser[]
 }
 
 model ChannelUser {
-  channel     Channel @relation(fields: [channelName], references: [name])
-  channelName String
-  role        Role
-  user        User    @relation(fields: [userId], references: [id])
-  userId      Int
+    channel     Channel @relation(fields: [channelName], references: [name])
+    channelName String
+    role        Role
+    user        User    @relation(fields: [userId], references: [id])
+    userId      Int
 
-  @@id([channelName, userId])
+    @@id([channelName, userId])
 }
 
 model ChannelMessage {
-  id        Int      @id @default(autoincrement())
-  timestamp DateTime @default(now())
-  content   String
-  channelId String
-  channel   Channel  @relation(fields: [channelId], references: [name])
-  senderId  Int
-  sender    User     @relation(fields: [senderId], references: [id])
+    id        Int      @id @default(autoincrement())
+    timestamp DateTime @default(now())
+    content   String
+    channelId String
+    channel   Channel  @relation(fields: [channelId], references: [name])
+    senderId  Int
+    sender    User     @relation(fields: [senderId], references: [id])
 }
 
 model Stats {
-  id      Int  @id @default(autoincrement())
-  user    User @relation(fields: [userId], references: [id])
-  userId  Int  @unique
-  nbGames Int
-  nbWin   Int
-  nbLoose Int
+    id      Int  @id @default(autoincrement())
+    user    User @relation(fields: [userId], references: [id])
+    userId  Int  @unique
+    nbGames Int
+    nbWin   Int
+    nbLoose Int
 
-  @@map("stats")
+    @@map("stats")
 }
 
 model Match {
-  id        Int         @id @default(autoincrement())
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  status    gameStatus
-  players   MatchUser[]
+    id        Int         @id @default(autoincrement())
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
+    status    gameStatus
+    players   MatchUser[]
 
-  @@map("match")
+    @@map("match")
 }
 
 model MatchUser {
-  player   User       @relation(fields: [playerId], references: [id])
-  playerId Int
-  match    Match      @relation(fields: [matchId], references: [id])
-  matchId  Int
-  score    Int
-  role     playerRole
+    player   User       @relation(fields: [playerId], references: [id])
+    playerId Int
+    match    Match      @relation(fields: [matchId], references: [id])
+    matchId  Int
+    score    Int
+    role     playerRole
 
-  @@id([playerId, matchId])
+    @@id([playerId, matchId])
 }
 
 model Achievement {
-  id                  Int     @id @default(autoincrement())
-  user                User    @relation(fields: [userId], references: [id])
-  userId              Int     @unique
-  firstGame           Boolean
-  firstWin            Boolean
-  firstLoose          Boolean // a voir si on le garde
-  masterWinner        Boolean // 10 win ou plus 
-  invincible_guardian Boolean // win sans encaisser de but
-  Speed_Demon         Boolean // quand la balle atteint la vitessse max
-  // bcp d'arret de balle pendant un point 
+    id                  Int     @id @default(autoincrement())
+    user                User    @relation(fields: [userId], references: [id])
+    userId              Int     @unique
+    firstGame           Boolean
+    firstWin            Boolean
+    firstLoose          Boolean // a voir si on le garde
+    masterWinner        Boolean // 10 win ou plus 
+    invincible_guardian Boolean // win sans encaisser de but
+    Speed_Demon         Boolean // quand la balle atteint la vitessse max
+    // bcp d'arret de balle pendant un point 
 
-  @@map("achievement")
+    @@map("achievement")
 }
 
 model PrivateMessage {
-  id         Int      @id @default(autoincrement())
-  content    String
-  createdAt  DateTime @default(now())
-  senderId   Int
-  receiverId Int
-  sender     User     @relation("PrivateMessageSender", fields: [senderId], references: [id])
-  receiver   User     @relation("PrivateMessageReceiver", fields: [receiverId], references: [id])
+    id         Int      @id @default(autoincrement())
+    content    String
+    timestamp  DateTime @default(now())
+    senderId   Int
+    receiverId Int
+    sender     User     @relation("PrivateMessageSender", fields: [senderId], references: [id])
+    receiver   User     @relation("PrivateMessageReceiver", fields: [receiverId], references: [id])
 
-  @@map("private_messages")
+    @@map("private_messages")
 }
 
 enum UserStatus {
-  ONLINE
-  OFFLINE
-  IN_GAME
+    ONLINE
+    OFFLINE
+    IN_GAME
 }
 
 enum playerRole {
-  PLAYER_ONE
-  PLAYER_TWO
+    PLAYER_ONE
+    PLAYER_TWO
 }
 
 enum gameStatus {
-  IN_GAME
-  FINISHED
+    IN_GAME
+    FINISHED
 }
 
 enum FriendshipStatus {
-  ACCEPTED
-  PENDING
-  BLOCKED
+    ACCEPTED
+    PENDING
+    BLOCKED
 }
 
 enum Visibility {
-  PUBLIC
-  PRIVATE
-  PROTECTED
+    PUBLIC
+    PRIVATE
+    PROTECTED
 }
 
 enum Role {
-  MEMBER
-  BANNED
-  MUTED
-  ADMIN
-  OWNER
+    MEMBER
+    BANNED
+    MUTED
+    ADMIN
+    OWNER
 }

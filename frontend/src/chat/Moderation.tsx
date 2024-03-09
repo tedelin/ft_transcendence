@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchUrl } from '../fetch';
 import { useToast } from '../utils/hooks/useToast';
-import '../styles/modal.css';
+import '../styles/contextMenu.css';
 
 
 export function Moderation({ enabled, channel, userId, setEnabled }: { enabled: boolean, channel: string, userId: number, setEnabled: Function }) {

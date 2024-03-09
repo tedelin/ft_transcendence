@@ -1,23 +1,75 @@
-import { useLocation, Outlet, Navigate, createBrowserRouter, RouterProvider, useRouteError } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useLocation, Outlet, Navigate, createBrowserRouter, RouterProvider, useRouteError, useParams } from 'react-router-dom';
 import Login from './pages/Login';
 import Chat from './chat/page';
 import { NavBar } from './components/NavBar';
 import { Game } from './game/page';
 import { AuthProvider, useAuth } from './components/AuthProvider';
-import './App.css';
-import './styles/chat.css';
 import Settings from './pages/Settings';
 import { Channels } from './chat/Channels';
 import { Friends } from './chat/Friends';
 import { ChatBox } from './chat/ChatBox';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { PrivateMessagesPage } from './chat/PrivateMessagesPage.tsx'
 import { twoFaRoutes } from './pages/two-facteur-auth/two-fa-routes';
 import { Callback } from './components/Callback.tsx';
 import Profil from './pages/Profil'
 import NewLogin from './pages/new-login'
+import { PrivateMessagePage } from './chat/PrivateMessagePage.tsx'
+import './styles/App.css';
+import './styles/chat.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { useContext, useEffect, useState } from 'react';
+import { ThemeContext } from './utils/providers/ThemeProvider.tsx';
+import { fetchUrl } from './fetch.tsx';
+
+function ChannelMember({children}: {children: JSX.Element}) {
+	const [loading, setLoading] = useState(true);
+	const [exist, setExist] = useState(false);
+	const [isMember, setIsMember] = useState(true);
+	const [isBanned, setIsBanned] = useState(false);
+	const { name } = useParams();
+
+	async function verifyMembership() {
+		try {
+			const response = await fetchUrl(`/chat/channels/membership/${name}`, {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+					'Content-Type': 'application/json',
+				},
+			});
+			setExist(response.exist);
+			setIsMember(response.member);
+			setIsBanned(response.banned);
+		} catch (err: any) {
+			console.error(err.message);
+		} finally {
+			setLoading(false);
+		}
+	}
+
+	useEffect(() => {
+		verifyMembership();
+	}, []);
+
+	if (loading) {
+		return <div>Loading...</div>
+	}
+
+	if (!exist) {
+		return <div className='accessError'>This channel does not exist</div>
+	
+	}
+
+	if (isBanned) {
+		return <div className='accessError'>Oops you are banned from this channel</div>
+	}
+
+	if (!isMember) {
+		return <div className='accessError'>You are not a member of this channel</div>
+	}
+
+	return children;
+}
 
 const router = createBrowserRouter([
 	{
@@ -48,16 +100,16 @@ const router = createBrowserRouter([
 					},
 					{
 						path: 'channels/:name',
-						element: <ChatBox />,
+						element: <ChannelMember><ChatBox /></ChannelMember>,
 					},
 					{
 						path: 'friends',
 						element: <Friends />,
 					},
 					{
-						path: "private-messages",
-						element: <PrivateMessagesPage />,
-					}
+						path: "private-messages/:receiverId",
+						element: <PrivateMessagePage />,
+					},
 				]
 			},
 			{
@@ -101,14 +153,18 @@ export default function ErrorPage() {
 }
 
 function Layout() {
+	const { theme } = useContext(ThemeContext);
+
 	return (
-		<AuthProvider>
-			<div className='container'>
-				<NavBar />
-				<Outlet />
-			</div>
-			<ToastContainer theme='dark' />
-		</AuthProvider>
+		<div className={`App ${theme}`}>
+			<AuthProvider>
+				<div className='container'>
+					<NavBar />
+					<Outlet />
+				</div>
+				<ToastContainer theme={theme} />
+			</AuthProvider>
+		</div>
 	)
 }
 
@@ -127,16 +183,6 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 }
 
 export function App() {
-	// useEffect(() => {
-	// 	const urlParams = new URLSearchParams(window.location.search);
-	// 	const token = urlParams.get('token');
-
-	// 	if (token) {
-	// 	  localStorage.setItem('jwtToken', token);
-	// 	  document.location.search = '';
-	// 	}
-	//   }, []);
-
 	return (
 		<RouterProvider router={router} />
 	);

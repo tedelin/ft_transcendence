@@ -27,6 +27,7 @@ CREATE TABLE "users" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "useTwoFA" BOOLEAN NOT NULL DEFAULT false,
     "secretTwoFA" TEXT,
+    "status" "UserStatus" NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -121,7 +122,7 @@ CREATE TABLE "achievement" (
 CREATE TABLE "private_messages" (
     "id" SERIAL NOT NULL,
     "content" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "senderId" INTEGER NOT NULL,
     "receiverId" INTEGER NOT NULL,
 

@@ -2,106 +2,80 @@ import { useEffect, useState } from 'react';
 import { fetchUrl } from '../fetch';
 import { useAuth } from '../components/AuthProvider';
 import { useToast } from '../utils/hooks/useToast';
-import '../styles/chat.css';
-import { Friendship, User } from '../utils/types';
+import { Friendship } from '../utils/types';
+import { useNavigate } from 'react-router-dom';
+import '../styles/friends.css';
+import { getAvatar } from '../utils/utils';
+import { AddFriendModal } from './AddFriendModal';
 
 
-function AddFriend({ selected } : { selected: string }) {
-	const [username, setUsername] = useState('');
-	const [user, setUser] = useState<User | null>(null);
-	const {error, success} = useToast();
-	const token = localStorage.getItem('jwtToken');
-
-	async function getUser() {
-		try {
-			const response = await fetchUrl(`/users/username/${username}`, {
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			setUser(response);
-            await sendRequest();
-		} catch (err: any) {
-			error(err.message);
-		}
-	}
-
-	async function sendRequest() {
-        try {
-			if (user) {
-				await fetchUrl(`/friends/${user.id}`, {
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-				success('Friend request sent');
-			}
-		} catch (err: any) {
-			error(err.message);
-		}
-	}
-
-	return ((selected === "AddFriend" &&
-		<div className='createChannelContainer'>
-			<input 
-				value={username}
-				onChange={(e) => setUsername(e.target.value)}
-				type="text"
-				placeholder="You can add friends by typing their username"
-			/>
-			<button className='createButton' onClick={getUser}>
-				Send Friend Request
-			</button>
-		</div>
-	));
-}
-
-function FriendsTopBar({ setSelected, selected } : { setSelected: Function, selected: string }) {
-	const options = ["Online", "All", "Pending", "Blocked"];
+function FriendsTopBar({ setSelected, selected, setFriendModal }: { setSelected: Function, selected: string, setFriendModal: Function }) {
+	const options = ["All", "Online","Pending", "Blocked"];
 
 	const handleOptionClick = (option: string) => {
 		setSelected(option);
 	};
 
 	return (
-		<div className='friendsTopBar'>
-			<span className='material-symbols-outlined'>
-				group
-			</span>
-			<span className='spanMargin'>
-				Friends
-			</span>
-			{options.map((option) => (
-				<div
-					key={option}
-					className={`topBarAction${selected === option ? "Selected" : ""}`}
-					onClick={() => handleOptionClick(option)}
-				>
-					<div>{option}</div>
-				</div>
-			))}
-			<div className='addFriendAction' onClick={() => setSelected("AddFriend")}>
-				<span>Add Friend</span>
+		<>
+			<div className='list'>
+				{options.map((option) => (
+					<div
+						key={option}
+						className={`listItemCenter${selected === option ? "Selected" : ""}`}
+						onClick={() => handleOptionClick(option)}
+					>
+						{option}
+					</div>
+				))}
 			</div>
+			<div className='addFriendAction' onClick={() => setFriendModal(true)}>
+				Add Friend
+			</div>
+		</>
+	);
+}
+
+
+function SearchFriends({ friendList, setFriends }: { friendList: Friendship[], setFriends: Function}) {
+	const [input, setInput] = useState('');
+	const auth = useAuth();
+
+	function filterFriends(value: string) {
+		setFriends(friendList.filter((friendship) => {
+			const friend = auth?.user?.id === friendship.initiator.id ? friendship.receiver : friendship.initiator;
+			const username = friend.username || '';
+			const lowercaseUsername = username.toLowerCase();
+			const lowercaseValue = value.toLowerCase();
+			return lowercaseUsername.includes(lowercaseValue);
+		}));
+	}
+
+	function handleChange(value: string) {
+		setInput(value);
+		filterFriends(value);
+	}
+
+	return (
+		<div className='searchContainer'>
+			<input 
+				className="searchFriends" 
+				type="text"
+				placeholder="Search friends"
+				value={input}
+				onChange={(e) => handleChange(e.target.value)}
+			/>
 		</div>
 	);
 }
 
-
-function SearchFriends({ selected } : { selected: string }) {
-	return (
-		(selected !== "AddFriend" && <>
-			<input type="text" placeholder="Search friends" />
-		</>)
-	);
-}
-
-function FriendsList({ selected } : { selected: string }) {
+function FriendsList({ selected }: { selected: string }) {
 	const [friends, setFriends] = useState<Friendship[] | []>([]);
+	const [filteredFriends, setFilteredFriends] = useState<Friendship[] | []>([]);
+	const [searchFriends, setSearchFriends] = useState<Friendship[] | []>([]);
 	const token = localStorage.getItem('jwtToken');
-	const {error, success} = useToast();
+	const { error, success } = useToast();
+	const navigate = useNavigate();
 	const auth = useAuth();
 
 	async function acceptFriendRequest(requestId: number) {
@@ -112,7 +86,7 @@ function FriendsList({ selected } : { selected: string }) {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			setFriends((prevFriends) =>
+			setFilteredFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== requestId)
 			);
 			success('Friend request accepted');
@@ -129,7 +103,7 @@ function FriendsList({ selected } : { selected: string }) {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			setFriends((prevFriends) =>
+			setFilteredFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== requestId)
 			);
 		} catch (err: any) {
@@ -146,22 +120,21 @@ function FriendsList({ selected } : { selected: string }) {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			setFriends((prevFriends) =>
+			setFilteredFriends((prevFriends) =>
 				prevFriends.filter((friend) => friend.id !== friendRequest.id)
 			);
 		} catch (err: any) {
 			error(err.message);
 		}
-	
+
 	}
 
 	async function getFriends() {
-		const token = localStorage.getItem('jwtToken');
 		try {
 			const response = await fetchUrl("/friends/all", {
 				method: "GET",
 				headers: {
-					Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
 				},
 			});
 			setFriends(response);
@@ -170,81 +143,148 @@ function FriendsList({ selected } : { selected: string }) {
 		}
 	}
 
+	function filterFriends() {
+		const filteredFriends = friends.filter((friendship: Friendship) => {
+			const friend = friendship.initiator.id === auth?.user?.id ? friendship.receiver : friendship.initiator;
+			if (selected === "Pending") {
+				return (
+					friendship.status === "PENDING" &&
+					friendship.initiator.id !== auth?.user?.id
+				);
+			} else if (selected === "All") {
+				return friendship.status === "ACCEPTED";
+			} else if (selected === "Blocked") {
+				return (friendship.status === "BLOCKED" && friendship.initiator.id == auth?.user?.id);
+			} else if (selected === "Online") {
+				return friendship.status === "ACCEPTED" && friend.status === "ONLINE";
+			} else {
+				return friendship.status === "ACCEPTED";
+			}
+		});
+		setFilteredFriends(filteredFriends);
+		setSearchFriends(filteredFriends);
+	}
+	
 	useEffect(() => {
 		getFriends();
 	}, [selected]);
 
-	const filteredFriends = friends.filter((friend : Friendship) => {
-		if (selected === "Pending") {
-			return (
-				friend.status === "PENDING" &&
-				friend.initiatorId !== auth?.user?.id
-			);
-		} else if (selected === "All") {
-			return friend.status === "ACCEPTED";
-		} else if (selected === "Blocked") {
-			return (friend.status === "BLOCKED" && friend.initiatorId == auth?.user?.id);
-		} else {
-			return friend.status === "ACCEPTED";
-		}
-	});
+	useEffect(() => {
+		auth?.socket?.on('user-state', (data) => {
+			setFriends((prevFriends) => {
+			  const updatedFriends = prevFriends.map((friend) => {
+				if (friend.initiator.id === data.userId) {
+				  return { ...friend, initiator: { ...friend.initiator, status: data.state } };
+				}
+				else if (friend.receiver.id === data.userId) {
+				  return { ...friend, receiver: { ...friend.receiver, status: data.state } };
+				}
+				return friend;
+			  });
+			  return updatedFriends;
+			});
+		});
 
+		return () => {
+			auth?.socket?.off('user-state');
+		};
+	}, []);
+
+	useEffect(() => {
+		filterFriends();
+	}, [friends]);
+	
 	return (
-		selected !== "AddFriend" && (
-			<div className='friendsList'>
+		<>
+			<SearchFriends friendList={searchFriends} setFriends={setFilteredFriends} />
+			<div className='list'>
 				{filteredFriends.length > 0 &&
-					filteredFriends.map((friend: any) => (
-						<div className='friendListItem' key={friend.id}>
-							<span className='sideBarChatName'>{friend.initiatorId == auth?.user?.id ? friend.receiver.username : friend.initiator.username}</span>
-							{friend.status === "PENDING" && (
-								<div className='friendActions'>
-									<button
-										className='acceptFriend'
-										onClick={() => acceptFriendRequest(friend.id)}
-									>
-										Accept
-									</button>
-									<button
-										className='declineFriend'
-										onClick={() => deleteFriend(friend.id)}
-									>
-										Decline
-									</button>
+					filteredFriends.map((friendship: Friendship) => {
+						const friend = friendship.initiator.id === auth?.user?.id ? friendship.receiver : friendship.initiator;
+						return (
+							<div className='listItem' key={friend.id}>
+								<div className='statusContainer'>
+									<img
+										className='smallAvatar'
+										src={getAvatar(friend.avatar)}
+										alt='avatar'
+									/>
+									<span className={`status ${friend.status === "ONLINE" ? "online" : "offline"}`}>
+									</span>
 								</div>
-							)}
-							{friend.status === "ACCEPTED" && (
-								<div className='friendActions'>
-									<button
-										className='declineFriend'
-										onClick={() => deleteFriend(friend.id)}
-									>
-										Remove
-									</button>
-									<button 
-										className='declineFriend'
-										onClick={() => blockFriend(friend)}
-									>
-										Block
-									</button>
-								</div>
-							)}
-						</div>
-					))}
+								<span className='spanMargin'>
+									{friend.username}
+								</span>
+								{friendship.status === "PENDING" && (
+									<div className='friendActions'>
+										<button
+											className='acceptFriend'
+											onClick={() => acceptFriendRequest(friendship.id)}
+										>
+											Accept
+										</button>
+										<button
+											className='declineFriend'
+											onClick={() => deleteFriend(friendship.id)}
+										>
+											Decline
+										</button>
+									</div>
+								)}
+								{friendship.status === "ACCEPTED" && (
+									<div className='friendActions'>
+										<span
+											onClick={() => navigate(`/chat/private-messages/${friend.id}`)}
+											className='material-symbols-outlined'
+										>
+											chat
+										</span>
+										<button
+											className='declineFriend'
+											onClick={() => deleteFriend(friendship.id)}
+										>
+											Remove
+										</button>
+										<button
+											className='declineFriend'
+											onClick={() => blockFriend(friendship)}
+										>
+											Block
+										</button>
+									</div>
+								)}
+								{friendship.status === "BLOCKED" && (
+									<div className='friendActions'>
+										<button
+											className='declineFriend'
+											onClick={() => deleteFriend(friendship.id)}
+										>
+											Unblock
+										</button>
+									</div>
+								)}
+							</div>
+						);
+					})}
 			</div>
-		)
-	);
+		</>
+	)
 }
 
 
 export function Friends() {
-	const [selected, setSelected] = useState("Online");
+	const [selected, setSelected] = useState("All");
+	const [friendModal, setFriendModal] = useState(false);
 
 	return (
 		<>
-			<FriendsTopBar selected={selected} setSelected={setSelected} />
-			<AddFriend selected={selected} />
-			<SearchFriends selected={selected} />
-			<FriendsList selected={selected} />
+			<AddFriendModal enabled={friendModal} setEnabled={() => setFriendModal(false)} />
+			<div className='flexColumn'>
+				<FriendsList selected={selected} />
+			</div>
+			<div className='sideBar'>
+				<FriendsTopBar selected={selected} setSelected={setSelected} setFriendModal={setFriendModal}/>
+			</div>
 		</>
 	);
 }

@@ -1,10 +1,10 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class SendMessageDto {
-  @IsNumber()
-  receiverId: number;
+export class PrivateMessageDto {
+	@IsNumber()
+	receiverId: number;
 
-  @IsString()
-  @IsNotEmpty()
-  content: string;
+	@IsString()
+	@IsNotEmpty()
+	content: string;
 }

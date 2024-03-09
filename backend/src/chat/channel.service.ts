@@ -1,7 +1,7 @@
 import { Injectable, ConflictException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Prisma, Visibility, Role } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
-import { ChannelMessageDto, CreateChannelDto } from './dto/chat.dto';
+import { ChannelMessageDto, CreateChannelDto, UpdateChannelDto } from './dto/chat.dto';
 import { JoinChannelDto } from './dto/chat.dto';
 import { FriendService } from 'src/friends/friends.service';
 import { ModerationService } from 'src/moderation/moderation.service';
@@ -50,7 +50,8 @@ export class ChannelService {
 		});
 		if (alreadyJoined && alreadyJoined.role === Role.BANNED) throw new ConflictException('You are banned from this channel');
 		if (alreadyJoined) return alreadyJoined;
-		if (joinChannelDto.password) {
+		if (channel.visibility === Visibility.PROTECTED) {
+			if (!joinChannelDto.password) throw new ForbiddenException("Password required");
 			const pwMatches = await argon.verify(channel.password, joinChannelDto.password);
 			if (!pwMatches) {
 				throw new ForbiddenException("Wrong password");
@@ -141,10 +142,8 @@ export class ChannelService {
 		});
 	}
 
-	async update(name: string, updateChannelDto: Prisma.ChannelUpdateInput) {
-		console.log(updateChannelDto);
+	async update(name: string, updateChannelDto: UpdateChannelDto) {
 		if (updateChannelDto.password) {
-			console.log('hashing password');
 			const password = updateChannelDto.password as string;
 			const hash = await argon.hash(password);
 			updateChannelDto.password = hash;
@@ -163,6 +162,11 @@ export class ChannelService {
 				channelName: name,
 			}
 		});
+		await this.databaseService.channelMessage.deleteMany({
+			where: {
+				channelId: name,
+			}
+		});
 		this.eventEmitter.emit('delete.channel', name);
 		return await this.databaseService.channel.delete({
 			where: {
@@ -173,7 +177,7 @@ export class ChannelService {
 
 	async createMessage(channelMessage: ChannelMessageDto) {
 		const userMuted = await this.moderationService.getRole(channelMessage.senderId, channelMessage.channelId);
-		if (userMuted === Role.MUTED) throw new ForbiddenException('You are muted');
+		if (userMuted === Role.MUTED) throw new ForbiddenException('You have been muted');
 		const message = await this.databaseService.channelMessage.create({
 			data: channelMessage,
 			include: {
@@ -226,5 +230,41 @@ export class ChannelService {
 				}
 			}
 		});
+	}
+
+	async searchPublicChannels(query: string) {
+		return await this.databaseService.channel.findMany({
+			take: 11,
+			where: {
+				visibility: Visibility.PUBLIC,
+				...(query 
+					? {
+						name: {
+							contains: query,
+						},
+					} 
+					: {}),
+			},
+			select: {
+				name: true,
+				visibility: true,
+				password: false,
+				messages: false,
+			}
+		});
+	
+	}
+
+	async verifyMembership(userId: number, name: string) {
+		const channel = await this.findByName(name);
+		if (!channel) return {exist: false};
+		const user = await this.databaseService.channelUser.findFirst({
+			where: {
+				userId,
+				channelName: name,
+			}
+		});
+		if (user?.role === Role.BANNED) return {exist: true, member: false, banned: true};
+		return {exist: true, member: !!user, banned: false};
 	}
 }

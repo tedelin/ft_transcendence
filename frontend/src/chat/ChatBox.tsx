@@ -6,6 +6,7 @@ import { fetchUrl } from "../fetch";
 import { useToast } from "../utils/hooks/useToast";
 import { ChannelSettings } from "./ChannelSettings";
 import '../styles/chat.css';
+import { RightBar } from "./RightBar";
 
 function TopBar({ channel }) {
 	const [moderation, setModeration] = useState(false);
@@ -25,7 +26,7 @@ function TopBar({ channel }) {
 					roomId: channel,
 				}),
 			});
-			navigate('/chat/channels');	
+			navigate('/chat/channels');
 		} catch (err: any) {
 			error(err.message);
 		}
@@ -41,7 +42,7 @@ function TopBar({ channel }) {
 				</span>
 			</div>
 			<div className="topSettings">
-				<span 
+				<span
 					className="material-symbols-outlined"
 					onClick={leaveChannel}
 				>
@@ -91,17 +92,17 @@ export function ChatBox() {
 			sendChannelMessage();
 		}
 	};
-	
+
 	useEffect(() => {
 		auth?.socket?.on("typing", (username: string) => {
 			if (username === auth?.user?.username)
-			return;
+				return;
 			setTyping(`${username} is typing ...`);
 			setTimeout(() => {
 				setTyping('');
 			}, 3000);
 		});
-	
+
 		return () => {
 			auth?.socket?.off("typing");
 		}
@@ -109,17 +110,20 @@ export function ChatBox() {
 
 	return (
 		<>
-			<TopBar channel={name} />
-			<MessageDisplay key={name} channel={name} />
-			<div className="typingIndicator">{typing}</div>
-			<div className='messageInput'>
-				<textarea
-					value={message}
-					onKeyDown={handleKeyDown}
-					placeholder={'Send message to ' + name}
-					onChange={onTyping}
-				/>
+			<div className="flexRow">
+				<TopBar channel={name} />
+				<MessageDisplay key={name} channel={name} />
+				<div className="typingIndicator">{typing}</div>
+				<div className='messageInput'>
+					<textarea
+						value={message}
+						onKeyDown={handleKeyDown}
+						placeholder={'Send message to ' + name}
+						onChange={onTyping}
+					/>
+				</div>
 			</div>
+			<RightBar />
 		</>
 	);
 }

@@ -1,5 +1,6 @@
 import { DatabaseService } from 'src/database/database.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { UserStatus } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -21,7 +22,33 @@ async getProfilData(id: number) {
 	  
 
 	async findAll() {
-		return await this.databaseService.user.findMany();
+		return await this.databaseService.user.findMany({
+			select: {
+				id: true,
+				username: true,
+				avatar: true,
+				status: true,
+			},
+		});
+	}
+
+	async searchUser(query: string) {
+		return await this.databaseService.user.findMany({
+			take: 10,
+			where: query 
+				? {
+					username: {
+						contains: query,
+					},
+				} 
+				: {},
+			select: {
+				id: true,
+				username: true,
+				avatar: true,
+				status: true,
+			},
+		});
 	}
 
     async getUserById(id: number) {
@@ -64,5 +91,12 @@ async getProfilData(id: number) {
 			where: { id: userId },
 			data: { avatar },
 	  });
+	}
+
+	async updateUserState(userId: number, status: UserStatus) {
+		return await this.databaseService.user.update({
+			where: { id: userId },
+			data: { status },
+		});
 	}
 }

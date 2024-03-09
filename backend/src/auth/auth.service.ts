@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/c
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import { DatabaseService } from '../database/database.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, UserStatus } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './dto/auth.dto';
@@ -19,11 +19,14 @@ export class AuthService {
         try {
             authDto.password = await argon.hash(authDto.password);
             const user = await this.databaseService.user.create({
-                data: authDto,
+                data: {
+					username: authDto.username,
+					password: authDto.password,
+					status: UserStatus.ONLINE,
+				}
             });
             return this.signToken(user.id, user.username);
         } catch (error) {
-            console.log(error);
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
                     throw new ForbiddenException('Credential taken');
@@ -60,10 +63,17 @@ export class AuthService {
 			}
 		});
 		if (userExist) throw new ForbiddenException('User already exist');
+		const usernameExist = await this.databaseService.user.findUnique({
+			where: {
+				username: signUpDto.username
+			}
+		});
+		if (usernameExist) throw new ForbiddenException('Username already taken');
 		const newUser = await this.databaseService.user.create({
 			data: {
 				username: signUpDto.username,
 				password: '',
+				status: UserStatus.ONLINE,
 				id42: user.id
 			}
 		});
@@ -130,8 +140,6 @@ export class AuthService {
 		}
 	}
 
-    // This function will be used to sign a token for the client
-    // The token will be used to authenticate the client and it will be used by the client
     async signToken(
         userId: number,
         username: string,
@@ -143,21 +151,10 @@ export class AuthService {
         const secret = this.configService.get<string>('JWT_SECRET');
         const token = await this.jwtService.signAsync(payload, {
             secret: secret,
+			expiresIn: '7d'
         });
 
-        return { access_token: token }; // Return an object token to the client
-    }
-
-    async signTempTokenFor2FA(userName: string, password: string) {
-        const payload = {
-            userName,
-			password
-        };
-        const secret = process.env.TEMP_SECRET2fA;
-        const token = this.jwtService.signAsync(payload, {
-			secret
-		});
-        return { access_token: token }; 
+        return { access_token: token };
     }
 
     verifyAccessToken(accessToken: string) {
