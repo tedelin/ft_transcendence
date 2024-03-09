@@ -242,7 +242,7 @@ select {
 	padding: 5px;
 	align-items: center;
 	justify-content: space-between;
-	border-bottom: 3px solid var(--bg-secondary);
+	border-bottom: 1px solid var(--bg-secondary);
 }
 
 .topSide {
