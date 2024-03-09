@@ -161,6 +161,11 @@ export class ChannelService {
 				channelName: name,
 			}
 		});
+		await this.databaseService.channelMessage.deleteMany({
+			where: {
+				channelId: name,
+			}
+		});
 		this.eventEmitter.emit('delete.channel', name);
 		return await this.databaseService.channel.delete({
 			where: {
@@ -171,7 +176,7 @@ export class ChannelService {
 
 	async createMessage(channelMessage: ChannelMessageDto) {
 		const userMuted = await this.moderationService.getRole(channelMessage.senderId, channelMessage.channelId);
-		if (userMuted === Role.MUTED) throw new ForbiddenException('You are muted');
+		if (userMuted === Role.MUTED) throw new ForbiddenException('You have been muted');
 		const message = await this.databaseService.channelMessage.create({
 			data: channelMessage,
 			include: {
