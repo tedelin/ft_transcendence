@@ -41,7 +41,7 @@ body {
     color: var(--text-primary);
 }
 
-.button,
+
 .registerButton {
     cursor: pointer;
     box-sizing: border-box;

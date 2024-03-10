@@ -194,9 +194,11 @@ export class ChannelService {
 		return message;
 	}
 
-	async findMessages(userId: number, name: string) {
+	async findMessages(userId: number, name: string, offset: number) {
 		const blockedUser = await this.friendService.findBlockedUsers(userId);
-		return await this.databaseService.channelMessage.findMany({
+		const messages = await this.databaseService.channelMessage.findMany({
+			take: 10,
+			skip: offset,
 			where: {
 				channelId: name,
 				senderId: {
@@ -211,8 +213,12 @@ export class ChannelService {
 						avatar: true,
 					}
 				}
+			},
+			orderBy: {
+				timestamp: 'desc',
 			}
 		});
+		return messages.reverse();
 	}
 
 	async findChannelUsers(name: string) {
