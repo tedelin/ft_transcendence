@@ -16,7 +16,6 @@ function createAchievementBoxes(achievements) {
 }
 
 function getAchievements(Achievements: any) {
-	console.log("Achievements.firstGame : ", Achievements.firstGame);
 	const achievements: { title: string; description: string; }[] = []; 
 	if (Achievements.firstGame)
 		achievements.push({ title: 'firstGame', description: 'description' } as { title: string; description: string; });
@@ -30,28 +29,15 @@ function getAchievements(Achievements: any) {
 		achievements.push({ title: 'invincible_guardian', description: 'description' } as { title: string; description: string; });
 	if (Achievements.Speed_Demon)
 		achievements.push({ title: 'Speed_Demon', description: 'description' } as { title: string; description: string; }); // Add the type assertion here
-	console.log("achievements : ", achievements);
 	return achievements;
 }
 
 function Achievements(Achievements: any) {
 	const [scrollPosition, setScrollPosition] = useState(0);
 	const sliderRef = useRef(null);
-	console.log("Achievements : ", Achievements);
 	const achievements_list = getAchievements(Achievements.Achievement);
-	const placeholder = [
-		{ title: 'Premier pas', description: 'Complété votre première tâche' },
-		{ title: 'Rapidité', description: 'Complété une tâche en moins d\'une heure' },
-		{ title: 'Perfectionniste', description: 'Atteint un score parfait sur une tâche' },
-		{ title: 'Perfectionniste', description: 'Atteint un score parfait sur une tâche' },
-		{ title: 'Perfectionniste', description: 'Atteint un score parfait sur une tâche' },
-		{ title: 'Perfectionniste', description: 'Atteint un score parfait sur une tâche' },
-		{ title: 'Perfectionniste', description: 'Atteint un score parfait sur une tâche' },
-		{ title: 'Perfectionniste', description: 'Atteint un score parfait sur une tâche' },
-		// Ajoute d'autres achievements selon le besoin
-	];
-
 	const toRender = createAchievementBoxes(achievements_list);
+	const hasEnoughAchievements = achievements_list.length >= 6;
 
 	const scrollLeft = () => {
 		if (sliderRef.current) {
@@ -77,7 +63,7 @@ function Achievements(Achievements: any) {
 
 	return (
 		<div className="Achievements">
-			<button className={`navCaroussel left ${isAtStart ? 'end-nav-caroussel' : ''}`} onClick={scrollLeft}>
+			<button className={`navCaroussel left ${!hasEnoughAchievements || isAtStart ? 'end-nav-caroussel' : ''}`} onClick={scrollLeft}>
 				<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
 					<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
 				</svg>
@@ -87,7 +73,7 @@ function Achievements(Achievements: any) {
 					{toRender}
 				</div>
 			</div>
-			<button className={`navCaroussel right ${isAtEnd ? 'end-nav-caroussel' : ''}`} onClick={scrollRight}>
+			<button className={`navCaroussel right ${!hasEnoughAchievements || isAtEnd ? 'end-nav-caroussel' : ''}`} onClick={scrollRight}>
 				<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
 					<path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" />
 				</svg>

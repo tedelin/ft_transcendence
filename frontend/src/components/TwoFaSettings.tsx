@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import "../styles/twofa-setup.css";
 
 function TwoFaSettings() {
-	const useTwoFA = useAuth()?.user?.useTwoFA;
-	const navigate = useNavigate(); // useNavigate pour la redirection
+	const navigate = useNavigate(); 
 	const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
+	console.log("useAuth : ", useAuth())
+	console.log("useAuth()?.user : ", useAuth()?.user)
+	const useTwoFA = useAuth()?.user?.useTwoFA;
+	console.log("useTwoFA : ", useTwoFA)
 
 	const handleClick = () => {
 		if (useTwoFA) {
@@ -45,7 +48,6 @@ function TwoFaSettings() {
 		}
 	};
 	
-
 	return (
 		<div className='two-fa-settings'>
 			<div><strong>Two-Factor Authentication</strong></div>

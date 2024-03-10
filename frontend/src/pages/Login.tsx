@@ -49,7 +49,7 @@ export default function Login() {
 			await auth?.signup(username, password);
 			navigate(from, { replace: true });
 		} catch (err: any) {
-			error(err.message);
+			error(err.message, "salut");
 		}
 	}
 

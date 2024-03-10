@@ -1,5 +1,5 @@
 import { DatabaseService } from 'src/database/database.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable,HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { UserStatus } from '@prisma/client';
 
 @Injectable()
@@ -7,7 +7,7 @@ export class UserService {
 	constructor(private readonly databaseService: DatabaseService) {}
 
 async getProfilData(id: number) {
-  return await this.databaseService.user.findUnique({
+  const data = await this.databaseService.user.findUnique({
     where: {
       id,
     },
@@ -15,9 +15,13 @@ async getProfilData(id: number) {
       username: true,
       avatar: true,
       stats: true,
+	  bio : true,
       Achievement: true,
     },
   });
+  if(!data)
+  	throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
+  else return data;
 }
 	  
 
@@ -75,6 +79,23 @@ async getProfilData(id: number) {
 			},
 		});
 	}
+
+	async updateUserDetails(userId: number, updateData: { avatar?: string, username: string, bio: string }) {
+		const { username } = updateData;
+		const userExist = await this.databaseService.user.findUnique({
+		  where: {
+			username: username
+		  }
+		});
+		if (userExist && userExist.id !== userId) {
+		  throw new HttpException('Ce nom d\'utilisateur est déjà pris.', HttpStatus.BAD_REQUEST);
+		}
+		return this.databaseService.user.update({
+		  where: { id: userId },
+		  data: updateData, // Utilise l'objet updateData directement
+		});
+	  }
+	  
 
 	async getUserByUsername(username: string) {
 		const user = await this.databaseService.user.findUnique({
