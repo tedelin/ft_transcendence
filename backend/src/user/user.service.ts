@@ -7,7 +7,7 @@ export class UserService {
 	constructor(private readonly databaseService: DatabaseService) {}
 
 async getProfilData(id: number) {
-  return await this.databaseService.user.findUnique({
+  const data = await this.databaseService.user.findUnique({
     where: {
       id,
     },
@@ -19,6 +19,9 @@ async getProfilData(id: number) {
       Achievement: true,
     },
   });
+  if(!data)
+  	throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
+  else return data;
 }
 	  
 

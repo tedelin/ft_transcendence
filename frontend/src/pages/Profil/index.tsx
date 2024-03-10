@@ -41,41 +41,52 @@ import { getAvatar } from '../../utils/utils';
 //     }
 // }
 
+function checkIfAnyAchievementIsTrue(achievement) {
+	for (let key in achievement) {
+	  if (typeof achievement[key] === 'boolean' && achievement[key] === true) {
+		return true;
+	  }
+	}
+	return false;
+  }
+
 function Profil() {
   const id = useParams().id;
   const userId = useAuth()?.user?.id;
-  const me = id === userId;
-  const [profilData, setProfilData] = useState(null); // Ajoute un état pour stocker les données du profil
-  const [profilMatchData, setProfilMatchData] = useState(null); // Ajoute un état pour stocker les données du profil
+  const me = id == userId;
+  const [profilData, setProfilData] = useState(null); 
+  const [profilMatchData, setProfilMatchData] = useState(null);
 
   useEffect(() => {
     async function fetchProfilData() {
       try {
-        const data = await fetchUrl('/users/profilData/' + id);
+        const data = await fetchUrl('/users/profilData/' + id); // renvoyer un truc precit si ca existe pas
 		const matchData = await fetchUrl('/game/history');
         setProfilData(data);
 		setProfilMatchData(matchData)
       } catch (error) {
         console.error("Erreur lors de la récupération des données du profil:", error);
+		setProfilData({error})
       }
     }
     fetchProfilData();
   }, [id]);
 
-  if (!profilData) {
+  if (!profilData)
     return <div>Chargement des données du profil...</div>;
-  }
-  console.log("profilData :", profilData);
-  console.log("profilMatchData :", profilMatchData);
+  if(profilData.error)
+	return <div>User doesn't exist</div>;
+
+  console.log("profilData.Achievement :", profilData.Achievement);
 
   const avatar = getAvatar(profilData.avatar);
   console.log("avatar : ", avatar);
   return (
 	<div className='profilPage'>
 		<div className='Layout-profil'>
-		<Infos username={profilData.username} avatar={avatar} bio={profilData.bio} me={me}/>
+		<Infos username={profilData.username} avatar={avatar} bio={profilData.bio} id={id} me={me}/>
 		<Stats stats={profilData.stats} />
-		<Achievements Achievement={profilData.Achievement} />
+		{checkIfAnyAchievementIsTrue(profilData.Achievement) && <Achievements Achievement={profilData.Achievement} />}
 		<History match={profilMatchData} userId={id}/>
 		</div>
 	</div>

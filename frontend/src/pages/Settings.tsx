@@ -3,14 +3,13 @@ import Avatar from '../components/Settings/Avatar';
 import UsernameSettings from '../components/Settings/UsernameSettings';
 import BioSettings from '../components/Settings/BioSettings';
 import TwoFaSettings from '../components/TwoFaSettings';
+import ToggleTheme from '../components/Settings/ToggleTheme'
 import { useAuth } from '../components/AuthProvider';
 import { getAvatar } from '../utils/utils';
 import { useToast } from '../utils/hooks/useToast';
-import { ThemeContext } from '../utils/providers/ThemeProvider';
 import '../styles/settings.css';
 
 function Settings() {
-  const { theme, toggleTheme } = useContext(ThemeContext);
   const [selectedFile, setSelectedFile] = useState(null);
   const auth = useAuth();
   const [preview, setPreview] = useState(getAvatar(auth?.user?.avatar));
@@ -63,20 +62,20 @@ function Settings() {
   
 
   return (
-    <div className='settingsPage'>
-      <div className='info-settings'>
-        <UsernameSettings username={username} setUsername={setUsername} />
-        <BioSettings bio={bio} setBio={setBio} />
-        <TwoFaSettings />
-		<div className="header-toggle-buttons">
-          <button onClick={() => toggleTheme()}>{theme}</button>
-        </div>
-      </div>
-      <div className='right-side'>
-        <Avatar handleFileChange={handleFileChange} preview={preview}/>
-        <button onClick={handleUpload} className='save'>SAVE</button>
-      </div>
-    </div>
+	<div className='settings-wrapper'>
+		<div className='settingsPage'>
+			<div className='info-settings'>
+				<UsernameSettings username={username} setUsername={setUsername} />
+				<BioSettings bio={bio} setBio={setBio} />
+				<TwoFaSettings />
+				<ToggleTheme />
+			</div>
+			<div className='right-side'>
+				<Avatar handleFileChange={handleFileChange} preview={preview}/>
+				<button onClick={handleUpload} className='save'>SAVE</button>
+			</div>
+		</div>
+	</div>
   );
 }
 

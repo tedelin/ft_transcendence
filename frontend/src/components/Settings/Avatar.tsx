@@ -1,7 +1,7 @@
 function Avatar({handleFileChange, preview}) {
 
   return (
-    <div>
+    <div className="avatar">
         {preview && <img src={preview} alt="Aperçu de l'avatar" style={{ width: 300, height: 300, borderRadius: '50%' }} />}
         <div className="edit-button">
           <input

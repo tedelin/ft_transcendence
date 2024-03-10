@@ -47,7 +47,7 @@ export class GameService {
                 include: {
                     players: {
                         include: {
-                            player: true, // Assurez-vous que les détails du joueur sont inclus
+                            player: true, 
                         }
                     },
                 },
@@ -55,7 +55,7 @@ export class GameService {
         }
         return this.databaseService.match.findMany({
             orderBy: {
-                createdAt: 'asc', // Trier par date de création dans un ordre décroissant
+                createdAt: 'asc',
             },
             include: {
                 players: {
