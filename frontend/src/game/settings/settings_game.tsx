@@ -5,6 +5,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import BlockBackNavigation from "../BlockBackNavigation";
 import { useEffect } from 'react';
+import '../../styles/gameSettings.css';
 
 
 // export function Settings_game() {
@@ -173,19 +174,16 @@ export function Settings_game() {
     }
 
     return (
-        <div className='rien'>
+        <>
             < BlockBackNavigation />
             < TopBar />
-            < RightBar />
-            <div className='buttonContainer'>
-                <Link to="/game/settings/ball" className='SettingsButton'>Ball</Link>
-                <Link to="/game/settings/paddle" className='SettingsButton'>Paddle</Link>
+            <div className='rowDirection'>
+                < Outlet />
+                < RightBar />
             </div>
-            <p>la je suis dans setting</p>
-            <Outlet />
             <div className='buttonContainer'>
                 <Link to="/game/matchmaking" className='SettingsButton' onClick={handleSaveSettings}>next</Link>
             </div>
-        </div>
+        </>
     );
 }

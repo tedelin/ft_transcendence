@@ -1,4 +1,7 @@
 :root {
+	--paddle-light: black;
+	--paddle-dark: white;
+	
     --primary-green: #0C8346;
     --secondary-green: #329F5B;
 

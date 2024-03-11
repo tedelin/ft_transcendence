@@ -108,7 +108,7 @@ button {
   background-color: rgb(220, 220, 220);
 }
 
-.play {
+.playButton {
   background-color: var(--primary-blue);
   color: white;
   position: relative; /* Nécessaire pour la pseudo-élément */
@@ -116,32 +116,8 @@ button {
   transition: background-color 0.3s; /* Transition douce pour le fond */
 }
 
-.play:hover {
+.playButton:hover {
   background-color: var(--primary-blue); /* Assombris le fond au survol pour l'effet */
-}
-
-.play::before {
-  content: "";
-  position: absolute;
-  top: -50%; /* Commence en dehors du bouton */
-  left: -80%;
-  width: 200%; /* Large pour couvrir diagonalement */
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent,
-    transparent 49%,
-    rgba(255, 255, 255, 0.5) 50%,
-    transparent 51%,
-    transparent
-  ); /* La ligne de lumière */
-  animation: shine 2s infinite linear; /* Animation infinie */
-}
-
-@keyframes shine {
-  to {
-    transform: translateX(50%); /* Déplace le fond pour créer l'effet */
-  }
 }
 
 .Bio {

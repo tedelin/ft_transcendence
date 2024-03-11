@@ -1,11 +1,11 @@
 .container {
-	display: flex;
-	margin: 0;
-	padding: 0;
-	font-family: 'Play', Arial, Helvetica, sans-serif;
-	font-size: 16px;
-	height: 100vh;
-	flex-grow: 1;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    height: 100vh;
+    flex-grow: 1;
 }
 
 .accessError {

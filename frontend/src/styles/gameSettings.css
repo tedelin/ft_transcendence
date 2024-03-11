@@ -1,3 +1,5 @@
+
+
 .TopBar {
     display: flex;
     justify-content: space-between;
@@ -66,31 +68,83 @@
 }
 
 .RightBar {
-    /* display: flex;
-    flex: 1;
-    width: 300px;
-    flex-direction: column; */
-    float: right;
-    width: 300px;
-    height: 100vh;
+    width: 35%;
+	max-width: 300px;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
     border-left: 1px solid #40444b;
 }
 
-.ballContainer {
+.ballContainer,
+.paddleContainer {
     display: flex;
     padding: 15px;
-    border-bottom: 1px solid #40444b;
 }
 
-.ballContainer img {
+.ballContainer img,
+.paddleContainer img {
     width: 50px;
     height: 50px;
 }
 
-.ballContainer > p
-{
-    background-color: aqua;
+.ballContainer button,
+.paddleContainer button {
+    all: unset;
     font-size: 35px;
     margin: 0;
-    margin-left : 60px;
+    margin-left: 60px;
 }
+
+.ball,
+.paddle {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    background-color: #9b9b9b;
+}
+
+.paddleSizeContainer{
+    margin: 50px 250px 0px 250px; 
+}
+
+.paddleSizeContainer p{
+    font-size: 50px;
+    margin-bottom: 25px;
+}
+
+.paddleSizeOutside {
+    width: 100%;
+    height: 20px;
+    border: 1px solid rgb(197, 197, 197);
+    display: flex;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.paddleSizeInside {
+    height: 90%;
+    background-color: #000000;
+    border-radius: 10px;
+}
+
+.buttonSizePaddle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttonSizePaddle button {
+    all: unset;
+    width: 35px;
+    height: 35px;
+    font-size: 35px;
+    background-color: aquamarine;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+}
+

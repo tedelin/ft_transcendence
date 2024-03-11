@@ -33,7 +33,7 @@ function Infos(Infos : any) {
 			<>
 			  <button className="add" onClick={() => add(Infos.id)}>Add</button>
 			  <button className="message" onClick={() => navigate(`/chat/private-messages/${Infos.id}`)}>Message</button>
-			  <button className="play" onClick={play}>Invite to Play</button>
+			  <button className="playButton" onClick={play}>Invite to Play</button>
 			</>
 		  )}
 		</div>

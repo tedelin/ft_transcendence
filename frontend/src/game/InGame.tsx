@@ -179,14 +179,14 @@ export function InGame() {
                         <div className="score player2">{score.player2}</div>
                     </div>
                     <div className="game-area">
-                        <img className="player one" src={profil} alt='playerOne' />
+                        <img className="player" src={profil} alt='playerOne' />
                         <canvas ref={game?.gameInstance.current?.canvasRef} width={game?.gameInstance?.current?.canvasWidth} height={game?.gameInstance?.current?.canvasHeight} />
-                        <img className="player two" src={profil} alt='playerTwo' />
+                        <img className="player" src={profil} alt='playerTwo' />
                     </div>
                     <div className="spectatorsList">
                         {spectators?.map((spectator, index) => (
                             <img key={index} src={boobaprofil} alt={`Spectator ${spectator}`} className="spectator" />
-                        ))}
+						))}
                     </div>
                 </div>
             )}

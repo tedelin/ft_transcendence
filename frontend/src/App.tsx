@@ -70,6 +70,13 @@ function ChannelMember({children}: {children: JSX.Element}) {
 
 	return children;
 }
+import { Settings_game } from './game/settings/settings_game.tsx';
+import { Ball } from './game/settings/settings_ball.tsx';
+import { Paddle } from './game/settings/settings_paddle.tsx';
+import { Matchmaking } from './game/Matchmaking';
+import { GameProvider } from './components/GameProvider';
+import { InGame } from './game/InGame';
+import { EndGame } from './game/endGame';
 
 const router = createBrowserRouter([
 	{
@@ -122,7 +129,35 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "game",
-				element: <RequireAuth><Game /></RequireAuth>
+				element: <RequireAuth><GameProvider><Game /></GameProvider></RequireAuth>,
+				children: [
+					{
+						path: "settings",
+						element: <Settings_game />,
+						children: [
+							{
+								path: "ball",
+								element: <Ball />,
+							},
+							{
+								path: "paddle",
+								element: <Paddle />,
+							}
+						],
+					},
+					{
+						path: "matchmaking",
+						element: <Matchmaking />,
+					},
+					{
+						path: "inGame",
+						element: <InGame />,
+					},
+					{
+						path: "endGame",
+						element: <EndGame />,
+					}
+				],
 			},
 			{
 				path: "/callback",

@@ -1,4 +1,5 @@
 // import React from "react";
+import "../../styles/gameSettings.css"
 
 export function Ball() {
     return (

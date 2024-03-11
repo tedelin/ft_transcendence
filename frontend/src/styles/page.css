@@ -1,6 +1,13 @@
 .page {
-    flex-grow: 1;
-	overflow: auto;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.rowDirection {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
 }
 
 .menu {

@@ -72,7 +72,7 @@ export class RoomService {
         roomState.players = roomState.players.filter(c => c.id !== client.id);
         client.leave(gameId);
         this.server.to(gameId).emit('matchmakingStats', {
-            playerOne: { id: this.connectedUsers.get(client.id).username },
+            playerOne: { id: this.connectedUsers.get(client.id).username, avatar: this.connectedUsers.get(client.id).avatar },
             playerTwo: null,
             roomId: gameId
         })
@@ -113,8 +113,8 @@ export class RoomService {
         const roomState = this.rooms.get(roomId);
 
         this.server.to(roomId).emit('matchmakingStats', {
-            playerOne: { id: this.connectedUsers.get(roomState.players[0].id).username },
-            playerTwo: (roomState.players.length < this.roomSize ? null : { id: this.connectedUsers.get(client.id).username }),
+            playerOne: { id: this.connectedUsers.get(roomState.players[0].id).username, avatar: this.connectedUsers.get(roomState.players[0].id).avatar},
+            playerTwo: (roomState.players.length < this.roomSize ? null : { id: this.connectedUsers.get(client.id).username, avatar: this.connectedUsers.get(client.id).avatar }),
             roomId: roomId
         })
         if (roomState.players.length < this.roomSize || !roomState.settings.settingsSet) {
