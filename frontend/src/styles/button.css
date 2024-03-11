@@ -62,7 +62,7 @@
     content: '';
     position: absolute;
     inset: 6px;
-    background: white;
+    background: var(--bg-primary);
     border-radius: 50%;
 }
 

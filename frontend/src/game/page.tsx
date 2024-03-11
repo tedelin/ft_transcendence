@@ -118,6 +118,13 @@ export function Game() {
     }, []);
 
 
+	useEffect(() => {
+		if (window.location.pathname === '/game') {
+			auth?.socket?.emit('crossMatchmaking');
+			game?.handleQuit();
+		}
+	}, [window.location.pathname]);
+
 
     return (
         <div className='page'>

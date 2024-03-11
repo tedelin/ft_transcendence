@@ -159,12 +159,6 @@
     }
 }
 
-:root {
-    --main-color:white;
-    --point-color: rgba(0, 0, 0, 0.76);
-    --size: 5px;
-  }
-
 .loader {
     background-color: var(--main-color);
     overflow: hidden;

@@ -27,9 +27,13 @@
 
     --bg-modal-light: rgba(0, 0, 0, 0.4);
     --bg-modal-dark: rgba(255, 255, 255, 0.05);
+
+	--main-color: var(--bg-primary);
+    --size: 5px;
 }
 
 .light {
+	--point-color: var(--text-primary);
     --text-primary: var(--text-primary-light);
     --text-secondary: var(--text-secondary-light);
     --bg-primary: var(--bg-primary-light);
@@ -40,6 +44,7 @@
 }
 
 .dark {
+	--point-color: var(--text-primary);
     --text-primary: var(--text-primary-dark);
     --text-secondary: var(--text-secondary-dark);
     --bg-primary: var(--bg-primary-dark);
