@@ -34,7 +34,7 @@
 
 .searchContainer {
 	display: flex;
-	border-bottom: 3px solid var(--bg-secondary);
+	border-bottom: 1px solid var(--bg-secondary);
 	height: 72px;
 }
 

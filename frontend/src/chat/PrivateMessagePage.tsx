@@ -111,7 +111,6 @@ export function PrivateMessagePage() {
 					<button>Invite to game</button>
 				</div>
 			</div>
-			<RightBar />
 		</>
 	);
 }

@@ -31,7 +31,11 @@ export class AuthService {
                 if (error.code === 'P2002') {
                     throw new ForbiddenException('Credential taken');
                 }
-            } else throw error;
+            } else
+			{
+				console.log("hello");
+				throw error;
+			} 
         }
     }
 
@@ -63,6 +67,12 @@ export class AuthService {
 			}
 		});
 		if (userExist) throw new ForbiddenException('User already exist');
+		const usernameExist = await this.databaseService.user.findUnique({
+			where: {
+				username: signUpDto.username
+			}
+		});
+		if (usernameExist) throw new ForbiddenException('Username already taken');
 		const newUser = await this.databaseService.user.create({
 			data: {
 				username: signUpDto.username,
@@ -134,35 +144,23 @@ export class AuthService {
 		}
 	}
 
-    // This function will be used to sign a token for the client
-    // The token will be used to authenticate the client and it will be used by the client
-    async signToken(
-        userId: number,
-        username: string,
-    ): Promise<{ access_token: string }> {
-        const payload = {
-            sub: userId,
-            username,
-        };
-        const secret = this.configService.get<string>('JWT_SECRET');
-        const token = await this.jwtService.signAsync(payload, {
-            secret: secret,
-        });
-
-        return { access_token: token }; // Return an object token to the client
-    }
-
-    async signTempTokenFor2FA(userName: string, password: string) {
-        const payload = {
-            userName,
-			password
-        };
-        const secret = process.env.TEMP_SECRET2fA;
-        const token = this.jwtService.signAsync(payload, {
-			secret
+	async signToken(
+		userId: number,
+		username: string,
+	): Promise<{ access_token: string }> {
+		const payload = {
+			sub: userId,
+			username,
+		};
+		const secret = this.configService.get<string>('JWT_SECRET');
+		const token = await this.jwtService.signAsync(payload, {
+			secret: secret,
+			expiresIn: '7d'
 		});
-        return { access_token: token }; 
-    }
+	
+		return { access_token: token };
+	}
+	
 
     verifyAccessToken(accessToken: string) {
         try {

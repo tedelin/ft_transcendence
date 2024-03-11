@@ -1,12 +1,12 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 import { fetchUrl } from '../fetch';
-import { io } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 import { User } from '../utils/types';
 
 interface AuthContextType {
 	user: User | null;
 	loading: boolean;
-	socket: any;
+	socket: Socket | null;
 	signin: (username: string, password: string) => Promise<void>;
 	signup: (username: string, password: string) => Promise<void>;
 	fetchUser: (token: string) => Promise<void>;
@@ -19,7 +19,7 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [socket, setSocket] = useState<any>(null);
+	const [socket, setSocket] = useState<Socket | null>(null);
 
 	async function fetchUser(token: string): Promise<void> {
 		try {
@@ -29,6 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 					Authorization: `Bearer ${token}`,
 				},
 			});
+			console.log("response dans AuthProvider.tsx : ", response);
 			setUser(response);
 			setSocket(io(import.meta.env.VITE_BACKEND_URL, {
 				query: { token },
@@ -75,6 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	function signout(): void {
 		localStorage.removeItem('jwtToken');
 		setUser(null);
+		socket?.disconnect();
 	}
 
 	async function initAuth() {

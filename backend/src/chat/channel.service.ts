@@ -50,7 +50,8 @@ export class ChannelService {
 		});
 		if (alreadyJoined && alreadyJoined.role === Role.BANNED) throw new ConflictException('You are banned from this channel');
 		if (alreadyJoined) return alreadyJoined;
-		if (joinChannelDto.password) {
+		if (channel.visibility === Visibility.PROTECTED) {
+			if (!joinChannelDto.password) throw new ForbiddenException("Password required");
 			const pwMatches = await argon.verify(channel.password, joinChannelDto.password);
 			if (!pwMatches) {
 				throw new ForbiddenException("Wrong password");
@@ -161,6 +162,11 @@ export class ChannelService {
 				channelName: name,
 			}
 		});
+		await this.databaseService.channelMessage.deleteMany({
+			where: {
+				channelId: name,
+			}
+		});
 		this.eventEmitter.emit('delete.channel', name);
 		return await this.databaseService.channel.delete({
 			where: {
@@ -171,7 +177,7 @@ export class ChannelService {
 
 	async createMessage(channelMessage: ChannelMessageDto) {
 		const userMuted = await this.moderationService.getRole(channelMessage.senderId, channelMessage.channelId);
-		if (userMuted === Role.MUTED) throw new ForbiddenException('You are muted');
+		if (userMuted === Role.MUTED) throw new ForbiddenException('You have been muted');
 		const message = await this.databaseService.channelMessage.create({
 			data: channelMessage,
 			include: {
@@ -188,9 +194,11 @@ export class ChannelService {
 		return message;
 	}
 
-	async findMessages(userId: number, name: string) {
+	async findMessages(userId: number, name: string, offset: number) {
 		const blockedUser = await this.friendService.findBlockedUsers(userId);
-		return await this.databaseService.channelMessage.findMany({
+		const messages = await this.databaseService.channelMessage.findMany({
+			take: 10,
+			skip: offset,
 			where: {
 				channelId: name,
 				senderId: {
@@ -205,8 +213,12 @@ export class ChannelService {
 						avatar: true,
 					}
 				}
+			},
+			orderBy: {
+				timestamp: 'desc',
 			}
 		});
+		return messages.reverse();
 	}
 
 	async findChannelUsers(name: string) {

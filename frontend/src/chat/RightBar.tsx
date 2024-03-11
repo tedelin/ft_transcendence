@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { fetchUrl } from '../fetch';
 import { useAuth } from '../components/AuthProvider';
 import { getAvatar } from '../utils/utils';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import "../styles/sideBar.css";
 import { PrivateMessage } from '../utils/types';
+import { ChannelUserList } from './ChannelUserList';
 
 function PrivateMessageList({}) {
 	const [privateMessage, setPrivateMessage] = useState<PrivateMessage[] | []>([]);
@@ -106,15 +107,20 @@ function ChannelList() {
 
 export function RightBar() {
 	const [selected, setSelected] = useState('channels');
-    return (
-        <div className="sideBar">
+	const location = useLocation();
+	
+	return (
+		<div className="sideBar">
 			<select className="sideBarSelect" onChange={(e) => setSelected(e.target.value)}>
 				<option value="channels">Channels</option>
 				<option value="privateMessages">Private Messages</option>
+				{location.pathname.startsWith('/chat/channels/') && <option value="channelUsers">Channel Users</option>}
 			</select>
 			<div className='list'>
-				{selected === 'channels' ? <ChannelList /> : <PrivateMessageList />}
+				{selected === 'channels' && <ChannelList />}
+				{selected === 'privateMessages' && <PrivateMessageList />}
+				{location.pathname.startsWith('/chat/channels/') && selected === 'channelUsers' && <ChannelUserList />}
 			</div>
-        </div>
-    );
+		</div>
+	);
 }

@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useAuth } from '../components/AuthProvider';
 import { useToast } from '../utils/hooks/useToast';
 import '../styles/chat.css';
+import { RightBar } from './RightBar';
 
 export default function ChatPage() {
 	const auth = useAuth();
@@ -30,10 +31,10 @@ export default function ChatPage() {
 
 	return (
 		<>
-			{/* <SideBar /> */}
-			<div className='chatArea'>
+			<div className="flexRow">
 				<Outlet />
 			</div>
+			<RightBar />
 		</>
 	);
 }

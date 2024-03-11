@@ -1,0 +1,189 @@
+.settingsPage {
+  display: flex;
+  /* flex-direction: row; */
+  /* border: solid red 3px; */
+  width: 90%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding-left: 10%;
+  min-height: 800px;
+  min-width: 800px;
+}
+
+.settings-wrapper {
+	overflow : auto;
+	display: flex;
+	flex: 1;
+}
+
+.info-settings {
+  width: 50%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  margin: 10% 0;
+  padding: 0 0% 10% 0%;
+}
+
+.right-side {
+  width: 50%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  margin: 10% 0;
+}
+
+.avatar {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+.edit-button {
+  background-color: var(--bg-secondary);
+  border-radius: 10px;
+  width: 80px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-100%, -100%);
+}
+
+.edit {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--bg-secondary);
+  box-sizing: border-box;
+  color: var(--text-primary) !important;
+  width: 100%;
+  height: 40px;
+  margin: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-button:hover,
+.edit:hover {
+  cursor: pointer;
+}
+
+.save {
+  background-color: var(--primary-blue);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  width: 150px;
+  height: 50px;
+  margin: 0 auto;
+  font-size: 1.2em;
+}
+
+.save:hover {
+  background-color:  var(--primary-blue);
+  cursor: pointer;
+}
+
+.BioSettings {
+  flex-grow: 4;
+}
+
+.UsernameSettings {
+  flex-grow: 2;
+}
+.UsernameSettings > input {
+	margin: 15px 0;
+}
+
+.UsernameSettings > input {
+  width: 100%;
+  height: 40%;
+  border: 1px solid var(--bg-secondary);
+  border-radius: 10px;
+  font-size: 1.2em;
+  box-sizing: border-box;
+}
+.UsernameSettings > h2,
+.BioSettings > h2,
+.two-fa-settings > h2 {
+  font-weight: 100;
+}
+.BioSettings > textarea {
+  width: 100%;
+  height: 70%;
+  border: 1px solid var(--bg-secondary);
+  background-color: var(--bg-primary);
+  border-radius: 10px;
+  font-size: 1.2em;
+  box-sizing: border-box;
+  color: var(--text-primary);
+  margin : 15px 0;
+  padding : 10px;
+  outline: none;
+}
+
+.two-fa-settings {
+  flex-grow: 0.2;
+  border: 1px solid var(--bg-secondary);
+  display: flex; /* Active Flexbox pour ce conteneur */
+  align-items: center; /* Alignement vertical des éléments enfants au centre */
+  justify-content: space-between;
+  border-radius: 10px;
+}
+
+.toggle-theme{
+	border: 1px solid var(--bg-secondary);
+	margin : 30px 0;
+    flex-grow: 0.2;
+	padding: 20px;
+	box-sizing: border-box;
+	border-radius: 10px;
+	height: 15%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.toggle-theme-button {
+	margin-right: 20px;
+	margin-left: 10px;
+	cursor: pointer;
+	height: 30px;
+	width: 60px;
+	border-radius: 15px;
+	border: none;
+	background-color: #ccc;
+	position: relative;
+	transition: background-color 0.3s ease;
+  }
+  
+  .theme-button-wrapper{
+	display: flex;
+	align-items: center;
+  }
+
+  .toggle-theme-button:before {
+	content: '';
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	background-color: #fff;
+	transition: transform 0.3s ease;
+  }
+  
+  .toggle-theme-button.active {
+	background-color:  var(--bg-secondary);
+
+  }
+  
+  .toggle-theme-button.active:before {
+	transform: translateX(30px);
+  }
+  

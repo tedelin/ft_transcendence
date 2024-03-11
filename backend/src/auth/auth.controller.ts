@@ -77,6 +77,7 @@ export class AuthController {
     async verify2fa(@User() id: any, @Body() dto: twoFaDto) {
         return this.twoFAService.verify2fa(id, dto);
     }
+	
     @UseGuards(JwtGuard)
     @Get('turnOff-2fa')
     turnoff2FA(@User() id: any) {

@@ -17,7 +17,6 @@
     background-color: var(--bg-modal);
     backdrop-filter: blur(2px);
 	animation: showModal 2.5s ease;
-    /* pointer-events: none; */
 }
 
 .modal-content {
@@ -32,7 +31,6 @@
 	min-width: 50%;
 	display: flex;
 	flex-direction: column;
-	/* overflow-y: auto; */
 }
 
 .modalTitle {
@@ -77,13 +75,15 @@
     margin: 0px 0px 0px 15px;
     box-sizing: border-box;
     border-radius: 8px;
+	padding: 10px;
     border: 1px solid var(--bg-secondary);
     background-color: var(--bg-primary);
     color: var(--text-primary);
 }
 
 .addPassword {
-    margin: 10px 0px 10px 0px;
+    margin: 15px 0px 15px 0px;
+	padding: 10px;
     box-sizing: border-box;
     border-radius: 8px;
     border: 1px solid var(--bg-secondary);
@@ -93,9 +93,10 @@
 
 .cancelButton,
 .saveButton {
-	width: auto;
-    margin: 0;
-    margin-top: 15px;
+	margin: 0;
+	width: 20%;
+	min-width: 70px;
+	max-width: 100px;
 }
 
 .saveButton {

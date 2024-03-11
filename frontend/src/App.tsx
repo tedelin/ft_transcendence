@@ -11,6 +11,8 @@ import { ChatBox } from './chat/ChatBox';
 import { ToastContainer } from 'react-toastify';
 import { twoFaRoutes } from './pages/two-facteur-auth/two-fa-routes';
 import { Callback } from './components/Callback.tsx';
+import Profil from './pages/Profil'
+import NewLogin from './pages/new-login'
 import { PrivateMessagePage } from './chat/PrivateMessagePage.tsx'
 import './styles/App.css';
 import './styles/chat.css';
@@ -84,7 +86,16 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "",
-				element: <div className='chatArea'></div>
+				element: <RequireAuth>
+					<div>
+						<h1>Home</h1>
+						<p>Welcome to the home page!</p>
+					</div>
+				</RequireAuth>
+			},
+			{
+				path: "profil/:id",
+				element: <RequireAuth><Profil/></RequireAuth>
 			},
 			{
 				path: "chat",
@@ -99,14 +110,14 @@ const router = createBrowserRouter([
 						element: <ChannelMember><ChatBox /></ChannelMember>,
 					},
 					{
-						path: 'friends',
-						element: <Friends />,
-					},
-					{
 						path: "private-messages/:receiverId",
 						element: <PrivateMessagePage />,
 					},
 				]
+			},
+			{
+				path: 'friends',
+				element: <Friends />,
 			},
 			{
 				path: "login",
@@ -154,7 +165,12 @@ const router = createBrowserRouter([
 			}
 		],
 	},
-	twoFaRoutes
+	twoFaRoutes,
+	{
+		path : '/NewLogin',
+		element : <NewLogin />
+
+	}
 ])
 
 export default function ErrorPage() {
@@ -198,7 +214,6 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 	if (!auth?.user) {
 		return <Navigate to="/login" state={{ from: location }} replace />
 	}
-
 	return children;
 }
 

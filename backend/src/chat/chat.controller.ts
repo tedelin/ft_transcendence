@@ -26,8 +26,8 @@ export class ChatController {
 	}
 
 
-	@Post('channels')
 	@UseGuards(JwtGuard)
+	@Post('channels')
 	create(@UserRequest() user: User, @Body() createChannelDto: Prisma.ChannelCreateInput) {
 		return this.channelService.create(user.id, createChannelDto);
 	}
@@ -69,8 +69,8 @@ export class ChatController {
 	@UseGuards(JwtGuard, RolesGuard)
 	@Roles(['MEMBER', 'ADMIN', 'OWNER'])
 	@Get('channels/messages/:name')
-	getChannelMessages(@UserRequest() user: User, @Param('name') name: string) {
-		return this.channelService.findMessages(user.id, name);
+	getChannelMessages(@UserRequest() user: User, @Query('offset') offset: number = 0, @Param('name') name: string) {
+		return this.channelService.findMessages(user.id, name, +offset);
 	}
 
 	@Get('channels/users/:name')

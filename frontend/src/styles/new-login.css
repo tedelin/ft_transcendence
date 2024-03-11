@@ -1,0 +1,139 @@
+.new-login {
+  font-family: "Open Sans", sans-serif;
+  display: grid;
+  grid-template-rows: auto 1fr; /* Deux lignes : la première pour ball-two, la deuxième pour les autres contenus */
+  grid-template-columns: 1fr 1fr 1fr; /* Deux colonnes de taille égale */
+  grid-template-areas:
+    "ball-two ball-two ball-two"
+    "left-side left-side hero-text";
+  height: 100vh; /* Utilise toute la hauteur de la fenêtre */
+  margin: 0 auto;
+  width: 80%; /* Prend la moitié de la largeur de la fenêtre, ajuste selon tes besoins */
+  min-width: 800px;
+  box-sizing: border-box;
+  justify-content: space-between;
+  min-height: 500px;
+  overflow: hidden;
+}
+
+.left-side-wrapper {
+  grid-area: left-side; /* Place left-side-wrapper à gauche en bas */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.hero-text {
+  grid-area: hero-text; /* Place hero-text à droite en bas */
+  width: 100%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  box-sizing: border-box;
+}
+.hero-img {
+  width: 70%;
+  height: 0; /* La hauteur est initialement mise à 0 */
+  padding-top: 70%; /* Le padding-top est utilisé pour créer la hauteur */
+  box-sizing: border-box;
+  position: relative; /* Position relative pour le contenu interne */
+  box-sizing: border-box;
+}
+
+/* Pour positionner du contenu à l'intérieur du carré, tu peux utiliser : */
+.hero-img-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-text > h1, .hero-text >
+div {
+  font-size: 2rem;
+  text-align: center;
+  transition: linear 0.5s;
+  box-sizing: border-box;
+}
+
+@media screen and (min-width: 1000px) {
+  .hero-text > h1,.hero-text > div {
+    font-size: 3rem;
+    transition: linear 0.5s;
+    box-sizing: border-box;
+  }
+  .new-login {
+    min-height: 1000px;
+  }
+}
+
+.ball {
+  border-radius: 50%;
+  border: none;
+  box-sizing: border-box;
+}
+
+.one {
+  height: 10%;
+  width: 10%;
+  background-color: #2832c2;
+  box-sizing: border-box;
+  margin-right: auto;
+  margin-left: 10%;
+  transform: translate(0, 50%);
+}
+.two {
+  height: 100px;
+  width: 100px;
+  background-color: #0061e8;
+  grid-area: ball-two; /* Place ball-two en haut */
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+.three {
+  background-color: #2832c2;
+  height: 30%;
+  width: 60%;
+  margin-bottom: auto;
+  margin-left: auto;
+}
+.four {
+  height: 5%;
+  width: 5%;
+  background-color: #0061e8;
+  margin-left: auto;
+  margin-right: 20%;
+  transform: translate(0, -200%);
+}
+.five {
+  height: 20%;
+  width: 20%;
+  background-color: #2832c2;
+  margin-right: auto;
+  transform: translate(0, 50%);
+}
+
+
+.connect{
+	background-color: #2832c2;
+	border-radius: 20px;
+	padding: 20px;
+}
+
+.connect > a {
+	color: white;
+	text-decoration: none;
+}
+
+.connect:hover {
+	background-color: #0061e8;
+	cursor: pointer;
+}

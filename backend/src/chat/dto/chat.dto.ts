@@ -55,6 +55,7 @@ export class ChannelMessageDto {
 	channelId: string;
 
 	@IsString()
+	@MaxLength(1500)
 	@IsNotEmpty()
 	content: string;
 }
