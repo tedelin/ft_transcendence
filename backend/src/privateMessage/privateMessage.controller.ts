@@ -1,32 +1,31 @@
-import { Body, Controller, Get, Param, Post, UseGuards, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards, Query, BadRequestException, Req, ParseIntPipe } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard/jwt.guard';
-import { User } from 'src/user/decorators/user.decorator';
 import { PrivateMessageService } from './privateMessage.service';
-import { SendMessageDto } from './dto/sendMessage.dto';
+import { PrivateMessageDto } from './dto/sendMessage.dto';
+import { User, UserRequest } from 'src/user/decorators/user-request.decorator';
+
+
 
 @Controller('private-messages')
 export class PrivateMessageController {
-  constructor(private readonly privateMessageService: PrivateMessageService) {}
+	constructor(private readonly privateMessageService: PrivateMessageService) { }
 
-  @UseGuards(JwtGuard)
-  @Post()
-  async sendMessage(@User() user: any, @Body() sendMessageDto: SendMessageDto) {
-    console.log('sendMessageDto', sendMessageDto);
-    return this.privateMessageService.sendMessage(user.id, sendMessageDto.receiverId, sendMessageDto.content);
-  }
+	@UseGuards(JwtGuard)
+	@Post()
+	async sendMessage(@UserRequest() user: User, @Body() message: PrivateMessageDto) {
+		return this.privateMessageService.sendMessage(user.id, message);
+	}
+	
+	@UseGuards(JwtGuard)
+	@Get('conversations')
+	async getAllUserConversations(@UserRequest() user: User) {
+		return this.privateMessageService.getAllConversations(user.id);
+	}
 
-  // @UseGuards(JwtGuard)
-  // @Get(':userId')
-  // async getMessagesWithUser(@User() user: any, @Param('userId') userId: number) {
-  //   return this.privateMessageService.getMessagesBetweenUsers(user.id, userId);
-  // }
+	@UseGuards(JwtGuard)
+	@Get(':userId')
+	async getMessagesWith(@UserRequest() user: User, @Param('userId', ParseIntPipe) userId: number) {
+		return this.privateMessageService.getConversation(user.id, userId);
+	}
 
-  @UseGuards(JwtGuard)
-  @Get()
-  async getMessagesBetweenTwoUsers(
-    @Query('userId1') userId1: string,
-    @Query('userId2') userId2: string,
-  ) {
-    return this.privateMessageService.getMessagesBetweenUsers(+userId1, +userId2);
-  }
 }

@@ -1,0 +1,60 @@
+:root {
+    --primary-green: #0C8346;
+    --secondary-green: #329F5B;
+
+    --primary-red: #ff0022d5;
+
+    --primary-blue: #2832C2;
+    /* --secondary-blue: #007EA7; */
+
+    --text-primary-light: black;
+    --text-primary-dark: white;
+
+    --text-secondary-light: rgb(70, 70, 70);
+    --text-secondary-dark: rgb(160, 160, 160);
+
+    --bg-primary-light: white;
+    --bg-primary-dark: #0A0A0A;
+
+    --bg-secondary-light: #D6D6D6;
+    --bg-secondary-dark: #333333;
+
+	--hover-light: #F5F5F5;
+	--hover-dark: #141414;
+
+    --bg-modal-light: rgba(0, 0, 0, 0.4);
+    --bg-modal-dark: rgba(255, 255, 255, 0.05);
+}
+
+.light {
+    --text-primary: var(--text-primary-light);
+    --text-secondary: var(--text-secondary-light);
+    --bg-primary: var(--bg-primary-light);
+    --bg-secondary: var(--bg-secondary-light);
+    --bg-navbar: var(--bg-navbar-light);
+    --bg-modal: var(--bg-modal-light);
+	--hover: var(--hover-light);
+}
+
+.dark {
+    --text-primary: var(--text-primary-dark);
+    --text-secondary: var(--text-secondary-dark);
+    --bg-primary: var(--bg-primary-dark);
+    --bg-secondary: var(--bg-secondary-dark);
+    --bg-navbar: var(--bg-navbar-dark);
+    --bg-modal: var(--bg-modal-dark);
+	--hover: var(--hover-dark);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.App {
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+	transition: background-color 0.5s ease, color 0.5s ease;
+}

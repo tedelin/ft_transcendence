@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@types/jsonwebtoken": "^9.0.5",
+    "canvas-confetti": "^1.9.2",
+    "axios": "^1.6.7",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "passport": "^0.7.0",
@@ -18,11 +20,12 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.3",
+    "react-svg": "^16.1.33",
     "react-toastify": "^10.0.4",
     "socket.io-client": "^4.7.4"
   },
   "devDependencies": {
-    "@types/react": "^18.2.43",
+    "@types/react": "^18.2.63",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",

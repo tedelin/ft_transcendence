@@ -1,29 +1,44 @@
-import { Controller, Get, Param, ParseIntPipe, Req, UseGuards, Post, UploadedFile, UseInterceptors, Res, NotFoundException, StreamableFile} from '@nestjs/common';
-import { Request} from 'express';
+import {
+	Controller,
+	Get,
+	Param,
+	ParseIntPipe,
+	Req,
+	UseGuards,
+	Post,
+	UploadedFile,
+	UseInterceptors,
+	NotFoundException,
+	StreamableFile,
+	Query,
+	Body
+} from '@nestjs/common';
+import { Request } from 'express';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { UserService } from './user.service';
-import { FileInterceptor } from '@nestjs/platform-express'
+import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname, join} from 'path'
+import { extname, join } from 'path';
 import { createReadStream, existsSync } from 'fs';
 
 @Controller('users')
 export class UserController {
-    constructor(
-        private readonly userService: UserService,
-    ) { }
+	constructor(
+		private readonly userService: UserService,
+	) { }
 
-    @Get('all') 
-    findAll() {
-        return this.userService.findAll();
-    }
+	@UseGuards(JwtGuard)
+	@Get('me')
+	getMe(@Req() req: Request) {
+		return req.user;
+	}
 
-    @UseGuards(JwtGuard)
-    @Get('me')
-    getMe(@Req() req: Request) {
-        return req.user;
-    }
-	
+	@UseGuards(JwtGuard)
+	@Get('')
+	searchUser(@Query('search') query: string = '') {
+		return this.userService.searchUser(query);
+	}
+
 	@Get('username/:username')
 	getUserByName(@Param('username') username: string) {
 		return this.userService.getUserByUsername(username);
@@ -31,48 +46,99 @@ export class UserController {
 
 	@Get('id/:id')
 	findOne(@Param('id', ParseIntPipe) id: number) {
-		return this.userService.getUserById(id)
+		return this.userService.getUserById(id);
 	}
 
-    @Get(':id/channels')
-    findUserChannels(@Param('id', ParseIntPipe) id: number) {
-        return this.userService.getUserChannels(id)
+	@Get(':id/channels')
+	findUserChannels(@Param('id', ParseIntPipe) id: number) {
+		return this.userService.getUserChannels(id);
+	}
+
+    @Get('profilData/:id')
+    getProfilData(@Param('id', ParseIntPipe) id: number){
+        return this.userService.getProfilData(id);
     }
 
-	@Post('upload-avatar')
+	@Post('upload-change')
 	@UseInterceptors(FileInterceptor('avatar', {
-		storage: diskStorage({
-		  destination: './uploads/avatars',
-		  filename: (req, file, cb) => {
-			const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${extname(file.originalname)}`;
-			cb(null, uniqueName);
-		  }
-		}),
-		limits: { fileSize: 2 * 1024 * 1024 },
-		fileFilter: (req, file, cb) => {
-		  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-			return cb(new Error('Seuls les fichiers images sont autorisés !'), false);
-		  }
-		  cb(null, true);
-		},
-	  })) // gerer l'erreur grace a un filtre, determiner comment ecrire le filtre correctement avec la syntaxe de nestJS 
+	  storage: diskStorage({
+		destination: './uploads/avatars',
+		filename: (req, file, cb) => {
+		  const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${extname(file.originalname)}`;
+		  cb(null, uniqueName);
+		}
+	  }),
+	  limits: { fileSize: 2 * 1024 * 1024 },
+	  fileFilter: (req, file, cb) => {
+		if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+		  return cb(new Error('Seuls les fichiers images sont autorisés !'), false);
+		}
+		cb(null, true);
+	  },
+	}))
 	@UseGuards(JwtGuard)
-	async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Req() req) {
+	async uploadChange(
+	  @UploadedFile() file: Express.Multer.File,
+	  @Req() req,
+	  @Body('username') username: string,
+	  @Body('bio') bio: string
+	) {
 	  const userId = req.user.id;
-	  const avatarUrl = `${file.filename}`;
-  
-	  await this.userService.saveAvatarPath(avatarUrl, userId);
-  
-	  return { message: 'Avatar mis à jour avec succès', avatarUrl };
+	
+	  // Prépare les données à mettre à jour
+	  const updateData: any = {
+		username: username,
+		bio: bio,
+	  };
+	
+	  // Inclut l'URL de l'avatar dans les données de mise à jour uniquement si un fichier a été téléchargé
+	  if (file) {
+		updateData.avatar = `${file.filename}`;
+	  }
+	
+	  // Mettre à jour les informations de l'utilisateur
+	  await this.userService.updateUserDetails(userId, updateData);
+	
+	  return { message: 'Informations mises à jour avec succès', ...updateData };
 	}
+	
+
+
 	@Get('avatars/:filename')
 	seeUploadedFile(@Param('filename') filename): StreamableFile | NotFoundException {
-	  const path = join(process.cwd(), 'uploads', 'avatars', filename);
-  
-	  if (!existsSync(path)) {
-		throw new NotFoundException('Image not found.');
-	  }
-	  const file = createReadStream(path);
-	  return new StreamableFile(file);
+		const path = join(process.cwd(), 'uploads', 'avatars', filename);
+
+		if (!existsSync(path)) {
+			throw new NotFoundException('Image not found.');
+		}
+		const file = createReadStream(path);
+		return new StreamableFile(file);
 	}
 }
+
+//@Post('upload-change')
+//	@UseInterceptors(FileInterceptor('avatar', {
+//		storage: diskStorage({
+//			destination: './uploads/avatars',
+//			filename: (req, file, cb) => {
+//				const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${extname(file.originalname)}`;
+//				cb(null, uniqueName);
+//			}
+//		}),
+//		limits: { fileSize: 2 * 1024 * 1024 },
+//		fileFilter: (req, file, cb) => {
+//			if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+//				return cb(new Error('Seuls les fichiers images sont autorisés !'), false);
+//			}
+//			cb(null, true);
+//		},
+//	}))
+//	@UseGuards(JwtGuard)
+//	async uploadChange(@UploadedFile() file: Express.Multer.File, @Req() req) {
+//		const userId = req.user.id;
+//		const avatarUrl = `${file.filename}`;
+
+//		await this.userService.saveAvatarPath(avatarUrl, userId);
+
+//		return { message: 'Avatar mis à jour avec succès', avatarUrl };
+//	}

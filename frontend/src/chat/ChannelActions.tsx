@@ -30,7 +30,7 @@ export function ChannelActions() {
 					visibility: channelVisibility,
 				}),
 			});
-			navigate(channelName);
+			// navigate(channelName);
 			success('Channel created');
 		} catch (err: any) {
 			error(err.message);
@@ -39,17 +39,32 @@ export function ChannelActions() {
 
 	async function joinChannel() {
 		try {
-			await fetchUrl("/chat/channels/join", {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-				},
-				body: JSON.stringify({
-					roomId: channelName,
-					password: channelPassword,
-				}),
-			})
+			if (channelVisibility !== "PROTECTED") {
+				await fetchUrl("/chat/channels/join", {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+					},
+					body: JSON.stringify({
+						roomId: channelName,
+						visibility: channelVisibility,
+					}),
+				})
+			} else {
+				await fetchUrl("/chat/channels/join", {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+					},
+					body: JSON.stringify({
+						roomId: channelName,
+						visibility: channelVisibility,
+						password: channelPassword,
+					}),
+				})
+			}
 			navigate(channelName);
 		} catch (err: any) {
 			error(err.message);

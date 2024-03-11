@@ -6,21 +6,14 @@ body {
     height: 100vh;
 }
 
-
-.error {
-	color: rgba(255, 0, 0, 0.753);
-	text-align: center;
-}
-
 .fix {
     display: flex;
     align-items: center;
-	flex-grow: 1;
+    flex-grow: 1;
     justify-content: center;
     margin: 0;
     padding: 0;
     font-family: 'Nunito', Arial, Helvetica, sans-serif;
-    background-color: #36393f;
     height: 100vh;
 }
 
@@ -28,7 +21,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: #2f3136;
+    /* background-color: var(--bg-secondary); */
+    border: 2px solid var(--bg-secondary);
     padding: 2em;
     margin-left: 20px;
     margin-right: 20px;
@@ -39,19 +33,20 @@ body {
     box-sizing: border-box;
     padding: 10px;
     margin: 5px 15px 5px 15px;
-    border: none;
+    border: 1px solid var(--bg-secondary);
     border-radius: 10px;
     font-size: 16px;
     outline: none;
-	background-color: #40444b;
-	color: #fff;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
 }
 
-.button, .registerButton {
+
+.registerButton {
     cursor: pointer;
     box-sizing: border-box;
     color: white;
-    background-color: #0e48ab;
+    background-color: var(--primary-blue);
     padding: 10px;
     margin: 5px 15px 5px 15px;
     border-radius: 6px;
@@ -59,8 +54,7 @@ body {
 }
 
 .registerButton {
-	background-color: #267f49;
+    background-color: var(--primary-green);
 }
 
-@media only screen and (max-width: 768px) {
-}
+@media only screen and (max-width: 768px) {}

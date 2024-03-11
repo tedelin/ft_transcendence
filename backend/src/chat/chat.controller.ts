@@ -1,7 +1,7 @@
-import { Controller, Get, Param, Delete, Post, Body, Patch, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Param, Delete, Post, Body, Patch, UseGuards, Req, Query } from '@nestjs/common';
 import { ChannelService } from './channel.service';
 import { Prisma } from '@prisma/client';
-import { ChannelMessageDto } from './dto/chat.dto';
+import { ChannelMessageDto, UpdateChannelDto } from './dto/chat.dto';
 import { JwtGuard } from 'src/auth/guard';
 import { JoinChannelDto } from './dto/chat.dto';
 import { UserRequest, User } from '../user/decorators/user-request.decorator';
@@ -19,8 +19,15 @@ export class ChatController {
 		return this.channelService.findPublicChannels();
 	}
 
-	@Post('channels')
 	@UseGuards(JwtGuard)
+	@Get('channels/search')
+	searchChannels(@Query('search') query: string = '') {
+		return this.channelService.searchPublicChannels(query);
+	}
+
+
+	@UseGuards(JwtGuard)
+	@Post('channels')
 	create(@UserRequest() user: User, @Body() createChannelDto: Prisma.ChannelCreateInput) {
 		return this.channelService.create(user.id, createChannelDto);
 	}
@@ -33,7 +40,7 @@ export class ChatController {
 	@UseGuards(JwtGuard, RolesGuard)
 	@Roles(['OWNER'])
 	@Patch('channels/:name')
-	update(@Param('name') name: string, @Body() updateChannelDto: Prisma.ChannelUpdateInput) {
+	update(@Param('name') name: string, @Body() updateChannelDto: UpdateChannelDto) {
 		return this.channelService.update(name, updateChannelDto);
 	}
 
@@ -62,12 +69,18 @@ export class ChatController {
 	@UseGuards(JwtGuard, RolesGuard)
 	@Roles(['MEMBER', 'ADMIN', 'OWNER'])
 	@Get('channels/messages/:name')
-	getChannelMessages(@UserRequest() user: User, @Param('name') name: string) {
-		return this.channelService.findMessages(user.id, name);
+	getChannelMessages(@UserRequest() user: User, @Query('offset') offset: number = 0, @Param('name') name: string) {
+		return this.channelService.findMessages(user.id, name, +offset);
 	}
 
 	@Get('channels/users/:name')
 	getChannelUsers(@Param('name') name: string) {
 		return this.channelService.findChannelUsers(name);
+	}
+
+	@UseGuards(JwtGuard)
+	@Get('channels/membership/:name')
+	async getMembership(@UserRequest() user: User, @Param('name') name: string) {
+		return this.channelService.verifyMembership(user.id, name);
 	}
 }

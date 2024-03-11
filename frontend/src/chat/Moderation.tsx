@@ -1,30 +1,12 @@
 import { useState, useEffect } from 'react';
 import { fetchUrl } from '../fetch';
 import { useToast } from '../utils/hooks/useToast';
-import { Modal } from '../components/Modal';
-import { ChannelUser, User } from '../utils/types';
-import '../styles/modal.css';
+import '../styles/contextMenu.css';
 
 
-export function Moderation({ enabled, channel, setEnabled } : { enabled: boolean, channel: string, setEnabled: Function }) {
-    const [channelUsers, setChannelUsers] = useState([]);
+export function Moderation({ enabled, channel, userId, setEnabled }: { enabled: boolean, channel: string, userId: number, setEnabled: Function }) {
     const token = localStorage.getItem('jwtToken');
     const { error } = useToast();
-
-    function closeModeration() {
-        setEnabled(false);
-    }
-
-    async function fetchChannelUsers() {
-        try {
-            const response = await fetchUrl(`/chat/channels/users/${channel}`, {
-                method: 'GET',
-            });
-            setChannelUsers(response);
-        } catch (err: any) {
-            error(err.message);
-        }
-    }
 
     async function banUser(userId: number, roomId: string) {
         try {
@@ -33,10 +15,11 @@ export function Moderation({ enabled, channel, setEnabled } : { enabled: boolean
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-            })
+            });
         } catch (err: any) {
-            error(err.message)
+            error(err.message);
         }
+		setEnabled();
     }
 
     async function kickUser(userId: number, roomId: string) {
@@ -47,12 +30,10 @@ export function Moderation({ enabled, channel, setEnabled } : { enabled: boolean
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setChannelUsers((prevUsers) =>
-                prevUsers.filter((user: User) => user.id !== userId)
-            );
         } catch (err: any) {
-            error(err.message)
+            error(err.message);
         }
+		setEnabled();
     }
 
     async function muteUser(userId: number, roomId: string) {
@@ -64,8 +45,9 @@ export function Moderation({ enabled, channel, setEnabled } : { enabled: boolean
                 },
             });
         } catch (err: any) {
-            error(err.message)
+            error(err.message);
         }
+		setEnabled();
     }
 
     async function promoteUser(userId: number, roomId: string) {
@@ -77,8 +59,9 @@ export function Moderation({ enabled, channel, setEnabled } : { enabled: boolean
                 },
             });
         } catch (err: any) {
-            error(err.message)
+            error(err.message);
         }
+		setEnabled();
     }
 
     async function demoteUser(userId: number, roomId: string) {
@@ -90,60 +73,71 @@ export function Moderation({ enabled, channel, setEnabled } : { enabled: boolean
                 },
             });
         } catch (err: any) {
-            error(err.message)
+            error(err.message);
         }
+		setEnabled();
     }
 
     useEffect(() => {
-        if (enabled)
-            fetchChannelUsers();
+        function handleClickOutside(event: MouseEvent) {
+            if (!(event.target as HTMLElement).closest('.context-menu')) {
+                setEnabled(false);
+            }
+        }
+
+        document.addEventListener('click', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [setEnabled]);
+
+    const [position, setPosition] = useState({ x: 0, y: 0 });
+    useEffect(() => {
+		function handleContextMenu(event: MouseEvent) {
+			event.preventDefault();
+			const posX = event.clientX;
+			const posY = event.clientY;
+	
+			const menuWidth = 95;
+			const menuHeight = 200;
+			const screenWidth = window.innerWidth;
+			const screenHeight = window.innerHeight;
+	
+			let adjustedX = posX;
+			let adjustedY = posY;
+	
+			if (posX + menuWidth > screenWidth) {
+				adjustedX = screenWidth - menuWidth;
+			}
+	
+			if (posY + menuHeight > screenHeight) {
+				adjustedY = screenHeight - menuHeight;
+			}
+	
+			setPosition({ x: adjustedX, y: adjustedY });
+		}
+
+        if (enabled) {
+            document.addEventListener('contextmenu', handleContextMenu);
+        }
+
+        return () => {
+            document.removeEventListener('contextmenu', handleContextMenu);
+        };
     }, [enabled]);
 
     return (
-        <Modal
-            isOpen={enabled}
-            onClose={closeModeration}
-            title='Channel Moderation'
-        >
-
-            <div className="userList">
-                {channelUsers.map((channel: ChannelUser) => (
-                    <div key={channel.user.id} className="user">
-                        {/* <img src={channel.user.avatar} alt="User Avatar"></img> */}
-                        <span>{channel.user.username}</span>
-                        <button
-                            className="declineFriend"
-                            onClick={() => { kickUser(channel.user.id, channel.channelName) }}
-                        >
-                            Kick
-                        </button>
-                        <button
-                            className="declineFriend"
-                            onClick={() => { banUser(channel.user.id, channel.channelName) }}
-                        >
-                            Ban
-                        </button>
-                        <button
-                            className="declineFriend"
-                            onClick={() => { muteUser(channel.user.id, channel.channelName) }}
-                        >
-                            Mute
-                        </button>
-                        <button
-                            className="declineFriend"
-                            onClick={() => { promoteUser(channel.user.id, channel.channelName) }}
-                        >
-                            Promote
-                        </button>
-                        <button
-                            className="declineFriend"
-                            onClick={() => { demoteUser(channel.user.id, channel.channelName) }}
-                        >
-                            Demote
-                        </button>
-                    </div>
-                ))}
+        enabled && (
+            <div className="context-menu" style={{ position: 'absolute', top: position.y, left: position.x }}>
+                <ul>
+                    <li onClick={() => kickUser(userId, channel)}>Kick</li>
+                    <li onClick={() => banUser(userId, channel)}>Ban</li>
+                    <li onClick={() => muteUser(userId, channel)}>Mute</li>
+                    <li onClick={() => promoteUser(userId, channel)}>Promote</li>
+                    <li onClick={() => demoteUser(userId, channel)}>Demote</li>
+                </ul>
             </div>
-        </Modal>
-    )
+        )
+    );
 }

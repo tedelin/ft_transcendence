@@ -47,7 +47,7 @@ export class GameService {
                 include: {
                     players: {
                         include: {
-                            player: true, // Assurez-vous que les détails du joueur sont inclus
+                            player: true, 
                         }
                     },
                 },
