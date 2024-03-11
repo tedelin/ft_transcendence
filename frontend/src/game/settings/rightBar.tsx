@@ -10,11 +10,11 @@ export function RightBar() {
     const [backgroundPaddle, setBackgroundPaddle] = useState("white");
 
     useEffect(() => {
-        if (location.pathname === '/game/settings/ball') 
+        if (location.pathname === '/game/settings/ball')
             setBackgroundBall('lightgrey');
         else
             setBackgroundBall('white');
-        if (location.pathname === '/game/settings/paddle') 
+        if (location.pathname === '/game/settings/paddle')
             setBackgroundPaddle('lightgrey');
         else
             setBackgroundPaddle('white');
@@ -24,11 +24,16 @@ export function RightBar() {
     return (
         <div className='RightBar'>
             <div className='list'>
-                <div className='listItem'>
+                <div className='listItem' id='listItem' onClick={() => nav('/game/settings/ball')} style={{ background: backgroundBall, borderRadius: '10px' }}>
                     <img src={ball} alt="ball" />
                     <span>Ball</span>
                 </div>
+                <div className='listItem' onClick={() => nav('/game/settings/paddle')} style={{ background: backgroundPaddle, borderRadius: '10px' }}>
+                    <img src={paddle} alt="paddle" />
+                    <span>Paddle</span>
+                </div>
             </div>
+
             {/* <div className="ballContainer" onClick={() => nav('/game/settings/ball')} style={{background : backgroundBall}}>
             </div>
             <div className="paddleContainer" onClick={() => nav('/game/settings/paddle')} style={{background : backgroundPaddle}}>

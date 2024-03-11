@@ -180,9 +180,9 @@ export function Settings_game() {
                 < Outlet />
                 < RightBar />
             </div>
-            <div className='buttonContainer'>
+            {/* <div className='buttonContainer'>
                 <Link to="/game/matchmaking" className='SettingsButton' onClick={handleSaveSettings}>next</Link>
-            </div>
+            </div> */}
         </>
     );
 }

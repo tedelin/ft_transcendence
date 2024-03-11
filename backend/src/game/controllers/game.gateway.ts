@@ -228,7 +228,7 @@ export class GameGateway implements OnGatewayInit
                 firstPlayer : true
             });
             client.emit('matchmakingStats', {
-                playerOne: { id: this.connectedUsers.get(client.id).username },
+                playerOne: { id: this.connectedUsers.get(client.id).username, avatar: this.connectedUsers.get(client.id).avatar },
                 playerTwo: null,
                 roomId: roomId
             });

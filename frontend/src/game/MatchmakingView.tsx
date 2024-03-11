@@ -46,7 +46,7 @@
 // }
 
 
-import React from 'react';
+import React, { useEffect } from 'react';
 // import '../styles/game.css';
 import '../styles/matchmaking.css';
 import projectLogo from '../game_img/logo.png';
