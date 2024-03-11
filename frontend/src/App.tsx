@@ -71,7 +71,8 @@ function ChannelMember({children}: {children: JSX.Element}) {
 	return children;
 }
 import { Settings_game } from './game/settings/settings_game.tsx';
-import { Ball } from './game/settings/settings_ball.tsx';
+// import { Ball } from './game/settings/settings_ball.tsx';
+import BallSettings from './game/settings/BallSettings/BallSettings.tsx'
 import { Paddle } from './game/settings/settings_paddle.tsx';
 import { Matchmaking } from './game/Matchmaking';
 import { GameProvider } from './components/GameProvider';
@@ -137,7 +138,7 @@ const router = createBrowserRouter([
 						children: [
 							{
 								path: "ball",
-								element: <Ball />,
+								element: <BallSettings />,
 							},
 							{
 								path: "paddle",
@@ -169,7 +170,6 @@ const router = createBrowserRouter([
 	{
 		path : '/NewLogin',
 		element : <NewLogin />
-
 	}
 ])
 

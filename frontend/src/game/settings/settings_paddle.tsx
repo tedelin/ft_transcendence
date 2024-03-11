@@ -1,9 +1,11 @@
 import { useState } from "react";
+import GradientSet from "./BallSettings/GradientSet";
 
 export function Paddle() {
 
     const [paddleSizeNumber, setPaddleSizeNumber] = useState(3);
     const [paddleSize, setPaddleSize] = useState(30);
+    const [paddleSpeed, setPaddleSpeed] = useState(30);
 
     const increasePaddleSize = () =>{
         if (paddleSize < 100) {
@@ -23,17 +25,20 @@ export function Paddle() {
 
     return (
         <div className="paddle">
-            <div className="paddleSizeContainer">
-                <p>Paddle Size </p>
-                <div className="paddleSizeOutside">
-                    <div className="paddleSizeInside" style={{ width: `${paddleSize}%` }}></div>
+            <div>
+                <div className="paddleSizeContainer">
+                    <h2>Paddle Size </h2>
+                    <div className="paddleSizeOutside">
+                        <div className="paddleSizeInside" style={{ width: `${paddleSize}%` }}></div>
+                    </div>
+                </div>
+                <div className="buttonSizePaddle">
+                    <button className="plusbutton" onClick={increasePaddleSize}>+</button>
+                    <strong>{paddleSizeNumber}</strong>
+                    <button className="lessbutton" onClick={decreasePaddleSize}>-</button>
                 </div>
             </div>
-            <div className="buttonSizePaddle">
-                <button className="plusbutton" onClick={increasePaddleSize}>+</button>
-                <p>{paddleSizeNumber}</p>
-                <button className="lessbutton" onClick={decreasePaddleSize}>-</button>
-            </div>
+            <GradientSet label="Movement Speed" setProgress={setPaddleSpeed} progress={paddleSpeed} /> 
         </div>
     )
 }

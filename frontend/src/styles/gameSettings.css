@@ -96,37 +96,37 @@
     margin-left: 60px;
 }
 
-.ball,
 .paddle {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    background-color: #9b9b9b;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	padding: 50px 50px 30% 50px;
+    box-sizing: border-box;
+	flex-grow: 1;
 }
 
-.paddleSizeContainer{
+/* .paddleSizeContainer{
     margin: 50px 250px 0px 250px; 
-}
+} */
 
-.paddleSizeContainer p{
-    font-size: 50px;
+.paddleSizeContainer > h2{
     margin-bottom: 25px;
 }
 
 .paddleSizeOutside {
     width: 100%;
-    height: 20px;
+    height: 30px;
     border: 1px solid rgb(197, 197, 197);
     display: flex;
-    border-radius: 5px;
+    border-radius: 15px;
     justify-content: center;
     align-items: center;
 }
 
 .paddleSizeInside {
-    height: 90%;
+    height: 100%;
     background-color: #000000;
-    border-radius: 10px;
+    border-radius: 15px;
 }
 
 .buttonSizePaddle {
@@ -140,11 +140,19 @@
     width: 35px;
     height: 35px;
     font-size: 35px;
-    background-color: aquamarine;
     border-radius: 50%;
+    border: solid rgba(51, 51, 51, 0.3) 1px;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 20px;
 }
 
+.buttonSizePaddle button:hover {
+    cursor: pointer;
+    border: solid rgba(51, 51, 51, 0.8) 1px;
+}
+
+.BallTab:hover , .PaddleTab:hover {
+    cursor: pointer;
+} 
