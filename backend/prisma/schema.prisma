@@ -13,7 +13,7 @@ model User {
     username             String           @unique
     password             String
     avatar               String           @default("default-avatar.jpg")
-	bio					 String?
+    bio                  String?
     createdAt            DateTime         @default(now())
     updatedAt            DateTime         @updatedAt
     useTwoFA             Boolean          @default(false)
@@ -28,7 +28,7 @@ model User {
     matchs      MatchUser[] // several games related to a user
     stats       Stats? // just one state related to each user
     Achievement Achievement?
-	status      UserStatus
+    status      UserStatus
 
     @@map("users")
 }
@@ -108,15 +108,15 @@ model MatchUser {
 }
 
 model Achievement {
-  id                  Int     @id @default(autoincrement())
-  user                User    @relation(fields: [userId], references: [id])
-  userId              Int     @unique
-  firstGame           Boolean
-  firstWin            Boolean
-  firstLoose          Boolean // a voir si on le garde
-  masterWinner        Boolean // 10 win ou plus 
-  invincible_guardian Boolean // win sans encaisser de but
-  Speed_Demon         Boolean // quand la balle atteint la vitessse max
+    id                  Int     @id @default(autoincrement())
+    user                User    @relation(fields: [userId], references: [id])
+    userId              Int     @unique
+    firstGame           Boolean
+    firstWin            Boolean
+    firstLoose          Boolean // a voir si on le garde
+    masterWinner        Boolean // 10 win ou plus 
+    invincible_guardian Boolean // win sans encaisser de but
+    Speed_Demon         Boolean // quand la balle atteint la vitessse max
 
     @@map("achievement")
 }
@@ -129,7 +129,6 @@ model PrivateMessage {
     receiverId Int
     sender     User     @relation("PrivateMessageSender", fields: [senderId], references: [id])
     receiver   User     @relation("PrivateMessageReceiver", fields: [receiverId], references: [id])
-	invitation Boolean  @default(false)
 
     @@map("private_messages")
 }

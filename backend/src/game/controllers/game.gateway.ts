@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io";
-import { 
-    WebSocketGateway, 
-    WebSocketServer, 
+import {
+    WebSocketGateway,
+    WebSocketServer,
     MessageBody,
     SubscribeMessage,
     ConnectedSocket,
@@ -22,8 +22,7 @@ import { GameStatus } from "../classes/pong";
     }
 })
 
-export class GameGateway implements OnGatewayInit
-{
+export class GameGateway implements OnGatewayInit {
     @WebSocketServer() server: Server;
     connectedUsers: Map<string, User> = new Map();
 
@@ -34,7 +33,7 @@ export class GameGateway implements OnGatewayInit
         private readonly userService: UserService,
         private readonly gameService: GameService
     ) { }
-    
+
     afterInit(server: Server) {
         this.roomService.setServer(server, this.connectedUsers);
     }
@@ -63,12 +62,12 @@ export class GameGateway implements OnGatewayInit
 
     async handleConnection(client: Socket): Promise<void> {
         const token = client.handshake.query.token.toString();
-		const payload = this.authService.verifyAccessToken(token);
-		const user = payload && await this.userService.getUserById(payload.sub);
+        const payload = this.authService.verifyAccessToken(token);
+        const user = payload && await this.userService.getUserById(payload.sub);
         if (!user) {
-			client.disconnect(true);
-			return ;
-		}
+            client.disconnect(true);
+            return;
+        }
         this.connectedUsers.set(client.id, user);
         this.roomService.playersData.set(client.id, new pData(user.id));
         console.log(user.username + " connected to game, id " + client.id);
@@ -76,7 +75,7 @@ export class GameGateway implements OnGatewayInit
         this.gameService.createAchivement(user.id);
     }
 
-    public getArraySpectator(roomId : string) {
+    public getArraySpectator(roomId: string) {
         const spectatorSockets = this.roomService.rooms.get(roomId).spectators;
         const usernames = spectatorSockets.map(socket => this.connectedUsers.get(socket.id).username);
         console.log(`array of total of spectator : ${usernames}`);
@@ -88,7 +87,7 @@ export class GameGateway implements OnGatewayInit
     }
 
     async handleDisconnect(client: Socket): Promise<void> {
-        let gameId : string, roomState : RoomState;
+        let gameId: string, roomState: RoomState;
         for (const [room, roomstate] of this.roomService.rooms) {
             if (roomstate.players.includes(client) || roomstate.spectators.includes(client)) {
                 gameId = room;
@@ -96,12 +95,11 @@ export class GameGateway implements OnGatewayInit
                 break;
             }
         }
-        if (roomState)
-        {
+        if (roomState) {
             // console.log("in roomstate");
             if (this.isASpectator(client)) {
                 const spectator = this.connectedUsers.get(client.id);
-                console.log(`roomId : ${gameId}, spectator ${spectator.username} removed` );
+                console.log(`roomId : ${gameId}, spectator ${spectator.username} removed`);
                 this.cleanUpSpectator(client);
                 this.server.to(gameId).emit('spectators', { spectators: this.getArraySpectator(gameId) });
                 this.roomService.logRooms();
@@ -121,39 +119,40 @@ export class GameGateway implements OnGatewayInit
     }
 
 
-	@SubscribeMessage('getInvitation')
-	getInvitation(@ConnectedSocket() client: Socket, @MessageBody() friendId: number) {
-		const userId = this.connectedUsers.get(client.id).id;
-		this.roomService.privateRooms.forEach((value: [number, number], roomId: string) => {
-			const [creatorId, joinerId] = value;
-			if (creatorId == friendId && joinerId == userId) {
-				this.server.to(client.id).emit('game-invite', roomId);
-			}
-		});
-	}
+    @SubscribeMessage('getInvitation')
+    getInvitation(@ConnectedSocket() client: Socket, @MessageBody() friendId: number) {
+        const userId = this.connectedUsers.get(client.id).id;
+        this.roomService.privateRooms.forEach((value: [number, number], roomId: string) => {
+            const [creatorId, joinerId] = value;
+            if (creatorId == friendId && joinerId == userId) {
+                this.server.to(client.id).emit('game-invite', roomId);
+            }
+        });
+    }
 
     @SubscribeMessage('clickPlay')
     handleClickPlay(@ConnectedSocket() client: Socket) {
-		console.log("clickplay");
-        let roomId = this.roomService.assignClientToRoom(client, this.roomService.findAvailableRoom() || this.roomService.createRoom(client));
+        console.log("clickplay");
+        const room = this.roomService.findAvailableRoom() || this.roomService.createRoom(client);
+        let roomId = this.roomService.assignClientToRoom(client, room);
         console.log(client.id + " connected to room " + roomId);
     }
 
-	@SubscribeMessage('inviteToPlay')
-	handlePrivatePlay(@ConnectedSocket() client: Socket, @MessageBody() userId: number) {
-		const receiverId = this.getClientByUserId(userId);
-		const roomId = this.roomService.createPrivateRoom(client, userId);
-		this.server.to(receiverId).emit('game-invite', roomId);
-	}
+    @SubscribeMessage('inviteToPlay')
+    handlePrivatePlay(@ConnectedSocket() client: Socket, @MessageBody() userId: number) {
+        const receiverId = this.getClientByUserId(userId);
+        const roomId = this.roomService.createPrivateRoom(client, userId);
+        this.server.to(receiverId).emit('game-invite', roomId);
+    }
 
-	@SubscribeMessage('acceptInvite')
-	handleAcceptInvite(@ConnectedSocket() client: Socket, @MessageBody() roomId: string) {
-		this.roomService.joinPrivateRoom(client, roomId);
-	}
+    @SubscribeMessage('acceptInvite')
+    handleAcceptInvite(@ConnectedSocket() client: Socket, @MessageBody() roomId: string) {
+        this.roomService.joinPrivateRoom(client, roomId);
+    }
 
     @SubscribeMessage('returnBack')
     handleReturnBack(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-        let roomId : string = Array.from(client.rooms)[1];
+        let roomId: string = Array.from(client.rooms)[1];
         let roomState = this.roomService.rooms.get(roomId);
         console.log(`returnBack`);
         console.log(`roomST: ${roomState}, gameInst: ${data.gameInstance}`);
@@ -167,13 +166,13 @@ export class GameGateway implements OnGatewayInit
             this.roomService.matchmakingExit(client, 'cross', this.server);
     }
 
-    public quitInGame(client : Socket) {
-        let roomId : string = Array.from(client.rooms)[1];
+    public quitInGame(client: Socket) {
+        let roomId: string = Array.from(client.rooms)[1];
         let roomPartner = this.roomService.findMyLifePartner(roomId, client);
         let roomState = this.roomService.rooms.get(roomId);
         if (this.isASpectator(client)) {
             const spectator = this.connectedUsers.get(client.id);
-            console.log(`roomId : ${roomId}, spectator ${spectator.username} removed` );
+            console.log(`roomId : ${roomId}, spectator ${spectator.username} removed`);
             this.cleanUpSpectator(client);
             this.server.to(roomId).emit('spectators', { spectators: this.getArraySpectator(roomId) });
             this.roomService.logRooms();
@@ -240,7 +239,7 @@ export class GameGateway implements OnGatewayInit
         else
             console.log("no roomState");
         client.emit('gameLaunch', { gameState: roomState.gameState, spectators: this.getArraySpectator(roomId) });
-        console.log(`roomId : ${roomId}, spectator ${client.id} added` );
+        console.log(`roomId : ${roomId}, spectator ${client.id} added`);
         this.server.to(roomId).emit('spectators', { spectators: this.getArraySpectator(roomId) });
         this.roomService.logRooms();
     }
@@ -254,24 +253,24 @@ export class GameGateway implements OnGatewayInit
         roomState.settings = new GameSettings(
             data.ballSpeed,
             data.ballSize,
-            data.paddleSpeed, 
+            data.paddleSpeed,
             data.paddleHeight,
-            data.increasedBallSpeed, 
+            data.increasedBallSpeed,
             true
         );
-		console.log("CLick save settings");
-        if (roomState.players.length == this.roomService.roomSize){
+        console.log("CLick save settings");
+        if (roomState.players.length == this.roomService.roomSize) {
             this.roomService.startGame(
                 roomId,
-                this.roomService.playersData.get(roomState.players[0].id), 
-                this.roomService.playersData.get(roomState.players[1].id), 
+                this.roomService.playersData.get(roomState.players[0].id),
+                this.roomService.playersData.get(roomState.players[1].id),
                 roomState.settings
             );
         }
         else {
-            client.emit('gameMatchmaking', { 
-                settingDone : true, 
-                firstPlayer : true
+            client.emit('gameMatchmaking', {
+                settingDone: true,
+                firstPlayer: true
             });
             client.emit('matchmakingStats', {
                 playerOne: { id: this.connectedUsers.get(client.id).username, avatar: this.connectedUsers.get(client.id).avatar },
@@ -282,7 +281,7 @@ export class GameGateway implements OnGatewayInit
     }
 
 
-	getClientByUserId(userId: number): string | undefined {
+    getClientByUserId(userId: number): string | undefined {
         for (const [key, user] of this.connectedUsers.entries()) {
             if (user.id === userId) {
                 return key;
