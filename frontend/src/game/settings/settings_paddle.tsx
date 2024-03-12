@@ -16,7 +16,7 @@ export function Paddle() {
             const newSizeNumber = paddleSizeNumber + 1;
             setPaddleSize(newSize);
             setPaddleSizeNumber(newSizeNumber);
-            game?.setPaddleHeight(newSizeNumber * 100); 
+            game?.setPaddleHeight(newSizeNumber * 100);
         }
     }
 
@@ -26,13 +26,13 @@ export function Paddle() {
             const newSizeNumber = paddleSizeNumber - 1;
             setPaddleSize(newSize);
             setPaddleSizeNumber(newSizeNumber);
-            game?.setPaddleHeight(newSizeNumber * 100); 
+            game?.setPaddleHeight(newSizeNumber * 100);
         }
     }
 
     const updatePaddleSpeed = (newSpeed) => {
         setPaddleSpeed(newSpeed);
-        game?.setPaddleSpeed(newSpeed); 
+        game?.setPaddleSpeed(newSpeed);
     }
 
     return (
@@ -45,9 +45,9 @@ export function Paddle() {
                     </div>
                 </div>
                 <div className="buttonSizePaddle">
-                    <button className="plusbutton" onClick={increasePaddleSize}>+</button>
+                    <button className="lessbßutton" onClick={decreasePaddleSize}>-</button>
                     <strong>{paddleSizeNumber}</strong>
-                    <button className="lessbutton" onClick={decreasePaddleSize}>-</button>
+                    <button className="plusbutton" onClick={increasePaddleSize}>+</button>
                 </div>
             </div>
             <GradientSet label="Movement Speed" setProgress={updatePaddleSpeed} progress={paddleSpeed} />
