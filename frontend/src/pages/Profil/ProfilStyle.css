@@ -233,9 +233,7 @@ button {
 /* -------------------------- Achievements -------------------------- */
 
 /* -------------------------- History -------------------------- */
-/* .History :first-child{
-	margin-top : 20px;
-} */
+
 .MatchBox {
   display: flex;
   justify-content: space-between;
@@ -309,6 +307,7 @@ button {
 .clickable {
   color: var(--text-primary);
   font-size: 20px;
+  text-decoration: none;
 }
 
 .player-name:hover {
@@ -325,12 +324,17 @@ button {
   transition: linear 0.2s;
 }
 
+.player-score, .opponent-score{
+	width: 30%;
+	text-align: center;
+}
+
 .score {
   width: 30%;
   display: flex;
   font-size: 40px;
   /* font-weight: bold;  */
-  justify-content: center;
+  justify-content: space-between;
   align-items: center; /* Centre le score */
 }
 

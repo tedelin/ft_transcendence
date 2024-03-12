@@ -1,12 +1,11 @@
 import { getAvatar } from '../../utils/utils';
-
+import { NavLink } from 'react-router-dom';
 
 function MatchBox({ match, playerId }) {
 	const isWinner = match.winner == playerId;
-	console.log("match.winner : ", match.winner);
-	console.log("playerId.id : ", playerId);
-	const player = match.player1.id == playerId.id ? match.player1 : match.player2;
-	const opponent = match.player1.id == playerId.id ? match.player2 : match.player1;
+	const player = match.player1.id == playerId ? match.player1 :  match.player2;
+	const opponent = match.player1.id == playerId ? match.player2 :  match.player1;
+	const linkToOpponent = `/profil/${opponent.id}`
 
 	return (
 		<div className="MatchBox">
@@ -18,17 +17,20 @@ function MatchBox({ match, playerId }) {
 						<img src={player.picture} alt="player-picture" />
 					</button>
 				</div>
-
 			</div>
-			<div className="score">{match.score}</div>
+			<div className="score">
+				<div className="player-score">{player.score}</div>
+				<div>-</div>
+				<div className="opponent-score">{opponent.score}</div>
+			</div>
 			<div className={`player ${!isWinner ? 'winner-p' : 'loser-p'}`}>
 				<div className="player-picture right-p">
-					<button className='clickable'>
+					<NavLink to={linkToOpponent} className='clickable'>
 						<img src={opponent.picture} alt="opponent-picture" />
-					</button>
+					</NavLink>
 				</div>
 				<div className="player-name">
-					<button className='clickable'>{opponent.name}</button>
+					<NavLink to={linkToOpponent} className='clickable'>{opponent.name}</NavLink>
 				</div>
 			</div>
 		</div>
@@ -65,9 +67,8 @@ function filterMatchesByPlayerId(matchs, id) {
 	const loser = score1 > score2 ? player2.id : player1.id;
   
 	return {
-	  player1: { id: player1.id, name: player1.username, picture: pictureA },
-	  player2: { id: player2.id, name: player2.username, picture: pictureB },
-	  score: `${score1} - ${score2}`,
+	  player1: { id: player1.id, name: player1.username, picture: pictureA, score : score1},
+	  player2: { id: player2.id, name: player2.username, picture: pictureB, score : score2 },
 	  winner: winner,
 	  loser: loser
 	};
