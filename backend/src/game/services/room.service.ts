@@ -29,12 +29,11 @@ export class RoomService {
     public roomSize = 2;
     public server: Server;
     public connectedUsers: Map<string, User>;
+	public privateRooms: Map<string, [number, number]> = new Map();
 
     constructor(
         private readonly pongService: PongService,
         private readonly gameService: GameService,
-        private readonly authService: AuthService,
-        private readonly userService: UserService
     ) { }
 
     public setServer(server: Server, connectedUsers: Map<string, User>) {
@@ -86,9 +85,9 @@ export class RoomService {
         this.cleanRoom(gameId);
         console.log('Room ' + gameId + ' destroyed');
 
-        if (roomPartner) {
+        if (roomPartner && !this.privateRooms.has(gameId)) {
             console.log(roomPartner.id + ' reattributed to new room');
-            this.assignClientToRoom(roomPartner);
+            this.assignClientToRoom(roomPartner, this.findAvailableRoom() || this.createRoom(client));
         }
     }
 
@@ -106,8 +105,7 @@ export class RoomService {
         });
     }
 
-    public assignClientToRoom(client: Socket): string {
-        const roomId = this.findAvailableRoom() || this.createRoom(client);
+    public assignClientToRoom(client: Socket, roomId: string): string {
         this.addClientToRoom(client, roomId);
 
         const roomState = this.rooms.get(roomId);
@@ -135,20 +133,38 @@ export class RoomService {
         return roomId;
     }
 
-    private findAvailableRoom(): string | undefined {
-        for (let [room, roomState] of this.rooms) {
-            if (roomState.players.length < this.roomSize) {
-                return room;
-            }
-        }
-        return undefined;
-    }
+	public findAvailableRoom(): string | undefined {
+		for (let [room, roomState] of this.rooms) {
+			if (roomState.players.length < this.roomSize && !this.privateRooms.has(room)) {
+				return room;
+			}
+		}
+		return undefined;
+	}
 
-    private createRoom(client: Socket): string {
+    public createRoom(client: Socket): string {
         const newRoomId = `${new Date().getTime()}`;
         this.rooms.set(newRoomId, new RoomState([client]));
         return newRoomId;
     }
+
+	createPrivateRoom(client: Socket, userId: number) {
+		const newRoomId = `${new Date().getTime()}`;
+		const clientUser = this.connectedUsers.get(client.id).id;
+		this.privateRooms.set(newRoomId, [clientUser, userId]);
+		this.rooms.set(newRoomId, new RoomState([client]));
+		this.assignClientToRoom(client, newRoomId);
+		return newRoomId;
+	}
+
+	joinPrivateRoom(client: Socket, roomId: string) {
+		const userId = this.connectedUsers.get(client.id).id;
+		if (userId === this.privateRooms.get(roomId)[1]) {
+			this.assignClientToRoom(client, roomId);
+		} else {
+			console.log('User not authorize to join room');
+		}
+	}
 
     private addClientToRoom(client: Socket, roomId: string): void {
         const roomState = this.rooms.get(roomId);
@@ -220,6 +236,10 @@ export class RoomService {
                 client.leave(roomId);
             });
         }
+		// Can cause crash
+		// const [creator, receiver] = this.privateRooms.get(roomId);
+		// const receiverClient = this.getClientByUserId(receiver);
+		// this.server.to(receiverClient).emit("game-invite", '');
         this.rooms.delete(roomId);
     }
 
@@ -326,5 +346,14 @@ export class RoomService {
         }
         const allMatchs = await this.gameService.findAllGames();
         this.server.emit('matchs', allMatchs);
+    }
+
+	getClientByUserId(userId: number): string | undefined {
+        for (const [key, user] of this.connectedUsers.entries()) {
+            if (user.id === userId) {
+                return key;
+            }
+        }
+        return undefined;
     }
 }

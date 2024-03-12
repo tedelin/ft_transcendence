@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../components/AuthProvider';
 import { useToast } from '../utils/hooks/useToast';
 import { fetchUrl } from '../fetch';
 import {PrivateMessagesDisplay} from './PrivateMessageDisplay';
-import { RightBar } from './RightBar';
 import { User } from '../utils/types';
 import { getAvatar } from '../utils/utils';
+import '../styles/chat.css';
 
 function TopBar({ userId }: { userId: number }) {
 	const [user, setUser] = useState<User>();
@@ -46,6 +46,8 @@ export function PrivateMessagePage() {
 	const [typing, setTyping] = useState('');
 	const { receiverId } = useParams() as { receiverId: string };
 	const { error } = useToast();
+	const navigate = useNavigate();
+	const [roomId, setRoomId] = useState('');
 	const auth = useAuth();
 
 	function onTyping(e: any) {
@@ -72,6 +74,15 @@ export function PrivateMessagePage() {
 		}
 	}
 
+	function sendGameInvite() {
+		navigate(`/game?private=${receiverId}`);
+	}
+
+	function acceptGameInvite() {
+		navigate(`/game?roomId=${roomId}`);
+	
+	}
+
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		if (e.key == 'Enter')
 			e.preventDefault();
@@ -81,17 +92,23 @@ export function PrivateMessagePage() {
 	};
 	
 	useEffect(() => {
+		auth?.socket?.emit("getInvitation", receiverId);
+
 		auth?.socket?.on("typing", (username: string) => {
-			if (username === auth?.user?.username)
-			return;
+			if (username === auth?.user?.username) return;
 			setTyping(`${username} is typing ...`);
 			setTimeout(() => {
 				setTyping('');
 			}, 3000);
 		});
+
+		auth?.socket?.on("game-invite", (roomId: string) => {
+			setRoomId(roomId);
+		});
 	
 		return () => {
 			auth?.socket?.off("typing");
+			auth?.socket?.off("game-invite");
 		}
 	}, [])
 
@@ -100,6 +117,7 @@ export function PrivateMessagePage() {
 			<div className='flexRow'>
 				<TopBar userId={parseInt(receiverId)} />
 				<PrivateMessagesDisplay key={receiverId} conversationId={parseInt(receiverId)}/>
+				{roomId.length > 0 && <button onClick={acceptGameInvite} className='acceptInvite'>Accept Invitation to Play</button>}
 				<div className="typingIndicator">{typing}</div>
 				<div className='messageInput'>
 					<textarea
@@ -108,7 +126,11 @@ export function PrivateMessagePage() {
 						placeholder={'Send message'}
 						onChange={onTyping}
 					/>
-					<button>Invite to game</button>
+					<button
+						onClick={sendGameInvite}
+						className='inviteButton'
+					>
+						Invite to play</button>
 				</div>
 			</div>
 		</>

@@ -26,11 +26,11 @@ export function RightBar({handleSaveSettings}) {
     return (
         <div className='RightBar'>
             <div className='list'>
-                <div className='listItem BallTab' id='listItem' onClick={() => nav('/game/settings/ball')} style={{ background: backgroundBall, borderRadius: '10px' }}>
-                    <img src={ball} alt="ball" />
+                <div className='listItem' id='listItem' onClick={() => nav('/game/settings/ball')} >
+					<span className="material-symbols-outlined">sports_volleyball</span>
                     <span>Ball</span>
                 </div>
-                <div className='listItem PaddleTab' onClick={() => nav('/game/settings/paddle')} style={{ background: backgroundPaddle, borderRadius: '10px' }}>
+                <div className='listItem' onClick={() => nav('/game/settings/paddle')}>
                     <img src={paddle} alt="paddle" />
                     <span>Paddle</span>
                 </div>

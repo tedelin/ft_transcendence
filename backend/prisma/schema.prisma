@@ -129,6 +129,7 @@ model PrivateMessage {
     receiverId Int
     sender     User     @relation("PrivateMessageSender", fields: [senderId], references: [id])
     receiver   User     @relation("PrivateMessageReceiver", fields: [receiverId], references: [id])
+	invitation Boolean  @default(false)
 
     @@map("private_messages")
 }

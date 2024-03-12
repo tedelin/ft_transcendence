@@ -33,13 +33,13 @@ const BallSize = ({ choice, setChoice }) => {
       <h2>Ball Size</h2>
       <div className='BallSizeWrapper'>
         <div className={getClass('smallSizeBall')} onClick={() => onClick('smallSizeBall')}>
-          <img src={ballImg} alt="smallSizeBall"></img>
+			<span className="material-symbols-outlined smallSizeBall">sports_volleyball</span>
         </div>
         <div className={getClass('mediumSizeBall')} onClick={() => onClick('mediumSizeBall')}>
-          <img src={ballImg} alt="mediumSizeBall"></img>
+			<span className="material-symbols-outlined mediumSizeBall">sports_volleyball</span>
         </div>
         <div className={getClass('largeSizeBall')} onClick={() => onClick('largeSizeBall')}>
-          <img src={ballImg} alt="largeSizeBall"></img>                                                
+        	<span className="material-symbols-outlined largeSizeBall">sports_volleyball</span>                                           
         </div>
       </div>
     </div>
