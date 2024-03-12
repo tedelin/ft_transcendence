@@ -92,7 +92,7 @@ export function PrivateMessagePage() {
 	};
 	
 	useEffect(() => {
-		// auth?.socket?.emit("getInvitation", receiverId);
+		auth?.socket?.emit("getInvitation", receiverId);
 
 		auth?.socket?.on("typing", (username: string) => {
 			if (username === auth?.user?.username) return;
@@ -103,7 +103,6 @@ export function PrivateMessagePage() {
 		});
 
 		auth?.socket?.on("game-invite", (roomId: string) => {
-			console.log('game-invite TESTE', roomId);
 			setRoomId(roomId);
 		});
 	

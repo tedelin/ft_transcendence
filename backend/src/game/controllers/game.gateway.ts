@@ -121,14 +121,16 @@ export class GameGateway implements OnGatewayInit
     }
 
 
-	// @SubscribeMessage('getInvitation')
-	// getInvitation(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-	// 	const user = this.connectedUsers.get(client.id);
-	// 	const [senderId, receiverId] = this.roomService.privateRooms.get(data.userId);
-	// 	console.log(`senderId: ${senderId}, receiverId: ${receiverId}`);
-
-	// 	this.server.to(client.id).emit('game-invite', roomId);
-	// }
+	@SubscribeMessage('getInvitation')
+	getInvitation(@ConnectedSocket() client: Socket, @MessageBody() friendId: number) {
+		const userId = this.connectedUsers.get(client.id).id;
+		this.roomService.privateRooms.forEach((value: [number, number], roomId: string) => {
+			const [creatorId, joinerId] = value;
+			if (creatorId == friendId && joinerId == userId) {
+				this.server.to(client.id).emit('game-invite', roomId);
+			}
+		});
+	}
 
     @SubscribeMessage('clickPlay')
     handleClickPlay(@ConnectedSocket() client: Socket) {
@@ -146,7 +148,6 @@ export class GameGateway implements OnGatewayInit
 
 	@SubscribeMessage('acceptInvite')
 	handleAcceptInvite(@ConnectedSocket() client: Socket, @MessageBody() roomId: string) {
-		console.log('acceptInvite', roomId);
 		this.roomService.joinPrivateRoom(client, roomId);
 	}
 
