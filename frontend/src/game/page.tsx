@@ -13,6 +13,8 @@ export function Game() {
     const game = useGame();
     const auth = useAuth();
     const nav = useNavigate();
+	const roomId = new URLSearchParams(window.location.search).get('roomId');
+	const privateGame = new URLSearchParams(window.location.search).get('private');
 
     function handletsart() {
         auth?.socket?.emit('clickPlay');
@@ -34,14 +36,10 @@ export function Game() {
                 console.error("Failed to fetch match history:", error);
             }
         };
-        console.log("fetMatchHistory")
         fetchMatchHistory();
     }, []);
 
     function quitBack() {
-        console.log(`showButton : ${game?.showButton}, game: ${game?.gameStarted}`);
-        console.log(`${game?.letsGO}, ${game?.playerOne}`)
-        console.log(`gameCurrent: ${game?.gameInstance.current}`);
         if (!game?.gameInstance.current) {
             auth?.socket?.emit('returnBack', { gameInstance: game?.gameInstance.current });
         }
@@ -70,7 +68,6 @@ export function Game() {
         })
 
         auth?.socket?.on('gameLaunch', (data) => {
-            console.log('GameLaunch');
             if (game != null && !game.gameStarted) {
                 game.gameInstance.current = new ClassGame(React.createRef(), data.gameState, auth?.socket, { width: 800, height: 600 });
                 game.setGameStarted(true);
@@ -124,6 +121,18 @@ export function Game() {
 			game?.handleQuit();
 		}
 	}, [window.location.pathname]);
+
+	useEffect(() => {
+		if (privateGame) {
+			auth?.socket?.emit('inviteToPlay', parseInt(privateGame));
+			game?.setShowButton(false);
+
+		} else if (roomId) {
+			auth?.socket?.emit('acceptInvite', roomId);
+			game?.setShowButton(false);
+
+		}
+	}, [privateGame, roomId]);
 
 
     return (

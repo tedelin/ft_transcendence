@@ -121,12 +121,34 @@ export class GameGateway implements OnGatewayInit
     }
 
 
+	// @SubscribeMessage('getInvitation')
+	// getInvitation(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
+	// 	const user = this.connectedUsers.get(client.id);
+	// 	const [senderId, receiverId] = this.roomService.privateRooms.get(data.userId);
+	// 	console.log(`senderId: ${senderId}, receiverId: ${receiverId}`);
+
+	// 	this.server.to(client.id).emit('game-invite', roomId);
+	// }
+
     @SubscribeMessage('clickPlay')
     handleClickPlay(@ConnectedSocket() client: Socket) {
 		console.log("clickplay");
-        let roomId = this.roomService.assignClientToRoom(client);
+        let roomId = this.roomService.assignClientToRoom(client, this.roomService.findAvailableRoom() || this.roomService.createRoom(client));
         console.log(client.id + " connected to room " + roomId);
     }
+
+	@SubscribeMessage('inviteToPlay')
+	handlePrivatePlay(@ConnectedSocket() client: Socket, @MessageBody() userId: number) {
+		const receiverId = this.getClientByUserId(userId);
+		const roomId = this.roomService.createPrivateRoom(client, userId);
+		this.server.to(receiverId).emit('game-invite', roomId);
+	}
+
+	@SubscribeMessage('acceptInvite')
+	handleAcceptInvite(@ConnectedSocket() client: Socket, @MessageBody() roomId: string) {
+		console.log('acceptInvite', roomId);
+		this.roomService.joinPrivateRoom(client, roomId);
+	}
 
     @SubscribeMessage('returnBack')
     handleReturnBack(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
@@ -256,5 +278,15 @@ export class GameGateway implements OnGatewayInit
                 roomId: roomId
             });
         }
+    }
+
+
+	getClientByUserId(userId: number): string | undefined {
+        for (const [key, user] of this.connectedUsers.entries()) {
+            if (user.id === userId) {
+                return key;
+            }
+        }
+        return undefined;
     }
 }

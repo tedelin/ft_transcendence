@@ -15,6 +15,7 @@
 }
 
 .GradientSet > h2 {
+	color: var(--text-primary);
 	margin-bottom: 20px;
 }
 
@@ -49,7 +50,7 @@
   height: 75px;
   width: 150px;
   border-radius: 15px;
-  color: white;
+  color: var(--text-primary);
   text-decoration: none;
   text-align: center; 
   font-size: 2rem;
