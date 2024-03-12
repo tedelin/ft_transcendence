@@ -1,13 +1,11 @@
-import { Injectable, Inject, forwardRef } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Interval } from '@nestjs/schedule';
 import { Socket, Server } from 'socket.io';
 import { pData, GameSettings, RoomState, RoomStatus } from '../classes/room'
-import { GameState, GameStatus, Score } from "../classes/pong";
+import { GameStatus, Score } from "../classes/pong";
 import { PongService } from "./pong.service";
 import { GameService } from "./game.service";
 import { CreateMatchDto, PlayerData } from "../dto/create-match.dto";
-import { AuthService } from "src/auth/auth.service";
-import { UserService } from "src/user/user.service";
 import { User } from "@prisma/client";
 import { UpdateMatchDto } from "../dto/update-match.dto";
 
@@ -78,6 +76,12 @@ export class RoomService {
     }
 
     private playerOneMatchmakingExit(gameId, client) {
+		if (this.privateRooms.has(gameId)) {
+			const waitingUser = this.privateRooms.get(gameId)[1];
+			const waitingClient = this.server.sockets.sockets.get( this.getClientByUserId(waitingUser));
+			this.matchmakingExit(waitingClient, 'cross', this.server);
+			return ;
+		}
         const roomState = this.rooms.get(gameId);
         if (!roomState) return;
         let roomPartner: Socket | null = this.findMyLifePartner(gameId, client);
@@ -85,7 +89,7 @@ export class RoomService {
         this.cleanRoom(gameId);
         console.log('Room ' + gameId + ' destroyed');
 
-        if (roomPartner && !this.privateRooms.has(gameId)) {
+        if (roomPartner) {
             console.log(roomPartner.id + ' reattributed to new room');
             this.assignClientToRoom(roomPartner, this.findAvailableRoom() || this.createRoom(client));
         }
@@ -236,12 +240,18 @@ export class RoomService {
                 client.leave(roomId);
             });
         }
-		// Can cause crash
-		// const [creator, receiver] = this.privateRooms.get(roomId);
-		// const receiverClient = this.getClientByUserId(receiver);
-		// this.server.to(receiverClient).emit("game-invite", '');
+		this.cleanPrivateRoom(roomId);
         this.rooms.delete(roomId);
     }
+
+	private cleanPrivateRoom(roomId) {
+		if (this.privateRooms.has(roomId)) {
+			const receiverId = this.privateRooms.get(roomId)[1];
+			const receiverClient = this.getClientByUserId(receiverId);
+			this.privateRooms.delete(roomId);
+			this.server.to(receiverClient).emit("game-invite", '');
+		}
+	}
 
     private formatUpdateMatchData(roomState: RoomState, pOne: User, pTwo: User): UpdateMatchDto {
         const score: Score = roomState.gameState.score;
