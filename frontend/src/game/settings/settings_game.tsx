@@ -148,7 +148,6 @@ import '../../styles/gameSettings.css';
 import { TopBar } from './topBar';
 import { RightBar } from './rightBar';
 
-
 export function Settings_game() {
     const game = useGame();
     const nav = useNavigate();
@@ -162,6 +161,10 @@ export function Settings_game() {
 
     const handleSaveSettings = () => {
         console.log('ballSpeed : ' + game?.ballSpeed);
+        console.log('paddleSpeed : ' + game?.paddleSpeed);
+        console.log('paddleHeight : ' + game?.paddleHeight);
+        console.log('ballSize : ' + game?.ballSize);
+        console.log('increasedBallSpeed : ' + game?.increasedBallSpeed);
         auth?.socket?.emit('clickSaveSettings', {
             ballSpeed: game?.ballSpeed,
             paddleSpeed: game?.paddleSpeed,
@@ -183,3 +186,4 @@ export function Settings_game() {
         </>
     );
 }
+

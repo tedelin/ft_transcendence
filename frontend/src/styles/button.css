@@ -91,6 +91,7 @@
 
 .StartButton:hover {
     animation-play-state: paused;
+    cursor: pointer;
 }
 
 

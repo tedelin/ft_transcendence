@@ -1,33 +1,45 @@
 import { useState } from "react";
 import GradientSet from "./BallSettings/GradientSet";
+import { useGame } from "../../components/GameProvider";
 
 export function Paddle() {
+    const game = useGame(); // Utilise le contexte du jeu
+    console.log("game?.paddleHeight : ", game?.paddleHeight);
+    console.log("game?.paddleSpeed : ", game?.paddleSpeed);
+    const [paddleSizeNumber, setPaddleSizeNumber] = useState(game?.paddleHeight ? game?.paddleHeight / 100 : 3);
+    const [paddleSize, setPaddleSize] = useState(paddleSizeNumber * 10);
+    const [paddleSpeed, setPaddleSpeed] = useState(game?.paddleSpeed || 30);
 
-    const [paddleSizeNumber, setPaddleSizeNumber] = useState(3);
-    const [paddleSize, setPaddleSize] = useState(30);
-    const [paddleSpeed, setPaddleSpeed] = useState(30);
-
-    const increasePaddleSize = () =>{
+    const increasePaddleSize = () => {
         if (paddleSize < 100) {
-            setPaddleSize(paddleSize + 10);
-            setPaddleSizeNumber(paddleSizeNumber + 1);
+            const newSize = paddleSize + 10;
+            const newSizeNumber = paddleSizeNumber + 1;
+            setPaddleSize(newSize);
+            setPaddleSizeNumber(newSizeNumber);
+            game?.setPaddleHeight(newSizeNumber * 100); 
         }
-        console.log("paddleSizeNumber = ", paddleSizeNumber, " / paddleSize = ", paddleSize);
     }
 
-    const decreasePaddleSize = () =>{
+    const decreasePaddleSize = () => {
         if (paddleSize > 10) {
-            setPaddleSize(paddleSize - 10);
-            setPaddleSizeNumber(paddleSizeNumber - 1);
+            const newSize = paddleSize - 10;
+            const newSizeNumber = paddleSizeNumber - 1;
+            setPaddleSize(newSize);
+            setPaddleSizeNumber(newSizeNumber);
+            game?.setPaddleHeight(newSizeNumber * 100); 
         }
-        console.log("paddleSizeNumber = ", paddleSizeNumber, " / paddleSize = ", paddleSize);
+    }
+
+    const updatePaddleSpeed = (newSpeed) => {
+        setPaddleSpeed(newSpeed);
+        game?.setPaddleSpeed(newSpeed); 
     }
 
     return (
         <div className="paddle">
             <div>
                 <div className="paddleSizeContainer">
-                    <h2>Paddle Size </h2>
+                    <h2>Paddle Size</h2>
                     <div className="paddleSizeOutside">
                         <div className="paddleSizeInside" style={{ width: `${paddleSize}%` }}></div>
                     </div>
@@ -38,7 +50,7 @@ export function Paddle() {
                     <button className="lessbutton" onClick={decreasePaddleSize}>-</button>
                 </div>
             </div>
-            <GradientSet label="Movement Speed" setProgress={setPaddleSpeed} progress={paddleSpeed} /> 
+            <GradientSet label="Movement Speed" setProgress={updatePaddleSpeed} progress={paddleSpeed} />
         </div>
-    )
+    );
 }

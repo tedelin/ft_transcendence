@@ -4,7 +4,7 @@
     display: flex;
     justify-content: space-between;
     height: 150px;
-    border-bottom: 1px solid #40444b;
+    border-bottom: 1px solid hsla(218, 8%, 27%, 0.3);
 }
 
 .leftPlayerContainer,
@@ -70,10 +70,11 @@
 .RightBar {
     width: 35%;
 	max-width: 300px;
+	min-width: 200px;
     display: flex;
     flex-grow: 1;
     flex-direction: column;
-    border-left: 1px solid #40444b;
+    border-left: 1px solid hsla(218, 8%, 27%, 0.3);
 }
 
 .ballContainer,
