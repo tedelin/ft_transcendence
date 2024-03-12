@@ -91,14 +91,12 @@ export function InGame() {
 
     const handleKeyDown = (event) => {
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            console.log("PRESSED");
             auth?.socket?.emit('keyAction', { key: event.key, action: 'pressed' });
         }
     };
 
     const handleKeyUp = (event) => {
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            console.log("RELEASED");
             auth?.socket?.emit('keyAction', { key: event.key, action: 'released' });
         }
     };
@@ -121,38 +119,12 @@ export function InGame() {
         });
 
         auth?.socket?.on('spectators', (data) => {
-            console.log(data.spectators);
             if (Array.isArray(data.spectators)) {
-                console.log(`Received : ${data.spectators}`)
                 setSpectators(data.spectators);
             } else {
-                console.error("Received no data");
                 setSpectators([]);
             }
         });
-        console.log("spectators on listening now");
-
-        // const updateCanvasSize = () => {
-        //     console.log('updateCanvasSize();');
-        //     const canvas = game?.gameInstance?.current?.canvasRef.current;
-        //     if (canvas) {
-        //         // const width = window.innerWidth;
-        //         // const height = window.innerHeight;
-        //         // canvas.width = width;
-        //         // canvas.height = height * (9 / 16); // Ajuster selon le ratio d'aspect désiré
-        //         const width = canvas.offsetWidth;
-        //         const height = canvas.offsetHeight;
-
-        //         console.log(`canvasSize({ ${width}, ${height} });`);
-        //         if (game?.gameInstance.current && width && height) {
-        //             console.log(`gameInstance.current.updateDimensions(${width}, ${height});`);
-        //             game?.gameInstance.current.updateDimensions(width, height);
-        //         }
-        //     }
-        // }
-
-        // window.addEventListener('resize', updateCanvasSize);
-        // updateCanvasSize();
 
         return () => {
             document.removeEventListener("keydown", handleKeyDown);

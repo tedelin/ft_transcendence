@@ -11,20 +11,19 @@
 }
 
 .layout {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
   text-align: center;
   background-color: var(--bg-primary);
   color: var(--text-primary);
 }
 
 .progression-bar {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%); /* Centrage parfait */
   width: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 20px 0;
   width: 50vw;
 }
 
@@ -32,7 +31,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: var(--bg-primary);
+  background-color: var(--bg-secondary);
   color: #fff;
   display: flex;
   align-items: center;
@@ -62,7 +61,7 @@
   width: 100%;
   background: linear-gradient(
     to right,
-    #4caf4f8c 50%,
+    #2832c286 50%,
     #ddd 50%
   ); /* Démarre avec la couleur verte à gauche et la couleur de fond par défaut à droite */
   background-size: 200% 100%; /* Double la largeur de l'arrière-plan pour permettre l'animation */
@@ -75,7 +74,7 @@
 }
 
 .circle.step-two {
-  background-color: #4caf4f4a;
+  background-color: var(--bg-secondary);
 }
 
 footer {
@@ -117,7 +116,7 @@ footer {
 }
 
 .button-next:hover {
-  background-color: #73be75;
+  background-color: #2832c2c9;
 }
 
 /* Styles pour le bouton Done */

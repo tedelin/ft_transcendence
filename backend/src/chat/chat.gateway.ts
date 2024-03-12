@@ -52,7 +52,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const blockedUsers = await this.friendService.findBlockedByUsers(sender);
 		const blockedUsersIds = blockedUsers.map((blockedUser) => blockedUser.initiatorId);
 		this.server.to(senderSocketId).emit('private-message', storedMessage);
-		console.log(blockedUsersIds);
 		if (blockedUsersIds.includes(receiver)) {
 			return;
 		}
@@ -116,7 +115,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@OnEvent('user.state')
 	async updateUserState(userId: number, state: UserStatus) {
-		console.log(userId);
 		const userFriends = await this.friendService.getFriendships(userId);
 		const friendsIds = userFriends.map((friend) => {
 			if (friend.initiatorId === userId) {

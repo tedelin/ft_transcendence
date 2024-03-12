@@ -1,15 +1,14 @@
 import { useAuth } from './AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import "../styles/twofa-setup.css";
+import { useToast } from '../utils/hooks/useToast';
 
 function TwoFaSettings() {
+	const {error } = useToast();
 	const navigate = useNavigate(); 
 	const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
-	console.log("useAuth : ", useAuth())
-	console.log("useAuth()?.user : ", useAuth()?.user)
 	const useTwoFA = useAuth()?.user?.useTwoFA;
-	console.log("useTwoFA : ", useTwoFA)
 
 	const handleClick = () => {
 		if (useTwoFA) {
@@ -20,11 +19,10 @@ function TwoFaSettings() {
 	};
 
 	const handleTurnOff = async () => {
-		const confirmTurnOff = window.confirm("t'es sur ??");
+		const confirmTurnOff = window.confirm("Are you sure you want to turn off 2FA?");
 		
 		if (confirmTurnOff) {
 			const token = localStorage.getItem('jwtToken');
-			console.log('Désactivation de 2FA...');
 			try {
 				const response = await fetch(`${API_BASE_URL}/auth/turnOff-2fa`, {
 					method: 'GET',
@@ -34,14 +32,12 @@ function TwoFaSettings() {
 				});
 	
 				if (response.ok) {
-					console.log('2FA désactivé avec succès');
 				} else {
-					console.error('Échec de la désactivation de 2FA:', response.statusText);
 					alert('Échec de la désactivation de 2FA. Veuillez réessayer.');
 				}
-			} catch (error) {
-				console.error('Erreur lors de la désactivation de 2FA:', error);
-				alert('Une erreur est survenue lors de la désactivation de 2FA. Veuillez réessayer.');
+				window.location.reload();
+			} catch (err: any) {
+				error('Une erreur est survenue lors de la désactivation de 2FA. Veuillez réessayer.');
 			}
 		} else {
 			console.log('Désactivation de 2FA annulée par l\'utilisateur');

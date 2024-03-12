@@ -53,7 +53,7 @@ export class ClassGame {
         this.localState = this.copyState(gameState);
         this.win = false;
         this.logoImage.onload = () => {
-            this.updateCanvas(); // Dessiner ou redessiner le canvas une fois l'image chargée
+            this.updateCanvas();
         };
         this.logoImage.onerror = (error) => {
             console.error("Erreur lors du chargement de l'image :", error);
@@ -62,11 +62,9 @@ export class ClassGame {
     }
 
     updateDimensions(width: number, height: number) {
-        // console.log('updateDimensions();');
         this.canvasWidth = width;
         this.canvasHeight = height;
-        // console.log(`updateDimension this.canvasWidth = ${width}, this.canvasHeight=${height}`)
-        this.updateCanvas(); // Mettez à jour le canvas immédiatement pour refléter les nouvelles dimensions
+        this.updateCanvas();
     }
 
     copyState(gameState): GameState | null {
@@ -104,8 +102,6 @@ export class ClassGame {
     }
 
     draw(context) {
-        // console.log(`height : ${this.canvasHeight}, width: ${this.canvasWidth}`)
-        // console.log("draw");
         // paddles
         context.fillStyle = 'black';
         this.drawRoundedRect(context, 15, this.localState.paddles.leftPos.y, this.localState.paddles.width, this.localState.paddles.height, 10);
@@ -124,13 +120,13 @@ export class ClassGame {
         
         // center logo
         if (this.logoImage.complete) {
-            const logoX = this.canvasWidth / 2 - 48 / 2; // Centrer horizontalement
-            const logoY = this.canvasHeight / 2 - 48 / 2; // Centrer verticalement
+            const logoX = this.canvasWidth / 2 - 48 / 2;
+            const logoY = this.canvasHeight / 2 - 48 / 2;
             context.fillStyle = 'white';
             context.beginPath();
             context.arc(logoX + 48 / 2, logoY + 48 / 2, 48 / 2, 0, Math.PI * 2);
             context.fill();
-            context.drawImage(this.logoImage, logoX + 1, logoY, 48, 48); // Dessiner le logo avec la taille spécifiée
+            context.drawImage(this.logoImage, logoX + 1, logoY, 48, 48);
         }
 
         // ball

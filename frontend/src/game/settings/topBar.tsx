@@ -8,10 +8,6 @@ import { getAvatar } from '../../utils/utils';
 export function TopBar() {
     const game = useGame();
 
-    useEffect(() => {
-        console.log(game?.playerOne);
-   }, [game?.playerOne]);
-
     return (
         <div className='TopBar'>
             <div className='leftPlayerContainer'>

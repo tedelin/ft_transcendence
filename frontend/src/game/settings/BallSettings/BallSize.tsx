@@ -4,7 +4,6 @@ import './BallSize.css';
 
 const BallSize = ({ choice, setChoice }) => {
   const [selectedSize, setSelectedSize] = useState(choice);
-  console.log("selectedSize : ", selectedSize);
   const onClick = (choice) => {
     let sizeValue;
     switch (choice) {

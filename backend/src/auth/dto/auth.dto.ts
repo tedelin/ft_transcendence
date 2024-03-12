@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
 
 export class AuthDto {
     @IsString()
@@ -50,4 +50,17 @@ export class TokenTotpDto {
     @IsString()
     @IsNotEmpty()
     totp: string;
+}
+
+export class UserUpdateDto {
+	@IsString()
+	@IsOptional()
+	@MinLength(4)
+	@MaxLength(20)
+	username: string;
+
+	@IsString()
+	@IsOptional()
+	@MaxLength(255)
+	bio: string;
 }

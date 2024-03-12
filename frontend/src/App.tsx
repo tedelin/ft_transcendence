@@ -118,7 +118,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: 'friends',
-				element: <Friends />,
+				element: <RequireAuth><Friends /></RequireAuth>,
 			},
 			{
 				path: "login",

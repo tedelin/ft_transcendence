@@ -160,11 +160,6 @@ export function Settings_game() {
     }, [game]);
 
     const handleSaveSettings = () => {
-        console.log('ballSpeed : ' + game?.ballSpeed);
-        console.log('paddleSpeed : ' + game?.paddleSpeed);
-        console.log('paddleHeight : ' + game?.paddleHeight);
-        console.log('ballSize : ' + game?.ballSize);
-        console.log('increasedBallSpeed : ' + game?.increasedBallSpeed);
         auth?.socket?.emit('clickSaveSettings', {
             ballSpeed: game?.ballSpeed,
             paddleSpeed: game?.paddleSpeed,

@@ -21,10 +21,6 @@ export function Game() {
         game?.setShowButton(false);
     }
 
-    // useEffect(() => {
-    //     console.log("settingToDo du front : " + game?.settingsToDo);
-    // }, [game?.settingsToDo]);
-
     useEffect(() => {
         const fetchMatchHistory = async () => {
             try {

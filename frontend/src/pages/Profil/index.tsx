@@ -77,10 +77,8 @@ function Profil() {
   if(profilData.error)
 	return <div>User doesn't exist</div>;
 
-  console.log("profilData.Achievement :", profilData.Achievement);
 
   const avatar = getAvatar(profilData.avatar);
-  console.log("avatar : ", avatar);
   return (
 	<div className='profilPage'>
 		<div className='Layout-profil'>

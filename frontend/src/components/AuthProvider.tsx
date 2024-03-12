@@ -29,7 +29,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			console.log("response dans AuthProvider.tsx : ", response);
 			setUser(response);
 			setSocket(io(import.meta.env.VITE_BACKEND_URL, {
 				query: { token },

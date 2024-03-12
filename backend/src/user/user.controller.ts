@@ -20,6 +20,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { createReadStream, existsSync } from 'fs';
+import { UserUpdateDto } from 'src/auth/dto/auth.dto';
 
 @Controller('users')
 export class UserController {
@@ -80,15 +81,14 @@ export class UserController {
 	async uploadChange(
 	  @UploadedFile() file: Express.Multer.File,
 	  @Req() req,
-	  @Body('username') username: string,
-	  @Body('bio') bio: string
+	  @Body() userUpdateDto: UserUpdateDto,
 	) {
 	  const userId = req.user.id;
 	
 	  // Prépare les données à mettre à jour
 	  const updateData: any = {
-		username: username,
-		bio: bio,
+		username: userUpdateDto.username,
+		bio: userUpdateDto.bio,
 	  };
 	
 	  // Inclut l'URL de l'avatar dans les données de mise à jour uniquement si un fichier a été téléchargé

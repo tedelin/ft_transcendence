@@ -33,7 +33,6 @@ export class AuthService {
                 }
             } else
 			{
-				console.log("hello");
 				throw error;
 			} 
         }

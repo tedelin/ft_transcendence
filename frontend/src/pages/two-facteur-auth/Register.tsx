@@ -4,9 +4,9 @@ import { useStep } from './LayoutTwoFaSetup'
 
 function Register() {
 	const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
-	const [qrCode, setQrCode] = useState(''); // État pour stocker l'URL du QR code
-	const [secret, setSecret] = useState(''); // État pour stocker le secret si nécessaire
-	const { setStep } = useStep();
+	const [qrCode, setQrCode] = useState('');
+	const [secret, setSecret] = useState('');
+	const {setStep} = useStep();
 
 	function formatSecret(secret: any) {
 		return secret.match(/.{1,4}/g)?.join(' ') || '';
@@ -15,7 +15,6 @@ function Register() {
 	useEffect(() => {
 		setStep(1);
 		const token = localStorage.getItem('jwtToken');
-		// Fonction pour effectuer la requête fetch
 		const fetchQrCode = async () => {
 			try {
 				const response = await fetch(API_BASE_URL + "/auth/register-2fa", {
@@ -24,19 +23,16 @@ function Register() {
 						'Authorization': `Bearer ${token}`,
 					},
 				});
-				const data = await response.json(); // Supposons que la réponse est au format JSON
-				console.log(data);
-				// Met à jour l'état avec l'URL du QR code et le secret, si présent dans la réponse
+				const data = await response.json();
 				setQrCode(data.qrcode);
-				setSecret(data.secret); // Assure-toi que l'API renvoie un 'secret' si nécessaire
-				console.log(qrCode);
+				setSecret(data.secret);
 			} catch (error) {
 				console.error("Erreur lors de la récupération du QR code:", error);
 			}
 		};
 
-		fetchQrCode(); // Appelle la fonction fetchQrCode définie dans useEffect
-	}, [API_BASE_URL]); // Le tableau de dépendances vide signifie que cet effet s'exécutera une fois, après le premier rendu
+		fetchQrCode();
+	}, [API_BASE_URL]);
 
 	return (
 		<div>

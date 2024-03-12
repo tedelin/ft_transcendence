@@ -44,10 +44,6 @@ function createMatchBoxes(matchs, playerId) {
 }
 
 function filterMatchesByPlayerId(matchs, id) {
-	console.log("matchs dans filterMatchesByPlayerId : ", matchs);
-	console.log("matchs[0].players[0].playerId dans filterMatchesByPlayerId : ", matchs[0].players[0].playerId);
-	console.log("matchs[0].players[1].playerId dans filterMatchesByPlayerId : ", matchs[0].players[1].playerId);
-	console.log("id dans filterMatchesByPlayerId : ", id);
 	return matchs.filter(match =>
 	  match.players.some(player => player.playerId == id)
 	);
@@ -83,11 +79,7 @@ function filterMatchesByPlayerId(matchs, id) {
 function History({ match, userId } : any) {
 	if(match[0] == undefined)
 		return (<div></div>)
-	console.log("match ", match);
-	console.log("userId : ", userId);
 	const myMatchs = filterMatchesByPlayerId(match, userId);
-	console.log("myMatchs : ", myMatchs);
-	//console.log("transformMatch(myMatchs[0]) : ", transformMatch(myMatchs[0]));
 	const toRender = createMatchBoxes(getFormattedMatches(myMatchs), userId);
 
 	return (

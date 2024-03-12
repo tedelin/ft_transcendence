@@ -3,8 +3,6 @@ function Stats(stats : any) {
 	let Ratio = stats.stats.nbWin / stats.stats.nbLoose;
 	if(losses === 0)
 		Ratio = stats.stats.nbWin;
-	console.log("stats.stats.nbWin", stats.stats.nbWin);
-	console.log("stats : ", stats);
 	return (
 		<div className="Stats">
 			<div className="Wins">Wins
