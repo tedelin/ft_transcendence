@@ -108,6 +108,10 @@ function ChannelList() {
 export function RightBar() {
 	const [selected, setSelected] = useState('channels');
 	const location = useLocation();
+
+	if (location.pathname.startsWith('/chat/private-messages/') && selected === 'channelUsers') {
+		setSelected('channels');
+	}
 	
 	return (
 		<div className="sideBar">

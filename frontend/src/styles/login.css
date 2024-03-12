@@ -21,7 +21,6 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* background-color: var(--bg-secondary); */
     border: 2px solid var(--bg-secondary);
     padding: 2em;
     margin-left: 20px;
@@ -42,7 +41,8 @@ body {
 }
 
 
-.registerButton {
+
+.registerButton, .loginButton {
     cursor: pointer;
     box-sizing: border-box;
     color: white;
@@ -54,7 +54,11 @@ body {
 }
 
 .registerButton {
-    background-color: var(--primary-green);
+    background-color: var(--primary-blue);
+}
+
+.loginButton {
+	background-color: var(--primary-green);
 }
 
 @media only screen and (max-width: 768px) {}

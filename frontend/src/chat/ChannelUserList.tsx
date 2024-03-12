@@ -40,9 +40,9 @@ export function ChannelUserList() {
 					<span
 					className="material-symbols-outlined"
 					>
-						{channelUser.role === "OWNER" && "star"}
-						{channelUser.role === "ADMIN" && "shield_person"}
-						{channelUser.role === "MEMBER" && "person"}
+						{channelUser.role === "OWNER" && "shield_person"}
+						{channelUser.role === "ADMIN" && "security"}
+						{channelUser.role === "MEMBER" && "group"}
 					</span>
 				</div>
 			)}

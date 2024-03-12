@@ -68,7 +68,7 @@ export default function Login() {
 					placeholder="Password"
 					onChange={(e) => setPassword(e.target.value)}
 				/>
-				<button className="button" onClick={handleSignIn}>Login</button>
+				<button className="loginButton" onClick={handleSignIn}>Login</button>
 				<button className="registerButton" onClick={handleSignUp}>Register</button>
 				<a className="registerButton" href={import.meta.env.VITE_URL_OAUTH}>Connect with 42</a>
 			</div>
