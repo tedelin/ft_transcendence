@@ -76,12 +76,6 @@ export class RoomService {
     }
 
     private playerOneMatchmakingExit(gameId, client) {
-		if (this.privateRooms.has(gameId)) {
-			const waitingUser = this.privateRooms.get(gameId)[1];
-			const waitingClient = this.server.sockets.sockets.get( this.getClientByUserId(waitingUser));
-			this.matchmakingExit(waitingClient, 'cross', this.server);
-			return ;
-		}
         const roomState = this.rooms.get(gameId);
         if (!roomState) return;
         let roomPartner: Socket | null = this.findMyLifePartner(gameId, client);
