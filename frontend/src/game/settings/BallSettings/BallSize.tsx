@@ -8,16 +8,16 @@ const BallSize = ({ choice, setChoice }) => {
     let sizeValue;
     switch (choice) {
       case 'smallSizeBall':
-        sizeValue = 5; 
+        sizeValue = 7; 
         break;
       case 'mediumSizeBall':
-        sizeValue = 15;
+        sizeValue = 14;
         break;
       case 'largeSizeBall':
-        sizeValue = 25;
+        sizeValue = 21;
         break;
       default:
-        sizeValue = 15;
+        sizeValue = 14;
     }
     setSelectedSize(choice); 
     setChoice(sizeValue);

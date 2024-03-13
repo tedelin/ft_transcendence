@@ -112,8 +112,15 @@ export function Game() {
 
 
 	useEffect(() => {
+        const previousUrl = sessionStorage.getItem('previousUrl');
+
+        console.log("previousUrl : ", previousUrl);
+
 		if (window.location.pathname === '/game') {
-			auth?.socket?.emit('crossMatchmaking');
+            if (previousUrl === '/game/inGame')
+			    auth?.socket?.emit('quitInGame');
+            else 
+			    auth?.socket?.emit('crossMathmaking');
 			game?.handleQuit();
 		}
 	}, [window.location.pathname]);

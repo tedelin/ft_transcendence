@@ -41,16 +41,16 @@ export function EndGame() {
         nav('/game');
     };
 
-    console.log("c'est ca ? : ", game);
-    console.log("c'est ca ? : ", game?.Winner);
-    // const winner = game?.Winner === game?.playerOne.name ? game?.playerOne : game?.playerTwo;
+    const Myscore = me?.username === game?.playerOne.id ? game?.gameInstance?.current?.localState?.score.player1 : game?.gameInstance?.current?.localState?.score.player2;
+    const OpponentScore = me?.username === game?.playerOne.id ? game?.gameInstance?.current?.localState?.score.player2 : game?.gameInstance?.current?.localState?.score.player1;
+
     return (
         <>
         {game?.showEndGameModal && (
             <div className="endGameMenu">
                 <BlockBackNavigation />
                 <div className="menuContent">
-                    <div className="end-scores">8 - 0</div>
+                    <div className="end-scores">{Myscore} - {OpponentScore}</div>
                     <div className="images-conteneur">
                         <div className={game?.Winner || game?.isSpectator ? 'img laurier' : 'img chapeau'}>
                             <img src={getAvatar(me?.avatar)} alt="profil" className={winnerClass} />

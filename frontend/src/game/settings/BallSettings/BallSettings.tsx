@@ -12,10 +12,11 @@ const BallSettings = () => {
         else if (ballSize < 20) return "mediumSizeBall";
         else return "largeSizeBall";
     };
+
     const [choice, setChoice] = useState(determineChoice(game?.ballSize));
 
     const updateBallSpeed = (newSpeed) => {
-        game?.setBallSpeed(newSpeed / 10); 
+        game?.setBallSpeed(newSpeed / 1000); 
         setProgressSpeed(newSpeed);
     };
     const updateIncreasedBallSpeed = (newAcceleration) => {
