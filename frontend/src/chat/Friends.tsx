@@ -57,7 +57,7 @@ function SearchFriends({ friendList, setFriends }: { friendList: Friendship[], s
 	}
 
 	return (
-		<div className='searchContainer'>
+		<div className='topContainer'>
 			<input 
 				className="searchFriends" 
 				type="text"
@@ -126,7 +126,6 @@ function FriendsList({ selected }: { selected: string }) {
 		} catch (err: any) {
 			error(err.message);
 		}
-
 	}
 
 	async function getFriends() {

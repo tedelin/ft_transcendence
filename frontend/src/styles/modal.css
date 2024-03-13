@@ -136,3 +136,7 @@
 .addFriendButton span {
 	color: #fff;
 }
+
+.noMargin {
+	margin: 0;
+}
