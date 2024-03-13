@@ -52,7 +52,7 @@
     cursor: pointer;
 }
 
-.channelSettings {
+.modalContainer {
     display: flex;
     flex-direction: column;
 	gap: 15px;
@@ -103,6 +103,7 @@
 }
 
 .blue {
+	color: white;
 	border: none;
 	background-color: var(--primary-blue);
 }
