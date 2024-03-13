@@ -109,7 +109,8 @@ button {
 }
 
 .playButton:hover {
-  background-color: var(--primary-blue);
+  box-shadow: 0 0 5px 3px rgba(137, 43, 226, 0.359);
+	background-color: var(--primary-blue) !important;
 }
 
 .Bio {
@@ -291,7 +292,7 @@ button {
 	text-align: center;
 }
 
-.score {
+.scoreProfil {
   width: 30%;
   display: flex;
   font-size: 40px;

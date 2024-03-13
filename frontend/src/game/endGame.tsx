@@ -5,10 +5,14 @@ import { useGame } from '../components/GameProvider';
 import { useNavigate } from 'react-router-dom';
 import BlockBackNavigation from "./BlockBackNavigation";
 import { useEffect } from 'react';
+import { getAvatar } from '../utils/utils';
+import { useAuth } from '../components/AuthProvider';
 
 
 export function EndGame() {
     const game = useGame();
+    const auth = useAuth();
+    const me = auth?.user;
     const nav = useNavigate();
     const winnerClass = game?.Winner ? "img-winner wlaurier" : "img-winner wchapeau";
 
@@ -37,6 +41,9 @@ export function EndGame() {
         nav('/game');
     };
 
+    console.log("c'est ca ? : ", game);
+    console.log("c'est ca ? : ", game?.Winner);
+    // const winner = game?.Winner === game?.playerOne.name ? game?.playerOne : game?.playerTwo;
     return (
         <>
         {game?.showEndGameModal && (
@@ -46,7 +53,7 @@ export function EndGame() {
                     <div className="end-scores">8 - 0</div>
                     <div className="images-conteneur">
                         <div className={game?.Winner || game?.isSpectator ? 'img laurier' : 'img chapeau'}>
-                            <img src={profil} alt="profil" className={winnerClass} />
+                            <img src={getAvatar(me?.avatar)} alt="profil" className={winnerClass} />
                         </div>
                     </div>
                     <div className="menu-footer">

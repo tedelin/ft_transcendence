@@ -9,10 +9,12 @@ import { useNavigate } from 'react-router-dom';
 import profil from '../game_img/profil.jpeg';
 import boobaprofil from '../game_img/booba.jpeg';
 import BlockBackNavigation from "./BlockBackNavigation";
+import { getAvatar } from '../utils/utils';
 
 
 export function InGame() {
     const game = useGame();
+    // console.log("  game    :", game);
     const auth = useAuth();
     const nav = useNavigate();
     const [score, setScore] = useState({ player1: 0, player2: 0 });
@@ -80,9 +82,9 @@ export function InGame() {
                         <div className="score player2">{score.player2}</div>
                     </div>
                     <div className="game-area">
-                        <img className="player" src={profil} alt='playerOne' />
+                        <img className="player" src={ getAvatar(game?.playerOne?.avatar) } alt='playerOne' />
                         <canvas ref={game?.gameInstance.current?.canvasRef} width={game?.gameInstance?.current?.canvasWidth} height={game?.gameInstance?.current?.canvasHeight} />
-                        <img className="player" src={profil} alt='playerTwo' />
+                        <img className="player" src={getAvatar(game?.playerTwo?.avatar)} alt='playerTwo' />
                     </div>
                     <div className="spectatorsList">
                         {spectators?.map((spectator, index) => (

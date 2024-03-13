@@ -105,7 +105,7 @@
 }
 
 .menuButton {
-    font-size:1.8vw;
+    /* font-size:1.8vw; */
     position:absolute;
     font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     right:1.5rem;

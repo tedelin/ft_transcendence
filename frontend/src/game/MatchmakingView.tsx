@@ -1,17 +1,20 @@
 import '../styles/matchmaking.css';
 import projectLogo from '../game_img/logo.png';
-import profil from '../game_img/profil.jpeg';
 import { useGame } from '../components/GameProvider';
+import { getAvatar } from '../utils/utils';
+
 
 export function MatchmakingView() {
 
     const game = useGame();
 
     const renderPlayer = (player) => {
+        const avatar = getAvatar(player?.avatar);
+
         if (player) {
             return (
                 <div className="playerInfo">
-                    <img src={profil} alt="Player" className="playerPhoto" />
+                    <img src={avatar} alt="Player" className="playerPhoto" />
                     <span>
                         {player.id}
                     </span>
@@ -30,7 +33,8 @@ export function MatchmakingView() {
     };
 
     const getBackgroundImageUrl = (player) => {
-        return `url(${profil})`;
+        const avatar = getAvatar(player?.avatar);
+        return `url(${avatar})`;
     };
 
     const backgroundStyleOne = (game?.playerOne ? {
@@ -59,12 +63,12 @@ export function MatchmakingView() {
             <div className="mmConteneur">
                 <div className={backOne} style={backgroundStyleOne || {}}>
                     <div className={classNameOne}>
-                        {renderPlayer(game.playerOne)}
+                        {renderPlayer(game?.playerOne)}
                     </div>
                 </div>
                 <div className={backTwo} style={backgroundStyleTwo || {}}>
                     <div className={classNameTwo}>
-                        {renderPlayer(game.playerTwo)}
+                        {renderPlayer(game?.playerTwo)}
                     </div>
                 </div>
             </div>

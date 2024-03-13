@@ -20,7 +20,7 @@ function Infos(Infos : any) {
 		}
 	}
 	const play = () => {
-		alert("Need to setup play function");
+		navigate(`/game?private=${Infos.id}`);
 	}
 
 	const goToSettings = () => {
