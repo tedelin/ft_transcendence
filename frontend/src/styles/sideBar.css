@@ -13,6 +13,7 @@
 
 .sideBarSelect {
 	font-weight: bold;
+	margin: 15px 25px;
 	background-color: var(--bg-primary);
 	color: var(--text-primary);
 	text-align: center;

@@ -205,7 +205,6 @@
 	font-size: 16px;
 	box-sizing: border-box;
 	padding: 10px;
-	margin: 15px;
 	border-radius: 8px;
 	background-color: var(--primary-green);
 	color: #ffffff;
@@ -222,7 +221,6 @@ input,
 select {
 	box-sizing: border-box;
 	padding: 10px;
-	margin: 15px;
 	border-radius: 8px;
 	font-size: 16px;
 	outline: none;
@@ -231,22 +229,22 @@ select {
 	background-color: var(--bg-primary);
 }
 
-
 .channelList,
 .friendsList {
 	margin: 0px 25px 15px 25px;
 	overflow-y: auto;
 }
 
-.createChannelContainer {
+.topContainer {
 	display: flex;
 	height: 72px;
+	gap: 15px;
+	padding: 15px;
 	border-bottom: 1px solid var(--bg-secondary);
 }
 
-.createChannelContainer input,
-.createChannelContainer select {
-	margin-right: 10px;
+.topContainer input,
+.topContainer select {
 	flex: 1;
 }
 
@@ -288,7 +286,7 @@ select {
 
 
 @media only screen and (max-width: 768px) {
-	.createChannelContainer {
+	.topContainer {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -301,7 +299,6 @@ select {
 		width: auto;
 		box-sizing: border-box;
 		padding: 10px;
-		margin: 15px;
 		border-radius: 8px;
 		border: none;
 	}
@@ -314,7 +311,7 @@ select {
 
 .acceptInvite {
 	padding: 15px;
-	margin: 0px 25px 0px 25px;
+	margin: 0px 25px;
 	border-radius: 10px;
 	border: none;
 	background-color: var(--primary-green);
@@ -328,4 +325,8 @@ select {
 	border: none;
 	background-color: var(--primary-blue);
 	color: #fff;
+}
+
+.searchBar {
+	margin: 15px;
 }

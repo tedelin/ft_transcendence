@@ -5,6 +5,7 @@ import { ChannelMessage } from '../utils/types';
 import { Moderation } from './Moderation';
 import '../styles/chat.css';
 import { getAvatar } from '../utils/utils';
+import { useNavigate } from 'react-router';
 
 export function MessageDisplay({ channel }: { channel: string }) {
 	const [receivedMessages, setReceivedMessages] = useState<ChannelMessage[]>([]);
@@ -12,6 +13,7 @@ export function MessageDisplay({ channel }: { channel: string }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [offset, setOffset] = useState(0);
 	const messageContainer = useRef<HTMLDivElement>(null);
+	const navigate = useNavigate();
 	const auth = useAuth();
 
 	async function fetchChannelsMessages() {
@@ -94,6 +96,7 @@ export function MessageDisplay({ channel }: { channel: string }) {
 						className={msg.sender.id === auth?.user?.id ? 'bubble-right' : 'bubble-left'}
 					>
 						<div className="sender"
+							onClick={() => navigate('/profil/' + msg.sender.id)}
 							onContextMenu={(e) => handleContextMenu(msg.sender.id, e)}
 						>
 							<img src={getAvatar(msg.sender.avatar)} alt="User Avatar"></img>

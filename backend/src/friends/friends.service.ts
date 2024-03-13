@@ -116,13 +116,18 @@ export class FriendService {
 					{ initiatorId: userId, receiverId: blockedUserId },
 					{ initiatorId: blockedUserId, receiverId: userId },
 				],
+				NOT : {
+					status: FriendshipStatus.BLOCKED,
+				},
 			},
 			include: friendInclude,
 		});
-		await this.databaseService.friendship.delete({
-			where: { id: friendshipToDelete.id },
-		});
-		if (friendshipToDelete) this.eventEmitter.emit('friendship.delete', friendshipToDelete);	
+		if (friendshipToDelete) {
+			await this.databaseService.friendship.delete({
+				where: { id: friendshipToDelete.id },
+			});
+			this.eventEmitter.emit('friendship.delete', friendshipToDelete);
+		}	
 		return await this.databaseService.friendship.create({
 			data: {
 				initiatorId: userId,
