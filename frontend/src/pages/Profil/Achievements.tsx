@@ -1,10 +1,16 @@
 import { useState, useRef } from 'react';
+import  firstGame  from './Achievements_assets/firstGame.png';
+import  firstWin from './Achievements_assets/firstWin.png';
+import  firstLoose from './Achievements_assets/firstLoose.png';
+import  invinvibleGuardian from './Achievements_assets/invinvibleGuardian.png';
+import  speeddamon from './Achievements_assets/speeddamon.png';
+import  MasterWinner from './Achievements_assets/MasterWinner.png';
 
 function BoxAchievement({ achievement }) {
 	return (
 		<div className="BoxAchievement">
 			<h3>{achievement.title}</h3>
-			<p>{achievement.description}</p>
+			<img src={achievement.img} width="200" height="200"/>
 		</div>
 	);
 }
@@ -16,19 +22,19 @@ function createAchievementBoxes(achievements) {
 }
 
 function getAchievements(Achievements: any) {
-	const achievements: { title: string; description: string; }[] = []; 
+	const achievements: { title: string; img: string; }[] = []; 
 	if (Achievements.firstGame)
-		achievements.push({ title: 'firstGame', description: 'description' } as { title: string; description: string; });
+		achievements.push({ title: 'firstGame', img: firstGame });
 	if (Achievements.firstWin)
-		achievements.push({ title: 'firstWin', description: 'description' } as { title: string; description: string; });
+		achievements.push({ title: 'firstWin', img: firstWin });
 	if (Achievements.firstLoose)
-		achievements.push({ title: 'firstLoose', description: 'description' } as { title: string; description: string; });
+		achievements.push({ title: 'firstLoose', img: firstLoose });
 	if (Achievements.masterWinner)
-		achievements.push({ title: 'masterWinner', description: 'description' } as { title: string; description: string; });
+		achievements.push({ title: 'masterWinner', img: invinvibleGuardian });
 	if (Achievements.invincible_guardian)
-		achievements.push({ title: 'invincible_guardian', description: 'description' } as { title: string; description: string; });
+		achievements.push({ title: 'invincible_guardian', img: speeddamon });
 	if (Achievements.Speed_Demon)
-		achievements.push({ title: 'Speed_Demon', description: 'description' } as { title: string; description: string; });
+		achievements.push({ title: 'Speed_Demon', img: MasterWinner });
 	return achievements;
 }
 
