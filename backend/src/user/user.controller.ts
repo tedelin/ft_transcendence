@@ -11,7 +11,8 @@ import {
 	NotFoundException,
 	StreamableFile,
 	Query,
-	Body
+	Body,
+	BadRequestException
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtGuard } from '../auth/guard/jwt.guard';
@@ -72,7 +73,7 @@ export class UserController {
 	  limits: { fileSize: 2 * 1024 * 1024 },
 	  fileFilter: (req, file, cb) => {
 		if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-		  return cb(new Error('Seuls les fichiers images sont autorisés !'), false);
+		  return cb(new BadRequestException('Only pictures are allowed jpg jpeg png gif'), false);
 		}
 		cb(null, true);
 	  },

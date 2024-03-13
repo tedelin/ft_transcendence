@@ -69,6 +69,7 @@ export function InGame() {
         }
     }, [game]);
 
+
     return (
         <>
             {game?.gameStarted && game?.gameInstance.current && (
@@ -86,6 +87,7 @@ export function InGame() {
                     </div>
                     <div className="spectatorsList">
                         {spectators?.map((spectator, index) => (
+                            console.log(spectator),
                             <img key={index} src={boobaprofil} alt={`Spectator ${spectator}`} className="spectator" />
 						))}
                     </div>

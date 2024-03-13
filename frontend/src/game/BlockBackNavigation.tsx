@@ -4,11 +4,11 @@ const BlockBackNavigation = () => {
 
   useEffect(() => {
     const handlePopstate = () => {
-      window.history.pushState(null, null, window.location.href);
+      window.history.pushState(null, "", window.location.href);
     };
 
     if (typeof window.history.pushState === 'function') {
-      window.history.pushState(null, null, window.location.href);
+      window.history.pushState(null, "", window.location.href);
       window.addEventListener('popstate', handlePopstate);
     }
 

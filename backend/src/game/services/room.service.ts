@@ -110,9 +110,7 @@ export class RoomService {
 
     public assignClientToRoom(client: Socket, roomId: string): string {
         this.addClientToRoom(client, roomId);
-
         const roomState = this.rooms.get(roomId);
-
         this.server.to(roomId).emit('matchmakingStats', {
             playerOne: { id: this.connectedUsers.get(roomState.players[0].id).username, avatar: this.connectedUsers.get(roomState.players[0].id).avatar },
             playerTwo: (roomState.players.length < this.roomSize ? null : { id: this.connectedUsers.get(client.id).username, avatar: this.connectedUsers.get(client.id).avatar }),

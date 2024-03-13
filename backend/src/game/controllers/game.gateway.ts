@@ -214,8 +214,12 @@ export class GameGateway implements OnGatewayInit {
                 roomState.spectators.push(client);
             }
         }
-        else
         client.emit('gameLaunch', { gameState: roomState.gameState, spectators: this.getArraySpectator(roomId) });
+        this.server.to(roomId).emit('matchmakingStats', {
+            playerOne: { id: this.connectedUsers.get(roomState.players[0].id).username, avatar: this.connectedUsers.get(roomState.players[0].id).avatar },
+            playerTwo: (roomState.players.length < 2 ? null : { id: this.connectedUsers.get(client.id).username, avatar: this.connectedUsers.get(client.id).avatar }),
+            roomId: roomId
+        })
         this.server.to(roomId).emit('spectators', { spectators: this.getArraySpectator(roomId) });
         this.roomService.logRooms();
     }

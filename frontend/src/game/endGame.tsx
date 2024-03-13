@@ -1,6 +1,5 @@
 import '../styles/game.css';
 import '../styles/end-game.css';
-import profil from '../game_img/profil.jpeg';
 import { useGame } from '../components/GameProvider';
 import { useNavigate } from 'react-router-dom';
 import BlockBackNavigation from "./BlockBackNavigation";
