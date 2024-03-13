@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import ballImg from './ball.svg';
 import './BallSize.css'; 
 
 const BallSize = ({ choice, setChoice }) => {
