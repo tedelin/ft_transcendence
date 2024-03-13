@@ -28,7 +28,7 @@ function getAchievements(Achievements: any) {
 	if (Achievements.invincible_guardian)
 		achievements.push({ title: 'invincible_guardian', description: 'description' } as { title: string; description: string; });
 	if (Achievements.Speed_Demon)
-		achievements.push({ title: 'Speed_Demon', description: 'description' } as { title: string; description: string; }); // Add the type assertion here
+		achievements.push({ title: 'Speed_Demon', description: 'description' } as { title: string; description: string; });
 	return achievements;
 }
 
@@ -42,7 +42,7 @@ function Achievements(Achievements: any) {
 	const scrollLeft = () => {
 		if (sliderRef.current) {
 			const sliderWidth = sliderRef.current.offsetWidth;
-			const scrollAmount = sliderWidth / 5; // Ajuste selon le nombre de divs à déplacer
+			const scrollAmount = sliderWidth / 5;
 			const newScrollPosition = Math.max(scrollPosition - scrollAmount, 0);
 			setScrollPosition(newScrollPosition);
 		}
@@ -51,7 +51,7 @@ function Achievements(Achievements: any) {
 	const scrollRight = () => {
 		if (sliderRef.current) {
 			const sliderWidth = sliderRef.current.offsetWidth;
-			const scrollAmount = sliderWidth / 5; // Ajuste selon le nombre de divs à déplacer
+			const scrollAmount = sliderWidth / 5;
 			const maxScrollPosition = sliderRef.current.scrollWidth - sliderWidth;
 			const newScrollPosition = Math.min(scrollPosition + scrollAmount, maxScrollPosition);
 			setScrollPosition(newScrollPosition);

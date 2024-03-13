@@ -15,32 +15,25 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* justify-content: center; */
-  height: 95vh; /* Utilise toute la hauteur de la fenêtre */
-  /* border-left: 0.1px solid rgba(0, 0, 0, 0.3);
-  border-right: 0.1px solid rgba(0, 0, 0, 0.3); */
-  margin: 5vh auto 0; /* Ajoute une marge de 20% en haut, centre horizontalement, pas de marge en bas */
-  width: 70%; /* Prend la moitié de la largeur de la fenêtre, ajuste selon tes besoins */
+  height: 95vh;
+  margin: 5vh auto 0;
+  width: 70%;
   min-width: 800px;
   box-sizing: border-box;
 }
 
 .Layout-profil > * {
-  width: 100%; /* Les enfants prennent toute la largeur du composant principal */
-  box-sizing: border-box; /* S'assure que la bordure et le padding sont inclus dans la largeur */
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Classes spécifiques pour chaque enfant, si tu veux appliquer des styles individuels */
 .Infos,
 .Stats,
 .Achievements,
 .History > * {
-  /* Styles spécifiques aux enfants ici */
-  width: 100%; /* Les enfants prennent toute la largeur du composant principal */
+  width: 100%;
   box-sizing: border-box;
 }
-
-/* -------------------------- Infos -------------------------- */
 
 .Infos {
   display: flex;
@@ -48,15 +41,15 @@ button {
   min-height: 328px;
 }
 .Infos > * {
-  width: 100%; /* Les enfants prennent toute la largeur du composant principal */
+  width: 100%;
   box-sizing: border-box;
 }
 
 .profil-picture {
-  flex: 35%; /* Prend 30% de la largeur disponible */
-  display: flex; /* Utilise Flexbox */
-  justify-content: center; /* Centre horizontalement */
-  align-items: center; /* Centre verticalement */
+  flex: 35%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 2%;
 }
 
@@ -69,26 +62,25 @@ button {
 
 .side-Infos {
   padding-top: 10px;
-  flex: 65%; /* Prend 70% de la largeur disponible */
+  flex: 65%;
   display: flex;
   flex-direction: column;
 }
 .side-Infos > * {
-  width: 100%; /* Les enfants prennent toute la largeur du composant principal */
+  width: 100%;
   box-sizing: border-box;
 }
 .pseudo {
-  flex: 25%; /* Prend 25% de la hauteur disponible dans side-Infos */
-  display: flex; /* Active Flexbox */
-  align-items: center; /* Centre le contenu en hauteur */
-  /* font-weight: bold; */
+  flex: 25%;
+  display: flex;
+  align-items: center;
   font-size: 40px;
 }
 
 .actions {
-  flex: 25%; /* Prend 25% de la hauteur disponible dans side-Infos */
+  flex: 25%;
   display: flex;
-  justify-content: space-between; /* Répartit les boutons uniformément */
+  justify-content: space-between;
   align-items: center;
   max-width: 500px;
 }
@@ -111,24 +103,20 @@ button {
 .playButton {
   background-color: var(--primary-blue);
   color: white;
-  position: relative; /* Nécessaire pour la pseudo-élément */
-  overflow: hidden; /* Garde l'effet à l'intérieur des limites du bouton */
-  transition: background-color 0.3s; /* Transition douce pour le fond */
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s;
 }
 
 .playButton:hover {
-  background-color: var(--primary-blue); /* Assombris le fond au survol pour l'effet */
+  background-color: var(--primary-blue);
 }
 
 .Bio {
   padding: 10px 0;
-  flex: 50%; /* Prend 50% de la hauteur disponible dans side-Infos */
+  flex: 50%;
   font-size: 20px;
 }
-
-/* -------------------------- Infos -------------------------- */
-
-/* -------------------------- Stats -------------------------- */
 
 .Stats {
   display: flex;
@@ -155,10 +143,6 @@ button {
   margin: 0;
 }
 
-/* -------------------------- Stats -------------------------- */
-
-/* -------------------------- Achievements -------------------------- */
-
 .Achievements {
   display: flex;
   flex-direction: row;
@@ -169,9 +153,9 @@ button {
 }
 
 .navCaroussel {
-  position: absolute; /* Positionne les boutons de manière absolue par rapport à leur parent '.Achievements' */
-  top: 50%; /* Centre verticalement les boutons */
-  transform: translateY(-50%); /* Ajuste le centrage vertical */
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 10;
   border-radius: 50%;
   border: none;
@@ -182,24 +166,16 @@ button {
 }
 
 .navCaroussel.left {
-  /* Classe supplémentaire ou identifiant pour le bouton gauche */
-  left: 0; /* Positionne à l'extrême gauche */
-  transform: translate(
-    -50%,
-    -50%
-  ); /* Ajuste pour que le milieu du bouton soit sur le bord */
+  left: 0;
+  transform: translate(-50%, -50%);
 }
 .navCaroussel.right {
-  /* Classe supplémentaire ou identifiant pour le bouton droit */
-  right: 0; /* Positionne à l'extrême droite */
-  transform: translate(
-    50%,
-    -50%
-  ); /* Ajuste pour que le milieu du bouton soit sur le bord */
+  right: 0;
+  transform: translate(50%, -50%);
 }
 
 .slider {
-  display: flex; /* Utilise flex plutôt qu'inline-flex pour une meilleure gestion des marges */
+  display: flex;
   width: 100%;
   height: 100%;
   transition: ease-in-out 0.4s;
@@ -213,16 +189,15 @@ button {
 }
 
 .slider div {
-  flex: 0 0 calc((100% + 4%) / 5.5); /* calcule la largeur de chaque div */
+  flex: 0 0 calc((100% + 4%) / 5.5);
   height: 100%;
-  margin-right: 1%; /* marge entre les divs, ajuste selon tes besoins */
+  margin-right: 1%;
   text-align: center;
   border-radius: 15px;
   border: solid 1px var(--bg-secondary);
   box-sizing: border-box;
 }
 
-/* Assure-toi de ne pas ajouter de marge à la dernière div pour aligner correctement le contenu */
 .slider div:last-child {
   margin-right: 0;
 }
@@ -230,9 +205,6 @@ button {
 .end-nav-caroussel {
   display: none;
 }
-/* -------------------------- Achievements -------------------------- */
-
-/* -------------------------- History -------------------------- */
 
 .MatchBox {
   display: flex;
@@ -247,7 +219,6 @@ button {
   width: 30%;
   height: 100%;
   display: flex;
-  /* flex-direction: column; */
 }
 
 .winner-p,
@@ -265,14 +236,13 @@ button {
   flex: 30%;
   display: flex;
   justify-content: center;
-  align-items: center; /* Centre le texte en hauteur et en largeur */
+  align-items: center;
   transition: ease-in-out 0.3s;
 }
 
 .player-picture {
   flex: 70%;
   display: flex;
-  /* justify-content: center; */
   align-items: center;
 }
 
@@ -285,14 +255,6 @@ button {
 
 .right-p {
   justify-content: right;
-}
-
-.winner-p .player-picture img {
-  /* border: 3px solid #d8bc31; Bordure jaune pour le gagnant */
-}
-
-.loser-p .player-picture img {
-  /* border: 3px solid rgb(224, 42, 42); Bordure rouge pour le perdant */
 }
 
 .MatchBox button {
@@ -333,9 +295,6 @@ button {
   width: 30%;
   display: flex;
   font-size: 40px;
-  /* font-weight: bold;  */
   justify-content: space-between;
-  align-items: center; /* Centre le score */
+  align-items: center;
 }
-
-/* -------------------------- History -------------------------- */

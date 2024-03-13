@@ -11,32 +11,17 @@ import { Prisma } from '@prisma/client';
 export class GameController {
     constructor(private readonly gameService: GameService) {}
 
-    // @Get('stats/:id_user')   // GET /game/stats/id
-    // getStats(@Param('id_user') id_user : number) {
-    //     return this.gameService.getStats(+id_user);
-    // }
-
-    // @Post('stats')      // POST /game/stats
-    // createStats(@Body(ValidationPipe) createStatsDto: Prisma.StatsCreateInput) {
-    //     return this.gameService.createStats(createStatsDto);
-    // }
-
-    // @Patch('stats/:id_user') // PATCH /game/stats/id
-    // updateStats(@Param('id_user') id_user : number, @Body(ValidationPipe) updateStatsDto : Prisma.StatsUpdateInput) {
-    //     return this.gameService.updateStats(+id_user, updateStatsDto);
-    // }
-
-    @Get('history')       // GET /game/history OU /game/history?id=id
+    @Get('history')
     findAllGames(@Query('id') id?: number) {
         return this.gameService.findAllGames(+id);
     }
 
-    @Post('history')       // POST /game/history
+    @Post('history')
     createGame(@Body(ValidationPipe) createMatchDto: CreateMatchDto) {
         return this.gameService.createMatch(createMatchDto);
     }
 
-    @Patch('history/:id_match')   // PATCH /game/history/id
+    @Patch('history/:id_match')
     updateGame(@Param('id_match') id_match : string, @Body(ValidationPipe) updateMatchDto: UpdateMatchDto) {
         return this.gameService.updateMatch(+id_match, updateMatchDto);
     }

@@ -1,4 +1,3 @@
-
 .two-fa-settings header {
   display: flex;
   justify-content: space-between;
@@ -46,10 +45,10 @@
 .line {
   flex-grow: 1;
   height: 2px;
-  background-color: #ddd; /* Couleur de fond par défaut, qui sera visible au début */
+  background-color: #ddd;
   margin: 0 10px;
-  overflow: hidden; /* Cache le débordement du fond */
-  position: relative; /* Position relative pour le pseudo-élément */
+  overflow: hidden;
+  position: relative;
 }
 
 .line::before {
@@ -63,14 +62,14 @@
     to right,
     #2832c286 50%,
     #ddd 50%
-  ); /* Démarre avec la couleur verte à gauche et la couleur de fond par défaut à droite */
-  background-size: 200% 100%; /* Double la largeur de l'arrière-plan pour permettre l'animation */
-  background-position: 100% 0; /* Positionne l'arrière-plan pour que la partie verte soit initialement masquée */
-  transition: background-position 0.5s ease; /* Anime la position de l'arrière-plan */
+  );
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  transition: background-position 0.5s ease;
 }
 
 .line.active::before {
-  background-position: 0 0; /* Déplace l'arrière-plan pour révéler la partie verte */
+  background-position: 0 0;
 }
 
 .circle.step-two {
@@ -104,7 +103,6 @@ footer {
   color: black;
 }
 
-/* Styles pour le bouton Next */
 .button-next {
   background-color: #2832c2;
   margin: 0 10px;
@@ -119,7 +117,6 @@ footer {
   background-color: #2832c2c9;
 }
 
-/* Styles pour le bouton Done */
 .button-done {
   background-color: #b0b0b044;
   margin: 0 10px;
@@ -129,7 +126,6 @@ footer {
   border-radius: 2px;
 }
 
-/* Styles pour le bouton Done lorsque auth est true */
 .button-done-auth-true {
   background-color: #2832c2;
   margin: 0 10px;
@@ -140,7 +136,6 @@ footer {
   border-radius: 2px;
 }
 
-/* Styles pour le bouton Done lorsque auth est false */
 .button-done-auth-false {
   background-color: #b0b0b044;
   margin: 0 10px;
@@ -153,24 +148,24 @@ footer {
 
 form {
   display: flex;
-  flex-direction: column; /* Organise les éléments enfants verticalement */
-  align-items: center; /* Centre les éléments enfants horizontalement */
-  gap: 10px; /* Ajoute un espace entre chaque élément du formulaire */
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 form label,
 form input,
 form button {
   max-width: 200px;
-  margin: 0px; /* Optionnel: limite la largeur maximale */
+  margin: 0px;
 }
 
 form input {
   width: 100%;
   margin-top: 10px;
   margin-bottom: 30px;
-  padding: 10px; /* Ajoute un peu de padding pour un meilleur visuel */
-  border-radius: 5px; /* Arrondit les coins */
+  padding: 10px;
+  border-radius: 5px;
 }
 
 form button {
@@ -209,14 +204,14 @@ form button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Utiliser toute la hauteur de la fenêtre */
+  height: 100vh;
   text-align: center;
 }
 
 .congrats-message {
   animation: popIn 1s ease-out;
   font-size: 2rem;
-  color: #2832c2; /* Couleur verte pour le succès */
+  color: #2832c2;
 }
 
 .two-fa-settings {
@@ -235,7 +230,6 @@ form button:hover {
 }
 
 .validateTwoFaButton {
-  /* width: 15%; */
   font-size: 16px;
   box-sizing: border-box;
   padding: 10px;

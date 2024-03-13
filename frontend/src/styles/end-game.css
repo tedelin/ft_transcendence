@@ -25,7 +25,6 @@
 }
 
 .end-scores {
-    /* background-color: #67d6be; */
     color:black;
     height:100%;
     margin-top:1rem;
@@ -51,7 +50,7 @@
     left:0;
     height:100%;
     width:60%;
-    z-index: 1000; /* Assurez-vous qu'elle est au-dessus de l'image du gagnant */
+    z-index: 1000;
 }
 
 .laurier {
@@ -101,7 +100,6 @@
     height:100%;
     color:black;
     font-family: Arial, Helvetica, sans-serif;
-    /* background-color: rgb(59, 143, 143); */
     display:flex;
     align-items: center;
 }

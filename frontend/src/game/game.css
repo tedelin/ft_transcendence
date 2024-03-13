@@ -29,7 +29,6 @@
 }
 
 .history-menu {
-    /* position: absolute; */
     display: flex;
 	margin-top: 50px;
     flex-direction: column;
@@ -65,9 +64,9 @@
     gap: 5px;
     padding-top: 5px;
     padding-bottom: 5px;
-    background-color: rgba(0, 0, 0, 0.3); /* Fond noir transparent pour chaque match item */
-    align-items: center; /* Centrer le contenu verticalement */
-    justify-items: center; /* Centrer le contenu horizontalement */
+    background-color: rgba(0, 0, 0, 0.3);
+    align-items: center;
+    justify-items: center; 
 }
 
 .view-match-button {
@@ -81,9 +80,9 @@
 }
 
 .view-match-button img {
-    display: block; /* Assure une bonne mise en page de l'image */
-    width: 20px; /* Ajustez selon la taille souhaitée */
-    height: 20px; /* Ajustez selon la taille souhaitée */
+    display: block;
+    width: 20px;
+    height: 20px;
 }
 
 .StartMessage {
@@ -129,7 +128,6 @@
 
     position: absolute;
     width: 700px;
-    /* height: 200px; */
     padding: 10px;
     transform: translate(-50%, -50%);
     top: 50%;
@@ -210,10 +208,6 @@
     margin-right: 10px;
 }
 
-/* .input {
-    text-align: center;
-} */
-
 .matchmaking-container {
     color: white;
     position: relative;
@@ -250,7 +244,6 @@
     }
 }
 
-/* fond flou */
 .endGameMenu {
     position: absolute;
     top: 0;
@@ -258,16 +251,13 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    /* Fond flouté */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* FENETRE END GAME */
 .menuContent {
     background: linear-gradient(90deg, #010150c2, rgba(0, 0, 0, 0.733), #410000);
-    /* border: 2px solid #c3073f; */
     color: #fff;
     width: 80%;
     max-width: 600px;
@@ -343,7 +333,6 @@
     transform: translateY(-50%);
     background-color: rgb(54, 54, 54);
     border-radius: 10px;
-    /* box-shadow: 5px 10px 2px rgba(64, 91, 209, 0.589); */
 }
 
 .rightPlayer

@@ -295,7 +295,6 @@ select {
 		justify-content: center;
 		height: auto;
 		width: auto;
-		/* border-bottom: 3px solid #40444b; */
 	}
 
 	.createButton,
@@ -325,7 +324,6 @@ select {
 
 .inviteButton {
 	padding: 15px;
-	/* margin: 15px; */
 	height: 100%;
 	border-radius: 10px;
 	border: none;

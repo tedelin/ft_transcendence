@@ -9,38 +9,6 @@ import { fetchUrl } from '../../fetch';
 import { useEffect, useState } from 'react';
 import { getAvatar } from '../../utils/utils';
 
-// la data dans le call :
-// /users/getProfilData/:id
-// {
-//     "username": "gansard",
-//     "avatar": "default-avatar.jpg",
-//     "matchs": [
-//         {
-//             "playerId": 2,
-//             "matchId": 1,
-//             "score": 0,
-//             "role": "PLAYER_TWO"
-//         }
-//     ],
-//     "stats": {
-//         "id": 2,
-//         "userId": 2,
-//         "nbGames": 1,
-//         "nbWin": 0,
-//         "nbLoose": 1
-//     },
-//     "Achievement": {
-//         "id": 2,
-//         "userId": 2,
-//         "firstGame": true,
-//         "firstWin": false,
-//         "firstLoose": true,
-//         "masterWinner": false,
-//         "invincible_guardian": false,
-//         "Speed_Demon": false
-//     }
-// }
-
 function checkIfAnyAchievementIsTrue(achievement) {
 	for (let key in achievement) {
 	  if (typeof achievement[key] === 'boolean' && achievement[key] === true) {
@@ -60,7 +28,7 @@ function Profil() {
   useEffect(() => {
     async function fetchProfilData() {
       try {
-        const data = await fetchUrl('/users/profilData/' + id); // renvoyer un truc precit si ca existe pas
+        const data = await fetchUrl('/users/profilData/' + id); 
 		const matchData = await fetchUrl('/game/history');
         setProfilData(data);
 		setProfilMatchData(matchData)

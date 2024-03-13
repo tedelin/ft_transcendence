@@ -1,10 +1,9 @@
-import React from 'react';
 import '../styles/game.css';
 import eyeIcon from '../game_img/streaming.png';
 import { useAuth } from '../components/AuthProvider';
 
 export function MatchItem({ match }) {
-    const auth = useAuth(); // Utilisez useAuth pour accéder à auth
+    const auth = useAuth();
 
     const playerPhotoUrl = 'https://static-cdn.jtvnw.net/jtv_user_pictures/1423d0d6-ce51-4cd7-92e6-005832cc1408-profile_image-300x300.png';
 

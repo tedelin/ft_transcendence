@@ -1,7 +1,5 @@
 .settingsPage {
   display: flex;
-  /* flex-direction: row; */
-  /* border: solid red 3px; */
   width: 90%;
   box-sizing: border-box;
   margin: 0 auto;
@@ -129,8 +127,8 @@
 .two-fa-settings {
   flex-grow: 0.2;
   border: 1px solid var(--bg-secondary);
-  display: flex; /* Active Flexbox pour ce conteneur */
-  align-items: center; /* Alignement vertical des éléments enfants au centre */
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   border-radius: 10px;
 }

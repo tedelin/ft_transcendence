@@ -113,7 +113,7 @@ model Achievement {
     userId              Int     @unique
     firstGame           Boolean
     firstWin            Boolean
-    firstLoose          Boolean // a voir si on le garde
+    firstLoose          Boolean 
     masterWinner        Boolean // 10 win ou plus 
     invincible_guardian Boolean // win sans encaisser de but
     Speed_Demon         Boolean // quand la balle atteint la vitessse max

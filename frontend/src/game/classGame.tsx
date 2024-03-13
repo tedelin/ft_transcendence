@@ -102,10 +102,12 @@ export class ClassGame {
     }
 
     draw(context) {
+        if (!this.localState)
+            return;
         // paddles
         context.fillStyle = 'black';
         this.drawRoundedRect(context, 15, this.localState.paddles.leftPos.y, this.localState.paddles.width, this.localState.paddles.height, 10);
-        this.drawRoundedRect(context, this.canvasWidth - this.localState.paddles.width - 15, this.localState.paddles.rightPos.y, this.localState.paddles.width, this.localState.paddles.height, 10); // Utilisez le même rayon ou un différent selon vos besoins
+        this.drawRoundedRect(context, this.canvasWidth - this.localState.paddles.width - 15, this.localState.paddles.rightPos.y, this.localState.paddles.width, this.localState.paddles.height, 10);
 
         //line
         context.fillStyle = 'black';
@@ -141,13 +143,10 @@ export class ClassGame {
         const canvas = this.canvasRef.current;
         if (!canvas) return;
         const context = canvas.getContext('2d');
-
-        // canvas.width = this.canvasWidth; 
-        // canvas.height = this.canvasHeight; 
+        if (!context || !this.localState) return;
 
         context.fillStyle = "rgba(255, 255, 255, 0.20)";
         context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-        // context!.clearRect(0, 0, canvas.width, canvas.height);
         this.draw(context);
 
         if (this.localState.status != ENDED)

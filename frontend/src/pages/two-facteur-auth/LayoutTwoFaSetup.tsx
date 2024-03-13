@@ -2,7 +2,6 @@ import { useState, createContext, useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { ThemeContext } from "../../utils/providers/ThemeProvider";
 
-// Création d'un contexte pour passer la fonction setStep aux composants enfants
 const StepContext = createContext({});
 
 export const useStep = () => useContext(StepContext);
@@ -23,19 +22,15 @@ function LayoutTwoFaSetup() {
 	const [auth, setAuth] = useState(false)
 	const navigate = useNavigate();
 	const {theme} = useContext(ThemeContext);
-
-	// Gestion des clics sur le bouton Cancel
 	const handleCancel = () => {
-		navigate(-1); // Navigue à la page précédente
+		navigate(-1); 
 	};
 
-	// Gestion des clics sur le bouton Next/Done
 	const handleNext = () => {
 		if (step === 1) {
-			// setStep(step + 1); // Passe au step 2
-			navigate("./verify"); // Navigue vers la page de validation
+			navigate("./verify");
 		} else if (step === 2) {
-			navigate("/settings"); // Navigue vers la page de finition après le dernier step
+			navigate("/settings");
 		}
 	};
 
@@ -52,7 +47,7 @@ function LayoutTwoFaSetup() {
 					<button onClick={handleCancel}>Cancel</button>
 					<button
 						onClick={handleNext}
-						disabled={step === 2 && !auth} // Désactive le bouton si on est à l'étape 2 et que auth est false
+						disabled={step === 2 && !auth}
 						className={
 							step < 2
 								? 'button-next'

@@ -68,7 +68,6 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
         <Modal
             isOpen={enabled}
             onClose={closeSettings}
-            // title='Channel Settings'
         >
 			<div className="channelSettings">
 				<div className='fieldInfo'>Channel Name</div>

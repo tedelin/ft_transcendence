@@ -26,11 +26,6 @@
 	margin-left: 4px;
 	margin-right: 4px;
 	background-color: var(--hover);
-	/* background-color: ; */
-}
-
-.context-menu li:not(:last-child) {
-	/* border-bottom: 2px solid #72767d; */
 }
 
 ::-webkit-scrollbar {

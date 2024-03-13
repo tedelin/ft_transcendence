@@ -3,11 +3,11 @@
 }
 
 .mmConteneur2, .mmConteneur {
-    position: absolute; /* Positionne absolument par rapport au parent relatif */
-    top: 0; /* Aligner au sommet du conteneur parent */
-    left: 0; /* Aligner à gauche du conteneur parent */
-    width: 100%; /* Assure que les conteneurs prennent toute la largeur */
-    height: 100%; /* Assure que les conteneurs prennent toute la hauteur */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .matchmaking-container {
@@ -24,9 +24,9 @@
 }
 
 .mmConteneur2 {
-    display: flex; /* Utilise Flexbox */
-    justify-content: center; /* Centre horizontalement */
-    align-items: center; /* Centre verticalement */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 100vh;
 }
 
@@ -48,8 +48,8 @@
 
 .mmConteneur > div {
     display: flex;
-    justify-content: center; /* Centre horizontalement */
-    align-items: center; /* Centre verticalement */
+    justify-content: center;
+    align-items: center;
   }
 
 
@@ -188,6 +188,3 @@
   @keyframes preloader {
     100% { transform: scale(2); }
   }
-
-
-

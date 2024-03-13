@@ -105,10 +105,6 @@
 	flex-grow: 1;
 }
 
-/* .paddleSizeContainer{
-    margin: 50px 250px 0px 250px; 
-} */
-
 .paddleSizeContainer > h2{
     margin-bottom: 25px;
 }

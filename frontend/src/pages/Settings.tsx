@@ -23,7 +23,7 @@ function Settings() {
 		const file = event.target.files[0];
 		if (file) {
 			setSelectedFile(file);
-			setPreview(URL.createObjectURL(file)); // Crée un URL pour l'aperçu
+			setPreview(URL.createObjectURL(file));
 		}
 	};
 
