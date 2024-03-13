@@ -48,7 +48,6 @@ export class PongService {
     public startGame(roomId: string, settings: GameSettings, server: Server) {
         const gameState: GameState = this.initGameState(settings);
         this.roomService.rooms.get(roomId).gameState = gameState;
-        console.log("game started");
         server.to(roomId).emit('gameLaunch', { gameState: gameState, winner: false });
     }
 

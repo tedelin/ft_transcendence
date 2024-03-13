@@ -88,12 +88,8 @@ export class RoomService {
         const roomState = this.rooms.get(gameId);
         if (!roomState) return;
         let roomPartner: Socket | null = this.findMyLifePartner(gameId, client);
-
         this.cleanRoom(gameId);
-        console.log('Room ' + gameId + ' destroyed');
-
         if (roomPartner) {
-            console.log(roomPartner.id + ' reattributed to new room');
             const roomId = this.findAvailableRoom() || this.createRoom(roomPartner);
             this.assignClientToRoom(roomPartner, roomId);
         }
@@ -109,7 +105,6 @@ export class RoomService {
                 const user = this.connectedUsers.get(spectatorSocket.id);
                 return user ? user.username : "Unknown";
             }).join(', ');
-            console.log(`Room ID: ${roomId}, Players: [${playerUsernames}], Spectators: [${spectatorUsernames}]`);
         });
     }
 
@@ -170,7 +165,6 @@ export class RoomService {
         if (userId === this.privateRooms.get(roomId)[1]) {
             this.assignClientToRoom(client, roomId);
         } else {
-            console.log('User not authorize to join room');
         }
     }
 
@@ -227,7 +221,6 @@ export class RoomService {
             const data: CreateMatchDto = this.formatCreateMatchData(roomState, this.connectedUsers.get(roomState.players[0].id), this.connectedUsers.get(roomState.players[1].id));
             const match = await this.gameService.createMatch(data);
             roomState.id = match.id;
-            console.log(`${match.id} just created`);
             const allMatchs = await this.gameService.findAllGames();
             this.server.emit('matchs', allMatchs);
             this.pongService.startGame(roomId, settings, this.server);

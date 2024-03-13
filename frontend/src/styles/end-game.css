@@ -98,7 +98,6 @@
 }
 
 .menu-footer {
-    /* display: flex; */
     align-items: center;
     text-align: center;
     justify-content: space-between;
@@ -110,7 +109,6 @@
 }
 
 .menuButton {
-    /* font-size:1.8vw; */
     position: relative;
     right:1.5rem;
     cursor:pointer;

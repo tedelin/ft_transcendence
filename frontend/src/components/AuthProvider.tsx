@@ -105,7 +105,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	useEffect(() => {
 		socket?.on('duplicate-login', () => {
-			console.log('event received');
 			signout();
 			error('You have been disconnected')
 		})

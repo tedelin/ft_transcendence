@@ -45,8 +45,6 @@ export function InGame() {
                     player2: data.gameState.score.player2
                 });
             }
-            else
-                console.log("no data in start game");
         });
 
         auth?.socket?.on('spectators', (data) => {

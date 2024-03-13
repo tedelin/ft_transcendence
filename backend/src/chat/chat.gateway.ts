@@ -33,7 +33,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 		const alreadyConnected = this.getKeyByValue(user.id);	
 		if (alreadyConnected) {
-			console.log('event emit', alreadyConnected);
 			this.server.to(alreadyConnected).emit('duplicate-login');
 		}
 		this.connectedUsers.set(client.id, user.id);
