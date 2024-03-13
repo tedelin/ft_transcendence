@@ -18,7 +18,7 @@ function MatchBox({ match, playerId }) {
 					</button>
 				</div>
 			</div>
-			<div className="score">
+			<div className="scoreProfil">
 				<div className="player-score">{player.score}</div>
 				<div>-</div>
 				<div className="opponent-score">{opponent.score}</div>

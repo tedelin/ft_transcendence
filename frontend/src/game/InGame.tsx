@@ -1,74 +1,3 @@
-// import { useAuth } from '../components/AuthProvider';
-// import { useGame } from '../components/GameProvider';
-// import { useEffect } from 'react';
-
-// function handleQuit() {
-//     const game = useGame();
-
-//     game?.setLetsGO(false);
-//     game?.setGameStarted(false);
-//     game?.setShowButton(true);
-//     game?.setFirstPlayer(false);
-//     game?.setSettingsToDo(false);
-//     game?.setBallSpeed(5);
-//     game?.setPaddleHeight(200);
-//     game?.setPaddleSpeed(5);
-//     game?.setIncreasedBallSpeed(0.003);
-//     game?.setBallSize(15);
-//     game?.setShowEndGameModal(false);
-//     game?.setPlayerStats([]);
-//     game?.setWinner(false);
-//     game?.setPlayerOne([]);
-//     game?.setPlayerTwo([]);
-// }
-
-// export function InGame() {
-//     const game = useGame();
-//     const auth = useAuth();
-
-//     const handleKeyDown = (event) => {
-//         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-//             auth?.socket?.emit('keyAction', { key: event.key, action: 'pressed' });
-//         }
-//     };
-
-//     const handleKeyUp = (event) => {
-//         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-//             auth?.socket?.emit('keyAction', { key: event.key, action: 'released' });
-//         }
-//     };
-
-//     <div className='CrossIcon' onClick={() => {
-//         auth?.socket?.emit('quitInGame');
-//         handleQuit();
-//         // navigate('/game');
-//     }} >&#10006;</div>
-
-
-//     useEffect(() => {
-//         game?.gameInstance?.current?.startGame();
-
-//         document.addEventListener('keydown', handleKeyDown);
-//         document.addEventListener('keyup', handleKeyUp);
-
-//         return () => {
-//             document.removeEventListener("keydown", game?.gameInstance.handleKeyDown);
-//             document.removeEventListener("keyup", game?.gameInstance.handleKeyUp);
-//         };
-//     }, [game?.gameInstance]);
-
-
-//     return (
-//         <div className="canva">
-//             <canvas ref={game?.gameInstance?.canvasRef} width={game?.gameInstance?.canvasWidth} height={game?.gameInstance?.canvasHeight}></canvas>s
-//         </div>
-//     );
-// }
-
-
-
-
-
 import { useEffect } from 'react';
 import { useState } from 'react';
 import '../styles/game.css';
@@ -80,10 +9,12 @@ import { useNavigate } from 'react-router-dom';
 import profil from '../game_img/profil.jpeg';
 import boobaprofil from '../game_img/booba.jpeg';
 import BlockBackNavigation from "./BlockBackNavigation";
+import { getAvatar } from '../utils/utils';
 
 
 export function InGame() {
     const game = useGame();
+    // console.log("  game    :", game);
     const auth = useAuth();
     const nav = useNavigate();
     const [score, setScore] = useState({ player1: 0, player2: 0 });
@@ -151,9 +82,9 @@ export function InGame() {
                         <div className="score player2">{score.player2}</div>
                     </div>
                     <div className="game-area">
-                        <img className="player" src={profil} alt='playerOne' />
+                        <img className="player" src={ getAvatar(game?.playerOne?.avatar) } alt='playerOne' />
                         <canvas ref={game?.gameInstance.current?.canvasRef} width={game?.gameInstance?.current?.canvasWidth} height={game?.gameInstance?.current?.canvasHeight} />
-                        <img className="player" src={profil} alt='playerTwo' />
+                        <img className="player" src={getAvatar(game?.playerTwo?.avatar)} alt='playerTwo' />
                     </div>
                     <div className="spectatorsList">
                         {spectators?.map((spectator, index) => (

@@ -1,13 +1,13 @@
 .BallSizeWrapper {
 	display: flex;
-	justify-content: space-around; /* Espacement équitable entre les balles */
+	justify-content: space-around;
 	padding: 20px;
   }
   
   .smallSizeBall, .mediumSizeBall, .largeSizeBall {
-	border-radius: 10px; /* Rend les éléments circulaires */
-	cursor: pointer; /* Indique que les éléments sont cliquables */
-	transition: transform 0.2s; /* Animation légère au survol */
+	border-radius: 10px;
+	cursor: pointer;
+	transition: transform 0.2s;
   }
   
   .smallSizeBall:hover, .mediumSizeBall:hover, .largeSizeBall:hover {
@@ -15,10 +15,6 @@
   }
   
   .smallSizeBall, .mediumSizeBall, .largeSizeBall {
-	/* max-width: 300px; 
-	max-height: 200px;
-	min-width: 200px; 
-	min-height: 150px; */
 	width: 100px;
 	height: 100px;
 	display: flex;

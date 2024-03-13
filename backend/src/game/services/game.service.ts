@@ -7,33 +7,6 @@ import { UpdateMatchDto } from "../dto/update-match.dto";
 export class GameService {
     constructor(private readonly databaseService: DatabaseService) { }
 
-    // async getStats(id_user : number) {
-    //     const stats = this.databaseService.stats.findUnique({
-    //         where: {
-    //             userId: id_user,
-    //         }
-    //     });
-    //     if (!stats) throw new NotFoundException(`Stats of user ${id_user} not found`);
-    //     return stats;
-    // }
-
-    // async createStats(createStatsDto: Prisma.StatsCreateInput) {
-    //     const createdStats = await this.databaseService.stats.create({
-    //         data: createStatsDto,
-    //     });
-    //     return createdStats;
-    // }
-
-    // async updateStats(id_user : number, updateStatsDto : Prisma.StatsUpdateInput) {
-    //     const updatedStats = await this.databaseService.stats.update({
-    //         where: {
-    //             userId: id_user,
-    //         },
-    //         data: updateStatsDto,
-    //     })
-    //     return updatedStats;
-    // }
-
     async findAllGames(id_user?: number) {
         if (id_user) {
             return this.databaseService.match.findMany({
@@ -113,7 +86,6 @@ export class GameService {
             data: { status: "FINISHED" },
         });
 
-        // Ensuite, mettez à jour les détails de chaque joueur associé au match
         const updatePromises = updateMatchDto.players.map(player => {
             return this.databaseService.matchUser.updateMany({
                 where: {

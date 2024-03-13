@@ -1,6 +1,6 @@
 function Stats(stats : any) {
 	const losses = stats.stats.nbLoose;
-	let Ratio = stats.stats.nbWin / stats.stats.nbLoose;
+	let Ratio = (stats.stats.nbWin / stats.stats.nbLoose).toFixed(2);
 	if(losses === 0)
 		Ratio = stats.stats.nbWin;
 	return (

@@ -115,30 +115,3 @@ export class UserController {
 		return new StreamableFile(file);
 	}
 }
-
-//@Post('upload-change')
-//	@UseInterceptors(FileInterceptor('avatar', {
-//		storage: diskStorage({
-//			destination: './uploads/avatars',
-//			filename: (req, file, cb) => {
-//				const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${extname(file.originalname)}`;
-//				cb(null, uniqueName);
-//			}
-//		}),
-//		limits: { fileSize: 2 * 1024 * 1024 },
-//		fileFilter: (req, file, cb) => {
-//			if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-//				return cb(new Error('Seuls les fichiers images sont autorisés !'), false);
-//			}
-//			cb(null, true);
-//		},
-//	}))
-//	@UseGuards(JwtGuard)
-//	async uploadChange(@UploadedFile() file: Express.Multer.File, @Req() req) {
-//		const userId = req.user.id;
-//		const avatarUrl = `${file.filename}`;
-
-//		await this.userService.saveAvatarPath(avatarUrl, userId);
-
-//		return { message: 'Avatar mis à jour avec succès', avatarUrl };
-//	}

@@ -3,10 +3,10 @@ import GradientSet from "./BallSettings/GradientSet";
 import { useGame } from "../../components/GameProvider";
 
 export function Paddle() {
-    const game = useGame(); // Utilise le contexte du jeu
+    const game = useGame();
     const [paddleSizeNumber, setPaddleSizeNumber] = useState(game?.paddleHeight ? game?.paddleHeight / 100 : 3);
     const [paddleSize, setPaddleSize] = useState(paddleSizeNumber * 10);
-    const [paddleSpeed, setPaddleSpeed] = useState(game?.paddleSpeed || 30);
+    const [paddleSpeed, setPaddleSpeed] = useState(game?.paddleSpeed ? game?.paddleSpeed * 10 : 50);
 
     const increasePaddleSize = () => {
         if (paddleSize < 100) {
@@ -30,7 +30,7 @@ export function Paddle() {
 
     const updatePaddleSpeed = (newSpeed) => {
         setPaddleSpeed(newSpeed);
-        game?.setPaddleSpeed(newSpeed);
+        game?.setPaddleSpeed(newSpeed / 3);
     }
 
     return (

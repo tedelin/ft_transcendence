@@ -105,10 +105,6 @@
 	flex-grow: 1;
 }
 
-/* .paddleSizeContainer{
-    margin: 50px 250px 0px 250px; 
-} */
-
 .paddleSizeContainer > h2{
     margin-bottom: 25px;
 }
@@ -125,7 +121,7 @@
 
 .paddleSizeInside {
     height: 100%;
-    background-color: #000000;
+    background-color: var(--text-secondary);
     border-radius: 15px;
 }
 
@@ -141,7 +137,7 @@
     height: 35px;
     font-size: 35px;
     border-radius: 50%;
-    border: solid rgba(51, 51, 51, 0.3) 1px;
+    border: solid var(--bg-secondary);
     display: flex;
     justify-content: center;
     align-items: center;

@@ -1,14 +1,14 @@
 .new-login {
   font-family: "Open Sans", sans-serif;
   display: grid;
-  grid-template-rows: auto 1fr; /* Deux lignes : la première pour ball-two, la deuxième pour les autres contenus */
-  grid-template-columns: 1fr 1fr 1fr; /* Deux colonnes de taille égale */
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
     "ball-two ball-two ball-two"
     "left-side left-side hero-text";
-  height: 100vh; /* Utilise toute la hauteur de la fenêtre */
+  height: 100vh;
   margin: 0 auto;
-  width: 80%; /* Prend la moitié de la largeur de la fenêtre, ajuste selon tes besoins */
+  width: 80%;
   min-width: 800px;
   box-sizing: border-box;
   justify-content: space-between;
@@ -17,16 +17,15 @@
 }
 
 .left-side-wrapper {
-  grid-area: left-side; /* Place left-side-wrapper à gauche en bas */
+  grid-area: left-side;
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; */
   align-items: center;
   box-sizing: border-box;
 }
 
 .hero-text {
-  grid-area: hero-text; /* Place hero-text à droite en bas */
+  grid-area: hero-text;
   width: 100%;
   height: 80%;
   display: flex;
@@ -37,14 +36,13 @@
 }
 .hero-img {
   width: 70%;
-  height: 0; /* La hauteur est initialement mise à 0 */
-  padding-top: 70%; /* Le padding-top est utilisé pour créer la hauteur */
+  height: 0;
+  padding-top: 70%;
   box-sizing: border-box;
-  position: relative; /* Position relative pour le contenu interne */
+  position: relative;
   box-sizing: border-box;
 }
 
-/* Pour positionner du contenu à l'intérieur du carré, tu peux utiliser : */
 .hero-img-content {
   position: absolute;
   top: 0;
@@ -56,8 +54,7 @@
   height: 100%;
 }
 
-.hero-text > h1, .hero-text >
-div {
+.hero-text > h1, .hero-text > div {
   font-size: 2rem;
   text-align: center;
   transition: linear 0.5s;
@@ -94,7 +91,7 @@ div {
   height: 100px;
   width: 100px;
   background-color: #0061e8;
-  grid-area: ball-two; /* Place ball-two en haut */
+  grid-area: ball-two;
   margin: 0 auto;
   box-sizing: border-box;
 }

@@ -71,7 +71,6 @@ function ChannelMember({children}: {children: JSX.Element}) {
 	return children;
 }
 import { Settings_game } from './game/settings/settings_game.tsx';
-// import { Ball } from './game/settings/settings_ball.tsx';
 import BallSettings from './game/settings/BallSettings/BallSettings.tsx'
 import { Paddle } from './game/settings/settings_paddle.tsx';
 import { Matchmaking } from './game/Matchmaking';

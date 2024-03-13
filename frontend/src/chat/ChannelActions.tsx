@@ -30,7 +30,6 @@ export function ChannelActions() {
 					visibility: channelVisibility,
 				}),
 			});
-			// navigate(channelName);
 			success('Channel created');
 		} catch (err: any) {
 			error(err.message);

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import confetti from 'canvas-confetti'; // Assure-toi d'installer cette bibliothèque
+import confetti from 'canvas-confetti';
 import { useStep } from './LayoutTwoFaSetup'
 
 function Congrats() {

@@ -128,8 +128,6 @@ export class GameState {
         this.ball.velocity.x -= (this.ball.velocity.x > -10 && this.ball.velocity.x < 0) ? this.ball.increaseBallSpeed : 0;
         this.ball.velocity.y += (this.ball.velocity.y < 10 && this.ball.velocity.y > 0) ? this.ball.increaseBallSpeed : 0;
         this.ball.velocity.y -= (this.ball.velocity.y > -10 && this.ball.velocity.y < 0) ? this.ball.increaseBallSpeed : 0;
-        // if (save_balle_velocity_x == this.ball.velocity.x)
-        //     return true
         if (this.paddles.speed < 20)
             this.paddles.speed += 0.001;
     }
