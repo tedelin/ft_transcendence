@@ -44,6 +44,10 @@ export class JoinChannelDto {
 	@IsOptional()
 	@IsNotEmpty()
 	password?: string
+
+	@IsString()
+	@IsNotEmpty()
+	visibility: Visibility;
 }
 
 export class ChannelMessageDto {

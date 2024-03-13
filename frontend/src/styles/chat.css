@@ -228,7 +228,6 @@ select {
 	outline: none;
 	color: var(--text-primary);
 	border: 1px solid var(--bg-secondary);
-
 	background-color: var(--bg-primary);
 }
 

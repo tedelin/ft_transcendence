@@ -57,8 +57,8 @@ export class ChatController {
 
 	@UseGuards(JwtGuard)
 	@Post('channels/leave')
-	leaveChannel(@UserRequest() user: User, @Body() joinChannelDto: JoinChannelDto) {
-		return this.channelService.leaveChannel(user.id, joinChannelDto);
+	leaveChannel(@UserRequest() user: User, @Body('roomId') roomId: string) {
+		return this.channelService.leaveChannel(user.id, roomId);
 	}
 
 	@Post('channels/message')

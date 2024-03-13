@@ -59,6 +59,7 @@ export function ChannelList({ channels, setChannels } : { channels: Channel[], s
 				},
 				body: JSON.stringify({ 
 					roomId: channel.name,
+					visibility: channel.visibility,
 				}),
 			})
 			navigate(channel.name);

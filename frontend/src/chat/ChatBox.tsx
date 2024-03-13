@@ -6,7 +6,6 @@ import { fetchUrl } from "../fetch";
 import { useToast } from "../utils/hooks/useToast";
 import { ChannelSettings } from "./ChannelSettings";
 import '../styles/chat.css';
-import { RightBar } from "./RightBar";
 
 function TopBar({ channel }) {
 	const [moderation, setModeration] = useState(false);

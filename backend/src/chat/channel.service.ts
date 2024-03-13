@@ -40,7 +40,12 @@ export class ChannelService {
 	}
 
 	async joinChannel(userId: number, joinChannelDto: JoinChannelDto) {
-		const channel = await this.findByName(joinChannelDto.roomId);
+		const channel = await this.databaseService.channel.findUnique({
+			where: {
+				name: joinChannelDto.roomId,
+				visibility: joinChannelDto.visibility,
+			}
+		});
 		if (!channel) throw new NotFoundException("Channel doesn't exist");
 		const alreadyJoined = await this.databaseService.channelUser.findFirst({
 			where: {
@@ -67,36 +72,36 @@ export class ChannelService {
 		})
 	}
 
-	async leaveChannel(userId: number, joinChannelDto: JoinChannelDto) {
-		const channel = await this.findByName(joinChannelDto.roomId);
+	async leaveChannel(userId: number, roomId: string) {
+		const channel = await this.findByName(roomId);
 		if (!channel) throw new NotFoundException("Channel doesn't exist");
 		const user = await this.databaseService.channelUser.findUnique({
 			where: {
 				channelName_userId: {
-					channelName: joinChannelDto.roomId,
+					channelName: roomId,
 					userId: userId,
 				},
 			}
 		})
 		if (!user) throw new NotFoundException("You are not in this channel");
-		this.eventEmitter.emit('leave.channel', userId, joinChannelDto.roomId);
+		this.eventEmitter.emit('leave.channel', userId, roomId);
 		if (user.role === Role.OWNER) {
 			const newOwner = await this.databaseService.channelUser.findFirst({
 				where: {
-					channelName: joinChannelDto.roomId,
+					channelName: roomId,
 					role: Role.MEMBER || Role.ADMIN,
 				},
 				select: {
 					userId: true,
 				}
 			});
-			if (!newOwner) return this.remove(joinChannelDto.roomId);
-			else this.moderationService.setOwnership(newOwner.userId, joinChannelDto.roomId);
+			if (!newOwner) return this.remove(roomId);
+			else this.moderationService.setOwnership(newOwner.userId, roomId);
 		}
 		return await this.databaseService.channelUser.delete({
 			where: {
 				channelName_userId: {
-					channelName: joinChannelDto.roomId,
+					channelName: roomId,
 					userId: userId,
 				}
 			}

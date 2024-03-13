@@ -18,17 +18,21 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
 
 	async function saveChanges() {
 		try {
+			const requestBody = channelPassword !== '' ?  {
+				name: name,
+				visibility: channel?.visibility,
+				password: channelPassword,
+			} : {
+				name: name,
+				visibility: channel?.visibility,
+			}
 			await fetchUrl(`/chat/channels/${name}`, {
 				method: 'PATCH',
 				headers: {
 					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({
-					name: name,
-					password: channelPassword,
-					visibility: channel?.visibility,
-				}),
+				body: JSON.stringify(requestBody),
 			});
 			success('Channel settings updated !');
 			closeSettings();
@@ -68,7 +72,6 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
         <Modal
             isOpen={enabled}
             onClose={closeSettings}
-            // title='Channel Settings'
         >
 			<div className="channelSettings">
 				<div className='fieldInfo'>Channel Name</div>
@@ -79,13 +82,12 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
 					value={channelName} 
 					onChange={(e) => setChannelName(e.target.value)}
 				/>
-				{channel?.visibility === 'PUBLIC' ? 
-				<button
-					className='addPassword'
-					onClick={() => changeVisibility('PROTECTED')}
-				>
-					Add Password
-				</button> :
+				<select value={channel?.visibility} onChange={(e) => changeVisibility(e.target.value)}>
+					<option value="PUBLIC">Public</option>
+					<option value="PRIVATE">Private</option>
+					<option value="PROTECTED">Protected</option>
+				</select>
+				{channel?.visibility === 'PROTECTED' && 
 				(<div className='row'>
 					<input
 						className='edit'
