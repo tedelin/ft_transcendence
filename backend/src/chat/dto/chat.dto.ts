@@ -1,5 +1,5 @@
 import {IsString, IsOptional, IsNotEmpty, IsNumber, Min, MinLength, Max, MaxLength } from 'class-validator';
-import { Visibility } from '@prisma/client';
+import { FriendshipStatus, Visibility } from '@prisma/client';
 
 export class CreateChannelDto {
 	@IsString()
@@ -58,4 +58,19 @@ export class ChannelMessageDto {
 	@MaxLength(1500)
 	@IsNotEmpty()
 	content: string;
+}
+
+export class FriendShipRequestDto {
+	@IsNumber()
+	id: number;
+
+	@IsNumber()
+	initiatorId: number;
+
+	@IsNumber()
+	receiverId: number;
+
+	@IsNotEmpty()
+	@IsString()
+	status: FriendshipStatus;
 }

@@ -35,7 +35,7 @@
 
 .modalTitle {
 	text-align: center;
-	margin-bottom: 20px;
+	margin-bottom: 30px;
 }
 
 .close {
@@ -55,12 +55,12 @@
 .channelSettings {
     display: flex;
     flex-direction: column;
+	gap: 15px;
 }
 
 .edit {
 	width: 100%;
     box-sizing: border-box;
-    margin: 0px;
     padding: 10px;
     border-radius: 8px;
     border: 1px solid var(--bg-secondary);
@@ -72,7 +72,6 @@
 .cancelButton,
 .saveButton {
 	width: 100%;
-    margin: 0px 0px 0px 15px;
     box-sizing: border-box;
     border-radius: 8px;
 	padding: 10px;
@@ -82,7 +81,6 @@
 }
 
 .addPassword {
-    margin: 15px 0px 15px 0px;
 	padding: 10px;
     box-sizing: border-box;
     border-radius: 8px;
@@ -93,7 +91,6 @@
 
 .cancelButton,
 .saveButton {
-	margin: 0;
 	width: 20%;
 	min-width: 70px;
 	max-width: 100px;
@@ -103,6 +100,11 @@
 	background-color: var(--primary-blue);
 	border: none;
     color: #fff;
+}
+
+.blue {
+	border: none;
+	background-color: var(--primary-blue);
 }
 
 .fieldInfo {
@@ -120,11 +122,10 @@
 .row {
 	display: flex;
 	flex-direction: row;
-    margin: 15px 0px 15px 0px;
+	gap: 10px;
 }
 
 .addFriendButton {
-	margin: 0px 0px 0px 15px;
 	box-sizing: border-box;
 	border-radius: 8px;
 	padding: 0px;

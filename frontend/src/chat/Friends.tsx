@@ -170,6 +170,29 @@ function FriendsList({ selected }: { selected: string }) {
 	}, [selected]);
 
 	useEffect(() => {
+		auth?.socket?.on('friendship', (request) => {
+			setFriends((prevFriends) => {
+				const friendIndex = prevFriends.findIndex((friend) => friend.id === request.id);
+				if (friendIndex !== -1) {
+					return prevFriends.map((friend, index) => {
+						if (index === friendIndex) {
+							return request;
+						}
+						return friend;
+					});
+				} else {
+					return [...prevFriends, request];
+				}
+			});
+		});
+
+		auth?.socket?.on('friendship-delete', (request) => {
+			console.log('DELETE', request);
+			setFriends((prevFriends) => {
+				return prevFriends.filter((friend) => friend.id !== request.id);
+			});
+		});
+
 		auth?.socket?.on('user-state', (data) => {
 			setFriends((prevFriends) => {
 			  const updatedFriends = prevFriends.map((friend) => {
@@ -187,6 +210,7 @@ function FriendsList({ selected }: { selected: string }) {
 
 		return () => {
 			auth?.socket?.off('user-state');
+			auth?.socket?.off('friendship-request');
 		};
 	}, []);
 
@@ -209,7 +233,7 @@ function FriendsList({ selected }: { selected: string }) {
 										src={getAvatar(friend.avatar)}
 										alt='avatar'
 									/>
-									<span className={`status ${friend.status === "ONLINE" ? "online" : "offline"}`}>
+									<span className={`status ${friend.status === "ONLINE" ? "online" : friend.status === "IN_GAME" ? "IN_GAME inGame" : "offline"}`}>
 									</span>
 								</div>
 								<span className='spanMargin'>

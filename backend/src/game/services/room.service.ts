@@ -6,8 +6,9 @@ import { GameStatus, Score } from "../classes/pong";
 import { PongService } from "./pong.service";
 import { GameService } from "./game.service";
 import { CreateMatchDto, PlayerData } from "../dto/create-match.dto";
-import { User } from "@prisma/client";
+import { User, UserStatus } from "@prisma/client";
 import { UpdateMatchDto } from "../dto/update-match.dto";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 interface Matchs {
     id: number,
@@ -32,6 +33,7 @@ export class RoomService {
     constructor(
         private readonly pongService: PongService,
         private readonly gameService: GameService,
+		private readonly eventEmitter: EventEmitter2,	
     ) { }
 
     public setServer(server: Server, connectedUsers: Map<string, User>) {
@@ -214,6 +216,8 @@ export class RoomService {
         secondPlayer.gamesPlayed++;
         let roomState = this.rooms.get(roomId);
         this.server.to(roomId).emit('letsGO');
+		this.eventEmitter.emit('user.state', firstPlayer.id, UserStatus.IN_GAME);
+		this.eventEmitter.emit('user.state', secondPlayer.id, UserStatus.IN_GAME);
         roomState.state = RoomStatus.LAUNCHING;
         setTimeout(async () => {
             if (roomState.state === RoomStatus.INTERRUPT) {
@@ -316,6 +320,8 @@ export class RoomService {
         const playerTwo = this.connectedUsers.get(roomState.players[1].id);
         await this.gameService.addMatchToStats(winnerUser.id, looserUser.id);
         await this.gameService.updateAchievement(winnerUser.id, looserUser.id, score_O);
+		this.eventEmitter.emit('user.state', winnerUser.id, UserStatus.ONLINE);
+		this.eventEmitter.emit('user.state', looserUser.id, UserStatus.ONLINE);
         let stats = await this.gameService.getPlayersStats(winnerUser.id, looserUser.id);
 
         if (!roomState.gameState || roomState.gameState.status === GameStatus.RUNNING) {

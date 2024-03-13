@@ -1,10 +1,32 @@
 import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { FriendshipStatus } from '@prisma/client';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
+const friendInclude = {
+    initiator: {
+        select: {
+            id: true,
+            username: true,
+            avatar: true,
+            status: true,
+        },
+    },
+    receiver: {
+        select: {
+            id: true,
+            username: true,
+            avatar: true,
+            status: true,
+        },
+    },
+};
 
 @Injectable()
 export class FriendService {
-    constructor(private databaseService: DatabaseService) { }
+    constructor(private databaseService: DatabaseService,
+		private eventEmitter: EventEmitter2,
+	) { }
 
     async createFriendRequest(initiatorId: number, receiverId: number) {
         if (initiatorId === receiverId) throw new ForbiddenException('Cannot send friend request to yourself');
@@ -28,13 +50,16 @@ export class FriendService {
 
         if (existingFriendship) throw new ConflictException('Friendship already exists');
 
-        return await this.databaseService.friendship.create({
+        const friendship = await this.databaseService.friendship.create({
             data: {
                 initiatorId,
                 receiverId,
                 status: FriendshipStatus.PENDING,
             },
+			include: friendInclude,
         });
+		this.eventEmitter.emit('friendship.update', friendship);
+		return friendship;
     }
 
     async getFriendships(userId: number) {
@@ -47,25 +72,7 @@ export class FriendService {
                     { receiverId: userId },
                 ],
             },
-			include: {
-				initiator: {
-					select: {
-						id: true,
-						username: true,
-						avatar: true,
-						status: true,
-					}
-				},
-				receiver: {
-					select: {
-						id: true,
-						username: true,
-						avatar: true,
-						status: true,
-					}
-				}
-
-			}
+			include: friendInclude,
         });
     }
 
@@ -76,35 +83,46 @@ export class FriendService {
 
         if (!friendship) throw new NotFoundException('Friendship not found');
         if (friendship.receiverId !== userId) throw new ForbiddenException('You cannot accept this friend request');
-        return await this.databaseService.friendship.update({
+        const updatedFriendship = await this.databaseService.friendship.update({
             where: { id: friendshipId },
             data: { status: FriendshipStatus.ACCEPTED },
+			include: friendInclude,
         });
+		this.eventEmitter.emit('friendship.update', updatedFriendship);
+		return updatedFriendship;
     }
 
     async deleteFriend(friendshipId: number) {
         const friendship = await this.databaseService.friendship.findUnique({
             where: { id: friendshipId },
+			include: friendInclude,
         });
 
         if (!friendship) {
             throw new NotFoundException('Friendship not found');
         }
 
-        return this.databaseService.friendship.delete({
+        const deleteFriend = this.databaseService.friendship.delete({
             where: { id: friendshipId },
         });
+		this.eventEmitter.emit('friendship.delete', friendship);
+		return deleteFriend;
     }
 
 	async blockUser(userId: number, blockedUserId: number) {
-		await this.databaseService.friendship.deleteMany({
+		const friendshipToDelete = await this.databaseService.friendship.findFirst({
 			where: {
 				OR: [
 					{ initiatorId: userId, receiverId: blockedUserId },
 					{ initiatorId: blockedUserId, receiverId: userId },
 				],
 			},
+			include: friendInclude,
 		});
+		await this.databaseService.friendship.delete({
+			where: { id: friendshipToDelete.id },
+		});
+		if (friendshipToDelete) this.eventEmitter.emit('friendship.delete', friendshipToDelete);	
 		return await this.databaseService.friendship.create({
 			data: {
 				initiatorId: userId,

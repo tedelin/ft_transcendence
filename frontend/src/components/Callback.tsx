@@ -109,18 +109,21 @@ export function Callback() {
 				isOpen={requireUsername}
 				onClose={() => setRequireUsername(false)}
 			>
-				<input
-					type="text"
-					placeholder='Enter your username'
-					value={username}
-					onChange={(e) => setUsername(e.target.value)}
-				/>
-				<button
-					className='saveButton'
-					onClick={registerUser}
-				>
-					Submit
-				</button>
+				<div className='channelSettings'>
+					<input
+						className='edit'
+						type="text"
+						placeholder='Enter your username'
+						value={username}
+						onChange={(e) => setUsername(e.target.value)}
+					/>
+					<button
+						className='modalButton blue'
+						onClick={registerUser}
+					>
+						Submit
+					</button>
+				</div>
 			</Modal>
 		</div>
 	);

@@ -3,7 +3,7 @@ import { Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { UserService } from 'src/user/user.service';
 import { Prisma, UserStatus } from '@prisma/client';
-import { ChannelMessageDto } from './dto/chat.dto';
+import { ChannelMessageDto, FriendShipRequestDto } from './dto/chat.dto';
 import { FriendService } from 'src/friends/friends.service';
 import { OnEvent } from '@nestjs/event-emitter';
 
@@ -131,6 +131,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		});
 		this.userService.updateUserState(userId, state);
 		this.server.to(friendsSockets).emit('user-state', {userId, state});
+	}
+
+	@OnEvent('friendship.update')
+	async onFriendshipRequest(friendship: FriendShipRequestDto) {
+		const receiverSocketId = this.getKeyByValue(friendship.receiverId);
+		const initiatorSocketId = this.getKeyByValue(friendship.initiatorId);
+		this.server.to(receiverSocketId).emit('friendship', friendship);
+		this.server.to(initiatorSocketId).emit('friendship', friendship);
+	}
+
+	@OnEvent('friendship.delete')
+	async onFirendshipDelete(friendship: FriendShipRequestDto) {
+		const receiverSocketId = this.getKeyByValue(friendship.receiverId);
+		const initiatorSocketId = this.getKeyByValue(friendship.initiatorId);
+		this.server.to(receiverSocketId).emit('friendship-delete', friendship);
+		this.server.to(initiatorSocketId).emit('friendship-delete', friendship);
+		
 	}
 
 	private getClientByUserId(userId: number): Socket | null {
