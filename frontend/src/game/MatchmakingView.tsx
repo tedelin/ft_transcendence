@@ -8,6 +8,10 @@ export function MatchmakingView() {
 
     const game = useGame();
 
+    if (!game) return;
+
+    game.PreviousUrl = window.location.href;
+
     const renderPlayer = (player) => {
         const avatar = getAvatar(player?.avatar);
 

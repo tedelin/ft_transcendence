@@ -75,7 +75,7 @@ export function ChannelActions() {
 	}
 
 	return (
-		<div className='createChannelContainer'>
+		<div className='topContainer'>
 			<input
 			className='input'
 				type="text"

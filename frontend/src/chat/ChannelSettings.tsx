@@ -73,8 +73,8 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
             isOpen={enabled}
             onClose={closeSettings}
         >
+			<div className='fieldInfo'>Channel Name</div>
 			<div className="channelSettings">
-				<div className='fieldInfo'>Channel Name</div>
 				<input 
 					className='edit'
 					type="text" 
@@ -82,7 +82,7 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
 					value={channelName} 
 					onChange={(e) => setChannelName(e.target.value)}
 				/>
-				<select value={channel?.visibility} onChange={(e) => changeVisibility(e.target.value)}>
+				<select className="noMargin" value={channel?.visibility} onChange={(e) => changeVisibility(e.target.value)}>
 					<option value="PUBLIC">Public</option>
 					<option value="PRIVATE">Private</option>
 					<option value="PROTECTED">Protected</option>

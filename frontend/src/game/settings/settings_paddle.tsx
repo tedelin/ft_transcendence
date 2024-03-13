@@ -14,7 +14,7 @@ export function Paddle() {
             const newSizeNumber = paddleSizeNumber + 1;
             setPaddleSize(newSize);
             setPaddleSizeNumber(newSizeNumber);
-            game?.setPaddleHeight(newSizeNumber * 100);
+            game?.setPaddleHeight(newSizeNumber * 50);
         }
     }
 
@@ -24,7 +24,7 @@ export function Paddle() {
             const newSizeNumber = paddleSizeNumber - 1;
             setPaddleSize(newSize);
             setPaddleSizeNumber(newSizeNumber);
-            game?.setPaddleHeight(newSizeNumber * 100);
+            game?.setPaddleHeight(newSizeNumber * 50);
         }
     }
 

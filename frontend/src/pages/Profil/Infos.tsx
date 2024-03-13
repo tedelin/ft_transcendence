@@ -27,11 +27,26 @@ function Infos(Infos : any) {
 		navigate('../../Settings');
 	}
 
+	async function blockUser(userId: number) {
+		try {
+			await fetchUrl(`/friends/block/${userId}`, {
+				method: "PATCH",
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+				},
+			});
+			success('User blocked');
+		} catch (err: any) {
+			error(err.message);
+		}
+	}
+
 	const Actions = ({ me }) => (
 		<div className="actions">
 		  {me ? (<button className="add" onClick={goToSettings}>Settings</button>) : (
 			<>
 			  <button className="add" onClick={() => add(Infos.id)}>Add</button>
+			  <button className="block" onClick={() => blockUser(Infos.id)}>Block</button>
 			  <button className="message" onClick={() => navigate(`/chat/private-messages/${Infos.id}`)}>Message</button>
 			  <button className="playButton" onClick={play}>Invite to Play</button>
 			</>

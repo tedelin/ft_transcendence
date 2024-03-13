@@ -97,22 +97,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	useEffect(() => {
 		initAuth();
-
-		
-
+	
 		return () => {
 			socket?.disconnect();
 		};
 	}, []);
 
 	useEffect(() => {
-		socket?.on('disconnect', () => {
+		socket?.on('duplicate-login', () => {
+			console.log('event received');
 			signout();
 			error('You have been disconnected')
 		})
 
 		return () => {
-			socket?.off('disconnect');
+			socket?.off('duplicate-login');
 		}
 	}, [socket]);
 

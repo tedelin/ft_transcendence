@@ -90,26 +90,28 @@ export function Callback() {
 				onClose={() => setRequireTwoFa(false)}
 			>
 					<div className='fieldInfo'>Enter the code from your authenticator app</div>
-					<input
-						type="text"
-						className='edit'
-						id="code"
-						value={userCode}
-						onChange={(e) => setUserCode(e.target.value)}
-					/>
-					<button
-						className='saveButton'
-						onClick={verify2fa}
-					>
-						Submit
-					</button>
+					<div className='modalContainer'>
+						<input
+							type="text"
+							className='edit'
+							id="code"
+							value={userCode}
+							onChange={(e) => setUserCode(e.target.value)}
+						/>
+						<button
+							className='modalButton blue'
+							onClick={verify2fa}
+						>
+							Submit
+						</button>
+					</div>
 			</Modal>
 			<Modal
 				title="Complete User Profile"
 				isOpen={requireUsername}
 				onClose={() => setRequireUsername(false)}
 			>
-				<div className='channelSettings'>
+				<div className='modalContainer'>
 					<input
 						className='edit'
 						type="text"

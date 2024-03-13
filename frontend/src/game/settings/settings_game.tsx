@@ -13,6 +13,8 @@ export function Settings_game() {
     const nav = useNavigate();
     const auth = useAuth();
 
+    if(!game) return;
+
     useEffect(() => {
         if (game?.gameStarted || game?.showButton || !game?.settingsToDo) {
             nav('/game/');
@@ -29,6 +31,8 @@ export function Settings_game() {
         });
         game?.setSettingsToDo(false);
     }
+
+    game.PreviousUrl = window.location.pathname;
 
     return (
         <>

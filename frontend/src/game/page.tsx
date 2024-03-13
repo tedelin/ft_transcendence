@@ -9,12 +9,14 @@ import '../styles/page.css';
 
 
 
+
 export function Game() {
+    const BASE_URL = import.meta.env.VITE_FRONTEND_URL;
     const game = useGame();
     const auth = useAuth();
     const nav = useNavigate();
-	const roomId = new URLSearchParams(window.location.search).get('roomId');
-	const privateGame = new URLSearchParams(window.location.search).get('private');
+    const roomId = new URLSearchParams(window.location.search).get('roomId');
+    const privateGame = new URLSearchParams(window.location.search).get('private');
 
     function handletsart() {
         auth?.socket?.emit('clickPlay');
@@ -110,32 +112,29 @@ export function Game() {
         }
     }, []);
 
+    useEffect(() => {
+        if (window.location.pathname === '/game') {
+            const previousUrl = game?.PreviousUrl;
+            if (previousUrl?.includes('game/settings') || previousUrl?.includes('matchmaking')) {
+                auth?.socket?.emit('crossMatchmaking');
+            }
+            else
+                auth?.socket?.emit('quitInGame');
+            game?.handleQuit();
+        }
+    }, [window.location.pathname]);
 
-	useEffect(() => {
-        const previousUrl = sessionStorage.getItem('previousUrl');
+    useEffect(() => {
+        if (privateGame) {
+            auth?.socket?.emit('inviteToPlay', parseInt(privateGame));
+            game?.setShowButton(false);
 
-        console.log("previousUrl : ", previousUrl);
+        } else if (roomId) {
+            auth?.socket?.emit('acceptInvite', roomId);
+            game?.setShowButton(false);
 
-		if (window.location.pathname === '/game') {
-            if (previousUrl === '/game/inGame')
-			    auth?.socket?.emit('quitInGame');
-            else 
-			    auth?.socket?.emit('crossMathmaking');
-			game?.handleQuit();
-		}
-	}, [window.location.pathname]);
-
-	useEffect(() => {
-		if (privateGame) {
-			auth?.socket?.emit('inviteToPlay', parseInt(privateGame));
-			game?.setShowButton(false);
-
-		} else if (roomId) {
-			auth?.socket?.emit('acceptInvite', roomId);
-			game?.setShowButton(false);
-
-		}
-	}, [privateGame, roomId]);
+        }
+    }, [privateGame, roomId]);
 
 
     return (
