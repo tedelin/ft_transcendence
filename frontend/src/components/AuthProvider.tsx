@@ -2,6 +2,7 @@ import React, { useState, createContext, useContext, useEffect } from 'react';
 import { fetchUrl } from '../fetch';
 import { Socket, io } from 'socket.io-client';
 import { User } from '../utils/types';
+import { useToast } from '../utils/hooks/useToast';
 
 interface AuthContextType {
 	user: User | null;
@@ -20,6 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [socket, setSocket] = useState<Socket | null>(null);
+	const {error} = useToast();
 
 	async function fetchUser(token: string): Promise<void> {
 		try {
@@ -96,10 +98,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
 		initAuth();
 
+		
+
 		return () => {
 			socket?.disconnect();
 		};
 	}, []);
+
+	useEffect(() => {
+		socket?.on('disconnect', () => {
+			signout();
+			error('You have been disconnected')
+		})
+
+		return () => {
+			socket?.off('disconnect');
+		}
+	}, [socket]);
+
 
 	let value = { user, loading, socket, signin, signup, signout, fetchUser};
 

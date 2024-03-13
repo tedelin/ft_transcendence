@@ -31,6 +31,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			client.disconnect(true);
 			return;
 		}
+		const alreadyConnected = this.getClientByUserId(user.id);	
+		if (alreadyConnected) {
+			alreadyConnected.disconnect(true);
+		}
 		this.connectedUsers.set(client.id, user.id);
 		this.updateUserState(user.id, UserStatus.ONLINE);
 		const joinedChannels = await this.userService.getUserChannels(user.id);
