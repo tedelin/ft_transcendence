@@ -37,8 +37,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			}));
 			localStorage.setItem('jwtToken', token);
 		} catch (error) {
-			setLoading(false);
 			throw error;
+		} finally {
+			setLoading(false);
 		}
 	}
 
@@ -85,9 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		if (token) {
 			try {
 				await fetchUser(token);
-				setLoading(false);
 			} catch (error) {
-				setLoading(false);
 				localStorage.removeItem('jwtToken');
 			}
 		} else {

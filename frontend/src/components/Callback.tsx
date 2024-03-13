@@ -29,8 +29,8 @@ export function Callback() {
 				}),
 			});
 			if (response.access_token) {
-				auth?.fetchUser(response.access_token);
-				navigate('/');
+				await auth?.fetchUser(response.access_token);
+				navigate('/game');
 			}
 		} catch (err: any) {
 			error(err.message);
@@ -51,8 +51,8 @@ export function Callback() {
 			});
 
 			if (response.access_token) {
-				auth?.fetchUser(response.access_token);
-				navigate('/');
+				await auth?.fetchUser(response.access_token);
+				navigate('/game');
 			}
 		} catch (err: any) {
 			error(err.message);
@@ -69,8 +69,8 @@ export function Callback() {
 			} else if (response.requireUsername) {
 				setRequireUsername(true);
 			} else if (response.access_token) {
-				auth?.fetchUser(response.access_token);
-				navigate('/');
+				await auth?.fetchUser(response.access_token);
+				navigate('/game');
 			}
 			setToken42(response.token42);
 		} catch (err: any) {

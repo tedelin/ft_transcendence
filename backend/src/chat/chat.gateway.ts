@@ -120,6 +120,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@OnEvent('user.state')
 	async updateUserState(userId: number, state: UserStatus) {
+		if (!userId) return;
 		const userFriends = await this.friendService.getFriendships(userId);
 		const friendsIds = userFriends.map((friend) => {
 			if (friend.initiatorId === userId) {
