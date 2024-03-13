@@ -93,15 +93,16 @@
 .paddleContainer button {
     all: unset;
     font-size: 35px;
-    margin: 0;
+    margin: 0px;
     margin-left: 60px;
 }
 
 .paddle {
 	display: flex;
-	justify-content: space-between;
+	/* justify-content: space-between; */
 	flex-direction: column;
-	padding: 50px 50px 30% 50px;
+    gap: 20px;
+	padding: 50px 50px 0px 50px;
 	flex-grow: 1;
 }
 

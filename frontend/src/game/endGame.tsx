@@ -41,9 +41,10 @@ export function EndGame() {
         nav('/game');
     };
 
-    const Myscore = me?.username === game?.playerOne.id ? game?.gameInstance?.current?.localState?.score.player1 : game?.gameInstance?.current?.localState?.score.player2;
-    const OpponentScore = me?.username === game?.playerOne.id ? game?.gameInstance?.current?.localState?.score.player2 : game?.gameInstance?.current?.localState?.score.player1;
-
+    let Myscore = me?.username === game?.playerOne.id ? game?.gameInstance?.current?.localState?.score.player1 : game?.gameInstance?.current?.localState?.score.player2;
+    let OpponentScore = me?.username === game?.playerOne.id ? game?.gameInstance?.current?.localState?.score.player2 : game?.gameInstance?.current?.localState?.score.player1;
+    if(Myscore === undefined) Myscore = 0;
+    if(OpponentScore === undefined) OpponentScore = 0;
     return (
         <>
         {game?.showEndGameModal && (
@@ -60,7 +61,7 @@ export function EndGame() {
                         <div className="sentence">
                             {game?.isSpectator ? `${game?.Winner} won ! 🥳` : game?.Winner ? "You won ! 🥳" : "You lost...  🤡"}
                         </div>
-                        <div className="menuButton" onClick={handleQuit}>{">"}</div>
+                        <span className="material-symbols-outlined menuButton" onClick={handleQuit}>arrow_forward</span>
                     </div>
                 </div>
             </div>

@@ -26,21 +26,15 @@
   border-radius: 8px;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgb(190, 190, 190);
+  border: 1px solid var(--bg-secondary);
 }
 
 .progress-cover {
   height: 100%;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
   position: absolute;
   right: 0;
   pointer-events: none;
-}
-
-.stick {
-  margin-right: auto;
-  width: 10px;
-  background-color: black;
 }
 
 .SaveSettingsGame{
@@ -48,7 +42,7 @@
   height: 75px;
   width: 150px;
   border-radius: 15px;
-  color: var(--text-primary);
+  color: white;
   text-decoration: none;
   text-align: center; 
   font-size: 2rem;
@@ -59,6 +53,7 @@
 
 .SaveSettingsGame:hover{
  box-shadow: 0 0 5px 3px rgba(137, 43, 226, 0.359);
+cursor: pointer;
 }
 
 .SaveSettingsGameWrapper{

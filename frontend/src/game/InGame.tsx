@@ -6,7 +6,6 @@ import '../styles/matchmaking.css'
 import { useAuth } from '../components/AuthProvider';
 import { useGame } from '../components/GameProvider';
 import { useNavigate } from 'react-router-dom';
-import profil from '../game_img/profil.jpeg';
 import boobaprofil from '../game_img/booba.jpeg';
 import BlockBackNavigation from "./BlockBackNavigation";
 import { getAvatar } from '../utils/utils';
@@ -14,7 +13,6 @@ import { getAvatar } from '../utils/utils';
 
 export function InGame() {
     const game = useGame();
-    // console.log("  game    :", game);
     const auth = useAuth();
     const nav = useNavigate();
     const [score, setScore] = useState({ player1: 0, player2: 0 });
@@ -31,6 +29,8 @@ export function InGame() {
             auth?.socket?.emit('keyAction', { key: event.key, action: 'released' });
         }
     };
+
+
 
     useEffect(() => {
         game?.gameInstance?.current?.startGame();

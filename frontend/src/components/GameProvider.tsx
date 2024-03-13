@@ -43,6 +43,7 @@ interface GameContextType {
     spectatorsBase: any[];
     setSpectatorsBase: React.Dispatch<React.SetStateAction<any[]>>;
     handleQuit: () => void;
+    PreviousUrl: string;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -69,6 +70,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const saveClicked = false;
     const [spectatorsBase, setSpectatorsBase] = useState([]);
     const [isSpectator, setIsSpectator] = useState(false);
+    const PreviousUrl = "";
 
     const handleQuit = () => {
         setLetsGO(false);
@@ -93,7 +95,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         ballSpeed, setBallSpeed, paddleHeight, setPaddleHeight, paddleSpeed, setPaddleSpeed, increasedBallSpeed, setIncreasedBallSpeed,
         ballSize, setBallSize, Winner, setWinner, gameInstance, showEndGameModal, setShowEndGameModal, playerStats, setPlayerStats,
         isAbandon, setIsAbandon, letsGO, setLetsGO, playerOne, setPlayerOne, playerTwo, setPlayerTwo, historyAll, setHistoryAll,
-        isSpectator, setIsSpectator, saveClicked, spectatorsBase, setSpectatorsBase, handleQuit
+        isSpectator, setIsSpectator, saveClicked, spectatorsBase, setSpectatorsBase, handleQuit, PreviousUrl
     };
 
     return (

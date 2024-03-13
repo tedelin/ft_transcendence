@@ -1,6 +1,6 @@
 import '../styles/game.css';
 import '../styles/matchmaking.css';
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { MatchmakingView } from './MatchmakingView';
 import { useAuth } from '../components/AuthProvider';
 import { useGame } from '../components/GameProvider';

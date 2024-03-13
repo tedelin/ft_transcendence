@@ -111,6 +111,7 @@
 .listItemCenterSelected {
 	border-radius: 10px;
 	background-color: var(--hover);
+	cursor: pointer;
 }
 
 .messageContainer {
