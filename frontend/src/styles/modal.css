@@ -132,6 +132,7 @@
 	padding: 0px;
 	border: none;
 	background-color: var(--primary-blue);
+    cursor: pointer;
 }
 
 .addFriendButton span {

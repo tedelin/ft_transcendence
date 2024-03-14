@@ -258,7 +258,7 @@ function FriendsList({ selected }: { selected: string }) {
 									<div className='friendActions'>
 										<span
 											onClick={() => navigate(`/chat/private-messages/${friend.id}`)}
-											className='material-symbols-outlined'
+											className='material-symbols-outlined privateMessageIcon'
 										>
 											chat
 										</span>
