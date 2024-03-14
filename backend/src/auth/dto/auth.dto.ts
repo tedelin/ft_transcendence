@@ -4,7 +4,7 @@ export class AuthDto {
     @IsString()
     @IsNotEmpty()
 	@MinLength(4)
-	@MaxLength(20)
+	@MaxLength(12)
     username: string;
 
     @IsString()
@@ -18,7 +18,7 @@ export class SignUpDto {
 	@IsString()
 	@IsNotEmpty()
 	@MinLength(4)
-	@MaxLength(20)
+	@MaxLength(12)
 	username: string;
 }
 
