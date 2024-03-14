@@ -125,18 +125,17 @@ export function ChatBox() {
 
 	return (
 		<>
-				<TopBar channel={name} />
-				<MessageDisplay key={name} channel={name} />
-				<div className="typingIndicator">{typing}</div>
-				<div className='messageInput'>
-					<textarea
-						value={message}
-						onKeyDown={handleKeyDown}
-						placeholder={'Send message to ' + name}
-						onChange={onTyping}
-					/>
-				</div>
-			{/* <RightBar /> */}
+			<TopBar channel={name} />
+			<MessageDisplay key={name} channel={name} />
+			<div className="typingIndicator">{typing}</div>
+			<div className='messageInput'>
+				<textarea
+					value={message}
+					onKeyDown={handleKeyDown}
+					placeholder={'Send message to ' + name}
+					onChange={onTyping}
+				/>
+			</div>
 		</>
 	);
 }

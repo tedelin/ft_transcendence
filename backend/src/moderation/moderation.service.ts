@@ -62,6 +62,7 @@ export class ModerationService {
 	async promoteUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
 		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot promote the owner');
+		this.eventEmitter.emit("user.role", { userId, roomId, role: `${Role.ADMIN}` });
 		return await this.databaseService.channelUser.update({
 			where: {
 				channelName_userId: {
@@ -78,6 +79,7 @@ export class ModerationService {
 	async demoteUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
 		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot demote the owner');
+		this.eventEmitter.emit("user.role", { userId, roomId, role: `${Role.MEMBER}` });
 		return await this.databaseService.channelUser.update({
 			where: {
 				channelName_userId: {

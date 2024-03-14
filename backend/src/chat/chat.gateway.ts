@@ -151,8 +151,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const receiverSocketId = this.getKeyByValue(friendship.receiverId);
 		const initiatorSocketId = this.getKeyByValue(friendship.initiatorId);
 		this.server.to(receiverSocketId).emit('friendship-delete', friendship);
-		this.server.to(initiatorSocketId).emit('friendship-delete', friendship);
-		
+		this.server.to(initiatorSocketId).emit('friendship-delete', friendship);	
+	}
+
+	@OnEvent('user.role')
+	async onUserRoleChange({ userId, roomId, role }) {
+		this.server.to(roomId).emit('user-role', { userId, role });
 	}
 
 	private getClientByUserId(userId: number): Socket | null {

@@ -4,7 +4,7 @@ import { useToast } from '../utils/hooks/useToast';
 import '../styles/contextMenu.css';
 
 
-export function Moderation({ enabled, channel, userId, setEnabled }: { enabled: boolean, channel: string, userId: number, setEnabled: Function }) {
+export function Moderation({ role, channel, userId, setEnabled, userRole }: { role: string, channel: string, userId: number, setEnabled: Function, userRole: string }) {
     const token = localStorage.getItem('jwtToken');
     const { error } = useToast();
 
@@ -118,21 +118,21 @@ export function Moderation({ enabled, channel, userId, setEnabled }: { enabled: 
 			setPosition({ x: adjustedX, y: adjustedY });
 		}
 
-        if (enabled) {
+        if (role) {
             document.addEventListener('contextmenu', handleContextMenu);
         }
 
         return () => {
             document.removeEventListener('contextmenu', handleContextMenu);
         };
-    }, [enabled]);
+    }, [role]);
 
     return (
-        enabled && (
+        (role === "ADMIN" || role === "OWNER") && (
             <div className="context-menu" style={{ position: 'absolute', top: position.y, left: position.x }}>
                 <ul>
-                    <li onClick={() => kickUser(userId, channel)}>Kick</li>
-                    <li onClick={() => banUser(userId, channel)}>Ban</li>
+                    <li onClick={() => kickUser(userId, channel)}>{userRole === "BANNED" ? "Unban" : "Kick"}</li>
+                    {(userRole !== "OWNER" && userRole !== "BANNED") && <li onClick={() => banUser(userId, channel)}>Ban</li>}
                     <li onClick={() => muteUser(userId, channel)}>Mute</li>
                     <li onClick={() => promoteUser(userId, channel)}>Promote</li>
                     <li onClick={() => demoteUser(userId, channel)}>Demote</li>
