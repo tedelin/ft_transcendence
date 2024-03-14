@@ -24,17 +24,17 @@ function createAchievementBoxes(achievements) {
 function getAchievements(Achievements: any) {
 	const achievements: { title: string; img: string; }[] = []; 
 	if (Achievements.firstGame)
-		achievements.push({ title: 'firstGame', img: firstGame });
+		achievements.push({ title: 'first Game', img: firstGame });
 	if (Achievements.firstWin)
-		achievements.push({ title: 'firstWin', img: firstWin });
+		achievements.push({ title: 'first Win', img: firstWin });
 	if (Achievements.firstLoose)
-		achievements.push({ title: 'firstLoose', img: firstLoose });
+		achievements.push({ title: 'first Loose', img: firstLoose });
 	if (Achievements.masterWinner)
-		achievements.push({ title: 'masterWinner', img: invinvibleGuardian });
+		achievements.push({ title: 'masterWinner', img: MasterWinner});
 	if (Achievements.invincible_guardian)
-		achievements.push({ title: 'invincible_guardian', img: speeddamon });
+		achievements.push({ title: 'invincible guardian', img: invinvibleGuardian});
 	if (Achievements.Speed_Demon)
-		achievements.push({ title: 'Speed_Demon', img: MasterWinner });
+		achievements.push({ title: 'Speed Demon', img: speeddamon });
 	return achievements;
 }
 
