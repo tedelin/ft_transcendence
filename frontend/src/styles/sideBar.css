@@ -18,4 +18,5 @@
 	color: var(--text-primary);
 	text-align: center;
 	border: none;
+	cursor: pointer;
 }

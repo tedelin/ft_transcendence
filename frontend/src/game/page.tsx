@@ -1,5 +1,5 @@
 import { ClassGame } from './classGame';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../components/AuthProvider';
 import { MatchHistory } from './matchHistory';
 import { fetchUrl } from '../fetch';
@@ -11,7 +11,7 @@ import '../styles/page.css';
 
 
 export function Game() {
-    const BASE_URL = import.meta.env.VITE_FRONTEND_URL;
+    const [showText, setShowText] = useState(false);
     const game = useGame();
     const auth = useAuth();
     const nav = useNavigate();
@@ -21,6 +21,13 @@ export function Game() {
     function handletsart() {
         auth?.socket?.emit('clickPlay');
         game?.setShowButton(false);
+    }
+
+    function handleInfoClick(){
+        if (showText)
+            setShowText(false);
+        else
+            setShowText(true);
     }
 
     useEffect(() => {
@@ -141,6 +148,11 @@ export function Game() {
         <div className='page'>
             {!game?.gameStarted && game?.showButton && game?.historyAll && (
                 <div className="menu">
+                    <div className='information_rules' onClick={handleInfoClick}>
+                        <span className="material-symbols-outlined">
+                            info
+                        </span>
+                    </div>
                     <div className="loading-animation">
                         <div className="boxxx">
                             <div className='div_start_game'>
@@ -151,6 +163,19 @@ export function Game() {
                     <MatchHistory matchs={game?.historyAll} />
                 </div>
             )}
+            {showText && (
+                <div className="overlay" onClick={handleInfoClick}>
+                    <div className="centeredText">
+                        <p>In the game of Pong, two players face off on a screen divided into two halves. 
+                            Each controls a paddle positioned on their side of the court. A ball bounces 
+                            between the paddles, and the goal is to prevent the ball from passing behind 
+                            your own paddle. When a player fails to return the ball successfully, the 
+                            opponent scores a point and gains the service for the next exchange. The first 
+                            player to reach 11 points wins the game.</p>
+                    </div>
+                </div>
+            )}
+
             <Outlet />
         </div>
     )

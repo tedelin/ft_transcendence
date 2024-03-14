@@ -1,11 +1,11 @@
 .container {
-    display: flex;
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', Arial, Helvetica, sans-serif;
-    font-size: 16px;
-    height: 100vh;
-    flex-grow: 1;
+	display: flex;
+	margin: 0;
+	padding: 0;
+	font-family: 'Inter', Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	height: 100vh;
+	flex-grow: 1;
 }
 
 .accessError {
@@ -35,16 +35,24 @@
 
 .status {
 	width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    position: absolute;
-    top: 30px;
-    right: 15px;
+	height: 10px;
+	border-radius: 50%;
+	position: absolute;
+	top: 30px;
+	right: 15px;
 }
 
-.online { background-color: #43b581; }
-.offline { background-color: #747f8d; }
-.inGame { background-color: #f04747; }
+.online {
+	background-color: #43b581;
+}
+
+.offline {
+	background-color: #747f8d;
+}
+
+.inGame {
+	background-color: #f04747;
+}
 
 .smallAvatar {
 	width: 25px;
@@ -91,6 +99,12 @@
 	padding: 15px;
 }
 
+.listItemSelected,
+.listItemCenter,
+.listItemCenterSelected {
+	cursor: pointer;
+}
+
 .listItemCenter,
 .listItemCenterSelected {
 	justify-content: center;
@@ -111,7 +125,6 @@
 .listItemCenterSelected {
 	border-radius: 10px;
 	background-color: var(--hover);
-	cursor: pointer;
 }
 
 .messageContainer {
@@ -242,6 +255,10 @@ select {
 	gap: 15px;
 	padding: 15px;
 	border-bottom: 1px solid var(--bg-secondary);
+}
+
+.channelVisibility {
+	cursor: pointer;
 }
 
 .topContainer input,

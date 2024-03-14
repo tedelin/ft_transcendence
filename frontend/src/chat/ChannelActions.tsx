@@ -90,7 +90,7 @@ export function ChannelActions() {
 				value={channelPassword}
 				onChange={(e) => setChannelPassword(e.target.value)}
 			/>}
-			<select value={channelVisibility} onChange={handleVisibilityChange}>
+			<select className='channelVisibility' value={channelVisibility} onChange={handleVisibilityChange}>
 				<option value="PUBLIC">Public</option>
 				<option value="PRIVATE">Private</option>
 				<option value="PROTECTED">Protected</option>

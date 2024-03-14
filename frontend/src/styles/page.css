@@ -133,4 +133,30 @@
     margin-right: 10px;
 }
 
+.information_rules {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
 
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.90);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.centeredText {
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    width: 80%;
+    font-style: italic;
+}
