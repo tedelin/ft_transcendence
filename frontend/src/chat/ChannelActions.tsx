@@ -12,10 +12,10 @@ export function ChannelActions() {
 	const { error, success } = useToast();
 
 	async function create() {
-		if (channelName.length < 2 || channelName.length > 13) {
-			error('Channel name must be between 2 and 13 characters');
-			return;
-		}
+		// if (channelName.length < 2 || channelName.length > 13) {
+		// 	error('Channel name must be between 2 and 13 characters');
+		// 	return;
+		// }
 		try {
 			const token = localStorage.getItem('jwtToken');
 			await fetchUrl('/chat/channels', {

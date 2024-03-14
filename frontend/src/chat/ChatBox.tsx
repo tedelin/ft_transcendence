@@ -57,6 +57,7 @@ export function ChatBox() {
 	const [message, setMessage] = useState('');
 	const [typing, setTyping] = useState('');
 	const { name } = useParams();
+	const navigate = useNavigate();
 	const { error } = useToast();
 	const auth = useAuth();
 
@@ -101,11 +102,26 @@ export function ChatBox() {
 				setTyping('');
 			}, 3000);
 		});
+		auth?.socket?.on('kicked', (channel: string) => {
+			error('You have been kicked from ' + channel);
+			if (name === channel) {
+				navigate('/chat/channels');
+			}
+		});
+	
+		auth?.socket?.on('banned', (channel: string) => {
+			error('You have been banned from ' + channel);
+			if (name === channel) {
+				navigate('/chat/channels');
+			}
+		});
 
 		return () => {
 			auth?.socket?.off("typing");
+			auth?.socket?.off('kicked');
+			auth?.socket?.off('banned');
 		}
-	}, [])
+	}, []);
 
 	return (
 		<>
