@@ -6,6 +6,7 @@ import { Prisma, UserStatus } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './dto/auth.dto';
+import { Express } from 'express';
 
 @Injectable({})
 export class AuthService {
@@ -59,29 +60,37 @@ export class AuthService {
     }
 
 
-	async signup42(user: any, signUpDto: SignUpDto) {
+	async signup42(user: any, signUpDto: SignUpDto, file: Express.Multer.File | undefined) {
 		const userExist = await this.databaseService.user.findUnique({
 			where: {
 				id42: user.id
 			}
 		});
 		if (userExist) throw new ForbiddenException('User already exist');
+	
 		const usernameExist = await this.databaseService.user.findUnique({
 			where: {
 				username: signUpDto.username
 			}
 		});
 		if (usernameExist) throw new ForbiddenException('Username already taken');
+		let avatarPath = 'default-avatar.jpg'; 
+		if (file && file.filename) {
+			avatarPath = file.filename;
+		}
 		const newUser = await this.databaseService.user.create({
 			data: {
 				username: signUpDto.username,
 				password: '',
 				status: UserStatus.ONLINE,
-				id42: user.id
+				id42: user.id,
+				avatar: avatarPath,
 			}
 		});
+	
 		return this.signToken(newUser.id, newUser.username);
 	}
+	
 
 	async getAccessTokenFromCode(code: string) {
 		const formData = new FormData();
