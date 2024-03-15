@@ -5,7 +5,7 @@ import { useGame } from "../../../components/GameProvider";
 
 const BallSettings = () => {
     const game = useGame();
-    const [progressSpeed, setProgressSpeed] = useState(game?.ballSpeed ? game.ballSpeed * 10 : 0);
+    const [progressSpeed, setProgressSpeed] = useState(50);
     const [progressAcceleration, setProgressAcceleration] = useState(game?.increasedBallSpeed ? game.increasedBallSpeed * 10000 : 0);
     const determineChoice = (ballSize) => {
         if (ballSize < 10) return "smallSizeBall";

@@ -53,7 +53,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const [showButton, setShowButton] = useState(true);
     const [settingsToDo, setSettingsToDo] = useState(false);
     const [firstPlayer, setFirstPlayer] = useState(false);
-    const [ballSpeed, setBallSpeed] = useState(5);
+    const [ballSpeed, setBallSpeed] = useState(0.05);
     const [paddleHeight, setPaddleHeight] = useState(200);
     const [paddleSpeed, setPaddleSpeed] = useState(5);
     const [increasedBallSpeed, setIncreasedBallSpeed] = useState(0.003);
@@ -78,7 +78,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         setShowButton(true);
         setFirstPlayer(false);
         setSettingsToDo(false);
-        setBallSpeed(5);
+        setBallSpeed(0.05);
         setPaddleHeight(200);
         setPaddleSpeed(5);
         setIncreasedBallSpeed(0.003);
