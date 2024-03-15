@@ -62,6 +62,7 @@ export class ModerationService {
 	async promoteUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
 		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot promote the owner');
+		this.eventEmitter.emit("user.role", { userId, roomId, role: `${Role.ADMIN}` });
 		return await this.databaseService.channelUser.update({
 			where: {
 				channelName_userId: {
@@ -78,6 +79,7 @@ export class ModerationService {
 	async demoteUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
 		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot demote the owner');
+		this.eventEmitter.emit("user.role", { userId, roomId, role: `${Role.MEMBER}` });
 		return await this.databaseService.channelUser.update({
 			where: {
 				channelName_userId: {
@@ -105,14 +107,17 @@ export class ModerationService {
 				role: Role.MUTED,
 			}
 		});
+		this.eventEmitter.emit("user.role", { userId, roomId, role: `${Role.MUTED}` });
 		setTimeout(() => {
-			this.unmuteUser(userId, roomId);
+			this.unmuteUser(userId, roomId, userRole);
 		}, duration * 1000);
 		return muted;
 	}
 
-	async unmuteUser(userId: number, roomId: string) {
-		return await this.databaseService.channelUser.update({
+	async unmuteUser(userId: number, roomId: string, previousRole: Role) {
+		const userRole = await this.getRole(userId, roomId);
+		if (userRole !== previousRole) return ;
+		const unmuteUser =  await this.databaseService.channelUser.update({
 			where: {
 				channelName_userId: {
 					channelName: roomId,
@@ -120,9 +125,11 @@ export class ModerationService {
 				},
 			},
 			data: {
-				role: Role.MEMBER,
+				role: previousRole,
 			}
 		});
+		this.eventEmitter.emit("user.role", { userId, roomId, role: previousRole });
+		return unmuteUser;
 	}
 
 	async setOwnership(userId: number, roomId: string) {

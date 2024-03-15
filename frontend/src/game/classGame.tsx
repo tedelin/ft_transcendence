@@ -43,8 +43,10 @@ export class ClassGame {
     localState: GameState | null;
     win: boolean;
     logoImage : HTMLImageElement = new Image();
+	primaryColor: string;
+	secondaryColor: string;
 
-    constructor(canvasRef: React.RefObject<HTMLCanvasElement>, gameState, socket, dimensions: {width: number, height: number}) {
+    constructor(canvasRef: React.RefObject<HTMLCanvasElement>, gameState, socket, dimensions: {width: number, height: number}, theme: string) {
         this.canvasRef = canvasRef;
         this.canvasHeight = dimensions.height;
         this.canvasWidth = dimensions.width;
@@ -59,6 +61,8 @@ export class ClassGame {
             console.error("Erreur lors du chargement de l'image :", error);
         };
         this.logoImage.src = logoImage;
+		this.primaryColor = theme === 'dark' ? 'white' : 'black';
+		this.secondaryColor = theme === 'dark' ? 'black' : 'white';
     }
 
     updateDimensions(width: number, height: number) {
@@ -105,35 +109,26 @@ export class ClassGame {
         if (!this.localState)
             return;
         // paddles
-        context.fillStyle = 'black';
+        context.fillStyle = this.secondaryColor;
         this.drawRoundedRect(context, 15, this.localState.paddles.leftPos.y, this.localState.paddles.width, this.localState.paddles.height, 10);
         this.drawRoundedRect(context, this.canvasWidth - this.localState.paddles.width - 15, this.localState.paddles.rightPos.y, this.localState.paddles.width, this.localState.paddles.height, 10);
 
         //line
-        context.fillStyle = 'black';
+        context.fillStyle = this.secondaryColor;
         context.fillRect(this.canvasWidth / 2, 0, 2, this.canvasHeight);
         
         // center circle
-        context.strokeStyle = 'black';
+        context.strokeStyle = this.secondaryColor;
         context.lineWidth = 2;
         context.beginPath();
         context.arc(this.canvasWidth / 2, this.canvasHeight / 2, 150, 0, 2 * Math.PI);
         context.stroke();
         
         // center logo
-        if (this.logoImage.complete) {
-            const logoX = this.canvasWidth / 2 - 48 / 2;
-            const logoY = this.canvasHeight / 2 - 48 / 2;
-            context.fillStyle = 'white';
-            context.beginPath();
-            context.arc(logoX + 48 / 2, logoY + 48 / 2, 48 / 2, 0, Math.PI * 2);
-            context.fill();
-            context.drawImage(this.logoImage, logoX + 1, logoY, 48, 48);
-        }
 
         // ball
         context.beginPath();
-        context.fillStyle = 'black';
+        context.fillStyle = this.secondaryColor;
         context.arc(this.localState.ball.pos.x, this.localState.ball.pos.y, this.localState.ball.radius, 0, 2 * Math.PI);
         context.fill();
     }
@@ -145,7 +140,7 @@ export class ClassGame {
         const context = canvas.getContext('2d');
         if (!context || !this.localState) return;
 
-        context.fillStyle = "rgba(255, 255, 255, 0.20)";
+        context.fillStyle = this.primaryColor;
         context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
         this.draw(context);
 

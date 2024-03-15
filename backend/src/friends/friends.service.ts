@@ -48,6 +48,7 @@ export class FriendService {
             },
         });
 
+		if (existingFriendship && existingFriendship.status === FriendshipStatus.BLOCKED) throw new ForbiddenException('You have been blocked by this user');
         if (existingFriendship) throw new ConflictException('Friendship already exists');
 
         const friendship = await this.databaseService.friendship.create({

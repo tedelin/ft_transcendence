@@ -108,14 +108,14 @@ export function MessageDisplay({ channel }: { channel: string }) {
 						<div className="timestamp">{new Date(msg.timestamp).toLocaleString()}</div>
 					</div>
 				))}
-				{contextMenuUser !== null && (
+				{/* {contextMenuUser !== null && (
 					<Moderation
 						enabled={true}
 						channel={channel}
 						userId={contextMenuUser}
 						setEnabled={closeContextMenu}
 					/>
-				)}
+				)} */}
 			</div>
 		</>
 	);

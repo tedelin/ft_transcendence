@@ -85,6 +85,7 @@
     justify-content: center; 
     align-items: center; 
     animation: Change_color 3s infinite;
+	font-weight: bold;
     z-index:3;
 }
 

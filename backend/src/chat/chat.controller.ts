@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Delete, Post, Body, Patch, UseGuards, Req, Query } from '@nestjs/common';
 import { ChannelService } from './channel.service';
 import { Prisma } from '@prisma/client';
-import { ChannelMessageDto, UpdateChannelDto } from './dto/chat.dto';
+import { ChannelMessageDto, CreateChannelDto, UpdateChannelDto } from './dto/chat.dto';
 import { JwtGuard } from 'src/auth/guard';
 import { JoinChannelDto } from './dto/chat.dto';
 import { UserRequest, User } from '../user/decorators/user-request.decorator';
@@ -28,7 +28,7 @@ export class ChatController {
 
 	@UseGuards(JwtGuard)
 	@Post('channels')
-	create(@UserRequest() user: User, @Body() createChannelDto: Prisma.ChannelCreateInput) {
+	create(@UserRequest() user: User, @Body() createChannelDto: CreateChannelDto) {
 		return this.channelService.create(user.id, createChannelDto);
 	}
 

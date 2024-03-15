@@ -22,6 +22,7 @@
 .progress-bar {
   width: 100%;
   height: 30px;
+  /* background: var(--bg-secondary); */
   background: linear-gradient(to right, rgba(141, 141, 255, 0.369), #2832C2);
   border-radius: 8px;
   position: relative;

@@ -1,11 +1,12 @@
 import { ClassGame } from './classGame';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useAuth } from '../components/AuthProvider';
 import { MatchHistory } from './matchHistory';
 import { fetchUrl } from '../fetch';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { useGame } from '../components/GameProvider';
 import '../styles/page.css';
+import { ThemeContext } from '../utils/providers/ThemeProvider';
 
 
 
@@ -17,6 +18,8 @@ export function Game() {
     const nav = useNavigate();
     const roomId = new URLSearchParams(window.location.search).get('roomId');
     const privateGame = new URLSearchParams(window.location.search).get('private');
+	const { theme } = useContext(ThemeContext);
+
 
     function handletsart() {
         auth?.socket?.emit('clickPlay');
@@ -74,7 +77,7 @@ export function Game() {
 
         auth?.socket?.on('gameLaunch', (data) => {
             if (game != null && !game.gameStarted) {
-                game.gameInstance.current = new ClassGame(React.createRef(), data.gameState, auth?.socket, { width: 800, height: 600 });
+                game.gameInstance.current = new ClassGame(React.createRef(), data.gameState, auth?.socket, { width: 800, height: 600 }, theme === 'dark' ? 'white' : 'dark');
                 game.setGameStarted(true);
                 game.setSettingsToDo(false);
                 nav('/game/inGame');
