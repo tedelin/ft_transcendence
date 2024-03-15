@@ -100,7 +100,7 @@
     position: absolute;
     right: 20px;
     top: 20px;
-    color: white;
+    color: var(--text-primary);
     font-size: 25px;
     cursor: pointer;
     z-index: 3;

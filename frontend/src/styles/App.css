@@ -28,6 +28,11 @@
     --bg-modal-light: rgba(0, 0, 0, 0.4);
     --bg-modal-dark: rgba(255, 255, 255, 0.05);
 
+	--bg-matchmaking-light: #f5f5f563;
+	--bg-matchmaking-dark: #0000009d;
+
+	--point-color: var(--text-primary);
+
 	--main-color: var(--bg-primary);
     --size: 5px;
 }
@@ -41,6 +46,7 @@
     --bg-navbar: var(--bg-navbar-light);
     --bg-modal: var(--bg-modal-light);
 	--hover: var(--hover-light);
+	--bg-matchmaking: var(--bg-matchmaking-light);
 }
 
 .dark {
@@ -52,6 +58,7 @@
     --bg-navbar: var(--bg-navbar-dark);
     --bg-modal: var(--bg-modal-dark);
 	--hover: var(--hover-dark);
+	--bg-matchmaking: var(--bg-matchmaking-dark);
 }
 
 * {

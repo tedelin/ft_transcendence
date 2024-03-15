@@ -55,10 +55,8 @@
 
 .leftPlayer img,
 .rightPlayer img{
-    padding: 2px;
     width: 18vw;
     height: 18vw;
-    border: 2px solid white;
     border-radius: 50%;
     z-index: 3;
     background-color: white;
@@ -89,7 +87,7 @@
 
 .back {
     backdrop-filter:blur(10px);
-    background-color: rgba(214, 212, 212, 0.76);
+    background-color: var(--bg-matchmaking);
 }
 
 .playerInfo {
