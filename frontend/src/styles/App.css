@@ -47,6 +47,7 @@
     --bg-modal: var(--bg-modal-light);
 	--hover: var(--hover-light);
 	--bg-matchmaking: var(--bg-matchmaking-light);
+	--bg-reverse: var(--bg-primary-dark);
 }
 
 .dark {
@@ -59,6 +60,7 @@
     --bg-modal: var(--bg-modal-dark);
 	--hover: var(--hover-dark);
 	--bg-matchmaking: var(--bg-matchmaking-dark);
+	--bg-reverse: var(--bg-primary-light);
 }
 
 * {

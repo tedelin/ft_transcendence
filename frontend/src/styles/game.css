@@ -52,7 +52,7 @@ canvas {
     margin:auto;
     height:90%;
     width:100%;
-    border: 1px solid var(--bg-secondary);
+    border: 1px solid var(--bg-reverse);
 	background-color: var(--bg-primary);
 }
 

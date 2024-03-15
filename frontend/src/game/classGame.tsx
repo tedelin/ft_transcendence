@@ -125,15 +125,6 @@ export class ClassGame {
         context.stroke();
         
         // center logo
-        if (this.logoImage.complete) {
-            const logoX = this.canvasWidth / 2 - 48 / 2;
-            const logoY = this.canvasHeight / 2 - 48 / 2;
-            context.fillStyle = this.secondaryColor;
-            context.beginPath();
-            context.arc(logoX + 48 / 2, logoY + 48 / 2, 48 / 2, 0, Math.PI * 2);
-            context.fill();
-            context.drawImage(this.logoImage, logoX + 1, logoY, 48, 48);
-        }
 
         // ball
         context.beginPath();
