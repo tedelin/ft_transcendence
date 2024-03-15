@@ -33,7 +33,7 @@ export class FriendService {
         await this.checkUserExistence(initiatorId);
         await this.checkUserExistence(receiverId);
 
-        const existingFriendship = await this.databaseService.friendship.findFirst({
+        const exist = await this.databaseService.friendship.findFirst({
             where: {
                 OR: [
 					{
@@ -47,9 +47,14 @@ export class FriendService {
 				]
             },
         });
-
-		if (existingFriendship && existingFriendship.status === FriendshipStatus.BLOCKED) throw new ForbiddenException('You have been blocked by this user');
-        if (existingFriendship) throw new ConflictException('Friendship already exists');
+		if (exist) {
+			if (exist.status === FriendshipStatus.ACCEPTED) throw new ConflictException('You are already friends');
+			if (exist.status === FriendshipStatus.PENDING && exist.initiatorId === initiatorId) throw new ConflictException('Friend request already sent');
+			if (exist.status === FriendshipStatus.PENDING && exist.receiverId === initiatorId) throw new ConflictException('You have already received a friend request from this user');
+			if (exist.status === FriendshipStatus.BLOCKED && exist.initiatorId === initiatorId) throw new ForbiddenException('You have blocked this user');
+			if (exist.status === FriendshipStatus.BLOCKED && exist.receiverId === initiatorId) throw new ForbiddenException('You have been blocked by this user');
+			else throw new ConflictException('Friendship already exists');
+		}
 
         const friendship = await this.databaseService.friendship.create({
             data: {
@@ -117,9 +122,6 @@ export class FriendService {
 					{ initiatorId: userId, receiverId: blockedUserId },
 					{ initiatorId: blockedUserId, receiverId: userId },
 				],
-				NOT : {
-					status: FriendshipStatus.BLOCKED,
-				},
 			},
 			include: friendInclude,
 		});
