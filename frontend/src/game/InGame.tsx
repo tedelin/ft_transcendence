@@ -6,7 +6,7 @@ import '../styles/matchmaking.css'
 import { useAuth } from '../components/AuthProvider';
 import { useGame } from '../components/GameProvider';
 import { useNavigate } from 'react-router-dom';
-import boobaprofil from '../game_img/booba.jpeg';
+import avatarSpectator from '../game_img/spectator.png';
 import BlockBackNavigation from "./BlockBackNavigation";
 import { getAvatar } from '../utils/utils';
 
@@ -88,7 +88,7 @@ export function InGame() {
                     <div className="spectatorsList">
                         {spectators?.map((spectator, index) => (
                             console.log(spectator),
-                            <img key={index} src={boobaprofil} alt={`Spectator ${spectator}`} className="spectator" />
+                            <img key={index} src={avatarSpectator} alt={`Spectator ${spectator}`} className="spectator" />
 						))}
                     </div>
                 </div>

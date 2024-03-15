@@ -119,13 +119,17 @@ export function Callback() {
 						value={username}
 						onChange={(e) => setUsername(e.target.value)}
 					/>
+					<h3>Choose your Avatar</h3>
+					<div className='AvatarModal'>
+						<Avatar handleFileChange={handleFileChange} preview={preview} />
+					</div>
+				</div>
 					<button
 						className='modalButton blue'
 						onClick={registerUser}
 					>
 						Submit
 					</button>
-				</div>
 			</Modal>
 		</div>
 	);
