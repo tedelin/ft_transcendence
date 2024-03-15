@@ -48,7 +48,7 @@ function TwoFaSettings() {
 		<div className='two-fa-settings'>
 			<div><strong>Two-Factor Authentication</strong></div>
 			<div>
-				<button onClick={handleClick}>{useTwoFA ? 'Turn off' : 'Set up'}</button>
+				<button className="twofaButton" onClick={handleClick}>{useTwoFA ? 'Turn off' : 'Set up'}</button>
 			</div>
 		</div>
 	);

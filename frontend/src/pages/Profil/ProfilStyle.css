@@ -6,7 +6,7 @@ button {
 
 .profilPage {
 	display: flex;
-	flex-grow: 1;
+	flex: 1;
 	overflow: auto;
 }
 
@@ -83,7 +83,7 @@ button {
   font-size: 40px;
 }
 
-.actions {
+.actions, .twofaButton {
   flex: 25%;
   display: flex;
   justify-content: space-between;
@@ -92,7 +92,7 @@ button {
   max-width: 500px;
 }
 
-.actions button {
+.actions button, .twofaButton {
   min-width: 150px;
   width: 31%;
   height: 60%;
@@ -102,7 +102,7 @@ button {
   font-weight: 700;
 }
 
-.actions button:hover {
+.actions button:hover, .twofaButton:hover {
   cursor: pointer;
   background-color: rgb(220, 220, 220);
 }
@@ -265,8 +265,8 @@ button {
 .player-picture img {
   border-radius: 50%;
   width: auto;
-  height: 80px;
-  width: 80px;
+  height: 70px;
+  width: 70px;
 }
 
 .right-p {

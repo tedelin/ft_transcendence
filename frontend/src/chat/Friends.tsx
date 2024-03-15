@@ -10,7 +10,7 @@ import { AddFriendModal } from './AddFriendModal';
 
 
 function FriendsTopBar({ setSelected, selected, setFriendModal }: { setSelected: Function, selected: string, setFriendModal: Function }) {
-	const options = ["All", "Online","Pending", "Blocked"];
+	const options = ["All", "Online", "Pending", "Blocked"];
 
 	const handleOptionClick = (option: string) => {
 		setSelected(option);
@@ -37,7 +37,7 @@ function FriendsTopBar({ setSelected, selected, setFriendModal }: { setSelected:
 }
 
 
-function SearchFriends({ friendList, setFriends }: { friendList: Friendship[], setFriends: Function}) {
+function SearchFriends({ friendList, setFriends }: { friendList: Friendship[], setFriends: Function }) {
 	const [input, setInput] = useState('');
 	const auth = useAuth();
 
@@ -58,8 +58,8 @@ function SearchFriends({ friendList, setFriends }: { friendList: Friendship[], s
 
 	return (
 		<div className='topContainer'>
-			<input 
-				className="searchFriends" 
+			<input
+				className="searchFriends"
 				type="text"
 				placeholder="Search friends"
 				value={input}
@@ -163,7 +163,7 @@ function FriendsList({ selected }: { selected: string }) {
 		setFilteredFriends(filteredFriends);
 		setSearchFriends(filteredFriends);
 	}
-	
+
 	useEffect(() => {
 		getFriends();
 	}, [selected]);
@@ -186,7 +186,6 @@ function FriendsList({ selected }: { selected: string }) {
 		});
 
 		auth?.socket?.on('friendship-delete', (request) => {
-			console.log('DELETE', request);
 			setFriends((prevFriends) => {
 				return prevFriends.filter((friend) => friend.id !== request.id);
 			});
@@ -194,16 +193,16 @@ function FriendsList({ selected }: { selected: string }) {
 
 		auth?.socket?.on('user-state', (data) => {
 			setFriends((prevFriends) => {
-			  const updatedFriends = prevFriends.map((friend) => {
-				if (friend.initiator.id === data.userId) {
-				  return { ...friend, initiator: { ...friend.initiator, status: data.state } };
-				}
-				else if (friend.receiver.id === data.userId) {
-				  return { ...friend, receiver: { ...friend.receiver, status: data.state } };
-				}
-				return friend;
-			  });
-			  return updatedFriends;
+				const updatedFriends = prevFriends.map((friend) => {
+					if (friend.initiator.id === data.userId) {
+						return { ...friend, initiator: { ...friend.initiator, status: data.state } };
+					}
+					else if (friend.receiver.id === data.userId) {
+						return { ...friend, receiver: { ...friend.receiver, status: data.state } };
+					}
+					return friend;
+				});
+				return updatedFriends;
 			});
 		});
 
@@ -216,7 +215,7 @@ function FriendsList({ selected }: { selected: string }) {
 	useEffect(() => {
 		filterFriends();
 	}, [friends]);
-	
+
 	return (
 		<>
 			<SearchFriends friendList={searchFriends} setFriends={setFilteredFriends} />
@@ -306,7 +305,7 @@ export function Friends() {
 				<FriendsList selected={selected} />
 			</div>
 			<div className='sideBar'>
-				<FriendsTopBar selected={selected} setSelected={setSelected} setFriendModal={setFriendModal}/>
+				<FriendsTopBar selected={selected} setSelected={setSelected} setFriendModal={setFriendModal} />
 			</div>
 		</>
 	);

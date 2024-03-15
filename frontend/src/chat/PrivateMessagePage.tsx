@@ -126,11 +126,11 @@ export function PrivateMessagePage() {
 						placeholder={'Send message'}
 						onChange={onTyping}
 					/>
-					<button
+					{roomId.length === 0 && <button
 						onClick={sendGameInvite}
 						className='inviteButton'
 					>
-						Invite to play</button>
+						Invite to play</button>}
 				</div>
 			</div>
 		</>

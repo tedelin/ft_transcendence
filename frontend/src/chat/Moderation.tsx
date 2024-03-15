@@ -132,10 +132,11 @@ export function Moderation({ role, channel, userId, setEnabled, userRole }: { ro
             <div className="context-menu" style={{ position: 'absolute', top: position.y, left: position.x }}>
                 <ul>
                     <li onClick={() => kickUser(userId, channel)}>{userRole === "BANNED" ? "Unban" : "Kick"}</li>
-                    {(userRole !== "OWNER" && userRole !== "BANNED") && <li onClick={() => banUser(userId, channel)}>Ban</li>}
-                    <li onClick={() => muteUser(userId, channel)}>Mute</li>
-                    <li onClick={() => promoteUser(userId, channel)}>Promote</li>
-                    <li onClick={() => demoteUser(userId, channel)}>Demote</li>
+                    {userRole !== "BANNED" && <li onClick={() => banUser(userId, channel)}>Ban</li>}
+                    {userRole !=="BANNED" && <li onClick={() => muteUser(userId, channel)}>Mute</li>}
+					{userRole === "MUTED" && <li onClick={() => promoteUser(userId, channel)}>Unmute</li>}
+                    {userRole !== ("ADMIN" && "MUTED") && <li onClick={() => promoteUser(userId, channel)}>Promote</li>}
+                    {userRole !== ("MEMBER" && "MUTED") && <li onClick={() => demoteUser(userId, channel)}>Demote</li>}
                 </ul>
             </div>
         )

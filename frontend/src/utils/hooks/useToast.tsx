@@ -1,6 +1,6 @@
 import { toast, ToastOptions } from 'react-toastify';
 
-export function useToast(defaultOptions: ToastOptions<{}> = { theme: 'dark' }) {
+export function useToast(defaultOptions: ToastOptions<{}> = { theme: 'dark',autoClose: 3000, pauseOnFocusLoss: false, position: "top-center" }) {
   const success = (data: string) =>
     toast(data, { ...defaultOptions, type: 'success' });
 

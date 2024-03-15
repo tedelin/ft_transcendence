@@ -70,20 +70,31 @@ export function ChannelUserList() {
 				<div
 					key={channelUser.user.id}
 					className="listItem"
-					onContextMenu={(e) => handleContextMenu(channelUser, e)}
 				>
-					<img src={getAvatar(channelUser.user.avatar)} alt="User Avatar"></img>
-					<span>
-						{channelUser.user.username}
-					</span>
+					<img style={{margin: 0}} src={getAvatar(channelUser.user.avatar)} alt="User Avatar"></img>
 					<span
-					className="material-symbols-outlined"
-					>
-						{channelUser.role === "OWNER" && "shield_person"}
-						{channelUser.role === "ADMIN" && "security"}
-						{channelUser.role === "MEMBER" && "group"}
-						{channelUser.role === "BANNED" && "block"}
+						className="material-symbols-outlined"
+						>
+							{channelUser.role === "OWNER" && "shield_person"}
+							{channelUser.role === "ADMIN" && "security"}
+							{channelUser.role === "MEMBER" && "group"}
+							{channelUser.role === "BANNED" && "block"}
+							{channelUser.role === "MUTED" && "mic_off"}
 					</span>
+					<div
+						className="channelUser"
+					>
+						<span>
+							{channelUser.user.username}
+						</span>
+						
+						<span
+							className="material-symbols-outlined"
+							onContextMenu={(e) => handleContextMenu(channelUser, e)}
+						>
+							more_horiz
+						</span>
+					</div>
 				</div>
 			)}
 			{contextMenuUser !== null && (

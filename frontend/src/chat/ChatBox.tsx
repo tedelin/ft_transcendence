@@ -127,7 +127,9 @@ export function ChatBox() {
 		<>
 			<TopBar channel={name} />
 			<MessageDisplay key={name} channel={name} />
-			<div className="typingIndicator">{typing}</div>
+			{typing !== '' && 
+				<div className="typingIndicator">{typing}</div>
+			}
 			<div className='messageInput'>
 				<textarea
 					value={message}
