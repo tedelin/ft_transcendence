@@ -110,8 +110,8 @@ export class ClassGame {
             return;
         // paddles
         context.fillStyle = this.secondaryColor;
-        this.drawRoundedRect(context, 15, this.localState.paddles.leftPos.y, this.localState.paddles.width, this.localState.paddles.height, 10);
-        this.drawRoundedRect(context, this.canvasWidth - this.localState.paddles.width - 15, this.localState.paddles.rightPos.y, this.localState.paddles.width, this.localState.paddles.height, 10);
+        this.drawRoundedRect(context, 15, this.localState.paddles.leftPos.y - this.localState.paddles.height / 2 , this.localState.paddles.width, this.localState.paddles.height, 10);
+        this.drawRoundedRect(context, this.canvasWidth - this.localState.paddles.width - 15, this.localState.paddles.rightPos.y - this.localState.paddles.height / 2, this.localState.paddles.width, this.localState.paddles.height, 10);
 
         //line
         context.fillStyle = this.secondaryColor;
