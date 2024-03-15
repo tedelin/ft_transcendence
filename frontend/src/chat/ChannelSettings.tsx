@@ -74,7 +74,7 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
             onClose={closeSettings}
         >
 			<div className='fieldInfo'>Channel Name</div>
-			<div className="channelSettings">
+			<div className="modalContainer">
 				<input 
 					className='edit'
 					type="text" 

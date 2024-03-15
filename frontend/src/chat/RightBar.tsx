@@ -109,13 +109,18 @@ export function RightBar() {
 	const [selected, setSelected] = useState('channels');
 	const location = useLocation();
 
-	if (location.pathname.startsWith('/chat/private-messages/') && selected === 'channelUsers') {
-		setSelected('channels');
-	}
+	useEffect(() => {
+		if (location.pathname.startsWith('/chat/channels/')) {
+			setSelected('channelUsers');
+		}
+		if (selected === "channelUsers" && !location.pathname.startsWith('/chat/channels/')) {
+			setSelected('channels');
+		}
+	}, [location.pathname]);
 	
 	return (
 		<div className="sideBar">
-			<select className="sideBarSelect" onChange={(e) => setSelected(e.target.value)}>
+			<select className="sideBarSelect" value={selected} onChange={(e) => setSelected(e.target.value)}>
 				<option value="channels">Channels</option>
 				<option value="privateMessages">Private Messages</option>
 				{location.pathname.startsWith('/chat/channels/') && <option value="channelUsers">Channel Users</option>}

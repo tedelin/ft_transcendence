@@ -12,23 +12,22 @@ export function ChannelActions() {
 	const { error, success } = useToast();
 
 	async function create() {
-		if (channelName.length < 2 || channelName.length > 13) {
-			error('Channel name must be between 2 and 13 characters');
-			return;
-		}
 		try {
-			const token = localStorage.getItem('jwtToken');
+			const requestBody = channelPassword !== '' ?  {
+				name: channelName,
+				visibility: channelVisibility,
+				password: channelPassword,
+			} : {
+				name: channelName,
+				visibility: channelVisibility,
+			}
 			await fetchUrl('/chat/channels', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
 				},
-				body: JSON.stringify({
-					name: channelName,
-					password: channelPassword,
-					visibility: channelVisibility,
-				}),
+				body: JSON.stringify(requestBody),
 			});
 			success('Channel created');
 		} catch (err: any) {
@@ -38,32 +37,22 @@ export function ChannelActions() {
 
 	async function joinChannel() {
 		try {
-			if (channelVisibility !== "PROTECTED") {
-				await fetchUrl("/chat/channels/join", {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-					},
-					body: JSON.stringify({
-						roomId: channelName,
-						visibility: channelVisibility,
-					}),
-				})
-			} else {
-				await fetchUrl("/chat/channels/join", {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-					},
-					body: JSON.stringify({
-						roomId: channelName,
-						visibility: channelVisibility,
-						password: channelPassword,
-					}),
-				})
+			const requestBody = channelPassword !== '' ?  {
+				name: channelName,
+				visibility: channelVisibility,
+				password: channelPassword,
+			} : {
+				name: channelName,
+				visibility: channelVisibility,
 			}
+			await fetchUrl("/chat/channels/join", {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+				},
+				body: JSON.stringify(requestBody),
+			})
 			navigate(channelName);
 		} catch (err: any) {
 			error(err.message);
