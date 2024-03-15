@@ -1,7 +1,7 @@
 import { Controller, Patch, Get, Param, ParseIntPipe, Post, Req, UseGuards, Delete } from '@nestjs/common';
 import { FriendService  } from "./friends.service";
 import { JwtGuard } from '../auth/guard/jwt.guard';
-import { Request } from 'express';
+//import { Request } from 'express';
 import { UserRequest, User } from '../user/decorators/user-request.decorator';
 
 
