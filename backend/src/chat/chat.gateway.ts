@@ -3,7 +3,7 @@ import { Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { UserService } from 'src/user/user.service';
 import { Prisma, UserStatus } from '@prisma/client';
-import { ChannelMessageDto, FriendShipRequestDto } from './dto/chat.dto';
+import { ChannelMessageDto, FriendShipRequestDto, UpdateChannelDto } from './dto/chat.dto';
 import { FriendService } from 'src/friends/friends.service';
 import { OnEvent } from '@nestjs/event-emitter';
 
@@ -90,7 +90,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@OnEvent('user.role')
 	async onUserRoleChange({ userId, roomId, role }) {
-		this.server.to(roomId).emit('user-role', { userId, role });
+		this.server.to(roomId).emit('user-role', { userId, roomId, role });
 	}
 
 	@OnEvent('kick.user')
@@ -112,6 +112,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@OnEvent('new.channel')
 	async onChannel(channelDto: Prisma.ChannelCreateInput) {
 		this.server.emit('new-channel', channelDto);
+	}
+
+	@OnEvent('update.channel')
+	async onUpdateChannel(channelDto: UpdateChannelDto) {
+		this.server.to(channelDto.name).emit('update-channel', channelDto);
 	}
 
 	@OnEvent('delete.channel')

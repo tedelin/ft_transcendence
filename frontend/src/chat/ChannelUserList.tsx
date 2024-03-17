@@ -42,6 +42,7 @@ export function ChannelUserList() {
 		fetchUserChannels();
 
 		auth?.socket?.on('user-role', (data: any) => {
+			if (data.roomId !== name) return;
 			setChannelsUsers((prevUsers) => {
 				const updatedUsers = prevUsers.map((user: ChannelUser) => {
 					if (user.user.id === auth?.user?.id && data.userId === auth?.user?.id) {
@@ -56,7 +57,8 @@ export function ChannelUserList() {
 			});
 		});
 
-		auth?.socket?.on('join-channel', (user: ChannelUser) => {
+		auth?.socket?.on('join-channel', (user: any) => {
+			if (user.channelName !== name) return;
 			setChannelsUsers((prevUsers) => {
 				const updatedUsers = [...prevUsers, user];
 				return updatedUsers;
@@ -64,8 +66,13 @@ export function ChannelUserList() {
 		});
 
 		auth?.socket?.on('leave-channel', (data: any) => {
+			if (data.roomId !== name) return;
 			setChannelsUsers((prevUsers) =>
-				prevUsers.filter((user) => user.user.id !== data.userId)
+				prevUsers.filter((user) => {
+					if (user.user.id !== data.userId) {
+						return user;
+					}
+				})
 			);
 		});
 
