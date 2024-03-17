@@ -8,7 +8,7 @@ import { useAuth } from "../components/AuthProvider";
 
 
 export function ChannelUserList() {
-	const {name} = useParams();
+	const { name } = useParams();
 	const [channelUsers, setChannelsUsers] = useState<ChannelUser[] | []>([]);
 	const [contextMenuUser, setContextMenuUser] = useState<any | null>(null);
 	const [myRole, setMyRole] = useState<string>('');
@@ -40,11 +40,8 @@ export function ChannelUserList() {
 
 	useEffect(() => {
 		fetchUserChannels();
-	}, []);
 
-	useEffect(() => {
 		auth?.socket?.on('user-role', (data: any) => {
-			console.log('role received', data);
 			setChannelsUsers((prevUsers) => {
 				const updatedUsers = prevUsers.map((user: ChannelUser) => {
 					if (user.user.id === auth?.user?.id && data.userId === auth?.user?.id) {
@@ -59,8 +56,23 @@ export function ChannelUserList() {
 			});
 		});
 
+		auth?.socket?.on('join-channel', (user: ChannelUser) => {
+			setChannelsUsers((prevUsers) => {
+				const updatedUsers = [...prevUsers, user];
+				return updatedUsers;
+			});
+		});
+
+		auth?.socket?.on('leave-channel', (data: any) => {
+			setChannelsUsers((prevUsers) =>
+				prevUsers.filter((user) => user.user.id !== data.userId)
+			);
+		});
+
 		return () => {
 			auth?.socket?.off('user-role');
+			auth?.socket?.off('join-channel');
+			auth?.socket?.off('leave-channel');
 		}
 	}, []);
 
@@ -71,15 +83,15 @@ export function ChannelUserList() {
 					key={channelUser.user.id}
 					className="listItem"
 				>
-					<img style={{margin: 0}} src={getAvatar(channelUser.user.avatar)} alt="User Avatar"></img>
+					<img style={{ margin: 0 }} src={getAvatar(channelUser.user.avatar)} alt="User Avatar"></img>
 					<span
 						className="material-symbols-outlined"
-						>
-							{channelUser.role === "OWNER" && "shield_person"}
-							{channelUser.role === "ADMIN" && "security"}
-							{channelUser.role === "MEMBER" && "group"}
-							{channelUser.role === "BANNED" && "block"}
-							{channelUser.role === "MUTED" && "mic_off"}
+					>
+						{channelUser.role === "OWNER" && "shield_person"}
+						{channelUser.role === "ADMIN" && "security"}
+						{channelUser.role === "MEMBER" && "group"}
+						{channelUser.role === "BANNED" && "block"}
+						{channelUser.role === "MUTED" && "mic_off"}
 					</span>
 					<div
 						className="channelUser"
@@ -87,7 +99,7 @@ export function ChannelUserList() {
 						<span>
 							{channelUser.user.username}
 						</span>
-						
+
 						<span
 							className="material-symbols-outlined"
 							onContextMenu={(e) => handleContextMenu(channelUser, e)}

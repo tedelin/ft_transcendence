@@ -1,4 +1,4 @@
-import {IsString, IsOptional, IsNotEmpty, IsNumber, Min, MinLength, Max, MaxLength, IsAlphanumeric } from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty, IsNumber, Min, MinLength, Max, MaxLength, IsAlphanumeric } from 'class-validator';
 import { FriendshipStatus, Visibility } from '@prisma/client';
 
 export class CreateChannelDto {

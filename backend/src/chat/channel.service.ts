@@ -62,14 +62,24 @@ export class ChannelService {
 				throw new ForbiddenException("Wrong password");
 			}
 		}
-		this.eventEmitter.emit('join.channel', userId, joinChannelDto.roomId);
-		return await this.databaseService.channelUser.create({
+		const channelUser = await this.databaseService.channelUser.create({
 			data: {
 				userId: userId,
 				channelName: joinChannelDto.roomId,
 				role: Role.MEMBER,
+			},
+			include: {
+				user: {
+					select: {
+						id: true,
+						username: true,
+						avatar: true,
+					}
+				}
 			}
 		})
+		this.eventEmitter.emit('join.channel', userId, joinChannelDto.roomId, channelUser);
+		return channelUser;
 	}
 
 	async leaveChannel(userId: number, roomId: string) {
@@ -96,7 +106,10 @@ export class ChannelService {
 				}
 			});
 			if (!newOwner) return this.remove(roomId);
-			else this.moderationService.setOwnership(newOwner.userId, roomId);
+			else {
+				this.moderationService.setOwnership(newOwner.userId, roomId);
+				this.eventEmitter.emit('user.role', { userId: newOwner.userId, roomId, role: Role.OWNER });
+			}
 		}
 		return await this.databaseService.channelUser.delete({
 			where: {
@@ -248,12 +261,12 @@ export class ChannelService {
 			take: 11,
 			where: {
 				visibility: Visibility.PUBLIC,
-				...(query 
+				...(query
 					? {
 						name: {
 							contains: query,
 						},
-					} 
+					}
 					: {}),
 			},
 			select: {
@@ -263,19 +276,19 @@ export class ChannelService {
 				messages: false,
 			}
 		});
-	
+
 	}
 
 	async verifyMembership(userId: number, name: string) {
 		const channel = await this.findByName(name);
-		if (!channel) return {exist: false};
+		if (!channel) return { exist: false };
 		const user = await this.databaseService.channelUser.findFirst({
 			where: {
 				userId,
 				channelName: name,
 			}
 		});
-		if (user?.role === Role.BANNED) return {exist: true, member: false, banned: true};
-		return {exist: true, member: !!user, banned: false};
+		if (user?.role === Role.BANNED) return { exist: true, member: false, banned: true };
+		return { exist: true, member: !!user, banned: false };
 	}
 }

@@ -31,15 +31,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			client.disconnect(true);
 			return;
 		}
-		const alreadyConnected = this.getKeyByValue(user.id);	
-		if (alreadyConnected) {
-			this.server.to(alreadyConnected).emit('duplicate-login');
-		}
+		const alreadyConnected = this.getKeyByValue(user.id);
+		if (alreadyConnected) this.server.to(alreadyConnected).emit('duplicate-login');
 		this.connectedUsers.set(client.id, user.id);
 		this.updateUserState(user.id, UserStatus.ONLINE);
 		const joinedChannels = await this.userService.getUserChannels(user.id);
 		joinedChannels.channels.forEach((channel) => {
-			if (channel.role === "BANNED") return ;
+			if (channel.role === "BANNED") return;
 			client.join(channel.channelName);
 		});
 	}
@@ -75,32 +73,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@OnEvent('join.channel')
-	async onChannelJoin(userId: number, roomId: string) {
+	async onChannelJoin(userId: number, roomId: string, channelUser: Prisma.ChannelUserCreateInput) {
+		console.log('join channel');
 		const client = this.getClientByUserId(userId);
 		client.join(roomId);
+		this.server.to(roomId).emit('join-channel', channelUser);
 	}
 
-	@OnEvent('new.channel')
-	async onChannel(channelDto: Prisma.ChannelCreateInput) {
-		this.server.emit('new-channel', channelDto);
-	}
-
-	@OnEvent('delete.channel') 
-	async onDeleteChannel(channelName: string) {
-		this.server.emit('delete-channel', channelName);
-	}
-
-	@SubscribeMessage('leave.channel')
-	async onChannelLeave(userId, roomId: string) {
+	@OnEvent('leave.channel')
+	async onChannelLeave(userId: number, roomId: string) {
+		console.log('leave channel');
 		const client = this.getClientByUserId(userId);
 		client.leave(roomId);
-		this.server.to(client).emit('leave-channel', roomId);
+		this.server.to(roomId).emit('leave-channel', { userId, roomId });
 	}
 
-
-	@SubscribeMessage('typing')
-	async onTyping(client: Socket, { username, roomId }) {
-		client.to(roomId).emit('typing', username);
+	@OnEvent('user.role')
+	async onUserRoleChange({ userId, roomId, role }) {
+		this.server.to(roomId).emit('user-role', { userId, role });
 	}
 
 	@OnEvent('kick.user')
@@ -108,6 +98,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const kickedClient = this.getClientByUserId(userId);
 		kickedClient.leave(roomId);
 		kickedClient.emit('kicked', roomId);
+		this.server.to(roomId).emit('leave-channel', { userId, roomId });
 	}
 
 	@OnEvent('ban.user')
@@ -115,6 +106,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const bannedClient = this.getClientByUserId(userId);
 		bannedClient.leave(roomId);
 		bannedClient.emit('banned', roomId);
+		this.server.to(roomId).emit('user-role', { userId, role: 'BANNED' });
+	}
+
+	@OnEvent('new.channel')
+	async onChannel(channelDto: Prisma.ChannelCreateInput) {
+		this.server.emit('new-channel', channelDto);
+	}
+
+	@OnEvent('delete.channel')
+	async onDeleteChannel(channelName: string) {
+		this.server.emit('delete-channel', channelName);
+	}
+
+	@SubscribeMessage('typing')
+	async onTyping(client: Socket, { username, roomId }) {
+		client.to(roomId).emit('typing', username);
 	}
 
 	@OnEvent('user.state')
@@ -135,7 +142,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			}
 		});
 		this.userService.updateUserState(userId, state);
-		this.server.to(friendsSockets).emit('user-state', {userId, state});
+		this.server.to(friendsSockets).emit('user-state', { userId, state });
 	}
 
 	@OnEvent('friendship.update')
@@ -151,12 +158,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const receiverSocketId = this.getKeyByValue(friendship.receiverId);
 		const initiatorSocketId = this.getKeyByValue(friendship.initiatorId);
 		this.server.to(receiverSocketId).emit('friendship-delete', friendship);
-		this.server.to(initiatorSocketId).emit('friendship-delete', friendship);	
-	}
-
-	@OnEvent('user.role')
-	async onUserRoleChange({ userId, roomId, role }) {
-		this.server.to(roomId).emit('user-role', { userId, role });
+		this.server.to(initiatorSocketId).emit('friendship-delete', friendship);
 	}
 
 	private getClientByUserId(userId: number): Socket | null {
