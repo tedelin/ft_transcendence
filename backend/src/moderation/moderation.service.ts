@@ -93,7 +93,7 @@ export class ModerationService {
 		});
 	}
 
-	async muteUser(userId: number, roomId: string, duration: number) {
+	async muteUser(userId: number, roomId: string) {
 		const userRole = await this.getRole(userId, roomId);
 		if (userRole === Role.OWNER) throw new UnauthorizedException('You cannot mute the owner');
 		const muted = await this.databaseService.channelUser.update({
@@ -104,19 +104,14 @@ export class ModerationService {
 				},
 			},
 			data: {
-				role: Role.MUTED,
+				muted: true,
 			}
 		});
-		this.eventEmitter.emit("user.role", { userId, roomId, role: `${Role.MUTED}` });
-		setTimeout(() => {
-			this.unmuteUser(userId, roomId, userRole);
-		}, duration * 1000);
+		this.eventEmitter.emit("user.muted", userId, roomId, true);
 		return muted;
 	}
 
-	async unmuteUser(userId: number, roomId: string, previousRole: Role) {
-		const userRole = await this.getRole(userId, roomId);
-		if (userRole !== previousRole) return ;
+	async unmuteUser(userId: number, roomId: string) {
 		const unmuteUser =  await this.databaseService.channelUser.update({
 			where: {
 				channelName_userId: {
@@ -125,10 +120,10 @@ export class ModerationService {
 				},
 			},
 			data: {
-				role: previousRole,
+				muted: false,
 			}
 		});
-		this.eventEmitter.emit("user.role", { userId, roomId, role: previousRole });
+		this.eventEmitter.emit("user.muted", userId, roomId, false);
 		return unmuteUser;
 	}
 
@@ -146,8 +141,21 @@ export class ModerationService {
 		});
 	}
 
+	async isMuted(userId: number, roomId: string) {
+		const user = await this.databaseService.channelUser.findUnique({
+			where: {
+				channelName_userId: {
+					channelName: roomId,
+					userId: userId,
+				},
+			}
+		});
+		if (!user) throw new NotFoundException('User not found');
+		return (user.muted);
+	}
+
 	async getRole(userId: number, roomId: string) {
-		const channel = await this.databaseService.channelUser.findUnique({
+		const user = await this.databaseService.channelUser.findUnique({
 			where: {
 				channelName_userId: {
 					channelName: roomId,
@@ -155,7 +163,7 @@ export class ModerationService {
 				},
 			}
 		})
-		if (!channel) throw new NotFoundException('User is not in the channel');
-		return (channel.role);
+		if (!user) throw new NotFoundException('User not found');
+		return (user.role);
 	}
 }

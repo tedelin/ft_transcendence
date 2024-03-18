@@ -39,6 +39,7 @@ export interface ChannelMessage {
 
 export interface ChannelUser {
 	user: User;
-	channelName: string;
-	role: 'MEMBER' | 'BANNED' | 'MUTED' | 'ADMIN' | 'OWNER';
+	roomId: string;
+	role?: 'MEMBER' | 'BANNED' | 'MUTED' | 'ADMIN' | 'OWNER';
+	muted: boolean;
 }
