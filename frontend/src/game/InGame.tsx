@@ -6,7 +6,6 @@ import '../styles/matchmaking.css'
 import { useAuth } from '../components/AuthProvider';
 import { useGame } from '../components/GameProvider';
 import { useNavigate } from 'react-router-dom';
-import avatarSpectator from '../game_img/spectator.png';
 import BlockBackNavigation from "./BlockBackNavigation";
 import { getAvatar } from '../utils/utils';
 
@@ -69,6 +68,7 @@ export function InGame() {
         }
     }, [game]);
 
+    const len_spectators = spectators?.length;
 
     return (
         <>
@@ -80,16 +80,20 @@ export function InGame() {
                         <div className="score -">-</div>
                         <div className="score player2">{score.player2}</div>
                     </div>
+                    {(game?.playerOne || game?.playerTwo) && !game?.isSpectator &&
+                        <div className="spectatorsLenContainer">
+                            <span className="material-symbols-outlined spectatorIcon">
+                                visibility
+                            </span>
+                            <span>
+                                {len_spectators}
+                            </span>
+                        </div>
+                    }
                     <div className="game-area">
-                        <img className="player" src={ getAvatar(game?.playerOne?.avatar) } alt='playerOne' />
+                        <img className="player" src={getAvatar(game?.playerOne?.avatar)} alt='playerOne' />
                         <canvas ref={game?.gameInstance.current?.canvasRef} width={game?.gameInstance?.current?.canvasWidth} height={game?.gameInstance?.current?.canvasHeight} />
                         <img className="player" src={getAvatar(game?.playerTwo?.avatar)} alt='playerTwo' />
-                    </div>
-                    <div className="spectatorsList">
-                        {spectators?.map((spectator, index) => (
-                            console.log(spectator),
-                            <img key={index} src={avatarSpectator} alt={`Spectator ${spectator}`} className="spectator" />
-						))}
                     </div>
                 </div>
             )}
