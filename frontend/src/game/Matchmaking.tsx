@@ -21,6 +21,9 @@ export function Matchmaking() {
     function Countdown() {
         const [count, setCount] = useState(3);
 
+        if (game)
+            game.PreviousUrl = "countdown";
+
         useEffect(() => {
             const countdownInterval = setInterval(() => {
                 setCount((prevCount) => prevCount - 1);
