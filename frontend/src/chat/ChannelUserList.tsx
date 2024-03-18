@@ -29,8 +29,7 @@ export function ChannelUserList() {
 		}
 	}
 
-	function handleContextMenu(user: any, event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-		event.preventDefault();
+	function handleContextMenu(user: any) {
 		setContextMenuUser(user);
 	}
 
@@ -109,7 +108,7 @@ export function ChannelUserList() {
 
 						<span
 							className="material-symbols-outlined"
-							onContextMenu={(e) => handleContextMenu(channelUser, e)}
+							onClick={() => handleContextMenu(channelUser)}
 						>
 							more_horiz
 						</span>

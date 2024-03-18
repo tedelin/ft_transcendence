@@ -147,7 +147,7 @@ export class ModerationService {
 	}
 
 	async getRole(userId: number, roomId: string) {
-		const channel = await this.databaseService.channelUser.findUnique({
+		const user = await this.databaseService.channelUser.findUnique({
 			where: {
 				channelName_userId: {
 					channelName: roomId,
@@ -155,7 +155,7 @@ export class ModerationService {
 				},
 			}
 		})
-		if (!channel) throw new NotFoundException('User is not in the channel');
-		return (channel.role);
+		if (!user) throw new NotFoundException('User not found');
+		return (user.role);
 	}
 }

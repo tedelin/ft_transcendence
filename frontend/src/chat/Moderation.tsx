@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { fetchUrl } from '../fetch';
 import { useToast } from '../utils/hooks/useToast';
 import '../styles/contextMenu.css';
+import { Modal } from '../components/Modal';
 
 
 export function Moderation({ role, channel, userId, setEnabled, userRole }: { role: string, channel: string, userId: number, setEnabled: Function, userRole: string }) {
@@ -18,8 +19,9 @@ export function Moderation({ role, channel, userId, setEnabled, userRole }: { ro
             });
         } catch (err: any) {
             error(err.message);
-        }
-		setEnabled();
+		} finally {
+			setEnabled();
+		}
     }
 
     async function kickUser(userId: number, roomId: string) {
@@ -32,8 +34,9 @@ export function Moderation({ role, channel, userId, setEnabled, userRole }: { ro
             });
         } catch (err: any) {
             error(err.message);
-        }
-		setEnabled();
+		} finally {
+			setEnabled();
+		}
     }
 
     async function muteUser(userId: number, roomId: string) {
@@ -46,9 +49,18 @@ export function Moderation({ role, channel, userId, setEnabled, userRole }: { ro
             });
         } catch (err: any) {
             error(err.message);
-        }
-		setEnabled();
+		} finally {
+			setEnabled();
+		}
     }
+
+	// async function unmuteUser(userId: number, roomId: string) {
+	// 	try {
+	// 		// await fetchUrl(`/moderation/unmute/${roomId}/${userId}`, {
+	// 	} catch (err: any) {
+	// 		error(err.message);
+	// 	}
+	// }
 
     async function promoteUser(userId: number, roomId: string) {
         try {
@@ -60,8 +72,9 @@ export function Moderation({ role, channel, userId, setEnabled, userRole }: { ro
             });
         } catch (err: any) {
             error(err.message);
-        }
-		setEnabled();
+		} finally {
+			setEnabled();
+		}
     }
 
     async function demoteUser(userId: number, roomId: string) {
@@ -74,71 +87,27 @@ export function Moderation({ role, channel, userId, setEnabled, userRole }: { ro
             });
         } catch (err: any) {
             error(err.message);
-        }
-		setEnabled();
-    }
-
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (!(event.target as HTMLElement).closest('.context-menu')) {
-                setEnabled(false);
-            }
-        }
-
-        document.addEventListener('click', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('click', handleClickOutside);
-        };
-    }, [setEnabled]);
-
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-    useEffect(() => {
-		function handleContextMenu(event: MouseEvent) {
-			event.preventDefault();
-			const posX = event.clientX;
-			const posY = event.clientY;
-	
-			const menuWidth = 95;
-			const menuHeight = 200;
-			const screenWidth = window.innerWidth;
-			const screenHeight = window.innerHeight;
-	
-			let adjustedX = posX;
-			let adjustedY = posY;
-	
-			if (posX + menuWidth > screenWidth) {
-				adjustedX = screenWidth - menuWidth;
-			}
-	
-			if (posY + menuHeight > screenHeight) {
-				adjustedY = screenHeight - menuHeight;
-			}
-	
-			setPosition({ x: adjustedX, y: adjustedY });
+		} finally {
+			setEnabled();
 		}
-
-        if (role) {
-            document.addEventListener('contextmenu', handleContextMenu);
-        }
-
-        return () => {
-            document.removeEventListener('contextmenu', handleContextMenu);
-        };
-    }, [role]);
+    }
 
     return (
         (role === "ADMIN" || role === "OWNER") && (
-            <div className="context-menu" style={{ position: 'absolute', top: position.y, left: position.x }}>
-                <ul>
-                    <li onClick={() => kickUser(userId, channel)}>{userRole === "BANNED" ? "Unban" : "Kick"}</li>
-                    {userRole !== "BANNED" && <li onClick={() => banUser(userId, channel)}>Ban</li>}
-                    {userRole !=="BANNED" && <li onClick={() => muteUser(userId, channel)}>Mute</li>}
-					{userRole === "MUTED" && <li onClick={() => promoteUser(userId, channel)}>Unmute</li>}
-                    {userRole !== ("ADMIN" && "MUTED") && <li onClick={() => promoteUser(userId, channel)}>Promote</li>}
-                    {userRole !== ("MEMBER" && "MUTED") && <li onClick={() => demoteUser(userId, channel)}>Demote</li>}
-                </ul>
-            </div>
+			<Modal
+				isOpen={true}
+				onClose={() => setEnabled(false)}
+				title={`Moderation`}
+			>
+				<div className='modalContainer'>
+					<button className='modalButton' onClick={() => kickUser(userId, channel)}>{userRole === "BANNED" ? "Unban" : "Kick"}</button>
+					{userRole !== "BANNED" && <button className='modalButton' onClick={() => banUser(userId, channel)}>Ban</button>}
+					{userRole !=="BANNED" && <button className='modalButton' onClick={() => muteUser(userId, channel)}>Mute</button>}
+					{userRole !== ("ADMIN" && "MUTED" && "BANNED") && <button className='modalButton' onClick={() => promoteUser(userId, channel)}>Promote</button>}
+					{userRole !== ("MEMBER" && "MUTED" && "BANNED") && <button className='modalButton' onClick={() => demoteUser(userId, channel)}>Demote</button>}
+					{/* {userRole === "MUTED" && <button className='modalButton' onClick={() => promoteUser(userId, channel)}>Unmute</button>} */}
+				</div>
+			</Modal>
         )
     );
 }

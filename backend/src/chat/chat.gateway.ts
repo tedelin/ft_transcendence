@@ -74,7 +74,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@OnEvent('join.channel')
 	async onChannelJoin(userId: number, roomId: string, channelUser: Prisma.ChannelUserCreateInput) {
-		console.log('join channel');
 		const client = this.getClientByUserId(userId);
 		client.join(roomId);
 		this.server.to(roomId).emit('join-channel', channelUser);
@@ -82,7 +81,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@OnEvent('leave.channel')
 	async onChannelLeave(userId: number, roomId: string) {
-		console.log('leave channel');
 		const client = this.getClientByUserId(userId);
 		client.leave(roomId);
 		this.server.to(roomId).emit('leave-channel', { userId, roomId });
@@ -106,7 +104,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const bannedClient = this.getClientByUserId(userId);
 		bannedClient.leave(roomId);
 		bannedClient.emit('banned', roomId);
-		this.server.to(roomId).emit('user-role', { userId, role: 'BANNED' });
+		this.server.to(roomId).emit('user-role', { userId, roomId, role: 'BANNED' });
 	}
 
 	@OnEvent('new.channel')
