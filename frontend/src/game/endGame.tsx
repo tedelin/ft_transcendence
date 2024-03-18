@@ -1,3 +1,5 @@
+import confetti from 'canvas-confetti';
+// import { useStep } from './LayoutTwoFaSetup'
 import '../styles/game.css';
 import '../styles/end-game.css';
 import { useGame } from '../components/GameProvider';
@@ -14,12 +16,25 @@ export function EndGame() {
     const me = auth?.user;
     const nav = useNavigate();
     const winnerClass = game?.Winner ? "img-winner wlaurier" : "img-winner wchapeau";
+	// const { setStep } = useStep();
+
 
     useEffect(() => {
         if (!game?.showEndGameModal) {
             nav('/game/');
         }
     }, [game]);
+
+	useEffect(() => {
+        if (game?.Winner || game?.isSpectator) {
+            confetti({
+                particleCount: 1000,
+                spread: 300,
+                origin: { y: 0.5 }
+            });
+        }
+    }, [game]);
+    
 
     function handleQuit() {
         game?.setLetsGO(false);

@@ -2,11 +2,15 @@ import '../styles/game.css';
 import eyeIcon from '../game_img/streaming.png';
 import { useAuth } from '../components/AuthProvider';
 import { getAvatar } from '../utils/utils';
+import { useGame } from '../components/GameProvider';
 
 export function MatchItem({ match }) {
     const auth = useAuth();
+    const game = useGame();
 
+    
     const viewMatch = () => {
+        game?.setIsSpectator(true);
         auth?.socket?.emit('viewMatch', { userId: match.players[0].player.id });
     };
     const truncateUsername = (username) => {

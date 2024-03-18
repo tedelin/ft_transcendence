@@ -18,7 +18,7 @@ export function Game() {
     const nav = useNavigate();
     const roomId = new URLSearchParams(window.location.search).get('roomId');
     const privateGame = new URLSearchParams(window.location.search).get('private');
-	const { theme } = useContext(ThemeContext);
+    const { theme } = useContext(ThemeContext);
 
 
     function handletsart() {
@@ -26,7 +26,7 @@ export function Game() {
         game?.setShowButton(false);
     }
 
-    function handleInfoClick(){
+    function handleInfoClick() {
         if (showText)
             setShowText(false);
         else
@@ -125,7 +125,7 @@ export function Game() {
     useEffect(() => {
         if (window.location.pathname === '/game') {
             const previousUrl = game?.PreviousUrl;
-            if (previousUrl?.includes('game/settings') || previousUrl?.includes('matchmaking')) {
+            if (previousUrl?.includes('game/settings') || previousUrl?.includes('/matchmaking')) {
                 auth?.socket?.emit('crossMatchmaking');
             }
             else
@@ -169,11 +169,11 @@ export function Game() {
             {showText && (
                 <div className="overlay" onClick={handleInfoClick}>
                     <div className="centeredText">
-                        <p>In the game of Pong, two players face off on a screen divided into two halves. 
-                            Each controls a paddle positioned on their side of the court. A ball bounces 
-                            between the paddles, and the goal is to prevent the ball from passing behind 
-                            your own paddle. When a player fails to return the ball successfully, the 
-                            opponent scores a point and gains the service for the next exchange. The first 
+                        <p>In the game of Pong, two players face off on a screen divided into two halves.
+                            Each controls a paddle positioned on their side of the court. A ball bounces
+                            between the paddles, and the goal is to prevent the ball from passing behind
+                            your own paddle. When a player fails to return the ball successfully, the
+                            opponent scores a point and gains the service for the next exchange. The first
                             player to reach 11 points wins the game.</p>
                     </div>
                 </div>

@@ -68,6 +68,8 @@ export class GameState {
         while (i === 0) i = Math.floor(Math.random() * (2 * ballSpeed + 1)) - ballSpeed;
         this.ball.velocity = { x: ballSpeed * point_win, y: i };
         this.paddles.speed = paddleSpeed;
+        this.paddles.leftPos = { x: this.paddles.width / 2, y: this.canvasHeight / 2 };
+        this.paddles.rightPos = { x: this.canvasWidth - this.paddles.width / 2, y: this.canvasHeight / 2 };
     }
 
     public point(pHeight, bSpeed, pSpeed): number {
@@ -111,10 +113,10 @@ export class GameState {
     }
 
     public pressKeys() {
-        if (this.keys['left']['ArrowUp'] === KeyState.PRESS) this.paddles.leftPos.y = Math.max(this.paddles.leftPos.y - this.paddles.speed, 0);
-        if (this.keys['left']['ArrowDown'] === KeyState.PRESS) this.paddles.leftPos.y = Math.min(this.paddles.leftPos.y + this.paddles.speed, this.canvasHeight - this.paddles.height);
-        if (this.keys['right']['ArrowUp'] === KeyState.PRESS) this.paddles.rightPos.y = Math.max(this.paddles.rightPos.y - this.paddles.speed, 0);
-        if (this.keys['right']['ArrowDown'] === KeyState.PRESS) this.paddles.rightPos.y = Math.min(this.paddles.rightPos.y + this.paddles.speed, this.canvasHeight - this.paddles.height);
+        if (this.keys['left']['ArrowUp'] === KeyState.PRESS) this.paddles.leftPos.y = Math.max(this.paddles.leftPos.y - this.paddles.speed, this.paddles.height / 2);
+        if (this.keys['left']['ArrowDown'] === KeyState.PRESS) this.paddles.leftPos.y = Math.min(this.paddles.leftPos.y + this.paddles.speed, this.canvasHeight - this.paddles.height / 2);
+        if (this.keys['right']['ArrowUp'] === KeyState.PRESS) this.paddles.rightPos.y = Math.max(this.paddles.rightPos.y - this.paddles.speed, this.paddles.height / 2);
+        if (this.keys['right']['ArrowDown'] === KeyState.PRESS) this.paddles.rightPos.y = Math.min(this.paddles.rightPos.y + this.paddles.speed, this.canvasHeight - this.paddles.height / 2);
     }
 
     public speedChange() {
