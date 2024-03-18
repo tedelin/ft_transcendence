@@ -1,7 +1,5 @@
-import { useState, useEffect } from 'react';
 import { fetchUrl } from '../fetch';
 import { useToast } from '../utils/hooks/useToast';
-import '../styles/contextMenu.css';
 import { Modal } from '../components/Modal';
 
 

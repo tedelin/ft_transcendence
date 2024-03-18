@@ -59,7 +59,8 @@ button {
   padding: 2%;
 }
 
-.profil-picture img {
+.profil-picture img, .avatarProfil {
+	object-fit: cover;
   border-radius: 50%;
   height: 250px;
   width: 250px;

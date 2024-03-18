@@ -1,8 +1,10 @@
+import '../../pages/Profil/ProfilStyle.css'
+
 function Avatar({handleFileChange, preview}) {
 
   return (
     <div className="avatar">
-        {preview && <img src={preview} alt="Aperçu de l'avatar" style={{ width: 300, height: 300, borderRadius: '50%' }} />}
+        {preview && <img src={preview} alt="Aperçu de l'avatar" className="avatarProfil" />}
         <div className="edit-button">
           <input
             type="file"
