@@ -56,6 +56,20 @@ export function ChannelUserList() {
 			});
 		});
 
+		auth?.socket?.on('user-muted', (data: any) => {
+			console.log(data);
+			if (data.roomId !== name) return;
+			setChannelsUsers((prevUsers) => {
+				const updatedUsers = prevUsers.map((user: ChannelUser) => {
+					if (user.user.id === data.userId) {
+						user.muted = data.muted;
+					}
+					return user;
+				});
+				return updatedUsers;
+			});
+		})
+
 		auth?.socket?.on('join-channel', (user: any) => {
 			if (user.channelName !== name) return;
 			setChannelsUsers((prevUsers) => {
@@ -79,8 +93,14 @@ export function ChannelUserList() {
 			auth?.socket?.off('user-role');
 			auth?.socket?.off('join-channel');
 			auth?.socket?.off('leave-channel');
+			auth?.socket?.off('user-muted');
 		}
 	}, []);
+
+	// useEffect(() => {	
+	// 	if (channelUsers.length > 0)
+	// 		console.log(channelUsers);
+	// }, [channelUsers]);
 
 	return (
 		<>
@@ -97,7 +117,7 @@ export function ChannelUserList() {
 						{channelUser.role === "ADMIN" && "security"}
 						{channelUser.role === "MEMBER" && "group"}
 						{channelUser.role === "BANNED" && "block"}
-						{channelUser.role === "MUTED" && "mic_off"}
+						{channelUser.muted && "mic_off"}
 					</span>
 					<div
 						className="channelUser"
@@ -122,6 +142,7 @@ export function ChannelUserList() {
 					channel={name}
 					userId={contextMenuUser.user.id}
 					setEnabled={closeContextMenu}
+					isMuted={contextMenuUser.muted}
 				/>
 			)}
 		</>

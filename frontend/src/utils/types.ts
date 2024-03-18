@@ -41,4 +41,5 @@ export interface ChannelUser {
 	user: User;
 	roomId: string;
 	role?: 'MEMBER' | 'BANNED' | 'MUTED' | 'ADMIN' | 'OWNER';
+	muted: boolean;
 }

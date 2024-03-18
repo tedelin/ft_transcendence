@@ -194,8 +194,8 @@ export class ChannelService {
 	}
 
 	async createMessage(channelMessage: ChannelMessageDto) {
-		const userMuted = await this.moderationService.getRole(channelMessage.senderId, channelMessage.channelId);
-		if (userMuted === Role.MUTED) throw new ForbiddenException('You have been muted');
+		const userMuted = await this.moderationService.isMuted(channelMessage.senderId, channelMessage.channelId);
+		if (userMuted) throw new ForbiddenException('You have been muted');
 		const message = await this.databaseService.channelMessage.create({
 			data: channelMessage,
 			include: {

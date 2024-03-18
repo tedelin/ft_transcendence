@@ -16,10 +16,16 @@ export class ModerationController {
 
 
 	@Roles([Role.OWNER, Role.ADMIN])
-	@Post('mute/:name/:userId/:duration')
-	muteUser(@UserRequest() user: User, @Param('name') name: string, @Param('userId', ParseIntPipe) userId: number, @Param('duration', ParseIntPipe) duration: number) {
+	@Post('mute/:name/:userId')
+	muteUser(@UserRequest() user: User, @Param('name') name: string, @Param('userId', ParseIntPipe) userId: number) {
 		if (user.id == userId) throw new ForbiddenException('Cannot mute yourself');
-		return this.moderationService.muteUser(userId, name, duration);
+		return this.moderationService.muteUser(userId, name);
+	}
+
+	@Roles([Role.OWNER, Role.ADMIN])
+	@Post('unmute/:name/:userId')
+	unmuteUser(@UserRequest() user: User, @Param('name') name: string, @Param('userId', ParseIntPipe) userId: number) {
+		return this.moderationService.unmuteUser(userId, name);
 	}
 
 	@Roles([Role.OWNER, Role.ADMIN])

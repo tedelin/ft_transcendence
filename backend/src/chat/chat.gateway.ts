@@ -107,6 +107,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.server.to(roomId).emit('user-role', { userId, roomId, role: 'BANNED' });
 	}
 
+	@OnEvent('user.muted')
+	async onMutedUser(userId: number, roomId: string, muted: boolean) {
+		this.server.to(roomId).emit('user-muted', { userId, roomId, muted });
+	}
+	
 	@OnEvent('new.channel')
 	async onChannel(channelDto: Prisma.ChannelCreateInput) {
 		this.server.emit('new-channel', channelDto);

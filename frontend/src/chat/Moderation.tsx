@@ -5,7 +5,7 @@ import '../styles/contextMenu.css';
 import { Modal } from '../components/Modal';
 
 
-export function Moderation({ role, channel, userId, setEnabled, userRole }: { role: string, channel: string, userId: number, setEnabled: Function, userRole: string }) {
+export function Moderation({ role, channel, userId, setEnabled, userRole, isMuted }: { role: string, channel: string, userId: number, setEnabled: Function, userRole: string, isMuted: boolean}) {
     const token = localStorage.getItem('jwtToken');
     const { error } = useToast();
 
@@ -41,7 +41,7 @@ export function Moderation({ role, channel, userId, setEnabled, userRole }: { ro
 
     async function muteUser(userId: number, roomId: string) {
         try {
-            await fetchUrl(`/moderation/mute/${roomId}/${userId}/10`, {
+            await fetchUrl(`/moderation/mute/${roomId}/${userId}`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -54,13 +54,20 @@ export function Moderation({ role, channel, userId, setEnabled, userRole }: { ro
 		}
     }
 
-	// async function unmuteUser(userId: number, roomId: string) {
-	// 	try {
-	// 		// await fetchUrl(`/moderation/unmute/${roomId}/${userId}`, {
-	// 	} catch (err: any) {
-	// 		error(err.message);
-	// 	}
-	// }
+	async function unmuteUser(userId: number, roomId: string) {
+		try {
+			await fetchUrl(`/moderation/unmute/${roomId}/${userId}`, {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+		} catch (err: any) {
+			error(err.message);
+		} finally {
+			setEnabled();
+		}
+	}
 
     async function promoteUser(userId: number, roomId: string) {
         try {
@@ -102,10 +109,10 @@ export function Moderation({ role, channel, userId, setEnabled, userRole }: { ro
 				<div className='modalContainer'>
 					<button className='modalButton' onClick={() => kickUser(userId, channel)}>{userRole === "BANNED" ? "Unban" : "Kick"}</button>
 					{userRole !== "BANNED" && <button className='modalButton' onClick={() => banUser(userId, channel)}>Ban</button>}
-					{userRole !=="BANNED" && <button className='modalButton' onClick={() => muteUser(userId, channel)}>Mute</button>}
-					{userRole !== ("ADMIN" && "MUTED" && "BANNED") && <button className='modalButton' onClick={() => promoteUser(userId, channel)}>Promote</button>}
-					{userRole !== ("MEMBER" && "MUTED" && "BANNED") && <button className='modalButton' onClick={() => demoteUser(userId, channel)}>Demote</button>}
-					{/* {userRole === "MUTED" && <button className='modalButton' onClick={() => promoteUser(userId, channel)}>Unmute</button>} */}
+					{!isMuted  && <button className='modalButton' onClick={() => muteUser(userId, channel)}>Mute</button>}
+					{(userRole !== "ADMIN" && userRole !== "BANNED") && <button className='modalButton' onClick={() => promoteUser(userId, channel)}>Promote</button>}
+					{(userRole !== "MEMBER" && userRole !== "BANNED") && <button className='modalButton' onClick={() => demoteUser(userId, channel)}>Demote</button>}
+					{isMuted && <button className='modalButton' onClick={() => unmuteUser(userId, channel)}>Unmute</button>}
 				</div>
 			</Modal>
         )
