@@ -302,6 +302,7 @@
 
 .leftPlayer img,
 .rightPlayer img{
+	object-fit: cover;
     padding: 15px;
     width: 250px;
     height: 250px;

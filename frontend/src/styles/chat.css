@@ -113,6 +113,7 @@
 
 .listItem img,
 .listItemCenter img {
+	object-fit: cover;
 	width: 30px;
 	height: 30px;
 	border-radius: 50%;
@@ -136,6 +137,7 @@
 
 .bubble-left img,
 .bubble-right img {
+	object-fit: cover;
 	width: 30px;
 	height: 30px;
 	border-radius: 50%;
