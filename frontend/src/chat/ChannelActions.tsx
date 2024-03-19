@@ -38,11 +38,11 @@ export function ChannelActions() {
 	async function joinChannel() {
 		try {
 			const requestBody = channelPassword !== '' ?  {
-				name: channelName,
+				roomId: channelName,
 				visibility: channelVisibility,
 				password: channelPassword,
 			} : {
-				name: channelName,
+				roomId: channelName,
 				visibility: channelVisibility,
 			}
 			await fetchUrl("/chat/channels/join", {

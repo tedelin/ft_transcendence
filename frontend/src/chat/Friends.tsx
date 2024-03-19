@@ -227,6 +227,7 @@ function FriendsList({ selected }: { selected: string }) {
 							<div className='listItem' key={friend.id}>
 								<div className='statusContainer'>
 									<img
+										onClick={() => navigate('/profil/' + friend.id)}
 										className='smallAvatar'
 										src={getAvatar(friend.avatar)}
 										alt='avatar'

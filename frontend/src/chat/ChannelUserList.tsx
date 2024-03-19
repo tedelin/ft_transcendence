@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchUrl } from "../fetch";
 import { useEffect, useState } from "react";
 import { ChannelUser, User } from "../utils/types";
@@ -12,6 +12,7 @@ export function ChannelUserList() {
 	const [channelUsers, setChannelsUsers] = useState<ChannelUser[] | []>([]);
 	const [contextMenuUser, setContextMenuUser] = useState<any | null>(null);
 	const [myRole, setMyRole] = useState<string>('');
+	const navigate = useNavigate();
 	const auth = useAuth();
 
 
@@ -109,7 +110,9 @@ export function ChannelUserList() {
 					key={channelUser.user.id}
 					className="listItem"
 				>
-					<img style={{ margin: 0 }} src={getAvatar(channelUser.user.avatar)} alt="User Avatar"></img>
+					<img 
+						onClick={() => navigate('/profil/' + channelUser.user.id)}
+						style={{ margin: 0 }} src={getAvatar(channelUser.user.avatar)} alt="User Avatar"></img>
 					<span
 						className="material-symbols-outlined"
 					>

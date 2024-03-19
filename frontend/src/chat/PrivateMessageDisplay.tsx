@@ -8,29 +8,70 @@ import '../styles/chat.css';
 
 export function PrivateMessagesDisplay({ conversationId }: { conversationId: number }) {
     const [receivedMessages, setReceivedMessages] = useState<PrivateMessage[]>([]);
-    const messageContainer = useRef(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [firstLoad, setFirstLoad] = useState(true);
+	const [offset, setOffset] = useState(0);
+	const messageContainer = useRef<HTMLDivElement>(null);
+	const prevScrollHeightRef = useRef<number | null>(null);
 	const {error} = useToast();
     const auth = useAuth();
 
     async function fetchPrivateMessages() {
         try {
-            const response = await fetchUrl(`/private-messages/${conversationId}`, {
+			setIsLoading(true);
+            const response = await fetchUrl(`/private-messages/${conversationId}?offset=${offset}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
                 },
             });
-            setReceivedMessages(response);
+            setReceivedMessages(prevMessages => [...response, ...prevMessages]);
+			setOffset(prevOffset => prevOffset + response.length);
+			prevScrollHeightRef.current = messageContainer.current?.scrollHeight || null;
         } catch (err:any) {
             error(err.message);
-        }
+        } finally {
+			setIsLoading(false);
+		}
     };
 
+	function handleScroll() {
+		if (messageContainer.current) {
+			const { scrollTop, clientHeight } = messageContainer.current;
+			if (scrollTop === 0 && !isLoading) {
+				fetchPrivateMessages();
+			}
+		}
+	};
+
+	useEffect(() => {
+		if (!isLoading && firstLoad) {
+			scrollToBottom();
+			setFirstLoad(false);
+		}
+	
+		if (messageContainer.current) {
+			messageContainer.current.addEventListener('scroll', handleScroll);
+		}
+	
+		if (messageContainer.current && prevScrollHeightRef.current !== null) {
+			const newScrollTop = messageContainer.current.scrollHeight - prevScrollHeightRef.current;
+			messageContainer.current.scrollTop += newScrollTop;
+			prevScrollHeightRef.current = messageContainer.current.scrollHeight;
+		}
+	
+		return () => {
+			if (messageContainer.current) {
+				messageContainer.current.removeEventListener('scroll', handleScroll);
+			}
+		};
+	}, [isLoading, receivedMessages]);
+
     function scrollToBottom() {
-        if (messageContainer.current) {
-            messageContainer.current.scrollTop = messageContainer.current.scrollHeight;
-        }
-    }
+		if (messageContainer.current) {
+			messageContainer.current.scrollTop = messageContainer.current.scrollHeight;
+		}
+	}
 
     useEffect(() => {
         auth?.socket?.on('private-message', (message: PrivateMessage) => {
@@ -38,6 +79,9 @@ export function PrivateMessagesDisplay({ conversationId }: { conversationId: num
                 return;
             }
             setReceivedMessages(prevMessages => [...prevMessages, message]);
+			if (messageContainer.current) {
+				messageContainer.current.scrollTop = messageContainer.current.scrollHeight;
+			}
         });
         
 		if (conversationId)
@@ -49,13 +93,9 @@ export function PrivateMessagesDisplay({ conversationId }: { conversationId: num
         };
     }, []);
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [receivedMessages]);
-
     return (
-        <div ref={messageContainer} className='messageContainer'>
-            {receivedMessages.map((msg: PrivateMessage) => (
+		<div ref={messageContainer} className='messageContainer'>
+			{receivedMessages.map((msg: PrivateMessage) => (
 				<div
 					key={msg.id}
 					className={msg.sender.id === auth?.user?.id ? 'bubble-right' : 'bubble-left'}
@@ -73,8 +113,8 @@ export function PrivateMessagesDisplay({ conversationId }: { conversationId: num
 					<div className="timestamp">
 						{new Date(msg.timestamp).toLocaleString()}
 					</div>
-			 </div>
-            ))}
-        </div>
+			</div>
+			))}
+		</div>
     );
 }

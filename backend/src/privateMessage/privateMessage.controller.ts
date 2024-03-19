@@ -24,8 +24,8 @@ export class PrivateMessageController {
 
 	@UseGuards(JwtGuard)
 	@Get(':userId')
-	async getMessagesWith(@UserRequest() user: User, @Param('userId', ParseIntPipe) userId: number) {
-		return this.privateMessageService.getConversation(user.id, userId);
+	async getMessagesWith(@UserRequest() user: User, @Param('userId', ParseIntPipe) userId: number, @Query('offset') offset: number = 0) {
+		return this.privateMessageService.getConversation(user.id, userId, +offset);
 	}
 
 }

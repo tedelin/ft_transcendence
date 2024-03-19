@@ -94,6 +94,10 @@ const router = createBrowserRouter([
 				</RequireAuth>
 			},
 			{
+				path: "old-login",
+				element: <Login />,
+			},
+			{
 				path: "profil/:id",
 				element: <RequireAuth><Profil/></RequireAuth>
 			},
@@ -121,7 +125,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "login",
-				element: <Login />
+				element: <NewLogin />,
 			},
 			{
 				path: "settings",
@@ -166,10 +170,6 @@ const router = createBrowserRouter([
 		],
 	},
 	twoFaRoutes,
-	{
-		path : '/NewLogin',
-		element : <NewLogin />
-	}
 ])
 
 export default function ErrorPage() {

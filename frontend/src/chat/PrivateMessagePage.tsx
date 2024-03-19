@@ -114,24 +114,22 @@ export function PrivateMessagePage() {
 
 	return (
 		<>
-			<div className='flexRow'>
-				<TopBar userId={parseInt(receiverId)} />
-				<PrivateMessagesDisplay key={receiverId} conversationId={parseInt(receiverId)}/>
-				{roomId.length > 0 && <button onClick={acceptGameInvite} className='acceptInvite'>Accept Invitation to Play</button>}
-				<div className="typingIndicator">{typing}</div>
-				<div className='messageInput'>
-					<textarea
-						value={message}
-						onKeyDown={handleKeyDown}
-						placeholder={'Send message'}
-						onChange={onTyping}
-					/>
-					{roomId.length === 0 && <button
-						onClick={sendGameInvite}
-						className='inviteButton'
-					>
-						Invite to play</button>}
-				</div>
+			<TopBar userId={parseInt(receiverId)} />
+			<PrivateMessagesDisplay key={receiverId} conversationId={parseInt(receiverId)}/>
+			{roomId.length > 0 && <button onClick={acceptGameInvite} className='acceptInvite'>Accept Invitation to Play</button>}
+			<div className="typingIndicator">{typing}</div>
+			<div className='messageInput'>
+				<textarea
+					value={message}
+					onKeyDown={handleKeyDown}
+					placeholder={'Send message'}
+					onChange={onTyping}
+				/>
+				{roomId.length === 0 && <button
+					onClick={sendGameInvite}
+					className='inviteButton'
+				>
+					Invite to play</button>}
 			</div>
 		</>
 	);

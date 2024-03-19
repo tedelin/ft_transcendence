@@ -215,7 +215,7 @@ export class ChannelService {
 	async findMessages(userId: number, name: string, offset: number) {
 		const blockedUser = await this.friendService.findBlockedUsers(userId);
 		const messages = await this.databaseService.channelMessage.findMany({
-			take: 10,
+			take: 40,
 			skip: offset,
 			where: {
 				channelId: name,

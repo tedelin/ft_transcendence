@@ -39,9 +39,11 @@ export class PrivateMessageService {
 		this.eventEmitter.emit('private.message', senderId, message.receiverId, storedMessage);
 		return storedMessage;
 	}
-	async getConversation(userId: number, otherUserId: number) {
+	async getConversation(userId: number, otherUserId: number, offset: number) {
 		const blockedUser = await this.friendService.findBlockedUsers(userId);
-		return await this.databaseService.privateMessage.findMany({
+		const messages =  await this.databaseService.privateMessage.findMany({
+			take: 40,
+			skip: offset,
 			where: {
 				OR: [
 					{
@@ -74,9 +76,10 @@ export class PrivateMessageService {
 				},
 			},
 			orderBy: {
-				timestamp: 'asc',
+				timestamp: 'desc',
 			},
 		});
+		return messages.reverse();
 	}
 
 	async getAllConversations(userId: number): Promise<any[]> {
