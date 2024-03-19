@@ -17,10 +17,10 @@ export function Callback() {
 	const navigate = useNavigate();
 	const { error } = useToast();
 	const auth = useAuth();
-	const [avatar, setAvatar] = useState(null);
-	const [preview, setPreview] = useState(defaultAvatar);
+	const [avatar, setAvatar] = useState<File | null>(null);
+	const [preview, setPreview] = useState<string | ArrayBuffer | null>(defaultAvatar);
 
-	const handleFileChange = (e) => {
+	const handleFileChange = (e : any) => {
 		const file = e.target.files[0];
 		if (file) {
 			setAvatar(file);

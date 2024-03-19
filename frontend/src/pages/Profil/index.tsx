@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { fetchUrl } from '../../fetch';
 import { useEffect, useState } from 'react';
 import { getAvatar } from '../../utils/utils';
+import { ProfilData } from '../../utils/types';
 
 function checkIfAnyAchievementIsTrue(achievement) {
 	for (let key in achievement) {
@@ -19,10 +20,12 @@ function checkIfAnyAchievementIsTrue(achievement) {
   }
 
 function Profil() {
-  const id = useParams().id;
+  const id = Number(useParams().id);
+  if (isNaN(id))
+    return <div>Invalid user id</div>;
   const userId = useAuth()?.user?.id;
   const me = id == userId;
-  const [profilData, setProfilData] = useState(null); 
+  const [profilData, setProfilData] = useState<ProfilData | null>(null);
   const [profilMatchData, setProfilMatchData] = useState(null);
 
   useEffect(() => {
@@ -34,14 +37,14 @@ function Profil() {
 		setProfilMatchData(matchData)
       } catch (error) {
         console.error("Erreur lors de la récupération des données du profil:", error);
-		setProfilData({error})
+		    setProfilData({error: "User doesn't exist"});
       }
     }
     fetchProfilData();
   }, [id]);
 
   if (!profilData)
-    return <div>Chargement des données du profil...</div>;
+    return <div>Loading profil...</div>;
   if(profilData.error)
 	return <div>User doesn't exist</div>;
 

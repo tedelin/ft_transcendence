@@ -86,20 +86,15 @@ export class UserController {
 	) {
 	  const userId = req.user.id;
 	
-	  // Prépare les données à mettre à jour
 	  const updateData: any = {
 		username: userUpdateDto.username,
 		bio: userUpdateDto.bio,
 	  };
 	
-	  // Inclut l'URL de l'avatar dans les données de mise à jour uniquement si un fichier a été téléchargé
 	  if (file) {
 		updateData.avatar = `${file.filename}`;
 	  }
-	
-	  // Mettre à jour les informations de l'utilisateur
 	  await this.userService.updateUserDetails(userId, updateData);
-	
 	  return { message: 'Informations mises à jour avec succès', ...updateData };
 	}
 	

@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import Avatar from '../components/Settings/Avatar';
 import UsernameSettings from '../components/Settings/UsernameSettings';
 import BioSettings from '../components/Settings/BioSettings';
@@ -19,7 +19,7 @@ function Settings() {
 	const token = localStorage.getItem('jwtToken');
 	const { error } = useToast();
 
-	const handleFileChange = (event) => {
+	const handleFileChange = (event : any) => {
 		const file = event.target.files[0];
 		if (file) {
 			setSelectedFile(file);
@@ -27,7 +27,7 @@ function Settings() {
 		}
 	};
 
-	const handleUpload = async (event) => {
+	const handleUpload = async (event : any) => {
 		event.preventDefault();
 
 		const formData = new FormData();

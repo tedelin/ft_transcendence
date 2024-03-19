@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, Max, MaxLength, Min, MinLength, Matches } from 'class-validator';
 
 export class AuthDto {
     @IsString()
@@ -57,10 +57,12 @@ export class UserUpdateDto {
 	@IsOptional()
 	@MinLength(4)
 	@MaxLength(14)
+	@Matches(/^[a-zA-Z0-9._-]+$/, { message: 'Le nom d\'utilisateur contient des caractères non autorisés.' })
 	username: string;
 
 	@IsString()
 	@IsOptional()
 	@MaxLength(255)
+	@Matches(/^[a-zA-Z0-9\s.,!'"+_-]+$/, { message: 'La bio contient des caractères non autorisés.' })
 	bio: string;
 }

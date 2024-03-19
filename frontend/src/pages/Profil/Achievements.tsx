@@ -40,7 +40,7 @@ function getAchievements(Achievements: any) {
 
 function Achievements(Achievements: any) {
 	const [scrollPosition, setScrollPosition] = useState(0);
-	const sliderRef = useRef(null);
+	const sliderRef = useRef<HTMLDivElement>(null);
 	const achievements_list = getAchievements(Achievements.Achievement);
 	const toRender = createAchievementBoxes(achievements_list);
 	const hasEnoughAchievements = achievements_list.length >= 6;
