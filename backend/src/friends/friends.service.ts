@@ -122,6 +122,7 @@ export class FriendService {
 					{ initiatorId: userId, receiverId: blockedUserId },
 					{ initiatorId: blockedUserId, receiverId: userId },
 				],
+				NOT : { status: FriendshipStatus.BLOCKED },
 			},
 			include: friendInclude,
 		});
