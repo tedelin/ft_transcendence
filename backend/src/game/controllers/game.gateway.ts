@@ -15,6 +15,8 @@ import { UserService } from "src/user/user.service";
 import { User } from "@prisma/client";
 import { GameService } from "../services/game.service";
 import { GameStatus } from "../classes/pong";
+import { Player as PlayerDto } from "../dto/create-match.dto";
+
 
 @WebSocketGateway({
     cors: {
@@ -215,9 +217,19 @@ export class GameGateway implements OnGatewayInit {
             }
         }
         client.emit('gameLaunch', { gameState: roomState.gameState, spectators: this.getArraySpectator(roomId) });
+        const playerOne: PlayerDto = {
+            id: this.connectedUsers.get(roomState.players[0].id).username,
+            avatar: this.connectedUsers.get(roomState.players[0].id).avatar
+        };
+
+        const playerTwo: PlayerDto | null = roomState.players.length < 2 ? null : {
+            id: this.connectedUsers.get(client.id).username,
+            avatar: this.connectedUsers.get(client.id).avatar
+        };
+        
         this.server.to(roomId).emit('matchmakingStats', {
-            playerOne: { id: this.connectedUsers.get(roomState.players[0].id).username, avatar: this.connectedUsers.get(roomState.players[0].id).avatar },
-            playerTwo: (roomState.players.length < 2 ? null : { id: this.connectedUsers.get(client.id).username, avatar: this.connectedUsers.get(client.id).avatar }),
+            playerOne: playerOne,
+            playerTwo: playerTwo,
             roomId: roomId
         })
         this.server.to(roomId).emit('spectators', { spectators: this.getArraySpectator(roomId) });
@@ -251,8 +263,12 @@ export class GameGateway implements OnGatewayInit {
                 settingDone: true,
                 firstPlayer: true
             });
+            const playerOne: PlayerDto = {
+                id: this.connectedUsers.get(client.id).username,
+                avatar: this.connectedUsers.get(client.id).avatar
+            };
             client.emit('matchmakingStats', {
-                playerOne: { id: this.connectedUsers.get(client.id).username, avatar: this.connectedUsers.get(client.id).avatar },
+                playerOne: playerOne,
                 playerTwo: null,
                 roomId: roomId
             });

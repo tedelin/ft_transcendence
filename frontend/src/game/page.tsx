@@ -18,7 +18,7 @@ export function Game() {
     const nav = useNavigate();
     const roomId = new URLSearchParams(window.location.search).get('roomId');
     const privateGame = new URLSearchParams(window.location.search).get('private');
-    const { theme } = useContext(ThemeContext);
+    const { theme } = useContext(ThemeContext) as { theme: string };
 
 
     function handletsart() {

@@ -16,8 +16,6 @@ export function EndGame() {
     const me = auth?.user;
     const nav = useNavigate();
     const winnerClass = game?.Winner ? "img-winner wlaurier" : "img-winner wchapeau";
-	// const { setStep } = useStep();
-
 
     useEffect(() => {
         if (!game?.showEndGameModal) {

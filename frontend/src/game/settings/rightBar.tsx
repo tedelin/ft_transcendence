@@ -7,7 +7,7 @@ import { ThemeContext } from '../../utils/providers/ThemeProvider';
 
 export function RightBar({ handleSaveSettings }) {
     const nav = useNavigate();
-    const { theme } = useContext(ThemeContext);
+    const { theme } = useContext(ThemeContext) as { theme: string };;
 
     console.log('theme:', theme);
     

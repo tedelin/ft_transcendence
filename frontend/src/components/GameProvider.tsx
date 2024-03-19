@@ -1,5 +1,6 @@
 import React, { useState, createContext, useRef, useContext } from 'react';
 import { ClassGame } from '../game/classGame';
+import { User } from '../utils/types';
 
 interface GameContextType {
     gameStarted: boolean;
@@ -31,9 +32,9 @@ interface GameContextType {
     setLetsGO: React.Dispatch<React.SetStateAction<boolean>>;
     playerStats: any[];
     setPlayerStats: React.Dispatch<React.SetStateAction<any[]>>;
-    playerOne: any[];
+    playerOne: User;
     setPlayerOne: React.Dispatch<React.SetStateAction<any[]>>;
-    playerTwo: any[];
+    playerTwo: User;
     setPlayerTwo: React.Dispatch<React.SetStateAction<any[]>>;
     historyAll: any[];
     setHistoryAll: React.Dispatch<React.SetStateAction<any[]>>;

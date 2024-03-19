@@ -23,3 +23,8 @@ export class CreateMatchDto {
   @Type(() => PlayerData)
   players: PlayerData[];
 }
+
+export class Player {
+  id: string;
+  avatar: string;
+}

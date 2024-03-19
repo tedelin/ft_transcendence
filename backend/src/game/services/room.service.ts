@@ -9,6 +9,7 @@ import { CreateMatchDto, PlayerData } from "../dto/create-match.dto";
 import { User, UserStatus } from "@prisma/client";
 import { UpdateMatchDto } from "../dto/update-match.dto";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { Player as PlayerDto } from "../dto/create-match.dto";
 
 interface Matchs {
     id: number,
@@ -111,10 +112,18 @@ export class RoomService {
     public assignClientToRoom(client: Socket, roomId: string): string {
         this.addClientToRoom(client, roomId);
         const roomState = this.rooms.get(roomId);
+        const playerOne: PlayerDto = {
+            id: this.connectedUsers.get(roomState.players[0].id).username,
+            avatar: this.connectedUsers.get(roomState.players[0].id).avatar
+        };
+        
+        const playerTwo: PlayerDto = {
+            id: this.connectedUsers.get(roomState.players[1].id).username,
+            avatar: this.connectedUsers.get(roomState.players[1].id).avatar
+        };
         this.server.to(roomId).emit('matchmakingStats', {
-            playerOne: { id: this.connectedUsers.get(roomState.players[0].id).username, avatar: this.connectedUsers.get(roomState.players[0].id).avatar },
-            playerTwo: (roomState.players.length < this.roomSize ? null : { id: this.connectedUsers.get(client.id).username, avatar: this.connectedUsers.get(client.id).avatar }),
-            roomId: roomId
+            playerOne: playerOne,
+            playerTwo: playerTwo,
         })
         if (roomState.players.length < this.roomSize || !roomState.settings.settingsSet) {
             client.emit('gameMatchmaking', {
