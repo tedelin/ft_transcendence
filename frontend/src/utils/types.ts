@@ -24,7 +24,8 @@ export interface User {
 	id: number;
 	username: string;
 	avatar: string;
-	useTwoFa: boolean;
+	useTwoFA: boolean;
+	bio : string | null;
 	status: 'ONLINE' | 'OFFLINE' | 'IN_GAME';
 };
 
@@ -42,4 +43,19 @@ export interface ChannelUser {
 	roomId: string;
 	role?: 'MEMBER' | 'BANNED' | 'MUTED' | 'ADMIN' | 'OWNER';
 	muted: boolean;
+}
+
+
+export interface ProfilData {
+	username?: string;
+	bio?: string;
+	avatar?: string;
+	stats?: number;
+	Achievement?: string;
+	error?: string;
+  }
+  
+export interface UseStepReturn {
+setStep: (step: number) => void;
+setAuth: (auth: boolean) => void;
 }

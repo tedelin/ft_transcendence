@@ -1,9 +1,6 @@
 import '../styles/new-login.css';
 import hero42 from './hero-42.png';
 
-
-
-
 export default function NewLogin() {
 
 	return (

@@ -5,11 +5,11 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../components/AuthProvider";
 
 interface InfoType {
-	id: number;
-	username: string,
-	bio: string,
-	avatar: string,
-	me: boolean
+	id?: number;
+	username?: string,
+	bio?: string,
+	avatar?: string,
+	me?: boolean
 }
 
 function Infos(Infos: InfoType) {
@@ -68,7 +68,7 @@ function Infos(Infos: InfoType) {
 	);
 
 
-	const add = async (userId: number) => {
+	const add = async (userId: number | undefined) => {
 		try {
 			await fetchUrl(`/friends/${userId}`, {
 				method: "POST",
@@ -90,7 +90,7 @@ function Infos(Infos: InfoType) {
 		navigate('../../Settings');
 	}
 
-	async function blockUser(userId: number) {
+	async function blockUser(userId: number | undefined) {
 		try {
 			await fetchUrl(`/friends/block/${userId}`, {
 				method: "PATCH",

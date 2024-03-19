@@ -1,10 +1,14 @@
 import { useState, createContext, useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { ThemeContext } from "../../utils/providers/ThemeProvider";
+import { UseStepReturn } from "../../utils/types";
 
-const StepContext = createContext({});
+const StepContext = createContext<UseStepReturn>({
+	setStep: () => {},
+	setAuth: () => {},
+  });
 
-export const useStep = () => useContext(StepContext);
+export const useStep = () : UseStepReturn => useContext(StepContext);
 
 const ProgressionBar = ({ step }: any) => {
 	return (
