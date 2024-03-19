@@ -56,7 +56,7 @@ export function MessageDisplay({ channel }: { channel: string }) {
 
 	function handleScroll() {
 		if (messageContainer.current) {
-			const { scrollTop, clientHeight } = messageContainer.current;
+			const { scrollTop } = messageContainer.current;
 			if (scrollTop === 0 && !isLoading) {
 				fetchChannelsMessages();
 			}

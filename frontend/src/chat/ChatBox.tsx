@@ -126,7 +126,7 @@ export function ChatBox() {
 	return (
 		<>
 			<TopBar channel={name} />
-			<MessageDisplay key={name} channel={name} />
+			<MessageDisplay key={name} channel={name ? name : ''} />
 			{typing !== '' && 
 				<div className="typingIndicator">{typing}</div>
 			}
