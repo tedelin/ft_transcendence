@@ -1,6 +1,6 @@
 export interface Channel {
 	name: string;
-	visibility: 'PUBLIC' | 'PRIVATE' | 'PROTECTED';
+	visibility: string;
 }
 
 export interface PrivateMessage {

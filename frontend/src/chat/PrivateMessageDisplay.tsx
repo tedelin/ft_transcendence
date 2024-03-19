@@ -37,7 +37,7 @@ export function PrivateMessagesDisplay({ conversationId }: { conversationId: num
 
 	function handleScroll() {
 		if (messageContainer.current) {
-			const { scrollTop, clientHeight } = messageContainer.current;
+			const { scrollTop } = messageContainer.current;
 			if (scrollTop === 0 && !isLoading) {
 				fetchPrivateMessages();
 			}

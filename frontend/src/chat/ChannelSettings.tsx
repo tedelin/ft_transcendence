@@ -56,10 +56,12 @@ export function ChannelSettings({ enabled, setEnabled, name } : { enabled: boole
 	}
 
 	function changeVisibility(newVisibility: string) {
-		setChannel(prevChannel => ({
-			...prevChannel,
-			visibility: newVisibility
-		}));
+		if (channel) {
+			setChannel({
+			  ...channel,
+			  visibility: newVisibility,
+			});
+		  }
 	}
 
 	useEffect(() => {

@@ -1,6 +1,16 @@
-import React, { useEffect, createContext, useState } from "react";
+import { useEffect, createContext, useState } from "react";
 
-export const ThemeContext = createContext();
+interface ThemeContextType {
+	theme: string;
+	setTheme: (theme: string) => void;
+	toggleTheme: () => void;
+};
+
+export const ThemeContext = createContext<ThemeContextType>({
+	theme: "dark",
+	setTheme: () => { },
+	toggleTheme: () => { },
+});
 
 function getTheme() {
     const theme = localStorage.getItem("theme");

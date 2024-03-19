@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchUrl } from "../fetch";
 import { useEffect, useState } from "react";
-import { ChannelUser, User } from "../utils/types";
+import { ChannelUser } from "../utils/types";
 import { getAvatar } from "../utils/utils";
 import { Moderation } from "./Moderation";
 import { useAuth } from "../components/AuthProvider";
@@ -97,11 +97,6 @@ export function ChannelUserList() {
 			auth?.socket?.off('user-muted');
 		}
 	}, []);
-
-	// useEffect(() => {	
-	// 	if (channelUsers.length > 0)
-	// 		console.log(channelUsers);
-	// }, [channelUsers]);
 
 	return (
 		<>

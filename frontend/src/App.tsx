@@ -180,7 +180,7 @@ export default function ErrorPage() {
 			<h1>Oops!</h1>
 			<p>Sorry, an unexpected error has occurred.</p>
 			<p>
-				<i>{error?.error?.toString() ?? error?.toString()}</i>
+				<i>{(error as { error?: string })?.error?.toString() ?? error?.toString()}</i>
 			</p>
 		</div>
 	);
