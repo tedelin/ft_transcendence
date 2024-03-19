@@ -148,7 +148,8 @@ export class GameGateway implements OnGatewayInit {
 
     @SubscribeMessage('returnBack')
     handleReturnBack(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-        let roomId: string = Array.from(client.rooms)[1];
+        const roomsArray = Array.from(client.rooms);
+		let roomId: string = roomsArray[roomsArray.length - 1];
         let roomState = this.roomService.rooms.get(roomId);
         if ((roomState && roomState.state === RoomStatus.LAUNCHING) || (data.gameInstance))
             this.quitInGame(client);
@@ -157,9 +158,9 @@ export class GameGateway implements OnGatewayInit {
     }
 
     public quitInGame(client: Socket) {
-        let roomId: string = Array.from(client.rooms)[1];
+        const roomsArray = Array.from(client.rooms);
+		let roomId = roomsArray[roomsArray.length - 1];
         let roomPartner = this.roomService.findMyLifePartner(roomId, client);
-        let roomState = this.roomService.rooms.get(roomId);
         if (this.isASpectator(client)) {
             const spectator = this.connectedUsers.get(client.id);
             this.cleanUpSpectator(client);
@@ -182,7 +183,8 @@ export class GameGateway implements OnGatewayInit {
 
     @SubscribeMessage('keyAction')
     handleKeyUp(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-        let roomId = Array.from(client.rooms)[1];
+        const roomsArray = Array.from(client.rooms);
+		let roomId = roomsArray[roomsArray.length - 1];
         let roomState = this.roomService.rooms.get(roomId);
         if (!roomState || !roomState.players.some(player => player.id === client.id)) {
             return;
@@ -242,8 +244,8 @@ export class GameGateway implements OnGatewayInit {
 
     @SubscribeMessage('clickSaveSettings')
     handleClickSaveSettings(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-        let roomId = (Array.from(client.rooms))[1];
-        let roomPartner = this.roomService.findMyLifePartner(roomId, client);
+		const roomsArray = Array.from(client.rooms);
+		let roomId = roomsArray[roomsArray.length - 1];
         let roomState = this.roomService.rooms.get(roomId);
 
         roomState.settings = new GameSettings(
