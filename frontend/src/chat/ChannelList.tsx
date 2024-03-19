@@ -50,12 +50,11 @@ export function ChannelList({ channels, setChannels } : { channels: Channel[], s
 
 	async function joinChannel(channel: Channel) {
 		try {
-			const token = localStorage.getItem('jwtToken');
 			await fetchUrl("/chat/channels/join", {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${token}`,
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
 				},
 				body: JSON.stringify({ 
 					roomId: channel.name,

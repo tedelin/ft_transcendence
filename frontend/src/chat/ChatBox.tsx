@@ -68,10 +68,11 @@ export function ChatBox() {
 
 	async function sendChannelMessage() {
 		try {
-			await fetchUrl("/chat/channels/message", {
+			await fetchUrl(`/chat/channels/${name}/message`, {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
 				},
 				body: JSON.stringify({
 					channelId: name,

@@ -99,7 +99,10 @@ export class ChannelService {
 			const newOwner = await this.databaseService.channelUser.findFirst({
 				where: {
 					channelName: roomId,
-					role: Role.MEMBER || Role.ADMIN,
+					OR: [
+						{ role: Role.MEMBER },
+						{ role: Role.ADMIN }
+					  ]
 				},
 				select: {
 					userId: true,
@@ -126,17 +129,6 @@ export class ChannelService {
 			where: {
 				visibility: Visibility.PUBLIC,
 			},
-			select: {
-				name: true,
-				visibility: true,
-				password: false,
-				messages: false,
-			}
-		});
-	}
-
-	async findAll() {
-		return await this.databaseService.channel.findMany({
 			select: {
 				name: true,
 				visibility: true,
@@ -174,7 +166,7 @@ export class ChannelService {
 		})
 	}
 
-	async remove(name: string) {
+	private async remove(name: string) {
 		await this.databaseService.channelUser.deleteMany({
 			where: {
 				channelName: name,

@@ -12,9 +12,13 @@ import { PongService } from "../services/pong.service";
 import { pData, RoomState, GameSettings, RoomStatus } from '../classes/room';
 import { AuthService } from "src/auth/auth.service";
 import { UserService } from "src/user/user.service";
-import { User } from "@prisma/client";
 import { GameService } from "../services/game.service";
-import { GameStatus } from "../classes/pong";
+
+interface PlayerInfo {
+	id: number;
+	username: string;
+	avatar: string;
+}
 import { Player as PlayerDto } from "../dto/create-match.dto";
 
 
@@ -26,7 +30,7 @@ import { Player as PlayerDto } from "../dto/create-match.dto";
 
 export class GameGateway implements OnGatewayInit {
     @WebSocketServer() server: Server;
-    connectedUsers: Map<string, User> = new Map();
+    connectedUsers: Map<string, PlayerInfo> = new Map();
 
     constructor(
         private readonly roomService: RoomService,
@@ -44,8 +48,8 @@ export class GameGateway implements OnGatewayInit {
         for (const [room, roomState] of this.roomService.rooms.entries()) {
             const spectIndex = roomState.spectators.findIndex(s => s.id === client.id);
             if (spectIndex !== -1) {
-                roomState.spectators.splice(spectIndex, 1); // Nettoyage des spectateurs
-                client.leave(room); // Le client quitte la room
+                roomState.spectators.splice(spectIndex, 1);
+                client.leave(room);
                 break;
             }
         }

@@ -75,6 +75,7 @@
 }
 
 .match-item .playerPhoto {
+	object-fit: cover;
     display: flex;
     align-items: center;
     justify-content: center;

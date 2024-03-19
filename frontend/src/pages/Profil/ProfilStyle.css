@@ -264,6 +264,7 @@ button {
 }
 
 .player-picture img {
+	object-fit: cover;
   border-radius: 50%;
   width: auto;
   height: 70px;

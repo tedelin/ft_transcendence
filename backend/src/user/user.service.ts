@@ -60,6 +60,12 @@ async getProfilData(id: number) {
             where: {
                 id,
             },
+			select: {
+				id: true,
+				username: true,
+				avatar: true,
+				status: true,
+			},
         });
     }
 

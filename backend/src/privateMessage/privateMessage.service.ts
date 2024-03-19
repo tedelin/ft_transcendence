@@ -85,11 +85,23 @@ export class PrivateMessageService {
 	async getAllConversations(userId: number): Promise<any[]> {
 		const sentMessages = await this.databaseService.privateMessage.findMany({
 			where: { senderId: userId },
-			select: { receiver: true },
+			select: { receiver: {
+				select: {
+					id: true,
+					username: true,
+					avatar: true,
+				},
+			} },
 		});
 		const receivedMessages = await this.databaseService.privateMessage.findMany({
 			where: { receiverId: userId },
-			select: { sender: true },
+			select: { sender: {
+				select: {
+					id: true,
+					username: true,
+					avatar: true,
+				},
+			} },
 		});
 
 		const allConversations = [...sentMessages.map(msg => msg.receiver), ...receivedMessages.map(msg => msg.sender)];

@@ -44,11 +44,6 @@ export class ChatController {
 		return this.channelService.update(name, updateChannelDto);
 	}
 
-	@Delete('channels/:name')
-	remove(@Param('name') name: string) {
-		return this.channelService.remove(name);
-	}
-
 	@UseGuards(JwtGuard)
 	@Post('channels/join')
 	joinChannel(@UserRequest() user: User, @Body() joinChannelDto: JoinChannelDto) {
@@ -61,7 +56,9 @@ export class ChatController {
 		return this.channelService.leaveChannel(user.id, roomId);
 	}
 
-	@Post('channels/message')
+	@UseGuards(JwtGuard, RolesGuard)
+	@Roles(['MEMBER', 'ADMIN', 'OWNER'])
+	@Post('channels/:name/message')
 	createMessage(@Body() createChannelMessageDto: ChannelMessageDto) {
 		return this.channelService.createMessage(createChannelMessageDto);
 	}

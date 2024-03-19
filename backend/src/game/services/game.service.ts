@@ -19,21 +19,33 @@ export class GameService {
                 },
                 include: {
                     players: {
-                        include: {
-                            player: true, 
-                        }
+						include: {
+							player:{
+								select: {
+									id: true,
+									username: true,
+									avatar: true,
+								},
+							}
+						}
                     },
                 },
             });
         }
         return this.databaseService.match.findMany({
             orderBy: {
-                createdAt: 'desc', // Trier par date de création dans un ordre décroissant
+                createdAt: 'desc',
             },
             include: {
                 players: {
                     include: {
-                        player: true,
+                        player:{
+							select: {
+								id: true,
+								username: true,
+								avatar: true,
+							},
+						}
                     }
                 },
             },
@@ -57,7 +69,13 @@ export class GameService {
             include: {
                 players: {
                     include: {
-                        player: true,
+                        player:{
+							select: {
+								id: true,
+								username: true,
+								avatar: true,
+							},
+						}
                     }
                 },
             },
@@ -73,8 +91,14 @@ export class GameService {
             include: {
                 players: {
                     include: {
-                        player: true,
-                    },
+                        player:{
+							select: {
+								id: true,
+								username: true,
+								avatar: true,
+							},
+						}
+                    }
                 },
             },
         });

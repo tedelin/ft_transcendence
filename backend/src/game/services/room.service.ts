@@ -6,7 +6,7 @@ import { GameStatus, Score } from "../classes/pong";
 import { PongService } from "./pong.service";
 import { GameService } from "./game.service";
 import { CreateMatchDto, PlayerData } from "../dto/create-match.dto";
-import { User, UserStatus } from "@prisma/client";
+import { UserStatus } from "@prisma/client";
 import { UpdateMatchDto } from "../dto/update-match.dto";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Player as PlayerDto } from "../dto/create-match.dto";
@@ -21,6 +21,12 @@ interface Matchs {
     }>
 }
 
+interface PlayerInfo {
+	id: number;
+	username: string;
+	avatar: string;
+}
+
 @Injectable()
 export class RoomService {
 
@@ -28,7 +34,7 @@ export class RoomService {
     public playersData: Map<string, pData> = new Map();
     public roomSize = 2;
     public server: Server;
-    public connectedUsers: Map<string, User>;
+    public connectedUsers: Map<string, PlayerInfo>;
     public privateRooms: Map<string, [number, number]> = new Map();
 
     constructor(
@@ -37,7 +43,7 @@ export class RoomService {
 		private readonly eventEmitter: EventEmitter2,	
     ) { }
 
-    public setServer(server: Server, connectedUsers: Map<string, User>) {
+    public setServer(server: Server, connectedUsers: Map<string, PlayerInfo>) {
         this.server = server;
         this.connectedUsers = connectedUsers;
     }
@@ -259,10 +265,10 @@ export class RoomService {
         }
     }
 
-    private formatUpdateMatchData(roomState: RoomState, pOne: User, pTwo: User): UpdateMatchDto {
+    private formatUpdateMatchData(roomState: RoomState, pOne: PlayerInfo, pTwo: PlayerInfo): UpdateMatchDto {
         const score: Score = roomState.gameState.score;
-        const userOne: User = pOne;
-        const userTwo: User = pTwo;
+        const userOne: PlayerInfo = pOne;
+        const userTwo: PlayerInfo = pTwo;
         const playerOne: PlayerData = {
             playerId: userOne.id,
             score: score.player1,
@@ -279,9 +285,9 @@ export class RoomService {
         };
     }
 
-    private formatCreateMatchData(roomState: RoomState, pOne: User, pTwo: User): CreateMatchDto {
-        const userOne: User = pOne;
-        const userTwo: User = pTwo;
+    private formatCreateMatchData(roomState: RoomState, pOne: PlayerInfo, pTwo: PlayerInfo): CreateMatchDto {
+        const userOne: PlayerInfo = pOne;
+        const userTwo: PlayerInfo = pTwo;
         const playerOne: PlayerData = {
             playerId: userOne.id,
             score: 0,

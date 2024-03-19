@@ -41,11 +41,6 @@ export class UserController {
 		return this.userService.searchUser(query);
 	}
 
-	@Get('username/:username')
-	getUserByName(@Param('username') username: string) {
-		return this.userService.getUserByUsername(username);
-	}
-
 	@Get('id/:id')
 	findOne(@Param('id', ParseIntPipe) id: number) {
 		return this.userService.getUserById(id);
@@ -86,29 +81,21 @@ export class UserController {
 	) {
 	  const userId = req.user.id;
 	
-	  // Prépare les données à mettre à jour
 	  const updateData: any = {
 		username: userUpdateDto.username,
 		bio: userUpdateDto.bio,
 	  };
 	
-	  // Inclut l'URL de l'avatar dans les données de mise à jour uniquement si un fichier a été téléchargé
 	  if (file) {
 		updateData.avatar = `${file.filename}`;
 	  }
-	
-	  // Mettre à jour les informations de l'utilisateur
 	  await this.userService.updateUserDetails(userId, updateData);
-	
 	  return { message: 'Informations mises à jour avec succès', ...updateData };
 	}
 	
-
-
 	@Get('avatars/:filename')
 	seeUploadedFile(@Param('filename') filename): StreamableFile | NotFoundException {
 		const path = join(process.cwd(), 'uploads', 'avatars', filename);
-
 		if (!existsSync(path)) {
 			throw new NotFoundException('Image not found.');
 		}
