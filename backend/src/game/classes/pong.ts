@@ -90,27 +90,41 @@ export class GameState {
     }
 
     public collisions() {
-        // walls
-        if (this.ball.pos.y + this.ball.radius + this.ball.velocity.y > this.canvasHeight || this.ball.pos.y - this.ball.radius + this.ball.velocity.y < 0) {
-            this.ball.velocity = { x: this.ball.velocity.x, y: -this.ball.velocity.y };
-        }
-
-        // paddles
-        if (
-            (this.ball.pos.x - this.ball.radius < this.paddles.width && this.ball.pos.y > this.paddles.leftPos.y && this.ball.pos.y < this.paddles.leftPos.y + this.paddles.height) ||
-            (this.ball.pos.x + this.ball.radius > this.canvasWidth - this.paddles.width && this.ball.pos.y > this.paddles.rightPos.y && this.ball.pos.y < this.paddles.rightPos.y + this.paddles.height)
-        ) {
-            this.ball.velocity = { x: -this.ball.velocity.x, y: this.ball.velocity.y };
-            if (this.ball.pos.x > this.canvasWidth / 2)
-                this.ball.pos.x -= 10;
-            else
-                this.ball.pos.x += 10;
-            if (this.keys['left']['ArrowUp'] === KeyState.PRESS && this.ball.pos.x < this.canvasWidth / 2) this.ball.velocity.y += 3;
-            if (this.keys['left']['ArrowDown'] === KeyState.PRESS && this.ball.pos.x < this.canvasWidth / 2) this.ball.velocity.y -= 3;
-            if (this.keys['right']['ArrowUp'] === KeyState.PRESS && this.ball.pos.x > this.canvasWidth / 2) this.ball.velocity.y += 3;
-            if (this.keys['right']['ArrowDown'] === KeyState.PRESS && this.ball.pos.x > this.canvasWidth / 2) this.ball.velocity.y -= 3;
-        }
-    }
+		// walls
+		if (this.ball.pos.y + this.ball.radius >= this.canvasHeight || this.ball.pos.y - this.ball.radius <= 0) {
+			this.ball.velocity = { x: this.ball.velocity.x, y: -this.ball.velocity.y };
+		}
+	
+		// paddles
+		if (
+			(this.ball.pos.x - this.ball.radius < this.paddles.width && this.ball.pos.y > this.paddles.leftPos.y - this.paddles.height / 2 && this.ball.pos.y < this.paddles.leftPos.y + this.paddles.height / 2) ||
+			(this.ball.pos.x + this.ball.radius > this.canvasWidth - this.paddles.width && this.ball.pos.y > this.paddles.rightPos.y - this.paddles.height / 2 && this.ball.pos.y < this.paddles.rightPos.y + this.paddles.height / 2)
+		) {
+			this.ball.velocity = { x: -this.ball.velocity.x, y: this.ball.velocity.y };
+	
+			// Adjust ball position to prevent it from getting stuck inside the paddle
+			if (this.ball.pos.x > this.canvasWidth / 2) {
+				this.ball.pos.x -= 10;
+			} else {
+				this.ball.pos.x += 10;
+			}
+	
+			// Adjust ball velocity based on key presses
+			if (this.keys['left']['ArrowUp'] === KeyState.PRESS && this.ball.pos.x < this.canvasWidth / 2) {
+				this.ball.velocity.y += 3;
+			}
+			if (this.keys['left']['ArrowDown'] === KeyState.PRESS && this.ball.pos.x < this.canvasWidth / 2) {
+				this.ball.velocity.y -= 3;
+			}
+			if (this.keys['right']['ArrowUp'] === KeyState.PRESS && this.ball.pos.x > this.canvasWidth / 2) {
+				this.ball.velocity.y += 3;
+			}
+			if (this.keys['right']['ArrowDown'] === KeyState.PRESS && this.ball.pos.x > this.canvasWidth / 2) {
+				this.ball.velocity.y -= 3;
+			}
+		}
+	}
+	
 
     public pressKeys() {
         if (this.keys['left']['ArrowUp'] === KeyState.PRESS) this.paddles.leftPos.y = Math.max(this.paddles.leftPos.y - this.paddles.speed, this.paddles.height / 2);

@@ -123,7 +123,7 @@ export class RoomService {
             avatar: this.connectedUsers.get(roomState.players[0].id).avatar
         };
         
-        const playerTwo: PlayerDto = {
+        const playerTwo: PlayerDto = roomState.players.length < this.roomSize ? null : {
             id: this.connectedUsers.get(roomState.players[1].id).username,
             avatar: this.connectedUsers.get(roomState.players[1].id).avatar
         };
