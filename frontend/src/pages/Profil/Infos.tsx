@@ -17,6 +17,9 @@ function Infos(Infos: InfoType) {
 	const { error, success } = useToast();
 	const [friends, setFriends] = useState<number[]>([]);;
 	const userId = useAuth()?.user?.id;
+	const [roomId, setRoomId] = useState('');
+	const auth = useAuth();
+
 	const getFriends = async () => {
 		try {
 			const currentUserID = userId;
@@ -36,8 +39,21 @@ function Infos(Infos: InfoType) {
 		}
 	};
 
+	function acceptGameInvite() {
+		navigate(`/game?roomId=${roomId}`);
+	}
+
 	useEffect(() => {
 		getFriends();
+		auth?.socket?.emit("getInvitation", Infos.id);
+
+		auth?.socket?.on("game-invite", (roomId: string) => {
+			setRoomId(roomId);
+		});
+
+		return () => {
+			auth?.socket?.off("game-invite");
+		};
 	}, []);
 
 	const isFriends = () => {
@@ -54,7 +70,13 @@ function Infos(Infos: InfoType) {
 						<>
 							<button className="block" onClick={() => blockUser(Infos.id)}>Block</button>
 							<button className="message" onClick={() => navigate(`/chat/private-messages/${Infos.id}`)}>Message</button>
-							<button className="playButton" onClick={play}>Invite to Play</button>
+							{roomId.length > 0 && <button onClick={acceptGameInvite} className='playButton'>Accept</button>}
+							{roomId.length === 0 && <button
+								onClick={play}
+								className='playButton'
+							>
+								Invite to play
+							</button>}
 						</>
 					) : (
 						<>

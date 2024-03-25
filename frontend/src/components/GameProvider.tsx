@@ -21,7 +21,7 @@ interface GameContextType {
     setIncreasedBallSpeed: React.Dispatch<React.SetStateAction<number>>;
     ballSize: number;
     setBallSize: React.Dispatch<React.SetStateAction<number>>;
-    Winner: boolean;
+    Winner: User | null;
     setWinner: React.Dispatch<React.SetStateAction<boolean>>;
     gameInstance: React.MutableRefObject<ClassGame | null>;
     showEndGameModal: boolean;

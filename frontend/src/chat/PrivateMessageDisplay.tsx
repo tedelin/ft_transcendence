@@ -5,6 +5,7 @@ import { useToast } from '../utils/hooks/useToast';
 import { PrivateMessage } from '../utils/types';
 import { getAvatar } from '../utils/utils';
 import '../styles/chat.css';
+import { useNavigate } from 'react-router';
 
 export function PrivateMessagesDisplay({ conversationId }: { conversationId: number }) {
     const [receivedMessages, setReceivedMessages] = useState<PrivateMessage[]>([]);
@@ -14,6 +15,7 @@ export function PrivateMessagesDisplay({ conversationId }: { conversationId: num
 	const messageContainer = useRef<HTMLDivElement>(null);
 	const prevScrollHeightRef = useRef<number | null>(null);
 	const {error} = useToast();
+	const navigate = useNavigate();
     const auth = useAuth();
 
     async function fetchPrivateMessages() {
@@ -102,7 +104,9 @@ export function PrivateMessagesDisplay({ conversationId }: { conversationId: num
 				>
 					<div className="sender"
 					>
-						<img src={getAvatar(msg.sender.avatar)} alt="User Avatar"></img>
+						<img
+							onClick={() => navigate('/profil/' + msg.sender.id)}  
+							src={getAvatar(msg.sender.avatar)} alt="User Avatar"></img>
 						<div className="senderName">
 							{msg.sender?.username}
 						</div>

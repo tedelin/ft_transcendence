@@ -32,7 +32,7 @@ function TopBar({ userId }: { userId: number }) {
 	return (
 		<div className="topBarChat">
 			<div className="topChannel">
-				<img className="smallAvatar" src={getAvatar(user?.avatar)} alt="avatar" />
+				{user && <img className="smallAvatar" src={getAvatar(user?.avatar)} alt="avatar" />}
 				<span className='spanMargin'>
 					{user?.username}
 				</span>

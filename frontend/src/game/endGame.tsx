@@ -65,13 +65,13 @@ export function EndGame() {
                 <div className="menuContent">
                     <div className="end-scores">{Myscore} - {OpponentScore}</div>
                     <div className="images-conteneur">
-                        <div className={game?.Winner || game?.isSpectator ? 'img laurier' : 'img chapeau'}>
-                            <img src={getAvatar(me?.avatar)} alt="profil" className={winnerClass} />
+					<div className={game?.Winner || game?.isSpectator ? 'img laurier' : 'img chapeau'}>
+                            <img src={getAvatar(game.isSpectator ? game?.Winner.avatar : me?.avatar)} alt="profil" className={winnerClass} />
                         </div>
                     </div>
                     <div className="menu-footer">
                         <div className="sentence">
-                            {game?.isSpectator ? `${game?.Winner} won ! 🥳` : game?.Winner ? "You won ! 🥳" : "You lost...  🤡"}
+                            {game?.isSpectator ? `${game?.Winner.username} won ! 🥳` : game?.Winner ? "You won ! 🥳" : "You lost...  🤡"}
                         </div>
                         <span className="material-symbols-outlined menuButton" onClick={handleQuit}>arrow_forward</span>
                     </div>

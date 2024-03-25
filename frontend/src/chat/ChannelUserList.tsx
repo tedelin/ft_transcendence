@@ -58,7 +58,6 @@ export function ChannelUserList() {
 		});
 
 		auth?.socket?.on('user-muted', (data: any) => {
-			console.log(data);
 			if (data.roomId !== name) return;
 			setChannelsUsers((prevUsers) => {
 				const updatedUsers = prevUsers.map((user: ChannelUser) => {

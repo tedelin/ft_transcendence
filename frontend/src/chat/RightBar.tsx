@@ -52,8 +52,8 @@ function PrivateMessageList({}) {
 							onClick={() => goTo(dm.id)}
 						>
 							<div className='statusContainer'>
-								<img className='smallAvatar' src={getAvatar(dm.avatar)} alt={dm.username} />
-								<span className={`status ${dm.status === "ONLINE" ? "online" : "offline"}`}></span>
+								<img
+									className='smallAvatar' src={getAvatar(dm.avatar)} alt={dm.username} />
 							</div>
 							<span>{dm.username}</span>
 						</div>

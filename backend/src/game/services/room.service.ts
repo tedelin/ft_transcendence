@@ -352,7 +352,7 @@ export class RoomService {
         if (roomState.spectators.length > 0) {
             roomState.spectators.forEach((spectator) => {
                 this.server.to(spectator.id).emit('gameFinishedShowStats', {
-                    winner: winnerUser.username,
+                    winner: winnerUser,
                     stats: stats,
                     isAbandon: (roomState.gameState.status === GameStatus.RUNNING ? true : false),
                     isSpectator: true

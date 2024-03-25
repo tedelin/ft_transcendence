@@ -9,7 +9,6 @@ export function RightBar({ handleSaveSettings }) {
     const nav = useNavigate();
     const { theme } = useContext(ThemeContext) as { theme: string };;
 
-    console.log('theme:', theme);
     
     const paddle = theme == 'light' ? lightPaddle : darkPaddle;
 
@@ -21,9 +20,7 @@ export function RightBar({ handleSaveSettings }) {
                     <span>Ball</span>
                 </div>
                 <div className='listItem' onClick={() => nav('/game/settings/paddle')}>
-                    {/* <span className="material-symbols-outlined"> */}
                         <img src={paddle} alt="paddle" className='paddleLogo' />
-                    {/* </span> */}
                     <span>Paddle</span>
                 </div>
             </div>

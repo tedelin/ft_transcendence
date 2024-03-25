@@ -131,7 +131,15 @@ export class FriendService {
 				where: { id: friendshipToDelete.id },
 			});
 			this.eventEmitter.emit('friendship.delete', friendshipToDelete);
-		}	
+		}
+		const alreadyBlocked = await this.databaseService.friendship.findFirst({
+			where: {
+				initiatorId: userId,
+				receiverId: blockedUserId,
+				status: FriendshipStatus.BLOCKED,
+			},
+		});
+		if (alreadyBlocked) throw new ConflictException('User already blocked');
 		return await this.databaseService.friendship.create({
 			data: {
 				initiatorId: userId,

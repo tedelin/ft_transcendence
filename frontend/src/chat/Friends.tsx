@@ -208,7 +208,8 @@ function FriendsList({ selected }: { selected: string }) {
 
 		return () => {
 			auth?.socket?.off('user-state');
-			auth?.socket?.off('friendship-request');
+			auth?.socket?.off('friendship');
+			auth?.socket?.off('friendship-delete');
 		};
 	}, []);
 

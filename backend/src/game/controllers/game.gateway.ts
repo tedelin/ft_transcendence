@@ -229,8 +229,8 @@ export class GameGateway implements OnGatewayInit {
         };
 
         const playerTwo: PlayerDto | null = roomState.players.length < 2 ? null : {
-            id: this.connectedUsers.get(client.id).username,
-            avatar: this.connectedUsers.get(client.id).avatar
+			id: this.connectedUsers.get(roomState.players[1].id).username,
+            avatar: this.connectedUsers.get(roomState.players[1].id).avatar
         };
         
         this.server.to(roomId).emit('matchmakingStats', {

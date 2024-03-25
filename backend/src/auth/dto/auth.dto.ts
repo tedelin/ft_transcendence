@@ -54,15 +54,16 @@ export class TokenTotpDto {
 
 export class UserUpdateDto {
 	@IsString()
+	@IsNotEmpty()
 	@IsOptional()
 	@MinLength(4)
 	@MaxLength(14)
-	@Matches(/^[a-zA-Z0-9._-]+$/, { message: 'Le nom d\'utilisateur contient des caractères non autorisés.' })
+	@Matches(/^[a-zA-Z0-9._-]+$/, { message: 'Username contains forbidden caracters' })
 	username: string;
 
 	@IsString()
-	@IsOptional()
-	@MaxLength(255)
-	@Matches(/^[a-zA-Z0-9\s.,!'"+_-]+$/, { message: 'La bio contient des caractères non autorisés.' })
-	bio: string;
+    @IsOptional()
+    @MaxLength(255)
+    @Matches(/^[a-zA-Z0-9\s.,!'"+_-]*$/, { message: 'Bio contains forbidden caracters' })
+    bio: string;
 }
