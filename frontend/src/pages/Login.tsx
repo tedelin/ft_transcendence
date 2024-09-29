@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../components/AuthProvider';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '../utils/hooks/useToast';
 import { validateInput } from '../utils/utils';
 import '../styles/login.css';
@@ -14,10 +14,7 @@ export default function Login() {
 
 	const navigate = useNavigate();
 	const auth = useAuth();
-	const location = useLocation();
 	const { error } = useToast();
-
-	const from = location.state?.from?.pathname || '/';
 
 	async function handleSignIn() {
 		if (!validateInput(username, usernamePattern)) {
@@ -30,7 +27,7 @@ export default function Login() {
 		}
 		try {
 			await auth?.signin(username, password);
-			navigate('game');
+			navigate('/game');
 		} catch (err: any) {
 			error(err.message);
 		}
@@ -47,7 +44,7 @@ export default function Login() {
 		}
 		try {
 			await auth?.signup(username, password);
-			navigate(from, { replace: true });
+			navigate('/game');
 		} catch (err: any) {
 			error(err.message);
 		}
@@ -70,7 +67,7 @@ export default function Login() {
 				/>
 				<button className="loginButton" onClick={handleSignIn}>Login</button>
 				<button className="registerButton" onClick={handleSignUp}>Register</button>
-				<a className="registerButton" href={import.meta.env.VITE_URL_OAUTH}>Connect with 42</a>
+				{/* <a className="registerButton" href={import.meta.env.VITE_URL_OAUTH}>Connect with 42</a> */}
 			</div>
 		</div>
 	);
