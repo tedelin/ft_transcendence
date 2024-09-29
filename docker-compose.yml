@@ -10,18 +10,24 @@ services:
       - .env
     networks:
       - ft_transcendence
+    restart: unless-stopped
 
   frontend:
     container_name: frontend
     build:
       context: frontend
       target: prod
+      args:
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL}
     ports:
       - 80:80
     env_file:
       - .env
     networks:
       - ft_transcendence
+    depends_on:
+      - backend
+    restart: unless-stopped
 
   backend:
     container_name: backend
@@ -38,6 +44,7 @@ services:
       - ft_transcendence
     depends_on:
       - database
+    restart: unless-stopped
 
 networks:
   ft_transcendence:
