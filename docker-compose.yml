@@ -28,6 +28,8 @@ services:
     build:
       context: backend
       target: prod
+      args:
+        DATABASE_URL: ${DATABASE_URL}
     ports:
       - 3001:3001
     env_file:

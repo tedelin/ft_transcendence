@@ -1,5 +1,5 @@
 NAME=ft_transcendence
-COMPOSE_FILE=docker-compose.dev.yml
+COMPOSE_FILE=docker-compose.yml
 
 all: prod
 
