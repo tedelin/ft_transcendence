@@ -1,4 +1,3 @@
-import React from 'react';
 import '../styles/chat.css';
 
 export function EndGameMenu({ Winner, isAbandon, playerStats, isSpect, onQuit }) {

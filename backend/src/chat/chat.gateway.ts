@@ -7,11 +7,7 @@ import { ChannelMessageDto, FriendShipRequestDto, UpdateChannelDto } from './dto
 import { FriendService } from 'src/friends/friends.service';
 import { OnEvent } from '@nestjs/event-emitter';
 
-@WebSocketGateway({
-	cors: {
-		origin: '*',
-	},
-})
+@WebSocketGateway({ cors: {origin: '*'} })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server;
 

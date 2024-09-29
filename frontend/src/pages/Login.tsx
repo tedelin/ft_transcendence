@@ -20,14 +20,14 @@ export default function Login() {
 	const from = location.state?.from?.pathname || '/';
 
 	async function handleSignIn() {
-		// if (!validateInput(username, usernamePattern)) {
-		// 	error('Username must be between 2 and 32 characters and contain only letters, numbers, and underscores.');
-		// 	return;
-		// }
-		// if (!validateInput(password, passwordPattern)) {
-		// 	error('Password must be between 8 and 128 characters and contain at least one digit, one lowercase letter, one uppercase letter, and one special character.');
-		// 	return;
-		// }
+		if (!validateInput(username, usernamePattern)) {
+			error('Username must be between 2 and 32 characters and contain only letters, numbers, and underscores.');
+			return;
+		}
+		if (!validateInput(password, passwordPattern)) {
+			error('Password must be between 8 and 128 characters and contain at least one digit, one lowercase letter, one uppercase letter, and one special character.');
+			return;
+		}
 		try {
 			await auth?.signin(username, password);
 			navigate(from, { replace: true });
@@ -37,19 +37,19 @@ export default function Login() {
 	}
 
 	async function handleSignUp() {
-		// if (!validateInput(username, usernamePattern)) {
-		// 	error('Username must be between 2 and 32 characters and contain only letters, numbers, and underscores.');
-		// 	return;
-		// }
-		// if (!validateInput(password, passwordPattern)) {
-		// 	error('Password must be between 8 and 128 characters and contain at least one digit, one lowercase letter, one uppercase letter, and one special character.');
-		// 	return;
-		// }
+		if (!validateInput(username, usernamePattern)) {
+			error('Username must be between 2 and 32 characters and contain only letters, numbers, and underscores.');
+			return;
+		}
+		if (!validateInput(password, passwordPattern)) {
+			error('Password must be between 8 and 128 characters and contain at least one digit, one lowercase letter, one uppercase letter, and one special character.');
+			return;
+		}
 		try {
 			await auth?.signup(username, password);
 			navigate(from, { replace: true });
 		} catch (err: any) {
-			error(err.message, "salut");
+			error(err.message);
 		}
 	}
 

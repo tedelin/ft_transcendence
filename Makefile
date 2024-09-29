@@ -1,7 +1,12 @@
 NAME=ft_transcendence
-COMPOSE_FILE=docker-compose.yml
+COMPOSE_FILE=docker-compose.dev.yml
 
-all:
+all: prod
+
+prod:
+	docker compose -p $(NAME) -f $(COMPOSE_FILE) up --build -d
+
+dev:
 	docker compose -p $(NAME) -f $(COMPOSE_FILE) up --build -d
 
 down:

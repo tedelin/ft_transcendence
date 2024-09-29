@@ -22,7 +22,7 @@ interface GameContextType {
     ballSize: number;
     setBallSize: React.Dispatch<React.SetStateAction<number>>;
     Winner: User | null;
-    setWinner: React.Dispatch<React.SetStateAction<boolean>>;
+    setWinner: React.Dispatch<React.SetStateAction<User | null>>;
     gameInstance: React.MutableRefObject<ClassGame | null>;
     showEndGameModal: boolean;
     setShowEndGameModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,9 +33,9 @@ interface GameContextType {
     playerStats: any[];
     setPlayerStats: React.Dispatch<React.SetStateAction<any[]>>;
     playerOne: User;
-    setPlayerOne: React.Dispatch<React.SetStateAction<any[]>>;
+    setPlayerOne: React.Dispatch<React.SetStateAction<User>>;
     playerTwo: User;
-    setPlayerTwo: React.Dispatch<React.SetStateAction<any[]>>;
+    setPlayerTwo: React.Dispatch<React.SetStateAction<User>>;
     historyAll: any[];
     setHistoryAll: React.Dispatch<React.SetStateAction<any[]>>;
     isSpectator: boolean;
@@ -59,17 +59,17 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const [paddleSpeed, setPaddleSpeed] = useState(5);
     const [increasedBallSpeed, setIncreasedBallSpeed] = useState(0.003);
     const [ballSize, setBallSize] = useState(15);
-    const [Winner, setWinner] = useState(false);
+    const [Winner, setWinner] = useState<User | null>(null);
     const gameInstance = useRef<ClassGame | null>(null);
     const [showEndGameModal, setShowEndGameModal] = useState(false);
     const [isAbandon, setIsAbandon] = useState(false);
     const [letsGO, setLetsGO] = useState(false);
     const [playerStats, setPlayerStats] = useState<any[]>([]);
-    const [playerOne, setPlayerOne] = useState<any[]>([]);
-    const [playerTwo, setPlayerTwo] = useState<any[]>([]);
+    const [playerOne, setPlayerOne] = useState<User>({} as User);
+    const [playerTwo, setPlayerTwo] = useState<User>({} as User);
     const [historyAll, setHistoryAll] = useState<any[]>([]);
     const saveClicked = false;
-    const [spectatorsBase, setSpectatorsBase] = useState([]);
+    const [spectatorsBase, setSpectatorsBase] = useState<any[]>([]);
     const [isSpectator, setIsSpectator] = useState(false);
     const PreviousUrl = "";
 
@@ -86,9 +86,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         setBallSize(15);
         setShowEndGameModal(false);
         setPlayerStats([]);
-        setWinner(false);
-        setPlayerOne([]);
-        setPlayerTwo([]);
+        setWinner(null);
+        setPlayerOne({} as User);
+        setPlayerTwo({} as User);
     };
 
     let value = {

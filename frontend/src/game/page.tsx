@@ -7,6 +7,7 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { useGame } from '../components/GameProvider';
 import '../styles/page.css';
 import { ThemeContext } from '../utils/providers/ThemeProvider';
+import { User } from '../utils/types';
 
 
 
@@ -97,8 +98,8 @@ export function Game() {
             game?.setShowButton(true);
             game?.setSettingsToDo(false);
             game?.setFirstPlayer(false);
-            game?.setPlayerOne([]);
-            game?.setPlayerTwo([]);
+            game?.setPlayerOne({} as User);
+            game?.setPlayerTwo({} as User);
         })
 
         auth?.socket?.on('letsGO', () => {

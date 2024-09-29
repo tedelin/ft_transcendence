@@ -13,21 +13,16 @@ import { pData, RoomState, GameSettings, RoomStatus } from '../classes/room';
 import { AuthService } from "src/auth/auth.service";
 import { UserService } from "src/user/user.service";
 import { GameService } from "../services/game.service";
+import { Player as PlayerDto } from "../dto/create-match.dto";
 
 interface PlayerInfo {
 	id: number;
 	username: string;
 	avatar: string;
 }
-import { Player as PlayerDto } from "../dto/create-match.dto";
 
 
-@WebSocketGateway({
-    cors: {
-        origin: '*',
-    }
-})
-
+@WebSocketGateway({ cors: {origin: '*'} })
 export class GameGateway implements OnGatewayInit {
     @WebSocketServer() server: Server;
     connectedUsers: Map<string, PlayerInfo> = new Map();

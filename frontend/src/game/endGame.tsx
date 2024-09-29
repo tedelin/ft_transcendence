@@ -1,5 +1,4 @@
 import confetti from 'canvas-confetti';
-// import { useStep } from './LayoutTwoFaSetup'
 import '../styles/game.css';
 import '../styles/end-game.css';
 import { useGame } from '../components/GameProvider';
@@ -8,6 +7,7 @@ import BlockBackNavigation from "./BlockBackNavigation";
 import { useEffect } from 'react';
 import { getAvatar } from '../utils/utils';
 import { useAuth } from '../components/AuthProvider';
+import { User } from '../utils/types';
 
 
 export function EndGame() {
@@ -47,9 +47,9 @@ export function EndGame() {
         game?.setBallSize(15);
         game?.setShowEndGameModal(false);
         game?.setPlayerStats([]);
-        game?.setWinner(false);
-        game?.setPlayerOne([]);
-        game?.setPlayerTwo([]);
+        game?.setWinner(null);
+        game?.setPlayerOne({} as User);
+        game?.setPlayerTwo({} as User);
         nav('/game');
     };
 
@@ -66,12 +66,12 @@ export function EndGame() {
                     <div className="end-scores">{Myscore} - {OpponentScore}</div>
                     <div className="images-conteneur">
 					<div className={game?.Winner || game?.isSpectator ? 'img laurier' : 'img chapeau'}>
-                            <img src={getAvatar(game.isSpectator ? game?.Winner.avatar : me?.avatar)} alt="profil" className={winnerClass} />
+                            <img src={getAvatar(game.isSpectator ? game?.Winner?.avatar : me?.avatar)} alt="profil" className={winnerClass} />
                         </div>
                     </div>
                     <div className="menu-footer">
                         <div className="sentence">
-                            {game?.isSpectator ? `${game?.Winner.username} won ! 🥳` : game?.Winner ? "You won ! 🥳" : "You lost...  🤡"}
+                            {game?.isSpectator ? `${game?.Winner?.username} won ! 🥳` : game?.Winner ? "You won ! 🥳" : "You lost...  🤡"}
                         </div>
                         <span className="material-symbols-outlined menuButton" onClick={handleQuit}>arrow_forward</span>
                     </div>

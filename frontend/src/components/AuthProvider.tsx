@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				},
 			});
 			setUser(response);
-			setSocket(io(import.meta.env.VITE_BACKEND_URL, {
+			setSocket(io(import.meta.env.VITE_WS_URL, {
 				query: { token },
 			}));
 			localStorage.setItem('jwtToken', token);

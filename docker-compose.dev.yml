@@ -3,7 +3,7 @@ services:
     container_name: postgres
     image: postgres:16.1-alpine3.19
     ports:
-      - 5432
+      - 5432:5432
     volumes:
       - postgres:/var/lib/postgresql/data
     env_file:
@@ -15,25 +15,32 @@ services:
     container_name: frontend
     build:
       context: frontend
-      target: prod
+      target: dev
     ports:
-      - 80:80
+      - 3000:3000
     env_file:
       - .env
     networks:
       - ft_transcendence
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
 
   backend:
     container_name: backend
     build:
       context: backend
-      target: prod
+      target: dev
     ports:
       - 3001:3001
+      - 5555:5555 # prisma studio
     env_file:
       - .env
     networks:
       - ft_transcendence
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
     depends_on:
       - database
 
