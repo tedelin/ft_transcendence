@@ -30,7 +30,7 @@ export default function Login() {
 		}
 		try {
 			await auth?.signin(username, password);
-			navigate(from, { replace: true });
+			navigate('game');
 		} catch (err: any) {
 			error(err.message);
 		}
